@@ -156,9 +156,10 @@ void main() {
     // Sub-pixel glitter: when waves are too small to draw, draw their sparkle instead.
     vec2 cell = floor(gl_FragCoord.xy * 0.5);
     float tw = hash(cell + floor(t * 6.0 + hash(cell) * 6.0));
-    float glitter = step(0.985 - 0.02 * ruffle, tw) * smoothstep(1.0, 4.0, mpp * 3.0) * (0.3 + 0.7 * ruffle);
-    glitter *= smoothstep(0.1, 0.5, uSun.z) + 0.25;
-    col0 += uLightCol * (spec + glitter * 0.9) * uDay * (1.0 - cloud * 0.8);
+    // Sparse, and only where the ruffled surface can catch the sun.
+    float glitter = step(0.9975 - 0.0015 * ruffle, tw) * smoothstep(0.8, 3.0, mpp) * ruffle;
+    glitter *= smoothstep(0.1, 0.5, uSun.z) * 0.8 + 0.2;
+    col0 += uLightCol * (spec + glitter * 0.55) * uDay * (1.0 - cloud * 0.8);
 
     // Current made visible: streaks and slicks drawn out along the flow.
     float cs = length(uCur);

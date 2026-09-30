@@ -48,6 +48,7 @@ export function drawKayakTop(g, L, opts = {}) {
   g.fillStyle(0x2a2f33, 1);
   g.fillEllipse(0, L * 0.02, B * 0.6, L * 0.14);
 
+  if (opts.empty) return { B };
   // Paddler.
   const lean = (opts.lean ?? 0) * B * 0.08;
   const px = lean;
