@@ -148,3 +148,105 @@ export function drawKayakSide(g, W, opts = {}) {
   }
   return { H };
 }
+
+/**
+ * A paddler seated in a cutaway sea kayak, side view, bow to the left, at the catch of a forward
+ * stroke. Drysuit, PFD, sun hat, sunglasses and a neck gaiter: a real paddler's kit, and a figure
+ * that reads as a person without implying anyone's race or gender.
+ * `P(x, y)` maps design units (origin at the seat, y down) to device pixels; `u` is px per unit.
+ * Returns the anatomy points used for Boat School's fit taps.
+ */
+export function drawPaddlerSide(g, P, u, opts = {}) {
+  const hull = opts.hull ?? HULL.player;
+  const suit = 0x2f6f73, suitDark = 0x24585c, pfd = opts.pfd ?? PFD.player, ink = 0x16181a;
+  const tone = 0xb7c4bf; // a stylised neutral, not a skin tone
+  const poly = (pts, color, alpha = 1) => { g.fillStyle(color, alpha); g.fillPoints(pts.map(([x, y]) => P(x, y)), true); };
+  const limb = (a, b, w, color) => {
+    const A = P(...a), B = P(...b);
+    g.lineStyle(w * u, color, 1);
+    g.lineBetween(A.x, A.y, B.x, B.y);
+    g.fillStyle(color, 1);
+    g.fillCircle(A.x, A.y, (w * u) / 2);
+    g.fillCircle(B.x, B.y, (w * u) / 2);
+  };
+  const curve = (x0, x1, f, n = 24) => Array.from({ length: n + 1 }, (_, i) => { const x = x0 + ((x1 - x0) * i) / n; return [x, f(x)]; });
+
+  // Water.
+  const W0 = P(-600, 16), W1 = P(600, 90);
+  g.fillStyle(0x0e3a45, 0.55);
+  g.fillRect(W0.x, W0.y, W1.x - W0.x, W1.y - W0.y);
+  g.lineStyle(1.5 * u, 0x9fb8b3, 0.5);
+  g.lineBetween(W0.x, W0.y, W1.x, W0.y);
+
+  // Hull: deck sheer rising to the bow, rockered keel.
+  const deck = (x) => -6 - Math.pow(Math.max(0, -x - 60) / 110, 2) * 16 - Math.pow(Math.max(0, x - 80) / 90, 2) * 8;
+  const keel = (x) => 34 - Math.pow(Math.abs(x + 15) / 185, 2.2) * 34;
+  const top = curve(-205, 185, deck), bottom = curve(185, -205, keel);
+  poly([...top, ...bottom], hull);
+  // Cutaway: the inside of the boat, where the legs go.
+  const cavTop = curve(-150, 70, (x) => deck(x) + 4), cavBot = curve(70, -150, (x) => Math.min(keel(x) - 6, 26));
+  poly([...cavTop, ...cavBot], 0x6e2418, 0.92);
+  // Frame ribs, faint.
+  g.lineStyle(1 * u, 0xffffff, 0.12);
+  for (let x = -140; x <= 60; x += 25) { const a = P(x, deck(x) + 4), b = P(x, Math.min(keel(x) - 6, 26)); g.lineBetween(a.x, a.y, b.x, b.y); }
+  // Deck lines and the chine highlight.
+  g.lineStyle(1.2 * u, 0xffffff, 0.22);
+  g.strokePoints(curve(-200, 180, (x) => keel(x) - 12).map(([x, y]) => P(x, y)), false);
+
+  // Seat, backband, thigh brace, foot peg.
+  poly([[16, 20], [66, 20], [66, 26], [16, 26]], 0x1f2326);
+  poly([[60, -22], [70, -24], [72, 8], [62, 10]], 0x2a2f33);
+  poly([[-60, -6], [-18, -6], [-20, -1], [-58, -1]], 0x2a2f33);
+  poly([[-130, 4], [-124, 4], [-124, 24], [-130, 24]], 0x2a2f33);
+
+  // Legs in the drysuit: hip → knee up under the brace → foot on the peg.
+  const hip = [38, 14], knee = [-36, -5], ankle = [-112, 15], toe = [-122, 5];
+  limb(hip, knee, 17, suitDark);
+  limb(knee, ankle, 13, suitDark);
+  limb(ankle, toe, 9, ink);
+
+  // Coaming and spray skirt, sealing the paddler in.
+  poly([[-44, -8], [70, -8], [70, -3], [-44, -3]], ink);
+  poly([[-44, -8], [70, -8], [60, -22], [22, -24]], 0x1f2326);
+
+  // Torso: sitting tall, a slight forward lean, rotated into the catch.
+  const chest = [[22, -24], [60, -22], [58, -60], [52, -72], [30, -74], [18, -62]];
+  poly(chest, suit);
+  // PFD over the drysuit: panels, a pocket and the zip.
+  poly([[20, -28], [60, -26], [57, -64], [26, -68]], pfd);
+  g.lineStyle(1.2 * u, ink, 0.55);
+  const z0 = P(38, -30), z1 = P(40, -66); g.lineBetween(z0.x, z0.y, z1.x, z1.y);
+  poly([[24, -46], [36, -46], [36, -38], [24, -38]], 0x000000, 0.18);
+
+  // Neck gaiter, head in profile facing the bow, sunglasses and sun hat.
+  poly([[30, -74], [50, -74], [48, -82], [32, -82]], suitDark);
+  const head = P(40, -94);
+  g.fillStyle(tone, 1);
+  g.fillEllipse(head.x, head.y, 25 * u, 28 * u);
+  poly([[28, -94], [24, -90], [28, -88]], tone); // nose
+  poly([[26, -99], [44, -99], [44, -94], [27, -94]], ink); // sunglasses
+  g.fillStyle(0xd9cfb8, 1);
+  const brim0 = P(14, -104), brim1 = P(66, -104);
+  g.fillEllipse((brim0.x + brim1.x) / 2, brim0.y, brim1.x - brim0.x, 6 * u);
+  g.fillEllipse(head.x, head.y - 12 * u, 26 * u, 16 * u);
+
+  // Arms and paddle at the catch: lower arm reaching forward, top hand at eye level.
+  const shoulder = [44, -64], topHand = [4, -76], lowHand = [-26, -40];
+  limb(shoulder, [18, -58], 11, suit); limb([18, -58], topHand, 10, suit);
+  limb(shoulder, [8, -46], 11, suit); limb([8, -46], lowHand, 10, suit);
+  // The shaft runs past the lower hand down to a blade planted beside the feet.
+  const bladeTip = [-112, 46];
+  limb([22, -104], bladeTip, 4.5, 0x2b2b2b);
+  const bt = P(-104, 32);
+  g.fillStyle(0xe8e3d4, 1);
+  g.fillEllipse(bt.x, bt.y, 13 * u, 34 * u);
+  g.fillStyle(0x0e3a45, 0.55); // the part of the blade under water
+  const wl = P(-118, 16), wr = P(-90, 52);
+  g.fillRect(wl.x, wl.y, wr.x - wl.x, wr.y - wl.y);
+  g.lineStyle(1.2 * u, 0xe9f1ee, 0.7); // a little splash ring where it enters
+  const sp = P(-104, 16); g.strokeEllipse(sp.x, sp.y, 26 * u, 5 * u);
+  g.fillStyle(ink, 1);
+  for (const h of [topHand, lowHand]) { const q = P(...h); g.fillCircle(q.x, q.y, 6 * u); }
+
+  return { feet: [-118, 10], knees: [-36, -6], hips: [38, 14], back: [64, -8], head: [40, -94] };
+}

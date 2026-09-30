@@ -82,6 +82,7 @@ export class Debrief extends Phaser.Scene {
     button(this, W / 2, y + 120, 'Home', () => { state.save.trip = null; persist(); go(this, 'Title'); }, { primary: false }).setDepth(10);
     scrollable(this, y + 180);
     sound.success();
+    sound.mood('drive');
   }
 
   async share(r, score, sp) {

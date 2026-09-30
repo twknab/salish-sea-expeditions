@@ -92,7 +92,6 @@ export class Paddle extends Phaser.Scene {
     sound.ambience({ sea: 0.2, wind: 0.1, rip: 0, surf: 0 });
     this.events.on('relayout', () => this.scene.restart({ mode: this.mode, resume: this.snapshot() }));
     this.events.on('resume', (_s, data) => this.afterRescue(data));
-    this.events.once('shutdown', () => sound.night(false));
   }
 
   // ---------- HUD ----------
@@ -364,6 +363,7 @@ export class Paddle extends Phaser.Scene {
   }
 
   afterRescue(data) {
+    sound.mood(this.dark ? 'night' : 'drive');
     this.controls.setVisible(true);
     const k = this.player;
     k.upright = true; k.heel = 0; k.heelVel = 0; k.speed = 0;
@@ -573,7 +573,7 @@ export class Paddle extends Phaser.Scene {
 
     // Night music after dark.
     const m = this.minute % 1440, dark = m > 1285 || m < 320;
-    if (dark !== this.dark) { this.dark = dark; sound.night(dark && state.save.settings.nightMusic !== false); }
+    if (dark !== this.dark) { this.dark = dark; sound.mood(school ? 'calm' : dark ? 'night' : 'drive'); }
 
     // Save the position now and then, so Continue picks up mid-crossing.
     this.saveT = (this.saveT ?? 0) + dt;

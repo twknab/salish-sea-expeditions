@@ -33,7 +33,7 @@ export class Camp extends Phaser.Scene {
     this.card = lessonCard(this, { title: 'Jones Island', text: info.text, sourceIds: info.sourceIds }, { y: layout.safe.top + 12, depth: 50, autoHide: 6500 });
     this.time.delayedCall(1200, () => this.chooseSite());
     sound.ambience({ sea: 0.2, wind: 0.1, surf: 0.7, rip: 0 });
-    this.events.once('shutdown', () => sound.night(false));
+    sound.mood('calm');
     this.clock = text(this, layout.W - 18, layout.safe.top + 14, '', 14, { serif: true, weight: '600', origin: [1, 0] }).setDepth(40);
   }
 
@@ -183,7 +183,7 @@ export class Camp extends Phaser.Scene {
 
   nightfall() {
     this.clearUi();
-    if (state.save.settings.nightMusic !== false) sound.night(true);
+    sound.mood('night');
     this.card?.active && this.card.dismiss();
     const target = 1440 + 360;
     this.tweens.addCounter({
@@ -213,7 +213,7 @@ export class Camp extends Phaser.Scene {
   }
 
   morning() {
-    sound.night(false);
+    sound.mood('calm');
     const r = night(this.site, this.food, this.arrive);
     const t = this.t;
     t.record.nights = 1;
@@ -241,7 +241,7 @@ export class Camp extends Phaser.Scene {
   practice() {
     this.scene.pause();
     this.scene.launch('Rescue', { enabled: [...new Set(Object.values(this.t.packing).flat().flatMap((id) => ({ paddleFloat: ['pfRescue'], pump: ['pumpOut'] }[id] ?? [])))], partnerNear: true, sea: 0.05, practice: true, return: 'Camp' });
-    this.events.once('resume', (_s, data) => { if (data?.ok) this.t.record.rescues++; persist(); });
+    this.events.once('resume', (_s, data) => { sound.mood('calm'); if (data?.ok) this.t.record.rescues++; persist(); });
   }
 
   update(_t, dms) {

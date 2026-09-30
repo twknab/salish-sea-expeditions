@@ -2,7 +2,7 @@
 import Phaser from 'phaser';
 import { text, button, glass, lessonCard, meter, fadeIn } from '../ui/widgets.js';
 import { backdrop } from '../ui/backdrop.js';
-import { drawKayakSide } from '../render/kayakArt.js';
+import { drawKayakSide, drawPaddlerSide } from '../render/kayakArt.js';
 import { COLOR, CSS, layout, px } from '../ui/theme.js';
 import { KAYAK_PARTS, BODY_POINTS, PADDLE_PARTS } from '../content/anatomy.js';
 import { lessonById } from '../content/lessons.js';
@@ -93,29 +93,11 @@ export class BoatSchool extends Phaser.Scene {
     const W = layout.W, cx = W / 2, cy = layout.H * 0.37;
     const g = this.add.graphics().setDepth(10);
     this.layer.push(g);
-    // Side view of a paddler in the cockpit (legs forward, knees up into the thigh braces).
-    const s = 1.15;
-    const P = (x, y) => ({ x: px(cx + x * s), y: px(cy + y * s) });
-    g.fillStyle(0xb8402c, 1);
-    g.fillRoundedRect(P(-150, 20).x, P(-150, 20).y, px(300 * s), px(30 * s), px(14));
-    g.fillStyle(0x16181a, 1);
-    g.fillRect(P(-40, 14).x, P(-40, 14).y, px(110 * s), px(8 * s));
-    // Legs: hip → knee (up into brace) → foot on peg.
-    g.lineStyle(px(12), 0x3a4a52, 1);
-    g.lineBetween(P(40, 8).x, P(40, 8).y, P(-20, -10).x, P(-20, -10).y);
-    g.lineBetween(P(-20, -10).x, P(-20, -10).y, P(-85, 14).x, P(-85, 14).y);
-    // Torso, head, backband.
-    g.fillStyle(0xf2b441, 1);
-    g.fillRoundedRect(P(30, -78).x, P(30, -78).y, px(32 * s), px(88 * s), px(10));
-    g.fillStyle(0xd9c9a3, 1);
-    g.fillCircle(P(46, -96).x, P(46, -96).y, px(15 * s));
-    g.lineStyle(px(5), 0x16181a, 1);
-    g.lineBetween(P(66, -22).x, P(66, -22).y, P(66, 10).x, P(66, 10).y);
-    // Thigh brace and foot peg.
-    g.lineStyle(px(5), 0x16181a, 1);
-    g.lineBetween(P(-40, -20).x, P(-40, -20).y, P(-5, -20).x, P(-5, -20).y);
-    g.lineBetween(P(-92, 4).x, P(-92, 4).y, P(-92, 22).x, P(-92, 22).y);
-    const pts = { feet: [-88, 10], knees: [-20, -14], hips: [42, 6], back: [66, -8], head: [46, -96] };
+    // A paddler in a cutaway kayak: feet on the pegs, knees up under the thigh brace, backband at
+    // the pelvis, sitting tall.
+    const s = Math.min(1.25, (W - 20) / 420);
+    const P = (x, y) => ({ x: px(cx + 10 + x * s), y: px(cy + y * s) });
+    const pts = drawPaddlerSide(g, P, px(s));
     const order = BODY_POINTS.map((b) => b.id);
     let idx = 0;
     const dots = this.add.graphics().setDepth(12);

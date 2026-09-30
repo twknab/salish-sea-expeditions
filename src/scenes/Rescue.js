@@ -47,6 +47,7 @@ export class Rescue extends Phaser.Scene {
     this.clockBar = meter(this, 30, top + 134, W - 60, 4, (v) => (v < 0.5 ? COLOR.good : v < 0.85 ? COLOR.sun : COLOR.danger));
     this.layer = [];
     lesson('coldWater');
+    sound.mood('under');
     this.updateClock();
     this.chooseRescue();
     sound.ambience({ sea: 0.1, wind: 0, rip: 0, surf: 0 });

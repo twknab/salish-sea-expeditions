@@ -40,6 +40,7 @@ export class Title extends Phaser.Scene {
     const nights = state.save.totals.nights;
     if (nights) text(this, W / 2, row + 40, `${nights} night${nights > 1 ? 's' : ''} out · ${state.save.totals.nm.toFixed(1)} nm paddled`, 12, { color: CSS.mist, origin: [0.5, 0] });
     this.input.once('pointerdown', () => sound.unlock());
+    sound.mood('calm');
   }
 
   start(resume) {

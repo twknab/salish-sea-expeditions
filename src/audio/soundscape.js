@@ -2,14 +2,15 @@
 // and nothing needs a licence. Three buses — sea, wildlife, music — plus quiet UI ticks. Licensed
 // field recordings can later replace any voice behind the same functions.
 
-import { createNightMusic } from './nightMusic.js';
+import { createSoundtrack } from './soundtrack.js';
 
 let ctx = null;
-let night = null;
-let nightWanted = false;
+let track = null;
+let trackOn = true;
+let moodWanted = 'calm';
 let bus = null;
 let amb = null;
-const vol = { sea: 0.9, wildlife: 0.9, music: 0.4 };
+const vol = { sea: 0.9, wildlife: 0.9, music: 0.55 };
 
 function noiseBuffer(kind = 'white', seconds = 4) {
   const len = Math.floor(ctx.sampleRate * seconds);
@@ -53,7 +54,7 @@ function build() {
   const comp = ctx.createDynamicsCompressor();
   comp.threshold.value = -14; comp.ratio.value = 3;
   master.connect(comp).connect(ctx.destination);
-  bus = { master, sea: gain(vol.sea), wildlife: gain(vol.wildlife), music: gain(vol.music * 0.6), ui: gain(0.35) };
+  bus = { master, sea: gain(vol.sea), wildlife: gain(vol.wildlife), music: gain(vol.music), ui: gain(0.35) };
   for (const k of ['sea', 'wildlife', 'music', 'ui']) bus[k].connect(master);
 
   const brown = noiseBuffer('brown', 6), pink = noiseBuffer('pink', 5), white = noiseBuffer('white', 3);
@@ -88,7 +89,6 @@ function build() {
   amb.nodes = { swellG, swellLp, lapG, lapBp, windG, windBp, ripG, surfG };
   amb.target = { sea: 0.2, wind: 0.1, rip: 0, surf: 0, calm: 1 };
   amb.t0 = ctx.currentTime;
-  scheduleMusic();
 }
 
 function env(g, t, a, peak, d) {
@@ -131,20 +131,6 @@ function tone(dest, { f0, f1, type = 'sine', a = 0.01, peak = 0.2, d = 0.3, when
   o.start(t); o.stop(t + a + d + 0.05);
 }
 
-// Sparse music: a slow pentatonic pad now and then, never over the sea.
-function scheduleMusic() {
-  const notes = [196, 220, 246.9, 293.7, 329.6, 392, 440];
-  const play = () => {
-    if (!ctx) return;
-    if (night?.playing) { setTimeout(play, 20000); return; } // the night track has the floor
-    const base = notes[Math.floor(Math.random() * 3)];
-    const chord = [base, base * 1.5, base * 2 * (Math.random() < 0.5 ? 1.125 : 1.25)];
-    chord.forEach((f, i) => tone(bus.music, { f0: f, type: 'triangle', a: 2.5, peak: 0.05, d: 6, when: i * 0.9, pan: (i - 1) * 0.4 }));
-    setTimeout(play, 22000 + Math.random() * 26000);
-  };
-  setTimeout(play, 6000);
-}
-
 export const sound = {
   get ready() { return !!ctx && ctx.state === 'running'; },
 
@@ -156,18 +142,25 @@ export const sound = {
         if (!AC) return;
         ctx = new AC();
         build();
-        night = createNightMusic(ctx, bus.music);
-        if (nightWanted) night.start();
+        track = createSoundtrack(ctx, bus.music);
+        track.mood(moodWanted);
+        if (trackOn) track.start();
       }
       if (ctx.state !== 'running') ctx.resume();
     } catch { /* audio is optional */ }
   },
 
-  /** Night music on or off (fades). Respects the Music volume and the night-music setting. */
-  night(on) {
-    nightWanted = on;
-    if (!night) return;
-    if (on) night.start(); else night.stop();
+  /** The soundtrack on or off (fades). */
+  soundtrack(on) {
+    trackOn = on;
+    if (!track) return;
+    if (on) track.start(); else track.stop();
+  },
+
+  /** Set the soundtrack's mood for the scene: 'calm', 'drive', 'night' or 'under'. */
+  mood(name) {
+    moodWanted = name;
+    track?.mood(name);
   },
 
   setVolumes(v) {
@@ -175,7 +168,8 @@ export const sound = {
     if (!bus) return;
     bus.sea.gain.value = vol.sea;
     bus.wildlife.gain.value = vol.wildlife;
-    bus.music.gain.value = vol.music * 0.6;
+    bus.music.gain.value = vol.music;
+    if (v.soundtrack !== undefined) this.soundtrack(v.soundtrack !== false);
   },
 
   /**
