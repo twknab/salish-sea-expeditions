@@ -1,6 +1,7 @@
 // The walk-on ferry into Friday Harbor (US7): the bagged kayak rides as luggage; spot the islands
 // from the deck and learn to read the route on the chart.
 import Phaser from 'phaser';
+import { focusRing } from '../ui/focus.js';
 import { WorldView, drawFerry } from '../render/world.js';
 import { text, button, lessonCard, fadeIn } from '../ui/widgets.js';
 import { COLOR, CSS, layout, px } from '../ui/theme.js';
@@ -41,6 +42,13 @@ export class Ferry extends Phaser.Scene {
     this.card = lessonCard(this, { title: 'Walk-on with a folding kayak', text: 'Your kayak is packed in its travel bag — it rides the ferry as luggage. No car, no roof rack: the islands are open to you on foot.', sourceIds: ['wsf', 'trak'] }, { y: layout.safe.top + 16, autoHide: 7000 });
     this.time.delayedCall(7600, () => { lesson('chartReading'); this.card = lessonCard(this, lessonById.chartReading, { y: layout.safe.top + 16, autoHide: 9000 }); });
     this.input.on('pointerdown', (p) => this.tap(p));
+    for (const s of SPOTS) {
+      focusRing(this).add({
+        alive: () => !this.spotted.has(s.id),
+        bounds: () => { const p = this.world.toScreen(s.x, s.y); return { x: p.x / layout.S - 12, y: p.y / layout.S - 12, w: 24, h: 24 }; },
+        activate: () => { const p = this.world.toScreen(s.x, s.y); this.tap({ x: p.x, y: p.y }); },
+      });
+    }
     sound.horn();
   }
 

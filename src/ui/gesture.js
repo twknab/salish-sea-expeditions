@@ -5,13 +5,13 @@ import { COLOR, CSS, layout, px, textStyle } from './theme.js';
 import { sound } from '../audio/soundscape.js';
 
 const HINT = {
-  hold: 'Press and hold',
-  swipeDown: 'Swipe down',
-  swipeUp: 'Swipe up',
-  swipeOut: 'Swipe outward',
-  circle: 'Trace a circle',
-  tapRhythm: 'Tap with the pulses',
-  snap: 'Flick — fast and sharp',
+  hold: 'Press and hold  ·  or hold Space',
+  swipeDown: 'Swipe down  ·  or ↓',
+  swipeUp: 'Swipe up  ·  or ↑',
+  swipeOut: 'Swipe outward  ·  or → ',
+  circle: 'Trace a circle  ·  or ↓ ← ↑ →',
+  tapRhythm: 'Tap with the pulses  ·  or Space',
+  snap: 'Flick — fast and sharp  ·  or Enter',
 };
 
 export class GesturePad {
@@ -32,10 +32,39 @@ export class GesturePad {
     scene.input.on('pointermove', this.onMove);
     scene.input.on('pointerup', this.onUp);
     scene.events.on('update', this.tick, this);
+    // Keyboard equivalents for every gesture.
+    this.kb = scene.input.keyboard;
+    this.onKeyDown = (e) => this.keyDown(e);
+    this.onKeyUp = (e) => this.keyUp(e);
+    this.kb?.on('keydown', this.onKeyDown);
+    this.kb?.on('keyup', this.onKeyUp);
+  }
+
+  keyDown(e) {
+    if (!this.kind || e.repeat) return;
+    const k = this.kind, s = this.state, t = performance.now();
+    if (k === 'hold' && e.key === ' ') { s.holding = true; s.holdStart = t; s.down = { x: 0, y: 0, t }; return; }
+    if (k === 'tapRhythm' && (e.key === ' ' || e.key === 'Enter')) { this.down({ key: true, event: { timeStamp: t } }); return; }
+    if (k === 'swipeDown' && e.key === 'ArrowDown') return this.finish(0.9);
+    if (k === 'swipeUp' && e.key === 'ArrowUp') return this.finish(0.9);
+    if (k === 'swipeOut' && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) return this.finish(0.9);
+    if (k === 'snap' && e.key === 'Enter') return this.finish(0.95);
+    if (k === 'circle') {
+      const order = ['ArrowDown', 'ArrowLeft', 'ArrowUp', 'ArrowRight'];
+      s.keySeq = s.keySeq ?? 0;
+      if (e.key === order[s.keySeq % 4]) { s.keySeq++; s.angle = (s.keySeq / 4) * Math.PI * 2; if (s.keySeq >= 4) this.finish(0.9); }
+      else if (e.key === 'Enter') this.finish(0.85);
+    }
+  }
+
+  keyUp(e) {
+    if (this.kind === 'hold' && e.key === ' ' && this.state.holding) { this.state.holding = false; this.finish(this.state.held); }
   }
 
   destroy() {
     const s = this.scene;
+    this.kb?.off('keydown', this.onKeyDown);
+    this.kb?.off('keyup', this.onKeyUp);
     s.input.off('pointerdown', this.onDown);
     s.input.off('pointermove', this.onMove);
     s.input.off('pointerup', this.onUp);
@@ -55,6 +84,7 @@ export class GesturePad {
   /** Ask for a gesture. Resolves with a quality 0..1. */
   ask(kind) {
     this.kind = kind;
+    this.scene.arrowsClaimed = true; // arrows drive the gesture, not the focus ring
     this.hint.setText(HINT[kind] ?? kind);
     this.state = { t0: performance.now(), pts: [], angle: 0, lastAng: null, holding: false, held: 0, taps: [], beats: [] };
     if (kind === 'tapRhythm') {
@@ -68,6 +98,7 @@ export class GesturePad {
     const r = this.resolve;
     this.resolve = null;
     this.kind = null;
+    this.scene.arrowsClaimed = false;
     this.fg.clear();
     this.hint.setText('');
     q = Phaser.Math.Clamp(q, 0, 1);
@@ -76,6 +107,7 @@ export class GesturePad {
   }
 
   local(p) {
+    if (p.key) return { x: 0, y: 0, t: p.event.timeStamp };
     return { x: p.x / layout.S - this.x, y: p.y / layout.S - this.y, t: p?.event?.timeStamp ?? performance.now() };
   }
 

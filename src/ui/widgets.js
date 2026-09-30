@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import { COLOR, CSS, layout, px, textStyle } from './theme.js';
 import { sound } from '../audio/soundscape.js';
 import { creditById } from '../content/credits.js';
+import { focusRing } from './focus.js';
 
 export function glass(scene, x, y, w, h, opts = {}) {
   const g = scene.add.graphics();
@@ -48,6 +49,13 @@ export function button(scene, x, y, label, onClick, opts = {}) {
   });
   c.setEnabled = (v) => { enabled = v; draw(false, v); t.setAlpha(v ? 1 : 0.5); return c; };
   c.label = t;
+  // Keyboard: focusable with Tab / arrows, pressed with Enter or Space.
+  focusRing(scene).add({
+    alive: () => c.active && c.visible && enabled && c.alpha > 0.05,
+    bounds: () => ({ x: c.x / layout.S - w / 2, y: c.y / layout.S - h / 2, w, h }),
+    scroll: c.scrollFactorY !== 0,
+    activate: () => { sound.ui('tap'); onClick?.(); },
+  });
   return c;
 }
 
@@ -106,6 +114,11 @@ export function iconButton(scene, x, y, glyph, onClick, size = 40) {
   c.add([g, t]).setSize(px(size), px(size)).setInteractive({ useHandCursor: true });
   c.on('pointerup', () => { sound.ui('tap'); onClick(); });
   c.label = t;
+  focusRing(scene).add({
+    alive: () => c.active && c.visible,
+    bounds: () => ({ x: c.x / layout.S - size / 2, y: c.y / layout.S - size / 2, w: size, h: size }),
+    activate: () => { sound.ui('tap'); onClick(); },
+  });
   return c;
 }
 

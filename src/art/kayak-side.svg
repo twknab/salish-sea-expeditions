@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" width="1000" height="300">
+  <!-- A 16 ft folding sea kayak in profile, bow to the left, afloat. The frame, the three hull jacks
+       and the flotation bags are drawn ghosted, as if seen through the skin. Skin colours are tokens. -->
+  <defs>
+    <linearGradient id="kWater" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2d6f73"/>
+      <stop offset="1" stop-color="#0b2b33"/>
+    </linearGradient>
+    <linearGradient id="kHull" x1="0" y1="140" x2="0" y2="215" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="{{DECK_HI}}"/>
+      <stop offset="0.35" stop-color="{{DECK}}"/>
+      <stop offset="0.58" stop-color="{{DECK_LO}}"/>
+      <stop offset="0.59" stop-color="#f4f3ee"/>
+      <stop offset="1" stop-color="#b7c0c0"/>
+    </linearGradient>
+    <linearGradient id="kDeck" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="{{DECK_HI}}"/>
+      <stop offset="1" stop-color="{{DECK}}"/>
+    </linearGradient>
+    <linearGradient id="kNeo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a4046"/>
+      <stop offset="1" stop-color="#15181b"/>
+    </linearGradient>
+    <filter id="kRipple" x="-5%" y="-10%" width="110%" height="130%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.12" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="10" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <clipPath id="kBelow"><rect x="0" y="190" width="1000" height="110"/></clipPath>
+    <path id="kShape" d="M18 148 C40 150 90 160 200 166 C330 172 420 174 500 174 C620 174 760 170 880 164 C930 161 965 158 986 156 C980 170 960 186 900 198 C800 212 640 216 500 216 C360 216 200 212 110 202 C60 196 30 176 18 148 Z"/>
+  </defs>
+
+  <rect x="0" y="190" width="1000" height="110" fill="url(#kWater)"/>
+  <!-- Reflection -->
+  <g filter="url(#kRipple)" opacity="0.26" transform="translate(0 380) scale(1 -1)">
+    <use href="#kShape" fill="{{DECK}}"/>
+  </g>
+
+  <!-- Hull -->
+  <use href="#kShape" fill="url(#kHull)"/>
+  <!-- Deck crown above the sheer line -->
+  <path d="M18 148 C40 150 90 160 200 166 C330 172 420 174 500 174 C620 174 760 170 880 164 C930 161 965 158 986 156 C960 150 900 146 840 146 C720 146 600 142 500 140 C400 140 300 144 200 150 C120 150 60 146 18 148 Z" fill="url(#kDeck)"/>
+  <path d="M18 148 C60 146 120 150 200 150 C300 144 400 140 500 140 C600 142 720 146 840 146 C900 146 960 150 986 156" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.45"/>
+  <!-- Accent stripe along the sheer -->
+  <path d="M18 148 C40 150 90 160 200 166 C330 172 420 174 500 174 C620 174 760 170 880 164 C930 161 965 158 986 156 L986 161 C965 163 930 166 880 169 C760 175 620 179 500 179 C420 179 330 177 200 171 C90 165 40 155 18 148 Z" fill="{{ACCENT}}"/>
+  <!-- Chines: where the hull's sides turn under -->
+  <path d="M60 176 C200 192 360 196 500 196 C660 196 800 190 940 176" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.35"/>
+  <!-- Water over the hull below the waterline -->
+  <g clip-path="url(#kBelow)"><use href="#kShape" fill="#1b4d55" opacity="0.45"/></g>
+  <path d="M0 190 L1000 190" stroke="#cfe6e3" stroke-width="1.5" opacity="0.55"/>
+
+  <!-- Ghosted structure: frame, hull jacks, flotation bags -->
+  <g opacity="0.55">
+    <path d="M40 158 C200 170 400 176 500 176 C650 176 800 172 960 162" stroke="#dfe6e8" stroke-width="2" stroke-dasharray="6 5" fill="none"/>
+    <path d="M110 200 C250 210 380 212 500 212 C640 212 780 208 900 196" stroke="#dfe6e8" stroke-width="2" stroke-dasharray="6 5" fill="none"/>
+    <g stroke="#dfe6e8" stroke-width="1.6" fill="none">
+      <path d="M150 164 C146 178 146 192 152 204"/>
+      <path d="M290 170 C286 184 286 198 292 210"/>
+      <path d="M700 172 C696 186 696 200 702 210"/>
+      <path d="M840 166 C836 180 836 192 842 202"/>
+    </g>
+    <!-- Flotation bags, fore and aft -->
+    <path d="M90 170 C140 164 230 168 300 176 C300 190 290 200 260 204 C200 206 130 198 96 190 Z" fill="#f2c572" opacity="0.55"/>
+    <path d="M660 178 C720 174 820 170 900 166 C900 180 880 192 850 198 C790 206 720 206 668 200 Z" fill="#f2c572" opacity="0.55"/>
+    <!-- Hull jacks: one each side, one on the keel -->
+    <rect x="520" y="178" width="52" height="7" rx="3.5" fill="#f4f7f8"/>
+    <rect x="538" y="175" width="14" height="13" rx="3" fill="#8b949a"/>
+    <rect x="500" y="204" width="70" height="6" rx="3" fill="#f4f7f8"/>
+    <rect x="526" y="201" width="14" height="12" rx="3" fill="#8b949a"/>
+  </g>
+
+  <!-- Cockpit coaming with the spray skirt fitted -->
+  <path d="M430 146 C450 136 540 134 572 140 L574 150 C540 146 452 148 432 154 Z" fill="url(#kNeo)"/>
+  <rect x="428" y="148" width="148" height="7" rx="3.5" fill="#0f1113"/>
+  <path d="M436 146 C426 138 422 154 434 154" stroke="#e7a33a" stroke-width="3.5" fill="none"/>
+
+  <!-- Deck lines, bungees and fittings -->
+  <g stroke="#15181b" stroke-width="2.4" stroke-linecap="round" fill="none">
+    <path d="M60 152 C140 160 240 164 400 166"/>
+    <path d="M600 166 C720 164 840 158 950 156"/>
+    <path d="M200 152 L250 146 L300 150 L350 144 L400 148"/>
+    <path d="M620 144 L670 150 L720 145 L770 150 L820 147"/>
+  </g>
+  <g fill="#9aa3a8">
+    <circle cx="60" cy="152" r="3"/><circle cx="400" cy="166" r="3"/>
+    <circle cx="600" cy="166" r="3"/><circle cx="950" cy="156" r="3"/>
+  </g>
+  <!-- Carry toggles at bow and stern -->
+  <path d="M24 146 C14 136 8 150 20 152" stroke="#15181b" stroke-width="2.5" fill="none"/>
+  <path d="M982 154 C994 146 998 160 986 160" stroke="#15181b" stroke-width="2.5" fill="none"/>
+</svg>

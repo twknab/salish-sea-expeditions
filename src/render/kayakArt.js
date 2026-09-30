@@ -31,10 +31,15 @@ export function drawKayakTop(g, L, opts = {}) {
   const outline = hullOutline(L, B);
   g.fillStyle(hull, 1);
   g.fillPoints(outline, true);
-  g.lineStyle(Math.max(1, L * 0.012), 0x1a1a1a, 0.45);
+  // A sliver of the white hull shows at the sides; the accent runs along the sheer.
+  g.lineStyle(Math.max(1.5, L * 0.018), 0xf4f3ee, 0.9);
   g.strokePoints(outline, true);
+  if (opts.accent != null) {
+    g.lineStyle(Math.max(1, L * 0.008), opts.accent, 1);
+    g.strokePoints(hullOutline(L * 0.96, B * 0.86), true);
+  }
   // Light on the deck ridge.
-  g.lineStyle(Math.max(1, L * 0.01), 0xffffff, 0.25);
+  g.lineStyle(Math.max(1, L * 0.012), opts.hullHi ?? 0xffffff, 0.45);
   g.lineBetween(0, -L * 0.47, 0, -L * 0.12);
   g.lineBetween(0, L * 0.1, 0, L * 0.47);
   // Deck lines (bungees) fore and aft.

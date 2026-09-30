@@ -13,6 +13,7 @@ export class Credits extends Phaser.Scene {
     fadeIn(this);
     backdrop(this, { minute: 1200, dim: 0.82 }).world.shader.setScrollFactor(0);
     const W = layout.W;
+    this.onBack = () => go(this, 'About');
     let y = layout.safe.top + 18;
     text(this, W / 2, y, 'Credits & sources', 26, { serif: true, weight: '600', origin: [0.5, 0] }).setDepth(10);
     y += 44;

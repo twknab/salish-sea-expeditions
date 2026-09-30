@@ -2,6 +2,7 @@
 // the right next step (learning the order), then perform its gesture. The cold-water clock runs on
 // simulated time: each step takes as long as it would in the water.
 import Phaser from 'phaser';
+import { focusRing } from '../ui/focus.js';
 import { text, button, glass, lessonCard, meter } from '../ui/widgets.js';
 import { GesturePad } from '../ui/gesture.js';
 import { COLOR, CSS, layout, px } from '../ui/theme.js';
@@ -94,6 +95,8 @@ export class Rescue extends Phaser.Scene {
         const zone = this.add.zone(px(16), px(y), px(W - 32), px(74)).setOrigin(0).setInteractive({ useHandCursor: true });
         zone.on('pointerup', () => { sound.ui('tap'); this.start(id); });
         this.layer.push(zone);
+        const yy = y;
+        focusRing(this).add({ alive: () => zone.active, bounds: () => ({ x: 16, y: yy, w: W - 32, h: 74 }), activate: () => { sound.ui('tap'); this.start(id); } });
       }
       y += 84;
     }

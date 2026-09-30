@@ -110,7 +110,7 @@ export class WorldView {
       return g;
     }
     drawKayakTop(g, L, {
-      hull: opts.hull ?? HULL.player, pfd: opts.pfd ?? PFD.player,
+      hull: opts.hull ?? HULL.player, pfd: opts.pfd ?? PFD.player, accent: opts.accent, hullHi: opts.hullHi,
       phase: opts.phase ?? 0, lean: k.edge, resting: opts.resting,
     });
     return g;

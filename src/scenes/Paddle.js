@@ -4,6 +4,9 @@
 import Phaser from 'phaser';
 import { WorldView, drawOrcas, drawSeals, drawFerry, ring } from '../render/world.js';
 import { POV_FRAG } from '../render/povShader.js';
+import { SKINS, skinById, DEFAULT_SKIN, hex } from '../content/skins.js';
+
+const skinColours = (s) => ({ hull: hex(s.deck), accent: hex(s.accent), hullHi: hex(s.deckHi) });
 import { daylight } from '../render/waterShader.js';
 import { Quality } from '../render/quality.js';
 import { TouchControls } from '../ui/touchControls.js';
@@ -58,6 +61,9 @@ export class Paddle extends Phaser.Scene {
     if (this.resume?.kayak) Object.assign(this.player, this.resume.kayak, { upright: true, heel: 0, heelVel: 0 });
     this.partner = createKayak({ x: start.x + 18, y: start.y - 10, heading: this.player.heading });
     this.brain = createPartner();
+    this.skin = skinById[state.save.skin] ?? skinById[DEFAULT_SKIN];
+    // The partner paddles a different skin, so you can tell the boats apart.
+    this.partnerSkin = SKINS.find((s) => s.id !== this.skin.id && s.deck !== this.skin.deck) ?? SKINS[1];
     this.me = { energy: this.resume?.energy ?? t?.energy ?? 1, fit: state.save.fitScore ?? 0.9, skills: state.save.skills };
     this.partnerPaddler = { energy: 1, fit: 1, skills: { forward: 200, sweep: 200, brace: 200 } };
 
@@ -67,6 +73,11 @@ export class Paddle extends Phaser.Scene {
     this.world.cam.x = this.player.x; this.world.cam.y = this.player.y;
 
     this.controls = new TouchControls(this, { height: 196 });
+    // Keyboard: gameplay keys stay with the kayak; Tab and Enter still reach the buttons.
+    this.keyboardGameplay = true;
+    if (!matchMedia('(pointer: coarse)').matches) {
+      text(this, layout.W / 2, layout.H - layout.safe.bottom - 206, 'A / D stroke  ·  Z / C sweep  ·  Q / E edge  ·  J / L brace + K hip snap  ·  Tab for buttons', 10, { color: CSS.mist, origin: [0.5, 1], align: 'center', wrap: layout.W - 24 }).setScrollFactor(0).setDepth(33);
+    }
     this.driver = { drive: 0, q: 0.6, bias: 0, lastGesture: -99, accum: 0, side: 'left', phase: 0 };
     this.controls.events.on('touch', () => sound.unlock());
 
@@ -432,7 +443,7 @@ export class Paddle extends Phaser.Scene {
     }
     // Deck converging toward the bow.
     const deck = [rot(-W * 0.34, H), rot(W * 0.34, H), rot(W * 0.03, horizon + H * 0.2), rot(-W * 0.03, horizon + H * 0.2)];
-    g.fillStyle(0xb8402c, 1);
+    g.fillStyle(hex(this.skin.deck), 1);
     g.fillPoints(deck, true);
     g.fillStyle(0x16181a, 1);
     const coam = [rot(-W * 0.3, H), rot(W * 0.3, H), rot(W * 0.22, H * 0.9), rot(-W * 0.22, H * 0.9)];
@@ -662,8 +673,8 @@ export class Paddle extends Phaser.Scene {
       w.overG.lineStyle(px(2), COLOR.sun, 0.8);
       w.overG.strokeCircle(d.x, d.y, px(9) + Math.sin(this.visualTime * 2) * px(2));
     }
-    w.drawBoat('q', this.partner, { hull: 0x2d7f86, pfd: 0xe9f1ee, phase: this.brain.phase ?? 0, resting: this.partnerResting });
-    w.drawBoat('p', k, { phase: drv.phase, resting: restingNow && drv.drive < 0.02 });
+    w.drawBoat('q', this.partner, { ...skinColours(this.partnerSkin), pfd: 0xe9f1ee, phase: this.brain.phase ?? 0, resting: this.partnerResting });
+    w.drawBoat('p', k, { ...skinColours(this.skin), phase: drv.phase, resting: restingNow && drv.drive < 0.02 });
 
     // HUD.
     this.tClock.setText(clock(this.minute));

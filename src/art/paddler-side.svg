@@ -1,0 +1,244 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="1000" height="560">
+  <!-- A sea kayaker at the catch of a forward stroke, in a cutaway folding sea kayak. Bow to the left.
+       Scale ~385 px per metre. Drysuit, PFD, gloves, sun hat, sunglasses and a
+       gaiter pulled up, neoprene skull cap: a person, with no skin shown, so no race or gender is implied. -->
+  <defs>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2d6f73"/>
+      <stop offset="0.35" stop-color="#1b4d55"/>
+      <stop offset="1" stop-color="#0b2b33"/>
+    </linearGradient>
+    <!-- Skin colours are tokens, replaced at load time with the chosen skin. -->
+    <linearGradient id="hull" x1="0" y1="334" x2="0" y2="430" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="{{DECK_HI}}"/>
+      <stop offset="0.3" stop-color="{{DECK}}"/>
+      <stop offset="0.44" stop-color="{{DECK_LO}}"/>
+      <stop offset="0.45" stop-color="#f4f3ee"/>
+      <stop offset="0.7" stop-color="#d9dcd8"/>
+      <stop offset="1" stop-color="#9aa6a8"/>
+    </linearGradient>
+    <linearGradient id="deck" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="{{DECK_HI}}"/>
+      <stop offset="1" stop-color="{{DECK}}"/>
+    </linearGradient>
+    <linearGradient id="cavity" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a100b"/>
+      <stop offset="1" stop-color="#140806"/>
+    </linearGradient>
+    <linearGradient id="tube" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6d7479"/>
+      <stop offset="0.45" stop-color="#d9dee0"/>
+      <stop offset="1" stop-color="#7d858a"/>
+    </linearGradient>
+    <linearGradient id="suit" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4c6b78"/>
+      <stop offset="0.6" stop-color="#2f4a56"/>
+      <stop offset="1" stop-color="#1f3440"/>
+    </linearGradient>
+    <linearGradient id="suitFar" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2d4450"/>
+      <stop offset="1" stop-color="#18272f"/>
+    </linearGradient>
+    <linearGradient id="pfd" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f6c15a"/>
+      <stop offset="0.5" stop-color="#e7a33a"/>
+      <stop offset="1" stop-color="#b87422"/>
+    </linearGradient>
+    <linearGradient id="neo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a4046"/>
+      <stop offset="1" stop-color="#15181b"/>
+    </linearGradient>
+    <linearGradient id="hat" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e6dbbd"/>
+      <stop offset="1" stop-color="#b3a47c"/>
+    </linearGradient>
+    <linearGradient id="lens" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5a8ea0"/>
+      <stop offset="0.4" stop-color="#1b2a33"/>
+      <stop offset="1" stop-color="#0a1014"/>
+    </linearGradient>
+    <linearGradient id="blade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fbf7ec"/>
+      <stop offset="1" stop-color="#cfc8b6"/>
+    </linearGradient>
+    <linearGradient id="gaiter" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6f8f9c"/>
+      <stop offset="1" stop-color="#3e5a66"/>
+    </linearGradient>
+    <linearGradient id="gaiterPat" x1="0" y1="0" x2="1" y2="0.3">
+      <stop offset="0" stop-color="#7d98a2"/>
+      <stop offset="0.55" stop-color="#58727d"/>
+      <stop offset="1" stop-color="#3a525c"/>
+    </linearGradient>
+    <filter id="ripple" x="-5%" y="-5%" width="110%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.09" numOctaves="2" seed="4"/>
+      <feDisplacementMap in="SourceGraphic" scale="14" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+    <clipPath id="cut">
+      <path d="M176 347 C168 372 172 398 192 412 L682 416 C700 404 704 372 698 348 Z"/>
+    </clipPath>
+    <clipPath id="below"><rect x="0" y="380" width="1000" height="180"/></clipPath>
+  </defs>
+
+  <!-- Water -->
+  <rect x="0" y="380" width="1000" height="180" fill="url(#water)"/>
+  <!-- Reflection of the hull, broken up by ripples -->
+  <g filter="url(#ripple)" opacity="0.28" transform="translate(0 760) scale(1 -1)">
+    <path d="M-20 334 C300 344 700 350 1020 352 L1020 418 C700 432 300 430 -20 404 Z" fill="{{DECK}}"/>
+  </g>
+
+  <!-- Hull (cropped: the boat runs on beyond both edges) -->
+  <path d="M-20 334 C300 344 700 350 1020 352 L1020 418 C700 432 300 430 -20 404 Z" fill="url(#hull)"/>
+  <!-- Deck crown catching the light -->
+  <path d="M-20 334 C300 344 700 350 1020 352 L1020 346 C700 338 300 330 -20 318 Z" fill="url(#deck)"/>
+  <path d="M-20 318 C300 330 700 338 1020 346" stroke="#ffd2bf" stroke-width="2" fill="none" opacity="0.7"/>
+  <!-- Accent stripe along the sheer -->
+  <path d="M-20 336 C300 346 700 352 1020 354 L1020 360 C700 358 300 352 -20 343 Z" fill="{{ACCENT}}"/>
+  <!-- The hull sits in the water: tint everything below the waterline -->
+  <g clip-path="url(#below)">
+    <path d="M-20 334 C300 344 700 350 1020 352 L1020 418 C700 432 300 430 -20 404 Z" fill="#1b4d55" opacity="0.45"/>
+  </g>
+  <path d="M0 380 L1000 380" stroke="#cfe6e3" stroke-width="1.5" opacity="0.6"/>
+  <!-- Chine highlight -->
+  <path d="M-20 380 C300 392 700 396 1020 392" stroke="#ffffff" stroke-width="2.5" fill="none" opacity="0.18"/>
+  <!-- Deck lines and a fitting, forward of the cockpit -->
+  <g stroke="#15181b" stroke-width="3" stroke-linecap="round">
+    <path d="M40 322 L150 330"/>
+    <path d="M750 340 L990 347"/>
+  </g>
+  <circle cx="150" cy="330" r="4" fill="#9aa3a8"/>
+  <circle cx="750" cy="340" r="4" fill="#9aa3a8"/>
+
+  <!-- Cutaway: inside the boat -->
+  <g clip-path="url(#cut)">
+    <rect x="160" y="330" width="560" height="100" fill="url(#cavity)"/>
+    <!-- Aluminium frame: gunwale and chine stringers, keelson, ribs -->
+    <rect x="160" y="352" width="560" height="5" fill="url(#tube)" transform="rotate(0)"/>
+    <rect x="160" y="386" width="560" height="4" fill="#8b9296" opacity="0.8"/>
+    <rect x="160" y="407" width="560" height="5" fill="#9aa2a6"/>
+    <g fill="#7f878c">
+      <rect x="226" y="350" width="6" height="64" rx="3"/>
+      <rect x="336" y="350" width="6" height="64" rx="3"/>
+      <rect x="668" y="350" width="6" height="64" rx="3"/>
+    </g>
+    <!-- Hull jack on the keel -->
+    <rect x="380" y="398" width="90" height="9" rx="4" fill="#c9cfd2"/>
+    <rect x="410" y="394" width="26" height="16" rx="3" fill="#6b7378"/>
+    <!-- Foot peg on its rail -->
+    <rect x="232" y="372" width="60" height="5" rx="2" fill="#9aa2a6"/>
+    <rect x="248" y="358" width="11" height="40" rx="4" fill="#2c3136"/>
+    <!-- Seat and backband -->
+    <path d="M560 402 C600 396 660 396 690 400 L690 412 L560 412 Z" fill="#30363b"/>
+    <path d="M560 402 C600 396 660 396 690 400" stroke="#5a646b" stroke-width="2" fill="none"/>
+    <path d="M676 348 C690 350 700 360 700 380 C700 390 694 396 686 396 C688 380 684 362 672 356 Z" fill="#30363b"/>
+    <!-- Thigh brace pad under the deck -->
+    <path d="M420 352 C450 348 490 350 512 356 L508 364 C486 360 452 358 424 362 Z" fill="#30363b"/>
+
+    <!-- Legs, in the drysuit -->
+    <path d="M640 356 C600 346 520 332 468 332 C446 334 440 356 452 368 C500 376 580 392 632 404 Z" fill="url(#suit)"/>
+    <path d="M470 336 C430 346 360 360 300 378 C282 384 276 398 288 404 C340 400 420 386 458 370 Z" fill="url(#suit)"/>
+    <!-- Fabric folds -->
+    <g stroke="#1a2a33" stroke-width="2" fill="none" opacity="0.6">
+      <path d="M560 360 C575 364 590 372 600 382"/>
+      <path d="M520 352 C530 360 536 370 538 380"/>
+      <path d="M400 364 C410 370 414 378 414 386"/>
+      <path d="M340 376 C348 382 350 390 350 396"/>
+    </g>
+    <!-- Knee, up under the brace -->
+    <ellipse cx="462" cy="350" rx="18" ry="16" fill="#3f5c69"/>
+    <!-- Neoprene bootie against the peg -->
+    <path d="M296 380 C282 376 266 372 258 364 C252 372 254 392 262 402 C276 406 292 404 298 398 Z" fill="url(#neo)"/>
+  </g>
+  <!-- Cut edge of the skin -->
+  <path d="M176 347 C168 372 172 398 192 412 L682 416 C700 404 704 372 698 348" stroke="{{DECK_HI}}" stroke-width="3" fill="none" opacity="0.8"/>
+
+  <!-- Far arm (behind the body): top hand reaching forward at eye level -->
+  <path d="M612 212 C600 186 584 168 562 158 C548 150 534 140 526 134 L516 148 C528 158 548 176 566 186 C580 196 590 214 596 226 Z" fill="url(#suitFar)"/>
+
+  <!-- Torso in the drysuit, sitting tall with a slight forward lean -->
+  <path d="M572 330 C566 300 562 262 568 232 C572 210 586 196 606 192 C626 190 644 200 648 222 C654 256 656 298 660 332 Z" fill="url(#suit)"/>
+
+  <!-- PFD -->
+  <path d="M566 306 C562 280 562 250 568 230 C574 212 590 200 604 198 L614 198 C630 200 644 212 648 232 C652 258 654 284 656 308 C630 314 594 314 566 306 Z" fill="url(#pfd)"/>
+  <path d="M588 204 C590 220 590 240 586 262" stroke="#b87422" stroke-width="2" fill="none"/>
+  <!-- Straps, buckles, pocket and a reflective patch -->
+  <g stroke="#23272b" stroke-width="5" fill="none">
+    <path d="M566 282 C596 288 630 288 654 284"/>
+    <path d="M566 296 C596 302 630 302 655 298"/>
+  </g>
+  <rect x="598" y="279" width="14" height="10" rx="2" fill="#15181b"/>
+  <rect x="604" y="293" width="14" height="10" rx="2" fill="#15181b"/>
+  <path d="M570 236 C586 232 600 234 606 238 L606 262 C596 266 580 266 570 262 Z" fill="#d18f2e" stroke="#9c5f18" stroke-width="1.5"/>
+  <path d="M572 238 L604 240" stroke="#7e4c12" stroke-width="1.5"/>
+  <rect x="624" y="210" width="16" height="6" rx="2" fill="#dfe5e7" opacity="0.9"/>
+
+  <!-- Spray skirt: neoprene deck sealed on the coaming, tunnel up to the waist -->
+  <path d="M440 336 C470 330 520 322 566 316 L660 318 C690 324 710 330 724 340 L724 346 L440 344 Z" fill="url(#neo)"/>
+  <path d="M560 318 C562 300 566 290 568 286 L656 290 C656 300 658 310 660 320 Z" fill="#1f2327"/>
+  <path d="M566 292 L656 296" stroke="#4b535a" stroke-width="2"/>
+  <!-- Coaming lip -->
+  <rect x="436" y="340" width="292" height="8" rx="4" fill="#0f1113"/>
+  <!-- Grab loop, always outside the skirt -->
+  <path d="M442 338 C430 330 428 346 440 346" stroke="#e7a33a" stroke-width="4" fill="none"/>
+
+  <!-- Head in profile, facing the bow: neoprene skull cap, gaiter up over the lower face,
+       wraparound sunglasses, sun hat. -->
+  <clipPath id="headClip">
+    <path id="headShape" d="M612 96 C630 98 642 112 644 134 C646 152 640 166 632 176 C630 186 632 196 636 204 L590 206 C590 196 588 188 584 182 C574 180 566 176 562 168 C558 162 560 156 561 152 C558 150 557 147 559 145 C555 143 551 140 553 136 C556 132 562 128 564 124 C564 118 566 110 572 104 C582 97 598 94 612 96 Z"/>
+  </clipPath>
+  <g clip-path="url(#headClip)">
+    <rect x="540" y="80" width="120" height="140" fill="#2a3237"/>
+    <!-- light across the cap -->
+    <ellipse cx="596" cy="112" rx="30" ry="14" fill="#48545b" opacity="0.7"/>
+    <!-- The gaiter: from the bridge of the nose down over the chin and neck -->
+    <path d="M540 128 C570 126 600 130 640 146 L660 146 L660 220 L540 220 Z" fill="url(#gaiterPat)"/>
+    <g stroke="#2e444d" stroke-width="1.6" fill="none" opacity="0.75">
+      <path d="M556 146 C580 150 606 154 636 162"/>
+      <path d="M560 160 C584 164 608 168 634 176"/>
+      <path d="M570 176 C592 180 612 184 632 190"/>
+      <path d="M582 192 C600 194 616 196 634 200"/>
+    </g>
+    <path d="M540 128 C570 126 600 130 640 146" stroke="#a9c1c8" stroke-width="1.6" fill="none" opacity="0.6"/>
+  </g>
+  <use href="#headShape" fill="none" stroke="#11171b" stroke-width="1.2" opacity="0.6"/>
+  <!-- Wraparound sunglasses -->
+  <path d="M561 118 C572 112 592 112 608 116 L610 128 C594 132 576 132 565 128 Z" fill="url(#lens)"/>
+  <path d="M608 118 L636 122" stroke="#15181b" stroke-width="3"/>
+  <path d="M567 117 C575 115 584 115 590 116" stroke="#9fd0e0" stroke-width="2" opacity="0.7"/>
+  <!-- Hat -->
+  <path d="M572 104 C570 84 584 70 604 68 C624 68 638 82 638 104 Z" fill="url(#hat)"/>
+  <path d="M572 100 C590 96 620 96 638 100 L638 106 L572 106 Z" fill="#6b5c3c"/>
+  <ellipse cx="604" cy="106" rx="76" ry="9" fill="url(#hat)"/>
+  <ellipse cx="604" cy="108" rx="76" ry="6" fill="#000" opacity="0.18" filter="url(#soft)"/>
+
+  <!-- Paddle: carbon shaft, feathered top blade, lower blade planted at the catch -->
+  <g>
+    <path d="M552 64 C566 30 580 4 590 -20 L600 -16 C592 8 578 36 562 68 Z" fill="#dcd5c3"/>
+    <line x1="558" y1="66" x2="376" y2="452" stroke="#1b1e21" stroke-width="10" stroke-linecap="round"/>
+    <line x1="556" y1="66" x2="374" y2="450" stroke="#7a8288" stroke-width="2" opacity="0.6"/>
+    <!-- Lower blade: an asymmetric touring blade, half under water -->
+    <path d="M388 420 C380 440 360 480 346 506 C340 520 352 528 364 520 C380 500 400 462 406 430 Z" fill="url(#blade)"/>
+    <path d="M388 420 C380 440 360 480 346 506" stroke="#1b1e21" stroke-width="2" fill="none"/>
+  </g>
+  <!-- Water over the planted blade, and the splash where it went in -->
+  <g clip-path="url(#below)">
+    <path d="M330 380 L420 380 L420 540 L330 540 Z" fill="#1b4d55" opacity="0.55"/>
+  </g>
+  <g fill="#e9f4f1">
+    <ellipse cx="390" cy="382" rx="34" ry="5" opacity="0.8"/>
+    <circle cx="366" cy="372" r="3.5"/>
+    <circle cx="414" cy="370" r="3"/>
+    <circle cx="376" cy="364" r="2"/>
+  </g>
+
+  <!-- Near arm: extended to the lower hand, gripping the shaft -->
+  <path d="M610 214 C594 238 572 256 548 266 C520 278 494 290 470 302 L462 290 C486 276 512 262 536 250 C560 236 576 220 590 204 Z" fill="url(#suit)"/>
+  <path d="M470 302 L462 290" stroke="#1a2a33" stroke-width="6"/>
+  <ellipse cx="452" cy="298" rx="15" ry="13" fill="#1d2126"/>
+  <path d="M442 292 C446 304 458 310 466 304" stroke="#3a4046" stroke-width="3" fill="none"/>
+  <!-- Top hand glove -->
+  <ellipse cx="526" cy="136" rx="14" ry="12" fill="#1d2126"/>
+</svg>

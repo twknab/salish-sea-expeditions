@@ -1,5 +1,6 @@
 // About: the acknowledgment and safety note (always reachable), settings, credits.
 import Phaser from 'phaser';
+import { focusRing } from '../ui/focus.js';
 import { text, button, meter, fadeIn } from '../ui/widgets.js';
 import { backdrop, scrollable } from '../ui/backdrop.js';
 import { COLOR, CSS, layout, px } from '../ui/theme.js';
@@ -15,6 +16,7 @@ export class About extends Phaser.Scene {
     fadeIn(this);
     backdrop(this, { minute: 1230, dim: 0.8 }).world.shader.setScrollFactor(0);
     const W = layout.W;
+    this.onBack = () => go(this, 'Title');
     let y = layout.safe.top + 18;
     text(this, W / 2, y, 'About', 28, { serif: true, weight: '600', origin: [0.5, 0] }).setDepth(10);
     y += 56;
@@ -39,6 +41,8 @@ export class About extends Phaser.Scene {
       const zone = this.add.zone(px(120), px(y - 6), px(W - 130), px(30)).setOrigin(0).setInteractive().setDepth(11);
       const setFrom = (p) => { s[k] = Math.max(0, Math.min(1, (p.x / layout.S - 130) / (W - 150))); m.set(s[k]); sound.unlock(); sound.setVolumes(s); persist(); };
       zone.on('pointerdown', setFrom);
+      const yy = y;
+      focusRing(this).add({ scroll: true, bounds: () => ({ x: 14, y: yy - 8, w: W - 28, h: 30 }), activate: () => {}, adjust: (d) => { s[k] = Math.max(0, Math.min(1, s[k] + d * 0.1)); m.set(s[k]); sound.unlock(); sound.setVolumes(s); persist(); } });
       zone.on('pointermove', (p) => p.isDown && setFrom(p));
       y += 38;
     }

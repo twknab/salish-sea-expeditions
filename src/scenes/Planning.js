@@ -1,5 +1,6 @@
 // Plan the launch (US3): read the chart, read the current and wind for the day, pick a time.
 import Phaser from 'phaser';
+import { focusRing } from '../ui/focus.js';
 import { WorldView } from '../render/world.js';
 import { text, button, glass, lessonCard, fadeIn } from '../ui/widgets.js';
 import { COLOR, CSS, layout, px } from '../ui/theme.js';
@@ -53,6 +54,10 @@ export class Planning extends Phaser.Scene {
 
     this.input.on('pointerdown', (p) => this.drag(p));
     this.input.on('pointermove', (p) => p.isDown && this.drag(p));
+    // Keyboard: Tab to the graph, then ← → move the launch time by 15 minutes.
+    const gy = this.gy;
+    focusRing(this).add({ bounds: () => ({ x: 20, y: gy + 20, w: W - 40, h: 140 }), activate: () => {}, adjust: (d) => this.setLaunch(Math.max(360, Math.min(1080, this.launch + d * 15))) });
+    text(this, W / 2, this.gy + 262, 'Drag the graph · or Tab to it and use ← →', 10.5, { color: CSS.mist, origin: [0.5, 0] }).setDepth(10);
     button(this, W / 2, H - layout.safe.bottom - 34, 'Launch', () => this.go(), { w: 220, h: 46 }).setDepth(12);
 
     lesson('chartReading');

@@ -1,5 +1,6 @@
 // Morning low tide at Jones Island (US5): look closely, touch gently, put things back.
 import Phaser from 'phaser';
+import { focusRing } from '../ui/focus.js';
 import { text, button, lessonCard, fadeIn } from '../ui/widgets.js';
 import { COLOR, CSS, layout, px } from '../ui/theme.js';
 import { speciesById } from '../content/species.js';
@@ -36,6 +37,15 @@ export class TidePools extends Phaser.Scene {
     lesson('tidepools');
     this.card = lessonCard(this, lessonById.tidepools, { y: layout.safe.top + 76, depth: 40, autoHide: 8000 });
     this.input.on('pointerdown', (p) => this.down(p));
+    for (const s of this.spots) {
+      focusRing(this).add({
+        bounds: () => ({ x: s.x - s.r * 0.7, y: s.y - s.r * 0.7, w: s.r * 1.4, h: s.r * 1.4 }),
+        activate: () => {
+          this.down({ x: s.x * layout.S, y: s.y * layout.S });
+          if (s.hidden) this.time.delayedCall(950, () => this.up());
+        },
+      });
+    }
     this.input.on('pointerup', () => this.up());
     button(this, W / 2, H - layout.safe.bottom - 50, 'Pack up and debrief', () => this.leave()).setDepth(30);
     sound.ambience({ sea: 0.15, wind: 0.05, surf: 0.3, rip: 0 });

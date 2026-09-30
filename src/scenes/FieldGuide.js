@@ -1,5 +1,6 @@
 // The field guide (US6, FR-028): every organism you observe unlocks a page.
 import Phaser from 'phaser';
+import { focusRing } from '../ui/focus.js';
 import { text, button, glass, lessonCard, fadeIn } from '../ui/widgets.js';
 import { backdrop, scrollable } from '../ui/backdrop.js';
 import { COLOR, CSS, layout, px } from '../ui/theme.js';
@@ -72,6 +73,15 @@ export class FieldGuide extends Phaser.Scene {
     }
     button(this, W / 2, y + 20, 'Back', () => go(this, this.scene.settings.data?.from ?? 'Title'), { primary: false }).setDepth(10);
     scrollable(this, y + 80);
+    this.onBack = () => go(this, this.scene.settings.data?.from ?? 'Title');
+    const open = (hit) => {
+      this.card?.active && this.card.destroy();
+      const s = hit.s;
+      const body = hit.open ? `${s.scientific}\n\n${s.blurb}\n\n${s.facts.map((f) => `· ${f}`).join('\n')}\n\nWhere: ${s.where}` : 'Not yet observed. Keep your eyes open on the water, in the air, in the tide pools and along the shore.';
+      this.card = lessonCard(this, { title: hit.open ? s.common : '?', text: body, sourceIds: hit.open ? s.sourceIds : [] }, { y: layout.safe.top + 60, depth: 60, action: 'Close', onAction: () => this.card.dismiss() });
+      this.card.setScrollFactor(0);
+    };
+    for (const hit of this.hits) focusRing(this).add({ scroll: true, bounds: () => ({ x: hit.x - 32, y: hit.y - 32, w: 64, h: 64 }), activate: () => open(hit) });
     let downY = 0;
     this.input.on('pointerdown', (p) => { downY = p.y; });
     this.input.on('pointerup', (p) => {
@@ -79,11 +89,7 @@ export class FieldGuide extends Phaser.Scene {
       const wy = (p.y + this.cameras.main.scrollY) / layout.S, wx = p.x / layout.S;
       const hit = this.hits.find((h) => Math.hypot(h.x - wx, h.y - wy) < 36);
       if (!hit) return;
-      this.card?.active && this.card.destroy();
-      const s = hit.s;
-      const body = hit.open ? `${s.scientific}\n\n${s.blurb}\n\n${s.facts.map((f) => `· ${f}`).join('\n')}\n\nWhere: ${s.where}` : 'Not yet observed. Keep your eyes open on the water, in the air, in the tide pools and along the shore.';
-      this.card = lessonCard(this, { title: hit.open ? s.common : '?', text: body, sourceIds: hit.open ? s.sourceIds : [] }, { y: layout.safe.top + 60, depth: 60, action: 'Close', onAction: () => this.card.dismiss() });
-      this.card.setScrollFactor(0);
+      open(hit);
     });
   }
 }

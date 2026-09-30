@@ -1,6 +1,7 @@
 // Pack the folding kayak (US4, FR-007): dry bags go in through the cockpit — there are no
 // hatches — into flotation bags fore and aft; a few things ride on deck. Tap an item, then a place.
 import Phaser from 'phaser';
+import { focusRing } from '../ui/focus.js';
 import { text, button, glass, lessonCard, fadeIn } from '../ui/widgets.js';
 import { backdrop } from '../ui/backdrop.js';
 import { drawKayakTop } from '../render/kayakArt.js';
@@ -73,8 +74,18 @@ export class Packing extends Phaser.Scene {
       c.setSize(px(w), px(30)).setInteractive({ hitArea: new Phaser.Geom.Rectangle(0, 0, px(w), px(30)), hitAreaCallback: Phaser.Geom.Rectangle.Contains, useHandCursor: true });
       c.on('pointerdown', (p, lx, ly, ev) => { ev?.stopPropagation?.(); this.select(g.id); });
       this.items[g.id] = { c, bg, w };
+      const yy = y;
+      focusRing(this).add({ bounds: () => ({ x: x0, y: yy, w, h: 30 }), activate: () => this.select(g.id) });
       this.list.add(c);
       y += 34;
+    }
+    const rects = this.zoneRects();
+    for (const z of ZONES) {
+      focusRing(this).add({
+        alive: () => !!this.selected,
+        bounds: () => { const r = rects[z]; return { x: r.x, y: r.y + 2, w: r.w, h: r.h - 4 }; },
+        activate: () => this.placeIn(z),
+      });
     }
     this.refresh();
   }
@@ -96,15 +107,17 @@ export class Packing extends Phaser.Scene {
     const rects = this.zoneRects();
     for (const z of ZONES) {
       const r = rects[z];
-      if (x > r.x - 10 && x < r.x + r.w + 10 && y > r.y && y < r.y + r.h) {
-        for (const zz of ZONES) this.p[zz] = this.p[zz].filter((i) => i !== this.selected);
-        this.p[z].push(this.selected);
-        sound.stroke(0.4, 0);
-        this.selected = null;
-        this.refresh();
-        return;
-      }
+      if (x > r.x - 10 && x < r.x + r.w + 10 && y > r.y && y < r.y + r.h) return this.placeIn(z);
     }
+  }
+
+  placeIn(z) {
+    if (!this.selected) return;
+    for (const zz of ZONES) this.p[zz] = this.p[zz].filter((i) => i !== this.selected);
+    this.p[z].push(this.selected);
+    sound.stroke(0.4, 0);
+    this.selected = null;
+    this.refresh();
   }
 
   refresh() {

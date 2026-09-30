@@ -1,18 +1,18 @@
 // Boat School: the boat, the body, the paddle (FR-000a). Positions (x, y) are fractions of the
-// side-view illustration, used to place tap targets.
+// side-view illustration (src/art/kayak-side.svg), used to place tap targets.
 
 export const KAYAK_PARTS = [
-  { id: 'bow', name: 'Bow', x: 0.06, y: 0.52, text: 'The front of the kayak. It rises to meet waves and carries the front flotation bag.', sourceIds: ['aca'] },
-  { id: 'stern', name: 'Stern', x: 0.94, y: 0.5, text: 'The back of the kayak. The stern flotation bag and heavier dry bags ride here.', sourceIds: ['aca'] },
-  { id: 'deck', name: 'Deck', x: 0.28, y: 0.4, text: 'The top of the boat. Deck lines give you and your partner something to grab in a rescue.', sourceIds: ['aca'] },
-  { id: 'hull', name: 'Hull', x: 0.3, y: 0.64, text: 'The underside, in the water. Its shape decides how the boat tracks, turns and feels on edge.', sourceIds: ['aca'] },
-  { id: 'keel', name: 'Keel', x: 0.62, y: 0.7, text: 'The spine along the bottom. It helps the boat run straight.', sourceIds: ['aca'] },
-  { id: 'chine', name: 'Chine', x: 0.72, y: 0.6, text: 'Where the side of the hull turns under. Tilting onto the chine — edging — is how you carve a turn.', sourceIds: ['aca'] },
-  { id: 'cockpit', name: 'Cockpit & coaming', x: 0.5, y: 0.38, text: 'Where you sit. The raised rim, the coaming, is what the spray skirt seals around. On this folding kayak, gear also loads through the cockpit — there are no hatches.', sourceIds: ['trak', 'aca'] },
-  { id: 'skirt', name: 'Spray skirt', x: 0.44, y: 0.33, text: 'A neoprene or nylon deck you wear. It seals you in so waves stay out. Always leave the grab loop outside — it is how you release it in a wet exit.', sourceIds: ['aca'] },
-  { id: 'frame', name: 'Frame & skin', x: 0.2, y: 0.56, text: 'An aluminium frame inside a tough waterproof skin — a modern descendant of the skin-on-frame kayaks of Arctic peoples.', sourceIds: ['trak', 'arctic'] },
-  { id: 'jacks', name: 'Hull jacks', x: 0.58, y: 0.55, text: 'Three jacks — one along each side, one on the keel — tension the skin and set the rocker. Less rocker tracks straight on a crossing; more rocker turns quickly among rocks. You can adjust them while paddling.', sourceIds: ['trak', 'paddlingmag'] },
-  { id: 'float', name: 'Flotation bags', x: 0.82, y: 0.54, text: 'Dry bags fore and aft that hold your gear and keep the kayak afloat if you capsize. A half-empty boat without them would fill with water.', sourceIds: ['trak'] },
+  { id: 'bow', name: 'Bow', x: 0.04, y: 0.527, text: 'The front of the kayak. It rises to meet waves and carries the front flotation bag.', sourceIds: ['aca'] },
+  { id: 'stern', name: 'Stern', x: 0.965, y: 0.533, text: 'The back of the kayak. The stern flotation bag and heavier dry bags ride here.', sourceIds: ['aca'] },
+  { id: 'deck', name: 'Deck', x: 0.25, y: 0.5, text: 'The top of the boat. Deck lines give you and your partner something to grab in a rescue.', sourceIds: ['aca'] },
+  { id: 'hull', name: 'Hull', x: 0.3, y: 0.673, text: 'The underside, in the water. Its shape decides how the boat tracks, turns and feels on edge. This skin is white below the waterline, so an upturned boat is easy to spot.', sourceIds: ['aca', 'trak'] },
+  { id: 'keel', name: 'Keel', x: 0.48, y: 0.713, text: 'The spine along the bottom. It helps the boat run straight.', sourceIds: ['aca'] },
+  { id: 'chine', name: 'Chine', x: 0.76, y: 0.633, text: 'Where the side of the hull turns under. Tilting onto the chine — edging — is how you carve a turn.', sourceIds: ['aca'] },
+  { id: 'cockpit', name: 'Cockpit & coaming', x: 0.46, y: 0.507, text: 'Where you sit. The raised rim, the coaming, is what the spray skirt seals around. On this folding kayak, gear also loads through the cockpit — there are no hatches.', sourceIds: ['trak', 'aca'] },
+  { id: 'skirt', name: 'Spray skirt', x: 0.53, y: 0.463, text: 'A neoprene or nylon deck you wear. It seals you in so waves stay out. Always leave the grab loop outside — it is how you release it in a wet exit.', sourceIds: ['aca'] },
+  { id: 'frame', name: 'Frame & skin', x: 0.152, y: 0.613, text: 'An aluminium frame inside a tough waterproof skin — a modern descendant of the skin-on-frame kayaks of Arctic peoples.', sourceIds: ['trak', 'arctic'] },
+  { id: 'jacks', name: 'Hull jacks', x: 0.546, y: 0.603, text: 'Three jacks — one along each side, one on the keel — tension the skin and set the rocker. Less rocker tracks straight on a crossing; more rocker turns quickly among rocks. You can adjust them while paddling.', sourceIds: ['trak', 'paddlingmag'] },
+  { id: 'float', name: 'Flotation bags', x: 0.79, y: 0.62, text: 'Dry bags fore and aft that hold your gear and keep the kayak afloat if you capsize. A half-empty boat without them would fill with water.', sourceIds: ['trak'] },
 ];
 
 export const BODY_POINTS = [
