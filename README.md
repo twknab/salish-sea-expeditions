@@ -65,6 +65,17 @@ npm run smoke     # headless iPhone-sized pass through every scene, screenshots 
 
 Jump straight to a scene while developing: `?scene=Paddle&mode=trip`, `?scene=Planning`, …
 
+## Put it on a phone
+
+It deploys to Google Cloud Run the same way Plumber Wars does — see [`infra/README.md`](infra/README.md):
+
+```bash
+bash deploy/cloud-run.sh YOUR_PROJECT_ID us-west1 twknab/salish-sea-expeditions
+```
+
+One command creates the registry and the public service and prints the URL. With the three
+secrets it prints, every green merge to `main` redeploys itself (keyless).
+
 ## How it is built
 
 - `src/sim/` — tides, currents, wind, kayak physics, stability and bracing, energy, cold water,
@@ -87,4 +98,4 @@ Jump straight to a scene while developing: `?scene=Paddle&mode=trip`, `?scene=Pl
 - The land acknowledgment and any cultural content need review with the Nations named.
 - The folding kayak's brand name waits for the manufacturer's permission.
 - Sounds are synthesised; licensed field recordings can replace them voice by voice.
-- Deployment (Node server, Dockerfile, Terraform for Cloud Run) is the next feature.
+- Deployment is written and checked locally but has not been applied — it needs your GCP project.

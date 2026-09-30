@@ -1,0 +1,42 @@
+# Every push and pull request: tests, build, server check, audit, Terraform format and validation.
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    name: Test, build, audit
+    runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Tests (simulation, content, server)
+        run: npm test
+      - name: Build
+        run: npm run build
+      - name: Server syntax
+        run: node --check server/server.mjs
+      - name: Dependency audit (high and critical)
+        run: npm audit --audit-level=high --omit=dev
+  terraform:
+    name: Terraform fmt and validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform fmt -check -recursive infra
+      - name: Validate
+        run: |
+          for root in infra/bootstrap infra/service; do
+            terraform -chdir=$root init -backend=false -input=false
+            terraform -chdir=$root validate
+          done

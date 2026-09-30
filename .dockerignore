@@ -1,0 +1,13 @@
+node_modules
+dist
+.git
+.specify
+.claude
+infra
+deploy
+tests
+specs
+docs
+*.md
+*.log
+.env*
