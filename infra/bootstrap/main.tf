@@ -75,15 +75,15 @@ resource "google_artifact_registry_repository" "game" {
 
 resource "google_iam_workload_identity_pool" "github" {
   count                     = local.ci ? 1 : 0
-  workload_identity_pool_id = "github"
-  display_name              = "GitHub Actions"
+  workload_identity_pool_id = "sse-github"
+  display_name              = "Salish Sea GitHub Actions"
   depends_on                = [google_project_service.apis]
 }
 
 resource "google_iam_workload_identity_pool_provider" "github" {
   count                              = local.ci ? 1 : 0
   workload_identity_pool_id          = google_iam_workload_identity_pool.github[0].workload_identity_pool_id
-  workload_identity_pool_provider_id = "github-oidc"
+  workload_identity_pool_provider_id = "sse-github-oidc"
   display_name                       = "GitHub OIDC"
   attribute_mapping = {
     "google.subject"       = "assertion.sub"
