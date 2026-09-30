@@ -32,7 +32,8 @@ export class Assembly extends Phaser.Scene {
     this.rush = button(this, W / 2, layout.H - layout.safe.bottom - 42, 'Rush this step', () => this.skip(), { primary: false, w: 180, h: 40, size: 14 }).setDepth(20);
     this.i = 0;
     this.rush.setVisible(false);
-    this.chooseSkin();
+    // The skin is chosen while outfitting; only an old save without one is asked here.
+    if (state.save.skin) this.startAssembly(); else this.chooseSkin();
     pauseButton(this);
   }
 

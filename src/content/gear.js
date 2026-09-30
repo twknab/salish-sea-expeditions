@@ -4,7 +4,7 @@
 export const GEAR = [
   { id: 'tent', name: 'Tent', massKg: 2.2, essential: false, bulky: true, enables: ['shelter'], text: 'A night out needs a roof.' },
   { id: 'sleep', name: 'Sleeping bag & pad', massKg: 2.0, essential: false, bulky: true, enables: ['sleep'], text: 'Keep it in the driest bag you have.' },
-  { id: 'water', name: 'Water, 8 L', massKg: 8.0, essential: true, bulky: false, enables: ['hydration'], text: 'There is no fresh water on Jones Island in summer. Heavy — pack it low and central.' },
+  { id: 'water', name: 'Water, 8 L', massKg: 8.0, essential: true, bulky: false, enables: ['hydration'], text: 'Jones Island’s tap normally runs May to September, but it has been off until further notice — carry all your water. Heavy: pack it low and central.' },
   { id: 'food', name: 'Food & stove', massKg: 3.5, essential: true, bulky: false, enables: ['dinner'], text: 'Pack it in a hard canister; raccoons are waiting.' },
   { id: 'layers', name: 'Warm layers', massKg: 1.0, essential: true, bulky: true, enables: ['warmth'], text: 'Even in July, the Salish Sea is about 10–12 °C.' },
   { id: 'firstAid', name: 'First-aid kit', massKg: 0.6, essential: true, bulky: false, enables: ['firstAid'], text: 'Blisters, cuts, and the day you need more.' },

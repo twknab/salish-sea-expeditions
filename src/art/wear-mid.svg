@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" width="400" height="800">
+  <!-- Outfitting, layer 2 of 5: fleece top and bottoms over the base layer. -->
+  <defs>
+    <linearGradient id="fl" x1="96" y1="0" x2="304" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5aa3a6"/><stop offset="0.5" stop-color="#3a8288"/><stop offset="1" stop-color="#276168"/>
+    </linearGradient>
+    <linearGradient id="fp" x1="116" y1="0" x2="284" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4d7f86"/><stop offset="0.5" stop-color="#3a676e"/><stop offset="1" stop-color="#284b51"/>
+    </linearGradient>
+    <pattern id="pile" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="1.5" cy="1.5" r="0.9" fill="#ffffff" opacity="0.12"/><circle cx="4.5" cy="4.2" r="0.8" fill="#000000" opacity="0.12"/>
+    </pattern>
+  </defs>
+  <!-- Fleece bottoms -->
+  <g stroke="url(#fp)" stroke-width="60" stroke-linecap="round" fill="none">
+    <path d="M170 430 C166 520 160 600 160 680 L158 724"/>
+    <path d="M230 430 C234 520 240 600 240 680 L242 724"/>
+  </g>
+  <path d="M124 404 L276 404 L282 474 C250 494 150 494 118 474 Z" fill="url(#fp)"/>
+  <g stroke="url(#pile)" stroke-width="60" stroke-linecap="round" fill="none">
+    <path d="M170 430 C166 520 160 600 160 680 L158 724"/><path d="M230 430 C234 520 240 600 240 680 L242 724"/>
+  </g>
+  <g stroke="#1f3b40" stroke-width="4"><path d="M130 742 L188 742"/><path d="M212 742 L270 742"/></g>
+  <!-- Fleece top with a zip collar -->
+  <path d="M176 170 C156 176 124 182 104 194 C90 204 90 224 94 244 L112 254 C120 304 126 364 122 432 L278 432 C274 364 280 304 288 254 L306 244 C310 224 310 204 296 194 C276 182 244 176 224 170 Z" fill="url(#fl)"/>
+  <path d="M176 170 C156 176 124 182 104 194 C90 204 90 224 94 244 L112 254 C120 304 126 364 122 432 L278 432 C274 364 280 304 288 254 L306 244 C310 224 310 204 296 194 C276 182 244 176 224 170 Z" fill="url(#pile)"/>
+  <path d="M176 144 C190 138 210 138 224 144 L226 178 C212 184 188 184 174 178 Z" fill="#2f7479"/>
+  <path d="M200 142 L200 262" stroke="#1d3f43" stroke-width="3"/>
+  <rect x="196" y="176" width="8" height="16" rx="2" fill="#c9d1d3"/>
+  <g stroke="#1f4a4f" stroke-width="4" stroke-linecap="round"><path d="M82 442 L122 445"/><path d="M318 442 L278 445"/><path d="M124 426 C170 434 230 434 276 426"/></g>
+  <g stroke="#0c1a1f" stroke-opacity="0.35" stroke-width="49" stroke-linecap="round" fill="none"><path d="M112 214 C104 300 100 380 102 448"/><path d="M288 214 C296 300 300 380 298 448"/></g>
+  <!-- Fleece sleeves -->
+  <g stroke="url(#fl)" stroke-width="44" stroke-linecap="round" fill="none">
+    <path d="M112 214 C104 300 100 380 102 448"/><path d="M288 214 C296 300 300 380 298 448"/>
+  </g>
+  <g stroke="url(#pile)" stroke-width="44" stroke-linecap="round" fill="none">
+    <path d="M112 214 C104 300 100 380 102 448"/><path d="M288 214 C296 300 300 380 298 448"/>
+  </g>
+</svg>

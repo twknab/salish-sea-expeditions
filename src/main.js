@@ -4,6 +4,7 @@ import { Boot } from './scenes/Boot.js';
 import { Title } from './scenes/Title.js';
 import { Acknowledgment } from './scenes/Acknowledgment.js';
 import { StartChoice } from './scenes/StartChoice.js';
+import { Outfit } from './scenes/Outfit.js';
 import { Ferry } from './scenes/Ferry.js';
 import { BoatSchool } from './scenes/BoatSchool.js';
 import { Assembly } from './scenes/Assembly.js';
@@ -54,7 +55,7 @@ const game = new Phaser.Game({
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH, zoom: 1 / DPR },
   input: { activePointers: 4 },
   render: { powerPreference: 'high-performance', autoMobileTextures: true },
-  scene: [Boot, Title, Acknowledgment, StartChoice, Ferry, BoatSchool, Assembly, Packing, Planning, Paddle, Rescue, Camp, TidePools, Debrief, FieldGuide, Credits, About, Pause],
+  scene: [Boot, Title, Acknowledgment, StartChoice, Outfit, Ferry, BoatSchool, Assembly, Packing, Planning, Paddle, Rescue, Camp, TidePools, Debrief, FieldGuide, Credits, About, Pause],
 });
 
 document.getElementById('boot')?.remove();

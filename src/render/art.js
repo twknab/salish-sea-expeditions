@@ -3,6 +3,14 @@
 import paddlerSide from '../art/paddler-side.svg?raw';
 import paddle from '../art/paddle.svg?raw';
 import kayakSide from '../art/kayak-side.svg?raw';
+import wearBase from '../art/wear-base.svg?raw';
+import wearMid from '../art/wear-mid.svg?raw';
+import wearDry from '../art/wear-dry.svg?raw';
+import wearPfd from '../art/wear-pfd.svg?raw';
+import wearExt from '../art/wear-ext.svg?raw';
+import kitFlatlay from '../art/kit-flatlay.svg?raw';
+import postcardAnacortes from '../art/postcard-anacortes.svg?raw';
+import postcardFridayHarbor from '../art/postcard-friday-harbor.svg?raw';
 import { skinOf, FRAME } from '../content/skins.js';
 
 export const ART = {
@@ -10,6 +18,15 @@ export const ART = {
   paddlerSide: { svg: paddlerSide, w: 640, h: 440, view: [150, 40, 640, 440] },
   paddle: { svg: paddle, w: 1000, h: 230, view: [0, 80, 1000, 230] },
   kayakSide: { svg: kayakSide, w: 1000, h: 150, view: [0, 105, 1000, 150] },
+  // Outfitting: five stacked layers of one figure, the kit flat lay, and the two start postcards.
+  wearBase: { svg: wearBase, w: 400, h: 800 },
+  wearMid: { svg: wearMid, w: 400, h: 800 },
+  wearDry: { svg: wearDry, w: 400, h: 800 },
+  wearPfd: { svg: wearPfd, w: 400, h: 800 },
+  wearExt: { svg: wearExt, w: 400, h: 800 },
+  kitFlatlay: { svg: kitFlatlay, w: 700, h: 1000 },
+  postcardAnacortes: { svg: postcardAnacortes, w: 600, h: 380 },
+  postcardFridayHarbor: { svg: postcardFridayHarbor, w: 600, h: 380 },
 };
 
 // Tokens in the SVGs. Longer names first so {{DECK}} does not eat {{DECK_HI}}.

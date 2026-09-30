@@ -17,7 +17,7 @@ const server = createServer(async (req, res) => {
 const port = server.address().port;
 mkdirSync('tests/smoke/out', { recursive: true });
 
-const SCENES = ['', 'Acknowledgment', 'StartChoice', 'Ferry', 'BoatSchool', 'Paddle&mode=school', 'Assembly', 'Packing', 'Planning', 'Paddle&mode=trip', 'Camp', 'TidePools', 'Debrief', 'FieldGuide', 'Credits', 'About'];
+const SCENES = ['', 'Acknowledgment', 'StartChoice', 'Outfit', 'Ferry', 'BoatSchool', 'Paddle&mode=school', 'Assembly', 'Packing', 'Planning', 'Paddle&mode=trip', 'Camp', 'TidePools', 'Debrief', 'FieldGuide', 'Credits', 'About'];
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 let failed = 0;
 for (const q of SCENES) {
