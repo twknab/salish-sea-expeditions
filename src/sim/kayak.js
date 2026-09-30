@@ -36,7 +36,7 @@ function efficiency(k, energy) {
  * paddler: { energy, fit, skills }
  * Returns { events: string[], cost: number (energy spent) }.
  */
-export function stepKayak(k, input, env, paddler, dt) {
+export function stepKayak(k, input, env, paddler, dt, heelDt = dt) {
   const events = [];
   let cost = 0;
   const skill = (id) => paddler.skills?.[id] ?? 0;
@@ -48,18 +48,19 @@ export function stepKayak(k, input, env, paddler, dt) {
     const side = s.side === 'left' ? -1 : 1;
     const q = rotationQuality(s);
     const eff = efficiency(k, paddler.energy);
+    const wgt = s.weight ?? 1; // one gesture can stand for several strokes when time is compressed
     if (s.kind === 'forward') {
       const power = STROKE_DV * (0.35 + 0.65 * q) * (1 + 0.02 * skill('forward'));
-      k.speed += power * eff;
+      k.speed += power * eff * Math.min(wgt, 1.5);
       // A stroke on the left pushes the bow right. Arm strokes (low q) yaw far more.
       const yaw = 0.05 * (1.6 - q) * (0.6 + 0.8 * k.rocker);
       k.turnRate += -side * yaw;
-      cost += 0.012 * (1.5 - q);
+      cost += 0.012 * (1.5 - q) * Math.min(wgt, 1.5);
       events.push(q >= 0.7 ? 'strokeGood' : 'strokeArms');
     } else if (s.kind === 'sweep') {
       const edgeHelp = 1 + 0.9 * clamp(k.edge * side, 0, 1); // tilt toward the sweep side
       const turn = 0.22 * edgeHelp * (0.6 + 0.8 * k.rocker) * (1 + 0.03 * skill('sweep'));
-      k.turnRate += -side * turn;
+      k.turnRate += -side * turn * wgt;
       k.speed += 0.06 * eff;
       cost += 0.01;
       events.push(edgeHelp > 1.4 ? 'sweepEdged' : 'sweepFlat');
@@ -89,7 +90,7 @@ export function stepKayak(k, input, env, paddler, dt) {
   k.x += k.vx * dt;
   k.y += k.vy * dt;
 
-  const heelEvent = stepHeel(k, input, env, dt, paddler.fit ?? 1, skill('brace'));
+  const heelEvent = heelDt > 0 ? stepHeel(k, input, env, heelDt, paddler.fit ?? 1, skill('brace')) : null;
   if (heelEvent) events.push(heelEvent);
 
   // Holding pace costs a little; resting recovers.

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#0b2b33" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="description" content="A sea-kayak expedition through the San Juan and Gulf Islands — learn to paddle, read the tide, and meet the Salish Sea." />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/icon-180.png" />
+    <title>Salish Sea Expeditions</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #0b2b33; overflow: hidden; overscroll-behavior: none; }
+      body { touch-action: none; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+      #app { position: fixed; inset: 0; }
+      #app canvas { display: block; }
+      #rotate { display: none; position: fixed; inset: 0; z-index: 10; background: #0b2b33; color: #e9f1ee;
+        font: 500 18px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; align-items: center;
+        justify-content: center; text-align: center; padding: 32px; }
+      @media (orientation: landscape) and (pointer: coarse) { #rotate { display: flex; } }
+      #boot { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+        color: #cfe3de; font: 400 15px -apple-system, BlinkMacSystemFont, sans-serif; letter-spacing: .08em; }
+    </style>
+  </head>
+  <body>
+    <div id="boot">SALISH SEA EXPEDITIONS</div>
+    <div id="app"></div>
+    <div id="rotate">Turn your phone upright to keep paddling.</div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
