@@ -10,10 +10,10 @@
     </linearGradient>
     <!-- Skin colours are tokens, replaced at load time with the chosen skin. -->
     <linearGradient id="hull" x1="0" y1="334" x2="0" y2="430" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="{{DECK_HI}}"/>
-      <stop offset="0.3" stop-color="{{DECK}}"/>
-      <stop offset="0.44" stop-color="{{DECK_LO}}"/>
-      <stop offset="0.45" stop-color="#f4f3ee"/>
+      <stop offset="0" stop-color="{{DECK}}"/>
+      <stop offset="0.06" stop-color="{{DECK}}"/>
+      <stop offset="0.1" stop-color="{{DECK_LO}}"/>
+      <stop offset="0.11" stop-color="#f7f7f4"/>
       <stop offset="0.7" stop-color="#d9dcd8"/>
       <stop offset="1" stop-color="#9aa6a8"/>
     </linearGradient>
@@ -22,8 +22,9 @@
       <stop offset="1" stop-color="{{DECK}}"/>
     </linearGradient>
     <linearGradient id="cavity" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2a100b"/>
-      <stop offset="1" stop-color="#140806"/>
+      <stop offset="0" stop-color="#c9cfcf"/>
+      <stop offset="0.5" stop-color="#e9ecea"/>
+      <stop offset="1" stop-color="#b3bbbc"/>
     </linearGradient>
     <linearGradient id="tube" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#6d7479"/>
@@ -87,16 +88,16 @@
   <rect x="0" y="380" width="1000" height="180" fill="url(#water)"/>
   <!-- Reflection of the hull, broken up by ripples -->
   <g filter="url(#ripple)" opacity="0.28" transform="translate(0 760) scale(1 -1)">
-    <path d="M-20 334 C300 344 700 350 1020 352 L1020 418 C700 432 300 430 -20 404 Z" fill="{{DECK}}"/>
+    <path d="M-20 334 C300 344 700 350 1020 352 L1020 418 C700 432 300 430 -20 404 Z" fill="#e9eeec"/>
   </g>
 
   <!-- Hull (cropped: the boat runs on beyond both edges) -->
   <path d="M-20 334 C300 344 700 350 1020 352 L1020 418 C700 432 300 430 -20 404 Z" fill="url(#hull)"/>
   <!-- Deck crown catching the light -->
   <path d="M-20 334 C300 344 700 350 1020 352 L1020 346 C700 338 300 330 -20 318 Z" fill="url(#deck)"/>
-  <path d="M-20 318 C300 330 700 338 1020 346" stroke="#ffd2bf" stroke-width="2" fill="none" opacity="0.7"/>
-  <!-- Accent stripe along the sheer -->
-  <path d="M-20 336 C300 346 700 352 1020 354 L1020 360 C700 358 300 352 -20 343 Z" fill="{{ACCENT}}"/>
+  <path d="M-20 318 C300 330 700 338 1020 346" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.4"/>
+  <!-- Black perimeter line where deck meets the white hull -->
+  <path d="M-20 334 C300 344 700 350 1020 352 L1020 358 C700 356 300 350 -20 341 Z" fill="#101214"/>
   <!-- The hull sits in the water: tint everything below the waterline -->
   <g clip-path="url(#below)">
     <path d="M-20 334 C300 344 700 350 1020 352 L1020 418 C700 432 300 430 -20 404 Z" fill="#1b4d55" opacity="0.45"/>
@@ -115,25 +116,35 @@
   <!-- Cutaway: inside the boat -->
   <g clip-path="url(#cut)">
     <rect x="160" y="330" width="560" height="100" fill="url(#cavity)"/>
-    <!-- Aluminium frame: gunwale and chine stringers, keelson, ribs -->
-    <rect x="160" y="352" width="560" height="5" fill="url(#tube)" transform="rotate(0)"/>
-    <rect x="160" y="386" width="560" height="4" fill="#8b9296" opacity="0.8"/>
-    <rect x="160" y="407" width="560" height="5" fill="#9aa2a6"/>
-    <g fill="#7f878c">
-      <rect x="226" y="350" width="6" height="64" rx="3"/>
-      <rect x="336" y="350" width="6" height="64" rx="3"/>
-      <rect x="668" y="350" width="6" height="64" rx="3"/>
+    <!-- The frame, colour-coded: blue tubes forward of the cockpit, red aft; carbon ribs -->
+    <g fill="{{FRAME_FORE}}">
+      <rect x="160" y="352" width="300" height="5" rx="2.5"/>
+      <rect x="160" y="386" width="300" height="4" rx="2" opacity="0.8"/>
+      <rect x="160" y="407" width="300" height="5" rx="2.5"/>
     </g>
-    <!-- Hull jack on the keel -->
-    <rect x="380" y="398" width="90" height="9" rx="4" fill="#c9cfd2"/>
-    <rect x="410" y="394" width="26" height="16" rx="3" fill="#6b7378"/>
-    <!-- Foot peg on its rail -->
-    <rect x="232" y="372" width="60" height="5" rx="2" fill="#9aa2a6"/>
+    <g fill="{{FRAME_AFT}}">
+      <rect x="456" y="352" width="264" height="5" rx="2.5"/>
+      <rect x="456" y="386" width="264" height="4" rx="2" opacity="0.8"/>
+      <rect x="456" y="407" width="264" height="5" rx="2.5"/>
+    </g>
+    <g fill="{{RIB}}">
+      <rect x="224" y="350" width="9" height="64" rx="3"/>
+      <rect x="334" y="350" width="9" height="64" rx="3"/>
+      <rect x="666" y="350" width="9" height="64" rx="3"/>
+    </g>
+    <g fill="{{FRAME_FORE}}"><rect x="231" y="352" width="2" height="60"/><rect x="341" y="352" width="2" height="60"/></g>
+    <rect x="666" y="352" width="2" height="60" fill="{{FRAME_AFT}}"/>
+    <!-- Hull jack on the keel: silver, blue fittings -->
+    <rect x="380" y="398" width="90" height="9" rx="4" fill="{{JACK}}"/>
+    <rect x="410" y="394" width="26" height="16" rx="3" fill="{{FRAME_FORE}}"/>
+    <!-- Foot peg on its toothed rail -->
+    <rect x="232" y="372" width="60" height="5" rx="2" fill="#aeb5b9"/>
+    <path d="M234 377 l4 3 l4 -3 l4 3 l4 -3 l4 3 l4 -3 l4 3 l4 -3 l4 3 l4 -3 l4 3 l4 -3 l4 3" stroke="#8a9296" stroke-width="1.2" fill="none"/>
     <rect x="248" y="358" width="11" height="40" rx="4" fill="#2c3136"/>
     <!-- Seat and backband -->
-    <path d="M560 402 C600 396 660 396 690 400 L690 412 L560 412 Z" fill="#30363b"/>
-    <path d="M560 402 C600 396 660 396 690 400" stroke="#5a646b" stroke-width="2" fill="none"/>
-    <path d="M676 348 C690 350 700 360 700 380 C700 390 694 396 686 396 C688 380 684 362 672 356 Z" fill="#30363b"/>
+    <path d="M560 402 C600 396 660 396 690 400 L690 412 L560 412 Z" fill="#1a1d20"/>
+    <path d="M560 402 C600 396 660 396 690 400" stroke="#3c434a" stroke-width="2" fill="none"/>
+    <path d="M676 348 C690 350 700 360 700 380 C700 390 694 396 686 396 C688 380 684 362 672 356 Z" fill="#1a1d20"/>
     <!-- Thigh brace pad under the deck -->
     <path d="M420 352 C450 348 490 350 512 356 L508 364 C486 360 452 358 424 362 Z" fill="#30363b"/>
 
@@ -153,7 +164,7 @@
     <path d="M296 380 C282 376 266 372 258 364 C252 372 254 392 262 402 C276 406 292 404 298 398 Z" fill="url(#neo)"/>
   </g>
   <!-- Cut edge of the skin -->
-  <path d="M176 347 C168 372 172 398 192 412 L682 416 C700 404 704 372 698 348" stroke="{{DECK_HI}}" stroke-width="3" fill="none" opacity="0.8"/>
+  <path d="M176 347 C168 372 172 398 192 412 L682 416 C700 404 704 372 698 348" stroke="#101214" stroke-width="3" fill="none" opacity="0.9"/>
 
   <!-- Far arm (behind the body): top hand reaching forward at eye level -->
   <path d="M612 212 C600 186 584 168 562 158 C548 150 534 140 526 134 L516 148 C528 158 548 176 566 186 C580 196 590 214 596 226 Z" fill="url(#suitFar)"/>

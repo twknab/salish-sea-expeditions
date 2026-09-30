@@ -11,6 +11,7 @@ import { PLACES_INFO } from '../content/places.js';
 import { trip, lesson, observe, go, persist, state } from '../state.js';
 import { award } from '../sim/skills.js';
 import { sound } from '../audio/soundscape.js';
+import { pauseButton } from '../ui/pause.js';
 
 const SITE_X = { beach: 0.36, wrack: 0.58, terrace: 0.82 };
 
@@ -34,7 +35,8 @@ export class Camp extends Phaser.Scene {
     this.time.delayedCall(1200, () => this.chooseSite());
     sound.ambience({ sea: 0.2, wind: 0.1, surf: 0.7, rip: 0 });
     sound.mood('calm');
-    this.clock = text(this, layout.W - 18, layout.safe.top + 14, '', 14, { serif: true, weight: '600', origin: [1, 0] }).setDepth(40);
+    this.clock = text(this, layout.W - 58, layout.safe.top + 14, '', 14, { serif: true, weight: '600', origin: [1, 0] }).setDepth(40);
+    pauseButton(this);
   }
 
   // Elevation (m above MLLW) → screen y (points).
@@ -241,7 +243,12 @@ export class Camp extends Phaser.Scene {
   practice() {
     this.scene.pause();
     this.scene.launch('Rescue', { enabled: [...new Set(Object.values(this.t.packing).flat().flatMap((id) => ({ paddleFloat: ['pfRescue'], pump: ['pumpOut'] }[id] ?? [])))], partnerNear: true, sea: 0.05, practice: true, return: 'Camp' });
-    this.events.once('resume', (_s, data) => { sound.mood('calm'); if (data?.ok) this.t.record.rescues++; persist(); });
+    const back = (_s, data) => {
+      if (data?.fromPause) return;
+      this.events.off('resume', back);
+      sound.mood('calm'); if (data?.ok) this.t.record.rescues++; persist();
+    };
+    this.events.on('resume', back);
   }
 
   update(_t, dms) {

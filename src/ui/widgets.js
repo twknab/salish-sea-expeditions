@@ -64,7 +64,8 @@ export function lessonCard(scene, lesson, opts = {}) {
   const W = layout.W, margin = 16;
   const w = W - margin * 2;
   const c = scene.add.container(0, 0).setDepth(opts.depth ?? 50);
-  const title = text(scene, margin + 18, 0, lesson.title, 17, { serif: true, weight: '600', color: CSS.sun, wrap: w - 36 });
+  // The title stops short of the top-right corner, where the pause button lives.
+  const title = text(scene, margin + 18, 0, lesson.title, 17, { serif: true, weight: '600', color: CSS.sun, wrap: w - 80 });
   const body = text(scene, margin + 18, 0, lesson.text, 14.5, { wrap: w - 36, color: CSS.foam, lineSpacing: 5 });
   const srcNames = (lesson.sourceIds ?? []).map((id) => creditById[id]?.author).filter(Boolean);
   const src = srcNames.length ? text(scene, margin + 18, 0, `Source: ${[...new Set(srcNames)].join(' · ')}`, 10.5, { color: CSS.mist, wrap: w - 36 }) : null;

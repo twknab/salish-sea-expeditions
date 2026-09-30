@@ -4,9 +4,9 @@
 import Phaser from 'phaser';
 import { WorldView, drawOrcas, drawSeals, drawFerry, ring } from '../render/world.js';
 import { POV_FRAG } from '../render/povShader.js';
-import { SKINS, skinById, DEFAULT_SKIN, hex } from '../content/skins.js';
+import { SKINS, skinOf, hex } from '../content/skins.js';
 
-const skinColours = (s) => ({ hull: hex(s.deck), accent: hex(s.accent), hullHi: hex(s.deckHi) });
+const skinColours = (s) => ({ skin: s });
 import { daylight } from '../render/waterShader.js';
 import { Quality } from '../render/quality.js';
 import { TouchControls } from '../ui/touchControls.js';
@@ -30,6 +30,7 @@ import { speciesById } from '../content/species.js';
 import { sightingsAt, createOrcaPass, stepOrcaPass, sealState } from '../sim/wildlife.js';
 import { assess, handlingPenalty } from '../sim/packing.js';
 import { state, trip, lesson, observe, go, persist } from '../state.js';
+import { pauseButton } from '../ui/pause.js';
 
 const ZOOMS = [90, 240, 700, 2200];
 
@@ -61,7 +62,7 @@ export class Paddle extends Phaser.Scene {
     if (this.resume?.kayak) Object.assign(this.player, this.resume.kayak, { upright: true, heel: 0, heelVel: 0 });
     this.partner = createKayak({ x: start.x + 18, y: start.y - 10, heading: this.player.heading });
     this.brain = createPartner();
-    this.skin = skinById[state.save.skin] ?? skinById[DEFAULT_SKIN];
+    this.skin = skinOf(state.save.skin);
     // The partner paddles a different skin, so you can tell the boats apart.
     this.partnerSkin = SKINS.find((s) => s.id !== this.skin.id && s.deck !== this.skin.deck) ?? SKINS[1];
     this.me = { energy: this.resume?.energy ?? t?.energy ?? 1, fit: state.save.fitScore ?? 0.9, skills: state.save.skills };
@@ -102,7 +103,8 @@ export class Paddle extends Phaser.Scene {
     }
     sound.ambience({ sea: 0.2, wind: 0.1, rip: 0, surf: 0 });
     this.events.on('relayout', () => this.scene.restart({ mode: this.mode, resume: this.snapshot() }));
-    this.events.on('resume', (_s, data) => this.afterRescue(data));
+    this.events.on('resume', (_s, data) => { if (!data?.fromPause) this.afterRescue(data); });
+    pauseButton(this, { x: layout.W - 32, y: layout.safe.top + 116 });
   }
 
   // ---------- HUD ----------
@@ -122,7 +124,7 @@ export class Paddle extends Phaser.Scene {
     this.hud.add([bg, this.tClock, this.tTide, this.tSpeed, this.tSpeedLab, this.compass, this.tDist, this.energy, this.tEnergy]);
 
     // Right-side buttons: zoom, rocker (hull jacks), rest.
-    const y0 = top + 116;
+    const y0 = top + 166; // the pause button sits above these
     this.btnZoom = iconButton(this, W - 32, y0, '⤢', () => this.cycleZoom());
     this.btnRest = iconButton(this, W - 32, y0 + 50, '≋', () => this.toggleRest());
     this.btnJack = iconButton(this, W - 32, y0 + 100, '◠', () => this.cycleRocker());
@@ -460,6 +462,17 @@ export class Paddle extends Phaser.Scene {
     g.fillCircle(h1.x, h1.y, px(13)); g.fillCircle(h2.x, h2.y, px(13));
   }
 
+  /** Write where we are into the trip, so Continue picks up mid-crossing (also called on pause). */
+  saveProgress() {
+    const t = trip();
+    if (this.mode !== 'trip' || !t || !this.player) return;
+    const k = this.player;
+    t.minute = this.minute;
+    t.kayak = { x: k.x, y: k.y, heading: k.heading };
+    t.energy = this.me.energy;
+    t.prompted = [...this.prompted];
+  }
+
   snapshot() {
     return { minute: this.minute, kayak: { x: this.player.x, y: this.player.y, heading: this.player.heading }, energy: this.me.energy };
   }
@@ -588,13 +601,9 @@ export class Paddle extends Phaser.Scene {
 
     // Save the position now and then, so Continue picks up mid-crossing.
     this.saveT = (this.saveT ?? 0) + dt;
-    if (!school && this.saveT > 5 && trip()) {
+    if (this.saveT > 5) {
       this.saveT = 0;
-      const t = trip();
-      t.minute = this.minute;
-      t.kayak = { x: k.x, y: k.y, heading: k.heading };
-      t.energy = this.me.energy;
-      t.prompted = [...this.prompted];
+      this.saveProgress();
       persist();
     }
 

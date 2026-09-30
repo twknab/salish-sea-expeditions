@@ -4,55 +4,94 @@
 export const HULL = { player: 0xb8402c, partner: 0x2d7f86 };
 export const PFD = { player: 0xf2b441, partner: 0xe9f1ee };
 
+function halfWidth(s, B) {
+  return (B / 2) * Math.pow(Math.sin(Math.PI * Math.min(1, s * 0.94 + 0.03)), 0.62) * (1 - 0.06 * (1 - s));
+}
+
 function hullOutline(L, B, n = 28) {
   const pts = [];
   for (let i = 0; i <= n; i++) {
     const s = i / n; // 0 bow → 1 stern
-    const w = (B / 2) * Math.pow(Math.sin(Math.PI * Math.min(1, s * 0.94 + 0.03)), 0.62) * (1 - 0.06 * (1 - s));
-    pts.push({ x: w, y: -L / 2 + s * L });
+    pts.push({ x: halfWidth(s, B), y: -L / 2 + s * L });
   }
   const back = pts.slice(1, -1).reverse().map((p) => ({ x: -p.x, y: p.y }));
   return [...pts, ...back];
 }
 
+const toHex = (c, d) => (c == null ? d : typeof c === 'number' ? c : parseInt(c.slice(1), 16));
+
+/** One half (side = +1 starboard, −1 port) of a band across the deck between stations s0..s1. */
+function deckBand(L, B, s0, s1, side, inset = 0.93, n = 8) {
+  const pts = [{ x: 0, y: -L / 2 + s0 * L }];
+  for (let i = 0; i <= n; i++) {
+    const s = s0 + ((s1 - s0) * i) / n;
+    pts.push({ x: side * halfWidth(s, B) * inset, y: -L / 2 + s * L });
+  }
+  pts.push({ x: 0, y: -L / 2 + s1 * L });
+  return pts;
+}
+
 /**
  * Draw a kayak from above, bow toward −y. `phase` animates the paddle (0..1 per stroke pair);
  * `lean` (−1..1) shifts the paddler with the edge; `resting` lays the paddle across the deck.
+ * `skin` (content/skins.js) gives the real design language: deck colour inside a black perimeter
+ * line, a panel and chevron on the stern deck, crisscross bungees, a black coaming and seat on a
+ * light interior. The ridge splits each colour into a lit (port) and shaded (starboard) half.
  */
 export function drawKayakTop(g, L, opts = {}) {
   const B = L * 0.15;
-  const hull = opts.hull ?? HULL.player;
+  const sk = opts.skin;
+  const deck = toHex(sk?.deck, opts.hull ?? HULL.player);
+  const deckLo = toHex(sk?.deckLo, deck);
   const pfd = opts.pfd ?? PFD.player;
+  const lw = (f) => Math.max(1, L * f);
   g.clear();
   // Soft shadow in the water.
   g.fillStyle(0x00161c, 0.28);
   g.fillPoints(hullOutline(L * 1.02, B * 1.25).map((p) => ({ x: p.x + L * 0.02, y: p.y + L * 0.03 })), true);
-  // Hull and deck.
-  const outline = hullOutline(L, B);
-  g.fillStyle(hull, 1);
-  g.fillPoints(outline, true);
-  // A sliver of the white hull shows at the sides; the accent runs along the sheer.
-  g.lineStyle(Math.max(1.5, L * 0.018), 0xf4f3ee, 0.9);
-  g.strokePoints(outline, true);
-  if (opts.accent != null) {
-    g.lineStyle(Math.max(1, L * 0.008), opts.accent, 1);
-    g.strokePoints(hullOutline(L * 0.96, B * 0.86), true);
+  // A sliver of white hull, the black perimeter line, then the deck.
+  g.fillStyle(0xf4f4f1, 1);
+  g.fillPoints(hullOutline(L * 1.005, B * 1.06), true);
+  g.fillStyle(0x101214, 1);
+  g.fillPoints(hullOutline(L, B), true);
+  g.fillStyle(deck, 1);
+  g.fillPoints(hullOutline(L * 0.985, B * 0.9), true);
+  // The ridge: starboard half in shade.
+  g.fillStyle(deckLo, 0.45);
+  g.fillPoints(deckBand(L * 0.985, B * 0.9, 0.01, 0.99, 1, 1, 20), true);
+  // Stern-deck panel and chevron (pointing aft).
+  if (sk?.panel) {
+    g.fillStyle(toHex(sk.panel), 1); g.fillPoints(deckBand(L, B, 0.66, 0.86, -1), true);
+    g.fillStyle(toHex(sk.panelLo), 1); g.fillPoints(deckBand(L, B, 0.66, 0.86, 1), true);
   }
-  // Light on the deck ridge.
-  g.lineStyle(Math.max(1, L * 0.012), opts.hullHi ?? 0xffffff, 0.45);
-  g.lineBetween(0, -L * 0.47, 0, -L * 0.12);
-  g.lineBetween(0, L * 0.1, 0, L * 0.47);
-  // Deck lines (bungees) fore and aft.
-  g.lineStyle(Math.max(1, L * 0.007), 0x111111, 0.7);
-  for (const y of [-0.3, -0.22]) g.lineBetween(-B * 0.3, L * y, B * 0.3, L * (y + 0.05));
-  for (const y of [-0.3, -0.22]) g.lineBetween(B * 0.3, L * y, -B * 0.3, L * (y + 0.05));
-  for (const y of [0.24, 0.32]) { g.lineBetween(-B * 0.3, L * y, B * 0.3, L * (y + 0.05)); g.lineBetween(B * 0.3, L * y, -B * 0.3, L * (y + 0.05)); }
-  // Cockpit coaming and spray skirt.
-  g.fillStyle(0x16181a, 1);
-  g.fillEllipse(0, L * 0.02, B * 0.72, L * 0.17);
-  g.fillStyle(0x2a2f33, 1);
-  g.fillEllipse(0, L * 0.02, B * 0.6, L * 0.14);
-
+  if (sk?.mark) {
+    const yA = -L / 2 + 0.83 * L, yB = -L / 2 + 0.7 * L, t = L * 0.035;
+    for (const side of [-1, 1]) {
+      const w = halfWidth(0.7, B) * 0.93 * side;
+      g.fillStyle(toHex(side < 0 ? sk.mark : sk.markLo), 1);
+      g.fillPoints([{ x: 0, y: yA }, { x: w, y: yB }, { x: w, y: yB - t }, { x: 0, y: yA - t * 1.1 }], true);
+    }
+  }
+  // Perimeter deck lines and crisscross bungees, fore and aft.
+  g.lineStyle(lw(0.006), 0x0c0d0f, 0.85);
+  const X = (s0, s1) => {
+    const a = -L / 2 + s0 * L, b = -L / 2 + s1 * L, wa = halfWidth(s0, B) * 0.8, wb = halfWidth(s1, B) * 0.8;
+    g.lineBetween(-wa, a, wb, b); g.lineBetween(wa, a, -wb, b);
+  };
+  X(0.2, 0.28); X(0.28, 0.36);
+  X(0.62, 0.7);
+  g.lineStyle(lw(0.004), 0x0c0d0f, 0.6);
+  g.strokePoints(hullOutline(L * 0.9, B * 0.78), true);
+  // Cockpit: black coaming around a light interior, black seat, a glimpse of blue frame.
+  const cy0 = L * 0.02;
+  g.fillStyle(0x0c0e10, 1);
+  g.fillEllipse(0, cy0, B * 0.74, L * 0.18);
+  g.fillStyle(0xdfe3e1, 1);
+  g.fillEllipse(0, cy0, B * 0.6, L * 0.15);
+  g.lineStyle(lw(0.004), 0x2c86cf, 0.9);
+  g.lineBetween(-B * 0.16, cy0 - L * 0.065, -B * 0.16, cy0 - L * 0.01);
+  g.fillStyle(0x1a1d20, 1);
+  g.fillRoundedRect(-B * 0.2, cy0 + L * 0.005, B * 0.4, L * 0.055, B * 0.08);
   if (opts.empty) return { B };
   // Paddler.
   const lean = (opts.lean ?? 0) * B * 0.08;

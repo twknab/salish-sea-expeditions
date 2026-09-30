@@ -38,6 +38,9 @@ export class GesturePad {
     this.onKeyUp = (e) => this.keyUp(e);
     this.kb?.on('keydown', this.onKeyDown);
     this.kb?.on('keyup', this.onKeyUp);
+    // A pause stops the clock this pad times against: start the gesture afresh on resume.
+    this.onResume = () => { if (this.kind) this.reset(this.kind); };
+    scene.events.on('resume', this.onResume);
   }
 
   keyDown(e) {
@@ -69,6 +72,7 @@ export class GesturePad {
     s.input.off('pointermove', this.onMove);
     s.input.off('pointerup', this.onUp);
     s.events.off('update', this.tick, this);
+    s.events.off('resume', this.onResume);
     this.c.destroy();
   }
 
@@ -86,12 +90,16 @@ export class GesturePad {
     this.kind = kind;
     this.scene.arrowsClaimed = true; // arrows drive the gesture, not the focus ring
     this.hint.setText(HINT[kind] ?? kind);
+    this.reset(kind);
+    return new Promise((res) => { this.resolve = res; });
+  }
+
+  reset(kind) {
     this.state = { t0: performance.now(), pts: [], angle: 0, lastAng: null, holding: false, held: 0, taps: [], beats: [] };
     if (kind === 'tapRhythm') {
       const now = performance.now() + 700;
       this.state.beats = [0, 1, 2, 3].map((i) => now + i * 620);
     }
-    return new Promise((res) => { this.resolve = res; });
   }
 
   finish(q) {

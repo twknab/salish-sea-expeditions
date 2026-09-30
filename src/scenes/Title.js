@@ -4,6 +4,8 @@ import { button, text, fadeIn } from '../ui/widgets.js';
 import { CSS, layout, px } from '../ui/theme.js';
 import { state, newTrip, go } from '../state.js';
 import { sound } from '../audio/soundscape.js';
+import { openLink, LINKS } from '../ui/link.js';
+import { focusRing } from '../ui/focus.js';
 import { toLocal } from '../sim/geo.js';
 import { wind } from '../sim/wind.js';
 
@@ -38,6 +40,11 @@ export class Title extends Phaser.Scene {
     button(this, W / 2 - 88, row, 'Field guide', () => go(this, 'FieldGuide'), { primary: false, w: 150, h: 42, size: 14 });
     button(this, W / 2 + 88, row, 'About', () => go(this, 'About'), { primary: false, w: 150, h: 42, size: 14 });
     const nights = state.save.totals.nights;
+    // A quiet credit line at the foot of the home screen.
+    const foot = text(this, W / 2, H - layout.safe.bottom - 14, 'Made by Tim Knab · timknab.dev', 11.5, { color: CSS.mist, origin: [0.5, 1] })
+      .setInteractive({ useHandCursor: true });
+    foot.on('pointerup', () => openLink(LINKS.maker));
+    focusRing(this).add({ bounds: () => ({ x: W / 2 - foot.width / layout.S / 2 - 6, y: H - layout.safe.bottom - 14 - foot.height / layout.S, w: foot.width / layout.S + 12, h: foot.height / layout.S }), activate: () => openLink(LINKS.maker) });
     if (nights) text(this, W / 2, row + 40, `${nights} night${nights > 1 ? 's' : ''} out · ${state.save.totals.nm.toFixed(1)} nm paddled`, 12, { color: CSS.mist, origin: [0.5, 0] });
     this.input.once('pointerdown', () => sound.unlock());
     sound.mood('calm');

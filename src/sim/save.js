@@ -8,7 +8,7 @@ export function freshSave() {
     v: 1, seenIntro: false,
     skills: {}, totals: { nm: 0, nights: 0, trips: 0, score: 0 },
     fieldGuide: {}, lessons: {}, trip: null,
-    settings: { sea: 0.9, wildlife: 0.9, music: 0.55, pov: true, soundtrack: true },
+    settings: { sea: 0.9, wildlife: 0.9, music: 0.55, pov: true, soundtrack: true, muted: false },
   };
 }
 

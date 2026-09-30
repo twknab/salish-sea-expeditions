@@ -9,8 +9,10 @@ import { COLOR, CSS, layout, px } from '../ui/theme.js';
 import { GEAR, gearById } from '../content/gear.js';
 import { ZONES, assess, handlingPenalty } from '../sim/packing.js';
 import { lessonById } from '../content/lessons.js';
-import { trip, lesson, go } from '../state.js';
+import { state, trip, lesson, go } from '../state.js';
+import { skinOf } from '../content/skins.js';
 import { sound } from '../audio/soundscape.js';
+import { pauseButton } from '../ui/pause.js';
 
 const ZONE_NAME = { bowEnd: 'Bow — far end', bowMid: 'Bow — near cockpit', sternMid: 'Stern — near cockpit', sternEnd: 'Stern — far end', deck: 'On deck' };
 
@@ -41,6 +43,7 @@ export class Packing extends Phaser.Scene {
     lesson('trim');
     this.card = lessonCard(this, lessonById.trim, { y: layout.safe.top + 8, depth: 40, autoHide: 8000 });
     button(this, W / 2, layout.H - layout.safe.bottom - 34, 'Done packing', () => this.done(), { w: 220, h: 46 }).setDepth(20);
+    pauseButton(this);
   }
 
   zoneRects() {
@@ -61,7 +64,7 @@ export class Packing extends Phaser.Scene {
     // Boat: drawn top-down, bow up.
     const L = px(this.bh * 0.94);
     this.boat.setPosition(px(this.bx), px(this.by + this.bh / 2));
-    drawKayakTop(this.boat, L, { empty: true });
+    drawKayakTop(this.boat, L, { empty: true, skin: skinOf(state.save.skin) });
     // Gear chips.
     const x0 = 140, w = W - x0 - 14;
     let y = this.by;

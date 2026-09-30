@@ -103,14 +103,17 @@ export class WorldView {
       // Upturned hull.
       g.fillStyle(0x00161c, 0.3);
       g.fillEllipse(L * 0.02, L * 0.03, L * 0.2, L * 1.02);
-      g.fillStyle(0x3a3f44, 1);
-      g.fillEllipse(0, 0, L * 0.16, L);
-      g.lineStyle(Math.max(1, L * 0.01), 0x9fb8b3, 0.6);
+      // Upturned: the white hull is what a rescuer sees, which is why the hulls are white.
+      g.fillStyle(0x101214, 1);
+      g.fillEllipse(0, 0, L * 0.165, L * 1.005);
+      g.fillStyle(0xf2f3f0, 1);
+      g.fillEllipse(0, 0, L * 0.15, L * 0.99);
+      g.lineStyle(Math.max(1, L * 0.01), 0x9aa6a8, 0.8);
       g.lineBetween(0, -L * 0.48, 0, L * 0.48);
       return g;
     }
     drawKayakTop(g, L, {
-      hull: opts.hull ?? HULL.player, pfd: opts.pfd ?? PFD.player, accent: opts.accent, hullHi: opts.hullHi,
+      skin: opts.skin, hull: opts.hull ?? HULL.player, pfd: opts.pfd ?? PFD.player,
       phase: opts.phase ?? 0, lean: k.edge, resting: opts.resting,
     });
     return g;

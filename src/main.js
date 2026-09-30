@@ -17,6 +17,8 @@ import { Debrief } from './scenes/Debrief.js';
 import { FieldGuide } from './scenes/FieldGuide.js';
 import { Credits } from './scenes/Credits.js';
 import { About } from './scenes/About.js';
+import { Pause } from './scenes/Pause.js';
+import { pauseRunning } from './ui/pause.js';
 
 // Render at device resolution (capped at 2x: sharp on Retina, affordable for the water shader).
 const DPR = Math.min(2, window.devicePixelRatio || 1);
@@ -52,11 +54,15 @@ const game = new Phaser.Game({
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH, zoom: 1 / DPR },
   input: { activePointers: 4 },
   render: { powerPreference: 'high-performance', autoMobileTextures: true },
-  scene: [Boot, Title, Acknowledgment, StartChoice, Ferry, BoatSchool, Assembly, Packing, Planning, Paddle, Rescue, Camp, TidePools, Debrief, FieldGuide, Credits, About],
+  scene: [Boot, Title, Acknowledgment, StartChoice, Ferry, BoatSchool, Assembly, Packing, Planning, Paddle, Rescue, Camp, TidePools, Debrief, FieldGuide, Credits, About, Pause],
 });
 
 document.getElementById('boot')?.remove();
 window.__sse = game; // handy for the smoke test
+
+// Into the pocket: the moment the page is hidden (lock, app switch, tab change), save and pause.
+document.addEventListener('visibilitychange', () => { if (document.hidden) pauseRunning(game); });
+window.addEventListener('pagehide', () => pauseRunning(game));
 
 // Resize: keep the game matched to the viewport (rotation, address bar).
 let t;

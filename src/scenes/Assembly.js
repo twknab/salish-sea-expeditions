@@ -5,13 +5,15 @@ import { text, button, lessonCard, meter, fadeIn } from '../ui/widgets.js';
 import { backdrop } from '../ui/backdrop.js';
 import { GesturePad } from '../ui/gesture.js';
 import { loadArt } from '../render/art.js';
-import { SKINS, DEFAULT_SKIN, hex } from '../content/skins.js';
+import { SKINS, DEFAULT_SKIN } from '../content/skins.js';
+import { drawKayakTop } from '../render/kayakArt.js';
 import { focusRing } from '../ui/focus.js';
 import { COLOR, CSS, layout, px } from '../ui/theme.js';
 import { ASSEMBLY_STEPS, assemblyQuality } from '../sim/assembly.js';
 import { lessonById } from '../content/lessons.js';
 import { trip, lesson, go, state, persist } from '../state.js';
 import { sound } from '../audio/soundscape.js';
+import { pauseButton } from '../ui/pause.js';
 
 export class Assembly extends Phaser.Scene {
   constructor() { super('Assembly'); }
@@ -31,6 +33,7 @@ export class Assembly extends Phaser.Scene {
     this.i = 0;
     this.rush.setVisible(false);
     this.chooseSkin();
+    pauseButton(this);
   }
 
   // Choose the skin before the frame goes in. Colourways inspired by the real ones; every skin is
@@ -39,22 +42,20 @@ export class Assembly extends Phaser.Scene {
     const W = layout.W, top = layout.safe.top;
     this.stepText.setText('Choose your skin');
     const layer = [];
-    const note = text(this, W / 2, top + 146, 'Every skin is white below the waterline — easy to spot if the boat is upside down.', 12, { color: CSS.fog, origin: [0.5, 0], align: 'center', wrap: W - 50 }).setDepth(10);
+    const note = text(this, W / 2, top + 146, 'Every hull is white below a black perimeter line — easy to spot if the boat is upside down. The frame is colour-coded: blue forward, red aft.', 12, { color: CSS.fog, origin: [0.5, 0], align: 'center', wrap: W - 50 }).setDepth(10);
     layer.push(note);
-    const cols = 3, cw = (W - 24) / cols, y0 = top + 290;
+    const rowH = 74, y0 = top + 240, L = Math.min(300, W * 0.6);
     SKINS.forEach((sk, i) => {
-      const cx = 12 + cw * (i % cols) + cw / 2, cy = y0 + Math.floor(i / cols) * 104;
-      const g = this.add.graphics().setDepth(10);
-      // A little hull cross-section: deck colour over the white bottom, with the accent stripe.
-      g.fillStyle(0xf4f3ee, 1); g.fillEllipse(px(cx), px(cy + 6), px(88), px(40));
-      g.fillStyle(hex(sk.deck), 1); g.fillEllipse(px(cx), px(cy - 4), px(88), px(34));
-      g.fillStyle(hex(sk.deckHi), 0.9); g.fillEllipse(px(cx - 6), px(cy - 12), px(56), px(10));
-      g.lineStyle(px(3), hex(sk.accent), 1); g.lineBetween(px(cx - 42), px(cy + 6), px(cx + 42), px(cy + 6));
-      const t = text(this, cx, cy + 34, sk.name, 12, { weight: '600', origin: [0.5, 0] }).setDepth(10);
+      const cy = y0 + i * rowH, bx = W - 22 - L / 2;
+      // The real deck from above, bow to the left: stern panel, chevron, bungees and all.
+      const g = this.add.graphics().setDepth(10).setPosition(px(bx), px(cy)).setRotation(-Math.PI / 2);
+      drawKayakTop(g, px(L), { empty: true, skin: sk });
+      const cx = 20, cw = W - 40;
+      const t = text(this, 24, cy, sk.name, 14, { weight: '600', origin: [0, 0.5], wrap: W - L - 60 }).setDepth(10);
       const pick = () => { state.save.skin = sk.id; persist(); sound.success(); layer.forEach((o) => o.destroy()); this.startAssembly(); };
-      const zone = this.add.zone(px(cx - cw / 2), px(cy - 30), px(cw), px(84)).setOrigin(0).setInteractive({ useHandCursor: true }).setDepth(11);
+      const zone = this.add.zone(px(cx), px(cy - rowH / 2 + 4), px(cw), px(rowH - 8)).setOrigin(0).setInteractive({ useHandCursor: true }).setDepth(11);
       zone.on('pointerup', pick);
-      focusRing(this).add({ alive: () => zone.active, bounds: () => ({ x: cx - cw / 2 + 6, y: cy - 30, w: cw - 12, h: 84 }), activate: pick });
+      focusRing(this).add({ alive: () => zone.active, bounds: () => ({ x: cx, y: cy - rowH / 2 + 6, w: cw, h: rowH - 12 }), activate: pick });
       layer.push(g, t, zone);
     });
   }

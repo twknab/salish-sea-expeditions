@@ -8,6 +8,7 @@ import { ACKNOWLEDGMENT, SAFETY_NOTE } from '../content/acknowledgment.js';
 import { CHART_APPROXIMATE } from '../content/chart.js';
 import { state, persist, go } from '../state.js';
 import { sound } from '../audio/soundscape.js';
+import { openLink, LINKS } from '../ui/link.js';
 
 export class About extends Phaser.Scene {
   constructor() { super('About'); }
@@ -26,6 +27,19 @@ export class About extends Phaser.Scene {
       for (const p of paras) { const t = text(this, 20, y, p, 13.5, { wrap: W - 40, lineSpacing: 4 }).setDepth(10); y += t.height / layout.S + 10; }
       y += 10;
     };
+    // The game, the kayak that inspired it, and who made it.
+    block('The game', [
+      'Salish Sea Expeditions is a love letter to sea kayaking in the San Juan and Gulf Islands, and to the folding touring kayak that makes a walk-on ferry trip possible. The boats here are drawn after the real colourways, as a nod to the people who build them.',
+      'It is an independent project: not made, sponsored or endorsed by the kayak’s maker, and their name and logo are theirs.',
+    ]);
+    const link = (label, url, note) => {
+      button(this, W / 2, y + 22, label, () => openLink(url), { primary: false, w: W - 60, h: 44, size: 14 }).setDepth(10);
+      text(this, W / 2, y + 50, note, 11, { color: CSS.mist, origin: [0.5, 0] }).setDepth(10);
+      y += 74;
+    };
+    link('The folding kayaks that inspired it', LINKS.kayak, 'trakkayaks.com');
+    link('Made by Tim Knab', LINKS.maker, 'timknab.dev');
+    y += 10;
     block(ACKNOWLEDGMENT.title, [...ACKNOWLEDGMENT.paragraphs, ACKNOWLEDGMENT.note]);
     block(SAFETY_NOTE.title, SAFETY_NOTE.paragraphs);
     if (CHART_APPROXIMATE) block('About the chart', ['Island outlines in this version are simplified from general geography, and the tide day is a realistic example rather than a real prediction. Both will be replaced with NOAA data.']);

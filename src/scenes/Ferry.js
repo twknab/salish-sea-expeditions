@@ -13,6 +13,7 @@ import { sound } from '../audio/soundscape.js';
 import { lessonById } from '../content/lessons.js';
 import { PLACES_INFO } from '../content/places.js';
 import { lesson, go } from '../state.js';
+import { pauseButton } from '../ui/pause.js';
 
 const SPOTS = [
   { id: 'shaw', name: 'Shaw Island', ...toLocal(48.566, -122.955) },
@@ -50,6 +51,7 @@ export class Ferry extends Phaser.Scene {
       });
     }
     sound.horn();
+    pauseButton(this);
   }
 
   tap(p) {

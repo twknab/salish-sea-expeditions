@@ -131,6 +131,8 @@ function tone(dest, { f0, f1, type = 'sine', a = 0.01, peak = 0.2, d = 0.3, when
   o.start(t); o.stop(t + a + d + 0.05);
 }
 
+let muted = false, ducked = false;
+
 export const sound = {
   get ready() { return !!ctx && ctx.state === 'running'; },
 
@@ -145,6 +147,7 @@ export const sound = {
         track = createSoundtrack(ctx, bus.music);
         track.mood(moodWanted);
         if (trackOn) track.start();
+        this.applyMaster();
       }
       if (ctx.state !== 'running') ctx.resume();
     } catch { /* audio is optional */ }
@@ -163,13 +166,31 @@ export const sound = {
     track?.mood(name);
   },
 
+  /** Mute everything (true) or restore; `duck` lowers the mix while a menu is open. */
+  mute(on) {
+    muted = !!on;
+    this.applyMaster();
+  },
+  get muted() { return muted; },
+  duck(on) {
+    ducked = !!on;
+    this.applyMaster();
+  },
+  applyMaster() {
+    if (!bus || !ctx) return;
+    const v = muted ? 0 : ducked ? 0.45 : 0.9;
+    bus.master.gain.setTargetAtTime(v, ctx.currentTime, 0.12);
+  },
+
   setVolumes(v) {
     Object.assign(vol, v);
+    if (v.muted !== undefined) muted = !!v.muted;
     if (!bus) return;
     bus.sea.gain.value = vol.sea;
     bus.wildlife.gain.value = vol.wildlife;
     bus.music.gain.value = vol.music;
     if (v.soundtrack !== undefined) this.soundtrack(v.soundtrack !== false);
+    if (v.muted !== undefined) this.mute(v.muted);
   },
 
   /**

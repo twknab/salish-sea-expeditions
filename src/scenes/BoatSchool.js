@@ -12,6 +12,7 @@ import { state, lesson, go, persist } from '../state.js';
 import { DEFAULT_SKIN } from '../content/skins.js';
 import { award } from '../sim/skills.js';
 import { sound } from '../audio/soundscape.js';
+import { pauseButton } from '../ui/pause.js';
 
 // Tap targets in each illustration's own units.
 const BODY_SPOTS = { feet: [262, 378], knees: [462, 340], hips: [615, 388], back: [690, 360], head: [598, 138] };
@@ -27,6 +28,7 @@ export class BoatSchool extends Phaser.Scene {
     this.skin = state.save.skin ?? DEFAULT_SKIN;
     this.onBack = () => go(this, 'Title');
     this.stageBoat();
+    pauseButton(this);
   }
 
   clear() {

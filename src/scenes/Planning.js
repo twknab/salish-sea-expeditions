@@ -15,6 +15,7 @@ import { award } from '../sim/skills.js';
 import { judge } from '../sim/plan.js';
 import { state } from '../state.js';
 import { sound } from '../audio/soundscape.js';
+import { pauseButton } from '../ui/pause.js';
 
 const T0 = 300, T1 = 1200; // graph spans 05:00–20:00
 
@@ -63,6 +64,7 @@ export class Planning extends Phaser.Scene {
     lesson('chartReading');
     this.queue = ['chartReading', 'slackWater', 'windAgainstTide'];
     this.nextCard();
+    pauseButton(this);
   }
 
   nextCard() {

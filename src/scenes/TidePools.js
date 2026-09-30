@@ -9,6 +9,7 @@ import { lesson, observe, go, persist, trip } from '../state.js';
 import { award } from '../sim/skills.js';
 import { state } from '../state.js';
 import { sound } from '../audio/soundscape.js';
+import { pauseButton } from '../ui/pause.js';
 
 export class TidePools extends Phaser.Scene {
   constructor() { super('TidePools'); }
@@ -49,6 +50,7 @@ export class TidePools extends Phaser.Scene {
     this.input.on('pointerup', () => this.up());
     button(this, W / 2, H - layout.safe.bottom - 50, 'Pack up and debrief', () => this.leave()).setDepth(30);
     sound.ambience({ sea: 0.15, wind: 0.05, surf: 0.3, rip: 0 });
+    pauseButton(this);
   }
 
   drawPool() {

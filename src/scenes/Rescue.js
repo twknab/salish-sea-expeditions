@@ -12,6 +12,7 @@ import { level, award } from '../sim/skills.js';
 import { lessonById } from '../content/lessons.js';
 import { state, lesson, persist } from '../state.js';
 import { sound } from '../audio/soundscape.js';
+import { pauseButton } from '../ui/pause.js';
 
 const BLURB = {
   roll: 'Fastest — you never leave the boat. Hard to learn, easy to miss.',
@@ -52,6 +53,7 @@ export class Rescue extends Phaser.Scene {
     this.updateClock();
     this.chooseRescue();
     sound.ambience({ sea: 0.1, wind: 0, rip: 0, surf: 0 });
+    pauseButton(this);
   }
 
   updateClock() {

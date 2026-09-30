@@ -3,7 +3,7 @@
 import paddlerSide from '../art/paddler-side.svg?raw';
 import paddle from '../art/paddle.svg?raw';
 import kayakSide from '../art/kayak-side.svg?raw';
-import { skinById, DEFAULT_SKIN } from '../content/skins.js';
+import { skinOf, FRAME } from '../content/skins.js';
 
 export const ART = {
   // `view` crops the drawing to the part that matters on a phone screen.
@@ -12,10 +12,16 @@ export const ART = {
   kayakSide: { svg: kayakSide, w: 1000, h: 150, view: [0, 105, 1000, 150] },
 };
 
-function recolour(svg, skinId) {
-  const s = skinById[skinId] ?? skinById[DEFAULT_SKIN];
-  return svg.replaceAll('{{DECK_HI}}', s.deckHi).replaceAll('{{DECK_LO}}', s.deckLo)
-    .replaceAll('{{DECK}}', s.deck).replaceAll('{{ACCENT}}', s.accent);
+// Tokens in the SVGs. Longer names first so {{DECK}} does not eat {{DECK_HI}}.
+export function recolour(svg, skinId) {
+  const s = skinOf(skinId);
+  const tokens = {
+    DECK_HI: s.deckHi, DECK_LO: s.deckLo, DECK: s.deck,
+    PANEL_LO: s.panelLo ?? s.deckLo, PANEL_ON: s.panel ? '1' : '0', PANEL: s.panel ?? s.deck,
+    MARK_LO: s.markLo, MARK: s.mark,
+    FRAME_FORE: FRAME.fore, FRAME_AFT: FRAME.aft, RIB: FRAME.rib, STEM: FRAME.stem, BAG: FRAME.bag, JACK: FRAME.jack,
+  };
+  return svg.replace(/\{\{([A-Z_]+)\}\}/g, (m, k) => tokens[k] ?? m);
 }
 
 /**
