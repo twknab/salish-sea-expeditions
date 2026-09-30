@@ -20,6 +20,62 @@ smooth), VIII (legally and respectfully sourced). IX governs how it is built.
 
 ## User Scenarios & Testing *(mandatory)*
 
+**Play order** (priority is build order; this is the order a player meets things): title, land
+acknowledgment and safety note → optional walk-on ferry → **Boat School: know your boat, your body,
+your paddle** → assembly and packing → trip planning → the crossing (wildlife, capsize, tide rip)
+→ camp and tide pools → debrief.
+
+### User Story 0 - Boat School: know your boat, your body, your paddle (Priority: P1, first)
+
+Before anything else, on the beach at Friday Harbor, the player is introduced to the folding sea
+kayak they will paddle all game, and to the idea that a kayak is **worn, not sat in**.
+
+- **The boat's anatomy**: bow and stern, deck and hull, keel and chines, cockpit and coaming,
+  backband, foot pegs, thigh braces, the spray skirt that seals you in, and the parts that make
+  this kayak special — an aluminium frame inside a tough skin, tensioned by three hull jacks (two
+  along the sides, one on the keel) that can also change the hull's rocker, and hence how it
+  turns and tracks, even while paddling. There are no hatches: gear goes in through the cockpit,
+  into flotation dry bags fore and aft that also keep the boat afloat after a capsize.
+- **The body**: sit tall; feet on the pegs; knees up and out into the thigh braces; the hips
+  connect you to the boat. Lower body steers and tilts the boat; upper body drives it. Edging —
+  lifting one knee to tilt the kayak while the head stays centred over it — is the core skill
+  behind turning, bracing and rolling. The hip snap (a sharp knee lift that rights the boat while
+  the head stays down) is the heart of every brace and roll.
+- **The paddle**: blade and shaft, power face, grip ("paddler's box" — hands a little wider than
+  shoulders, knuckles aligned with the blade), feather angle, and the rule that power comes from
+  torso rotation and legs, not arms.
+
+Each idea is practised immediately in shallow, calm water: a forward stroke driven by rotation
+(the player sees the boat run straighter and cost less energy), a sweep turn on edge, a low brace
+with a hip snap, and — as the capstone — a first assisted look at the hip snap on the partner's
+bow. Every later scene builds on these, and the debrief tracks them as named skills.
+
+**Why this priority**: Everything else in the game depends on the player understanding that the
+boat is controlled through the hips and the paddle is driven by the torso. It is also the single
+most transferable lesson a new sea kayaker can take away.
+
+**Independent Test**: A fresh player completes Boat School in under five minutes and can then name
+five parts of the kayak, explain edging, and perform a stroke, sweep, brace and hip snap in the
+calm-water practice area.
+
+**Acceptance Scenarios**:
+
+1. **Given** the kayak on the beach, **When** the player taps a part, **Then** it is named and its
+   job explained in one sentence, with an illustration of that part on this boat.
+2. **Given** the player is seated, **When** they fit themselves in (feet, knees, backband, spray
+   skirt), **Then** a "connected" indicator shows good contact and is required before launching.
+3. **Given** calm water, **When** the player paddles with rotation (the stroke gesture that
+   engages the torso), **Then** the kayak runs straighter and uses less energy than arm-only
+   strokes, and the difference is shown.
+4. **Given** the player edges the kayak with a knee lift, **When** they sweep, **Then** it turns
+   more sharply than when flat.
+5. **Given** a wobble, **When** the player braces and snaps the hips with head down, **Then** the
+   boat rights; **When** they lift their head first, **Then** the brace fails and a tip explains.
+6. **Given** Boat School is complete, **When** the player later capsizes, **Then** the roll and
+   brace gestures they meet reuse the same hip-snap motion they learned here.
+
+---
+
 ### User Story 1 - Paddle the crossing to Jones Island (Priority: P1)
 
 A player launches from Friday Harbor and paddles about 4–5 nautical miles up San Juan Channel to
@@ -117,10 +173,12 @@ different launch times produce measurably different currents and chop.
 
 ### User Story 4 - Assemble and pack the folding kayak (Priority: P4)
 
-On the beach the player assembles the folding kayak: join the frame sections, fit the frame into
-the skin, then inflate and tension the hull. Then they load gear into the bow hatch, stern hatch
-and deck bag from a gear list. Heavy items low and near the cockpit keep the boat balanced;
-a poorly trimmed boat handles worse. Anything left on the beach is simply not available later.
+On the beach the player assembles the folding kayak: connect the frame sections, slide the frame
+into the skin, seat the coaming, then tension the hull with the three jacks. Then they pack gear
+in dry bags and load it through the cockpit into the flotation bags fore and aft, with a small
+deck bag for things needed on the water. Heavy items low and close to the cockpit keep the boat
+balanced; a poorly trimmed boat handles worse, and flotation bags packed too loosely leave less
+buoyancy after a capsize. Anything left on the beach is simply not available later.
 
 While the frame goes together, a short lesson connects the folding kayak to its ancestors: the
 skin-on-frame kayaks of Arctic peoples (Inuit, Yup'ik, Unangan/Aleut), and — contrasted, not
@@ -314,8 +372,17 @@ reviewers rate it against the beauty criteria (SC-009, SC-010).
   along the route over the course of the crossing.
 - **FR-006**: Players MUST assemble the folding kayak in ordered steps; skipped or rushed steps
   MUST reduce handling.
-- **FR-007**: Players MUST load gear into bow hatch, stern hatch and deck bag; trim MUST affect
-  handling; unpacked items MUST be unavailable later.
+- **FR-007**: Players MUST load gear through the cockpit into the fore and aft flotation bags and a
+  deck bag; trim MUST affect handling; unpacked items MUST be unavailable later.
+- **FR-000a**: Before the first launch the game MUST teach the kayak's anatomy (including the
+  frame, skin, hull jacks, cockpit fit, spray skirt and flotation bags), body connection through
+  the hips (feet, knees, thigh braces, backband), edging, the hip snap, the paddle's parts and
+  grip, and torso-driven strokes — each practised in calm water.
+- **FR-000b**: Paddling physics MUST reward torso rotation and hip engagement: rotation-driven
+  strokes MUST be more efficient than arm-only strokes, edging MUST sharpen turns, and braces and
+  rolls MUST succeed only with a hip snap and a low head.
+- **FR-000c**: The hull jacks MUST be adjustable while paddling, trading straight-line tracking
+  (less rocker) against turning (more rocker).
 - **FR-008**: The paddling scene MUST support forward strokes, turning, bracing and resting by
   touch, with the kayak's movement combining paddler input, current and wind.
 - **FR-009**: The game MUST include a computer-controlled partner that paddles alongside, stays
@@ -338,7 +405,8 @@ reviewers rate it against the beauty criteria (SC-009, SC-010).
   against raccoons and leaving no trace, each with consequences.
 - **FR-018**: A debrief MUST show nautical miles, nights out, wildlife seen respectfully, camp
   quality, skill experience gained and the lessons from each scene.
-- **FR-019**: Skills (strokes, bracing, rolling, rescue, navigation, campcraft) MUST improve with
+- **FR-019**: Skills (boat fit, edging, forward stroke, sweeps, bracing and hip snap, rolling,
+  rescue, navigation, campcraft) MUST improve with
   practice and affect later performance.
 - **FR-020**: Progress MUST save on the device automatically at each scene boundary and restore on
   reload, with no account required.
@@ -372,7 +440,8 @@ reviewers rate it against the beauty criteria (SC-009, SC-010).
 
 - **Paddler**: a seat in a kayak — energy, skills and experience, time in water, controlled by the
   player or by the computer (later possibly another player).
-- **Kayak**: assembly quality, trim, loaded gear by compartment, water in the cockpit, upright or
+- **Kayak**: assembly quality, hull-jack tension and rocker, paddler fit (connection), edge,
+  trim, loaded gear by flotation bag, water in the cockpit, upright or
   capsized.
 - **Gear item**: name, weight, compartment, what it enables later (paddle float, pump, headlamp,
   VHF, water, food, tent, and the rest of the ten essentials).
@@ -391,6 +460,8 @@ reviewers rate it against the beauty criteria (SC-009, SC-010).
 
 ### Measurable Outcomes
 
+- **SC-000**: After Boat School, at least four of five playtesters can explain edging and say that
+  power comes from the torso and control from the hips.
 - **SC-001**: A first-time player completes the whole First Voyage, launch to debrief, in 15 to 30
   minutes.
 - **SC-002**: In playtests with at least five people, at least four can afterwards explain in their
@@ -424,8 +495,10 @@ reviewers rate it against the beauty criteria (SC-009, SC-010).
 - Distances and island shapes come from public-domain charts and elevation data.
 - The Be Whale Wise distances used are the current US and Canadian guidance for paddlers, checked
   at build time and cited.
-- Folding-kayak assembly steps are generalised from how such kayaks are built; brand-specific
-  detail waits for permission from the manufacturer.
+- The kayak's characteristics follow the manufacturer's published specification (16 ft / 4.9 m
+  long, 22.5 in / 57 cm beam, about 22 kg, about 10 minutes to assemble, three hull jacks that
+  tension the skin and set rocker for a waterline of roughly 12–15 ft, no hatches, flotation dry
+  bags). The brand name and logo wait for permission; the facts about the boat do not.
 - One computer-controlled partner only; real multiplayer, the leaderboard backend, the Gulf
   Islands and border crossing, and cloud deployment are separate features.
 - The game is played online first, but works once loaded without a connection.
