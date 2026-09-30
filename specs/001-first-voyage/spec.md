@@ -13,9 +13,10 @@ Harbor to Jones Island with a computer-controlled partner; one wildlife encounte
 with a choice of rescues; a cockpit point-of-view prototype; camp the first night; debrief with
 score, skills and a share card."
 
-**Constitution principles served**: I (teach real sea kayaking), II (real place, respect),
-III (honest about safety), IV (simulation with a game layer), V (beautiful, mobile-first),
-VI (legally sourced imagery). VII governs how it is built.
+**Constitution principles served** (v1.1.0): I (teach real sea kayaking), II (teach the whole
+place — natural history, community, history), III (a place of First Peoples), IV (honest about
+safety), V (beauty and elegance), VI (simulation with a game layer), VII (mobile-first and
+smooth), VIII (legally and respectfully sourced). IX governs how it is built.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -121,6 +122,10 @@ the skin, then inflate and tension the hull. Then they load gear into the bow ha
 and deck bag from a gear list. Heavy items low and near the cockpit keep the boat balanced;
 a poorly trimmed boat handles worse. Anything left on the beach is simply not available later.
 
+While the frame goes together, a short lesson connects the folding kayak to its ancestors: the
+skin-on-frame kayaks of Arctic peoples (Inuit, Yup'ik, Unangan/Aleut), and — contrasted, not
+conflated — the cedar canoes that have always been the watercraft of the Salish Sea.
+
 **Why this priority**: Makes the boat itself part of play and makes preparation matter, which
 connects directly to the rescue choices in P2.
 
@@ -135,7 +140,10 @@ poor trim produce measurably worse handling, and missing items are absent later.
    kayak tracks less straight and a tip explains the cause.
 3. **Given** the gear list, **When** the player loads items, **Then** a trim indicator shows
    bow/stern and side-to-side balance, and handling reflects it.
-4. **Given** the player leaves the headlamp behind, **When** evening falls at camp, **Then** camp
+4. **Given** the assembly lesson, **When** the player finishes the frame, **Then** they have seen
+   an accurate, sourced account of where the skin-on-frame kayak comes from and how it differs
+   from the Coast Salish cedar canoe.
+5. **Given** the player leaves the headlamp behind, **When** evening falls at camp, **Then** camp
    tasks are harder, and the debrief notes the missing item.
 
 ---
@@ -147,6 +155,9 @@ raccoons cannot reach it and leaves no trace. The night is counted. A debrief sh
 miles paddled, nights out, wildlife seen respectfully, clean-camp status and the lessons learned.
 Skills used on the trip gain experience. Progress is saved on the device, and a share card can be
 sent to friends.
+
+At low tide the player can explore the tide pools near camp — sea stars, anemones, a
+nudibranch, and with luck a giant Pacific octopus — adding entries to their field guide.
 
 **Why this priority**: Closes the loop and gives the score and progression that make a player
 come back.
@@ -164,17 +175,24 @@ save persist after reloading.
    wildlife, camp quality, skill experience gained and at least one lesson per scene.
 4. **Given** the debrief is shown, **When** the player taps Share, **Then** a share card with the
    trip summary opens in the phone's share sheet (or is copied on desktop).
-5. **Given** a completed trip, **When** the player reloads the game, **Then** their skills,
+5. **Given** low tide at camp, **When** the player explores the tide pools gently (no lifting
+   animals out, turning rocks back over), **Then** new field-guide entries unlock; handling
+   animals roughly is discouraged with an explanation.
+6. **Given** a completed trip, **When** the player reloads the game, **Then** their skills,
    nights out and totals are restored.
 
 ---
 
-### User Story 6 - Wildlife encounter under Be Whale Wise rules (Priority: P6)
+### User Story 6 - Wildlife encounters and the field guide (Priority: P6)
 
 During the crossing, marine wildlife appears — harbour seals hauled out on rocks, or orcas
 passing. The player earns credit for observing at a respectful distance and loses score for
 approaching too closely. Paddling kayaks must keep at least the legally required distance from
 Southern Resident orcas, stay out of their path, and give hauled-out seals room.
+
+Every organism the player observes — on the water, in the air, in the tide pools, on shore —
+unlocks an entry in a field guide: a beautiful illustration, a few true facts, where and when to
+see it, and why it matters to the ecosystem.
 
 **Why this priority**: Makes place and respect concrete, and is one of the most memorable moments
 of paddling in these islands.
@@ -190,13 +208,18 @@ ways.
    distance, **Then** a warning shows, score is deducted and the lesson explains the rule.
 3. **Given** seals are hauled out, **When** the player passes too close and flushes them into
    the water, **Then** score is deducted and the reason is explained.
+4. **Given** the player observes a species for the first time, **When** the sighting is logged,
+   **Then** its field-guide entry unlocks with sourced facts and can be read at any time.
 
 ---
 
-### User Story 7 - Arrive by walk-on ferry and see the title (Priority: P7)
+### User Story 7 - Arrive in a place of First Peoples, by walk-on ferry (Priority: P7)
 
 On first launch the player sees a safety note (this game is not a substitute for instruction) and
-a Coast Salish land acknowledgment. They choose to start with the walk-on ferry from Anacortes
+a land acknowledgment that frames the whole game: these waters are the homelands and highways of
+Coast Salish peoples, and the player is a visitor. From the ferry deck and in Friday Harbor the
+player meets the islands as living communities — the town, the marine research station, the
+people who work these waters. They choose to start with the walk-on ferry from Anacortes
 — carrying the bagged kayak aboard, spotting islands from the deck and learning the route on the
 chart — or to start directly at Friday Harbor.
 
@@ -213,6 +236,8 @@ Harbor launch.
    from About).
 2. **Given** the ferry start, **When** the ferry crosses, **Then** the player can identify at
    least three named islands and the route on the chart.
+3. **Given** the land acknowledgment, **When** it is shown, **Then** it names the peoples of the
+   places in this trip using sources published by those Nations.
 
 ---
 
@@ -234,6 +259,31 @@ compare frame rate and feel against top-down in the same conditions.
    moment plays in cockpit view with controls that still work and returns to top-down after.
 2. **Given** a phone-sized device, **When** the point-of-view moment plays, **Then** it holds the
    same frame-rate target as top-down, or the finding is recorded.
+
+---
+
+### User Story 9 - The sea looks and sounds alive (Priority: P1, cross-cutting)
+
+Throughout the slice the water is living — light shifting through the day, island reflections,
+wind ripples, swell, foam, visible current lines and a tide rip, a fog bank, and the sunset
+arriving at camp. A layered, realistic soundscape carries it: paddle strokes and drips, water on
+the hull, wind, gulls, an eagle, the blow of an orca, seals, surf on the landing beach, the ferry
+horn. Music is sparse and never covers the sea.
+
+**Why this priority**: Beauty is a non-negotiable principle; it is not a later polish pass, so it
+is judged in every story rather than built last.
+
+**Independent Test**: Record a minute of paddling at morning, midday and sunset with sound on;
+reviewers rate it against the beauty criteria (SC-009, SC-010).
+
+**Acceptance Scenarios**:
+
+1. **Given** the current strengthens, **When** the player looks at the water, **Then** current
+   lines and rougher water are visible where the current runs, so the sea can be read.
+2. **Given** sound is on, **When** the player paddles, rests, or wildlife appears, **Then** each
+   has its own realistic sound, mixed so the sea stays in front.
+3. **Given** evening falls at camp, **When** the sky changes, **Then** the water's colour and
+   reflections change with it.
 
 ### Edge Cases
 
@@ -301,6 +351,22 @@ compare frame rate and feel against top-down in the same conditions.
 - **FR-024**: The game MUST be playable in portrait on a phone, respect notch and home-bar safe
   areas, and ask the player to rotate back when held in landscape.
 - **FR-025**: Every piece of information conveyed by sound MUST also be conveyed visually.
+- **FR-026**: The water MUST show time-of-day lighting, island reflections, wind ripples, swell,
+  foam, readable current lines and at least one tide rip and fog bank.
+- **FR-027**: The game MUST have a layered, realistic ocean and wildlife soundscape, with music
+  mixed beneath it, and separate volume controls for sea, wildlife and music.
+- **FR-028**: The game MUST include a field guide in which every organism the player observes
+  unlocks an illustrated entry with sourced facts; this slice MUST include at least twelve
+  species across marine mammals, birds, intertidal life, kelp and trees.
+- **FR-029**: Camp MUST offer tide-pool exploration at low tide, with gentle handling rewarded.
+- **FR-030**: The land acknowledgment MUST frame the game as taking place in the homelands of
+  Coast Salish peoples, naming them from sources published by those Nations.
+- **FR-031**: The slice MUST include an accurate lesson on the history of the kayak (Arctic
+  skin-on-frame origins) distinguished from the Coast Salish cedar canoe tradition.
+- **FR-032**: The slice MUST introduce at least two island community places truthfully (for
+  example Friday Harbor and its marine research station).
+- **FR-033**: Cultural content MUST NOT depict sacred or ceremonial practice, MUST NOT use cultural
+  designs as decoration, and MUST record its sources and review status.
 
 ### Key Entities
 
@@ -317,6 +383,8 @@ compare frame rate and feel against top-down in the same conditions.
 - **Wildlife encounter**: species, required distance, outcome.
 - **Camp**: tent site, food storage, trace left, night counted.
 - **Trip record**: miles, nights, encounters, camp quality, lessons, score; kept in the save.
+- **Species**: name (common, scientific), group, illustration, sourced facts, where and when seen,
+  whether the player has observed it.
 - **Credit**: source, licence, what it was used for.
 
 ## Success Criteria *(mandatory)*
@@ -339,6 +407,14 @@ compare frame rate and feel against top-down in the same conditions.
 - **SC-007**: After the point-of-view prototype, the team can make and record the camera decision
   based on play, not speculation.
 - **SC-008**: A reload at any scene boundary loses no progress.
+- **SC-009**: At least four of five playtesters, unprompted, describe the game as beautiful (or
+  equivalent) when asked for three words about it.
+- **SC-010**: With the screen covered, playtesters can tell calm water from a tide rip, and
+  identify an orca's blow, by sound alone.
+- **SC-011**: After one trip, playtesters can name at least five local species and one fact about
+  each, and say whose homelands the islands are.
+- **SC-012**: Any cultural content has been reviewed by a Coast Salish cultural representative
+  before public release, or is withheld until it has been.
 
 ## Assumptions
 
@@ -353,4 +429,9 @@ compare frame rate and feel against top-down in the same conditions.
 - One computer-controlled partner only; real multiplayer, the leaderboard backend, the Gulf
   Islands and border crossing, and cloud deployment are separate features.
 - The game is played online first, but works once loaded without a connection.
-- English only for this slice.
+- English only for this slice, apart from verified place names in Coast Salish languages.
+- Wildlife sounds come from licensed recordings or public-domain archives, credited on the
+  Credits screen.
+- Before public release, the project reaches out to the cultural offices of Coast Salish Tribes
+  and First Nations connected to the route. Until review, cultural content is limited to the land
+  acknowledgment and content published by the Nations themselves.
