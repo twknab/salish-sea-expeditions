@@ -6,7 +6,7 @@ import { clamp } from './geo.js';
  */
 export function stepEnergy(energy, { cost = 0, resting = false, shelter = 0, cold = 0 }, dt) {
   let e = energy - cost;
-  if (resting) e += dt * 0.012 * (1 + 2.5 * clamp(shelter, 0, 1));
-  e -= dt * 0.004 * cold; // cold water saps strength
+  if (resting) e += dt * 0.0015 * (1 + 2.5 * clamp(shelter, 0, 1));
+  e -= dt * 0.0006 * cold; // cold water saps strength
   return clamp(e, 0, 1);
 }

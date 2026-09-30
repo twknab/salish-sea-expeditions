@@ -55,19 +55,19 @@ export function stepKayak(k, input, env, paddler, dt, heelDt = dt) {
       // A stroke on the left pushes the bow right. Arm strokes (low q) yaw far more.
       const yaw = 0.05 * (1.6 - q) * (0.6 + 0.8 * k.rocker);
       k.turnRate += -side * yaw;
-      cost += 0.012 * (1.5 - q) * Math.min(wgt, 1.5);
+      cost += 0.00018 * (1.5 - q) * Math.min(wgt, 1.5); // a trip is thousands of strokes
       events.push(q >= 0.7 ? 'strokeGood' : 'strokeArms');
     } else if (s.kind === 'sweep') {
       const edgeHelp = 1 + 0.9 * clamp(k.edge * side, 0, 1); // tilt toward the sweep side
       const turn = 0.22 * edgeHelp * (0.6 + 0.8 * k.rocker) * (1 + 0.03 * skill('sweep'));
       k.turnRate += -side * turn * wgt;
       k.speed += 0.06 * eff;
-      cost += 0.01;
+      cost += 0.0003;
       events.push(edgeHelp > 1.4 ? 'sweepEdged' : 'sweepFlat');
     } else if (s.kind === 'reverse') {
       k.speed -= 0.25;
       k.turnRate += side * 0.12;
-      cost += 0.01;
+      cost += 0.0003;
       events.push('reverse');
     }
   }
@@ -94,6 +94,6 @@ export function stepKayak(k, input, env, paddler, dt, heelDt = dt) {
   if (heelEvent) events.push(heelEvent);
 
   // Holding pace costs a little; resting recovers.
-  cost += 0.0008 * Math.abs(k.speed) * dt;
+  cost += 0.00002 * Math.abs(k.speed) * dt;
   return { events, cost };
 }

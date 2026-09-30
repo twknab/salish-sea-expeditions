@@ -79,7 +79,7 @@ export class WorldView {
   setConditions({ minute, wind, current, sea, fog = 0, boat, glow = 0, time, ripStrength = [0, 0] }) {
     const d = daylight(minute);
     Object.assign(this.u, {
-      time, sun: d.sun, sky: d.sky, light: d.light, day: d.day,
+      q: this.u.q, time, sun: d.sun, sky: d.sky, light: d.light, day: d.day,
       wind: [wind.x, wind.y], cur: [current.x, current.y], sea, fog, boat: [boat.x, boat.y], glow,
     });
     this.u.rips = RIPS.slice(0, 2).map((r, i) => [r.x, r.y, r.r, ripStrength[i] ?? 0]);

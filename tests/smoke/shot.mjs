@@ -12,6 +12,7 @@ await page.waitForTimeout(+wait);
 if (process.env.ACTIONS) {
   for (const a of JSON.parse(process.env.ACTIONS)) {
     if (a.tap) await page.touchscreen.tap(a.tap[0], a.tap[1]);
+    if (a.click) { await page.mouse.move(a.click[0], a.click[1]); await page.mouse.down(); await page.waitForTimeout(120); await page.mouse.up(); }
     if (a.wait) await page.waitForTimeout(a.wait);
     if (a.key) await page.keyboard.press(a.key);
     if (a.swipe) {

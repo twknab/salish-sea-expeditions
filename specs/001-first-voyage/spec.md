@@ -4,7 +4,7 @@
 
 **Created**: 2026-09-30
 
-**Status**: Draft
+**Status**: Implemented — first playable pass (see tasks.md and README “Known gaps”)
 
 **Input**: User description: "First Voyage — the first playable vertical slice of Salish Sea Expeditions:
 title and land acknowledgment; start by walk-on ferry from Anacortes or at Friday Harbor; plan the

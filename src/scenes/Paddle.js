@@ -5,6 +5,7 @@ import Phaser from 'phaser';
 import { WorldView, drawOrcas, drawSeals, drawFerry, ring } from '../render/world.js';
 import { POV_FRAG } from '../render/povShader.js';
 import { daylight } from '../render/waterShader.js';
+import { Quality } from '../render/quality.js';
 import { TouchControls } from '../ui/touchControls.js';
 import { glass, text, meter, iconButton, lessonCard, button, fadeIn } from '../ui/widgets.js';
 import { COLOR, CSS, layout, px } from '../ui/theme.js';
@@ -56,10 +57,11 @@ export class Paddle extends Phaser.Scene {
     if (this.resume?.kayak) Object.assign(this.player, this.resume.kayak, { upright: true, heel: 0, heelVel: 0 });
     this.partner = createKayak({ x: start.x + 18, y: start.y - 10, heading: this.player.heading });
     this.brain = createPartner();
-    this.me = { energy: this.resume?.energy ?? 1, fit: state.save.fitScore ?? 0.9, skills: state.save.skills };
+    this.me = { energy: this.resume?.energy ?? t?.energy ?? 1, fit: state.save.fitScore ?? 0.9, skills: state.save.skills };
     this.partnerPaddler = { energy: 1, fit: 1, skills: { forward: 200, sweep: 200, brace: 200 } };
 
     this.world = new WorldView(this, { viewW: school ? ZOOMS[0] : ZOOMS[1] });
+    this.quality = new Quality(this.game);
     this.zoomIdx = school ? 0 : 1;
     this.world.cam.x = this.player.x; this.world.cam.y = this.player.y;
 
@@ -518,7 +520,7 @@ export class Paddle extends Phaser.Scene {
       const shelter = Math.max(kelpAt(k.x, k.y), cur.eddy ?? 0, shoreDistance(k.x, k.y) < 60 ? 0.4 : 0);
       this.shelter = shelter;
       const restingNow = this.resting || (drv.drive < 0.08 && this.visualTime - drv.lastGesture > 2);
-      this.me.energy = stepEnergy(this.me.energy, { cost: res.cost * (school ? 0.3 : 0.55), resting: restingNow, shelter }, sdt);
+      this.me.energy = stepEnergy(this.me.energy, { cost: res.cost * (school ? 0.3 : 1), resting: restingNow, shelter }, sdt);
       if (restingNow && kelpAt(k.x, k.y) > 0.2) { k.speed *= 0.9; } // holding onto the kelp
 
       // Partner.
@@ -565,6 +567,18 @@ export class Paddle extends Phaser.Scene {
       this.wildlife(simDt);
       this.teach();
       this.checkArrival();
+    }
+
+    // Save the position now and then, so Continue picks up mid-crossing.
+    this.saveT = (this.saveT ?? 0) + dt;
+    if (!school && this.saveT > 5 && trip()) {
+      this.saveT = 0;
+      const t = trip();
+      t.minute = this.minute;
+      t.kayak = { x: k.x, y: k.y, heading: k.heading };
+      t.energy = this.me.energy;
+      t.prompted = [...this.prompted];
+      persist();
     }
 
     // Skills for good technique.
@@ -618,6 +632,7 @@ export class Paddle extends Phaser.Scene {
 
   render(dt, input) {
     const k = this.player, w = this.world;
+    w.u.q = this.quality.update(dt);
     const lead = { x: k.vx * 6, y: k.vy * 6 + w.cam.viewW * 0.12 };
     w.follow(k.x, k.y, lead, dt);
     const ripStrength = RIPS.map((r) => clamp(Math.abs(channelCurrentKn(this.minute)) / 1.2, 0, 1.2) * (this.mode === 'school' ? 0 : 1));

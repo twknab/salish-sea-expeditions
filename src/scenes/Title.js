@@ -46,7 +46,7 @@ export class Title extends Phaser.Scene {
     sound.unlock();
     if (resume && state.save.trip) {
       const t = state.save.trip;
-      go(this, t.scene === 'Paddle' ? 'Paddle' : t.scene, t.scene === 'Paddle' ? { mode: 'trip', resume: { minute: t.minute, kayak: t.kayak } } : undefined);
+      go(this, t.scene, t.scene === 'Paddle' ? { mode: 'trip', resume: { minute: t.minute, kayak: t.kayak, energy: t.energy } } : undefined);
       return;
     }
     if (!state.save.seenIntro) { go(this, 'Acknowledgment'); return; }
