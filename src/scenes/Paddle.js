@@ -3,6 +3,8 @@
 //  - 'trip':   the crossing from Friday Harbor to Jones Island (US1, US6, US9)
 import Phaser from 'phaser';
 import { WorldView, drawOrcas, drawSeals, drawFerry, ring } from '../render/world.js';
+import { POV_FRAG } from '../render/povShader.js';
+import { daylight } from '../render/waterShader.js';
 import { TouchControls } from '../ui/touchControls.js';
 import { glass, text, meter, iconButton, lessonCard, button, fadeIn } from '../ui/widgets.js';
 import { COLOR, CSS, layout, px } from '../ui/theme.js';
@@ -110,7 +112,8 @@ export class Paddle extends Phaser.Scene {
     this.btnZoom = iconButton(this, W - 32, y0, '⤢', () => this.cycleZoom());
     this.btnRest = iconButton(this, W - 32, y0 + 50, '≋', () => this.toggleRest());
     this.btnJack = iconButton(this, W - 32, y0 + 100, '◠', () => this.cycleRocker());
-    for (const b of [this.btnZoom, this.btnRest, this.btnJack]) b.setScrollFactor(0).setDepth(31);
+    this.btnView = iconButton(this, W - 32, y0 + 150, '◉', () => this.setPov(!this.pov, true));
+    for (const b of [this.btnZoom, this.btnRest, this.btnJack, this.btnView]) b.setScrollFactor(0).setDepth(31);
     this.tJack = text(this, W - 58, y0 + 100, '', 10.5, { color: CSS.mist, origin: [1, 0.5] }).setScrollFactor(0).setDepth(31);
     this.updateJackLabel();
 
@@ -370,6 +373,78 @@ export class Paddle extends Phaser.Scene {
     this.ripKick = 8;
   }
 
+  // ---------- Cockpit view (prototype, US8) ----------
+
+  setPov(on, manual = false) {
+    this.pov = on;
+    if (on && !this.povShader) {
+      const W = px(layout.W), H = px(layout.H), m = this.world.mask, k = this.player;
+      this.povU = { sun: [0, 1, 0.5], sky: [0.5, 0.6, 0.7], light: [1, 1, 1], day: 1 };
+      this.povShader = this.add.shader({
+        name: 'pov', fragmentSource: POV_FRAG, initialUniforms: { uMask: 0 },
+        setupUniforms: (set) => {
+          const u = this.povU;
+          set('uMaskMin', [m.minX, m.minY]); set('uMaskSize', [m.width, m.height]);
+          set('uBoat', [k.x, k.y]); set('uHeading', k.heading);
+          set('uRoll', k.upright ? -k.heel : 0); set('uPitch', Math.sin(this.visualTime * 1.3) * 0.03 * (0.3 + this.sea));
+          set('uAspect', layout.W / layout.H); set('uTime', this.visualTime);
+          set('uSun', u.sun); set('uSky', u.sky); set('uLightCol', u.light); set('uDay', u.day);
+          set('uSea', this.sea ?? 0.1); set('uWind', [this.windNow?.x ?? 0, this.windNow?.y ?? 0]);
+        },
+      }, W / 2, H / 2, W, H, ['landmask']).setScrollFactor(0).setDepth(20);
+      this.bowG = this.add.graphics().setScrollFactor(0).setDepth(21);
+    }
+    this.povShader?.setVisible(on);
+    this.bowG?.setVisible(on);
+    this.btnView.label.setColor(on ? CSS.sun : CSS.foam);
+    if (on && !manual) this.note('Cockpit view: brace on the low side and snap your hips.', 4000);
+  }
+
+  drawBow() {
+    const g = this.bowG, W = px(layout.W), H = px(layout.H), k = this.player;
+    g.clear();
+    const roll = k.upright ? -k.heel : 0;
+    const cx = W / 2, by = H * 0.99, horizon = H * 0.39;
+    // Points are given relative to the screen centre-line; rotate about the cockpit with the roll.
+    const rot = (x, y) => { const dy = y - by; return { x: cx + x * Math.cos(roll) - dy * Math.sin(roll), y: by + x * Math.sin(roll) + dy * Math.cos(roll) }; };
+    // The partner, projected into the view.
+    const p = this.partner, fw = { x: Math.sin(k.heading), y: Math.cos(k.heading) }, rt = { x: Math.cos(k.heading), y: -Math.sin(k.heading) };
+    const rx = p.x - k.x, ry = p.y - k.y, f = rx * fw.x + ry * fw.y, r = rx * rt.x + ry * rt.y;
+    if (f > 3) {
+      const aspect = layout.W / layout.H;
+      const ux = r / f / (aspect * 1.5), uy = (-0.85 / f + 0.22) / 1.5;
+      const sx = W / 2 + ux * W, sy = H * (0.5 - uy);
+      const sz = Math.min(W * 0.5, (W * 4.9) / f / (aspect * 1.5) / 2.2);
+      const q = rot(sx - cx, sy);
+      g.fillStyle(0x2d7f86, 1);
+      g.fillEllipse(q.x, q.y, sz, sz * 0.12);
+      g.fillStyle(0xe9f1ee, 1);
+      g.fillRoundedRect(q.x - sz * 0.04, q.y - sz * 0.22, sz * 0.08, sz * 0.2, sz * 0.02);
+      g.fillStyle(0xd9c9a3, 1);
+      g.fillCircle(q.x, q.y - sz * 0.25, sz * 0.035);
+      g.lineStyle(Math.max(1, sz * 0.012), 0x2b2b2b, 1);
+      const sw = Math.sin(this.visualTime * 3) * sz * 0.2;
+      g.lineBetween(q.x - sz * 0.25, q.y - sz * 0.12 + sw * 0.3, q.x + sz * 0.25, q.y - sz * 0.12 - sw * 0.3);
+    }
+    // Deck converging toward the bow.
+    const deck = [rot(-W * 0.34, H), rot(W * 0.34, H), rot(W * 0.03, horizon + H * 0.2), rot(-W * 0.03, horizon + H * 0.2)];
+    g.fillStyle(0xb8402c, 1);
+    g.fillPoints(deck, true);
+    g.fillStyle(0x16181a, 1);
+    const coam = [rot(-W * 0.3, H), rot(W * 0.3, H), rot(W * 0.22, H * 0.9), rot(-W * 0.22, H * 0.9)];
+    g.fillPoints(coam, true);
+    g.lineStyle(px(2), 0x111111, 0.8);
+    for (const f of [0.72, 0.64]) { const a = rot(-W * 0.1, H * f), b = rot(W * 0.1, H * (f - 0.04)); g.lineBetween(a.x, a.y, b.x, b.y); const c = rot(W * 0.1, H * f), d = rot(-W * 0.1, H * (f - 0.04)); g.lineBetween(c.x, c.y, d.x, d.y); }
+    // Paddle shaft sweeping with the stroke.
+    const ph = Math.sin(this.driver.phase * Math.PI * 2);
+    const a = rot(-W * 0.62 + ph * W * 0.1, H * 0.82 + ph * H * 0.03), b = rot(W * 0.62 + ph * W * 0.1, H * 0.82 - ph * H * 0.03);
+    g.lineStyle(px(9), 0x2b2b2b, 1);
+    g.lineBetween(a.x, a.y, b.x, b.y);
+    g.fillStyle(0xd9c9a3, 1);
+    const h1 = rot(-W * 0.2 + ph * W * 0.1, H * 0.84), h2 = rot(W * 0.2 + ph * W * 0.1, H * 0.8);
+    g.fillCircle(h1.x, h1.y, px(13)); g.fillCircle(h2.x, h2.y, px(13));
+  }
+
   snapshot() {
     return { minute: this.minute, kayak: { x: this.player.x, y: this.player.y, heading: this.player.heading }, energy: this.me.energy };
   }
@@ -481,7 +556,9 @@ export class Paddle extends Phaser.Scene {
       this.ripKick -= dt;
       if (this.ripKick <= 0) { this.ripKick = 3.5 + Math.random() * 2.5; this.kick(1.2 + this.rip * 1.1); }
       if (!this.prompted.has('rips')) this.showLesson('rips');
+      if (state.save.settings.pov && !this.povAuto && !this.pov) { this.povAuto = true; this.setPov(true); }
     }
+    if (!school && this.povAuto && this.pov && this.rip < 0.05) { this.povAuto = 'done'; this.setPov(false); }
 
     if (!school) {
       this.stepFerry(simDt);
@@ -582,6 +659,11 @@ export class Paddle extends Phaser.Scene {
     }
     this.tSpeed.setText(`${knots(Math.hypot(k.vx, k.vy)).toFixed(1)} kn`);
     this.energy.set(this.me.energy);
+    if (this.pov) {
+      const d = daylight(this.minute);
+      Object.assign(this.povU, { sun: d.sun, sky: d.sky, light: d.light, day: d.day });
+      this.drawBow();
+    }
     this.drawCompass();
     this.drawHeel();
     this.drawNav();
@@ -631,7 +713,7 @@ export class Paddle extends Phaser.Scene {
   drawNav() {
     const g = this.nav;
     g.clear();
-    if (this.mode !== 'trip') return;
+    if (this.mode !== 'trip' || this.pov) return;
     // A faint line toward the destination, and the next waypoint on the suggested route.
     const k = this.player, w = this.world;
     const d = PLACES.destination;

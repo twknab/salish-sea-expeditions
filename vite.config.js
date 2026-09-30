@@ -1,7 +1,11 @@
 import { defineConfig } from 'vite';
+import { readFileSync } from 'node:fs';
+
+const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url)));
 
 export default defineConfig({
   base: './',
   build: { target: 'es2022', chunkSizeWarningLimit: 2000 },
   server: { host: true },
+  define: { __APP_VERSION__: JSON.stringify(pkg.version) },
 });
