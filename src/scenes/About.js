@@ -43,6 +43,13 @@ export class About extends Phaser.Scene {
       y += 38;
     }
     const pov = button(this, W / 2, y + 16, `Cockpit view in tide rips: ${s.pov ? 'on' : 'off'}`, () => { s.pov = !s.pov; pov.label.setText(`Cockpit view in tide rips: ${s.pov ? 'on' : 'off'}`); persist(); }, { primary: false, w: W - 60, h: 42, size: 13.5 }).setDepth(10);
+    y += 56;
+    const nm = () => `Night music (ambient downtempo): ${s.nightMusic !== false ? 'on' : 'off'}`;
+    const nmb = button(this, W / 2, y + 16, nm(), () => {
+      s.nightMusic = s.nightMusic === false; nmb.label.setText(nm()); persist();
+      sound.unlock(); sound.night(s.nightMusic);
+      if (s.nightMusic) this.time.delayedCall(12000, () => sound.night(false)); // a taste, then quiet
+    }, { primary: false, w: W - 60, h: 42, size: 13.5 }).setDepth(10);
     y += 70;
     button(this, W / 2, y, 'Credits & sources', () => go(this, 'Credits'), { primary: false }).setDepth(10);
     button(this, W / 2, y + 60, 'Back', () => go(this, 'Title')).setDepth(10);

@@ -19,7 +19,8 @@ import { currentAt, kelpAt, ripAt, onLand, shoreDistance } from '../sim/field.js
 import { wind, seaState, windAgainstTide } from '../sim/wind.js';
 import { channelCurrentKn } from '../sim/tides.js';
 import { toLocal, bearing, angleDiff, knots, nm, clock, deg, clamp } from '../sim/geo.js';
-import { PLACES, ROUTE, RIPS } from '../content/chart.js';
+import { PLACES, ROUTE, RIPS, FERRY_ROUTE } from '../content/chart.js';
+import { createMover, stepMover } from '../sim/route.js';
 import { lessonById } from '../content/lessons.js';
 import { DRILLS } from '../content/anatomy.js';
 import { speciesById } from '../content/species.js';
@@ -91,6 +92,7 @@ export class Paddle extends Phaser.Scene {
     sound.ambience({ sea: 0.2, wind: 0.1, rip: 0, surf: 0 });
     this.events.on('relayout', () => this.scene.restart({ mode: this.mode, resume: this.snapshot() }));
     this.events.on('resume', (_s, data) => this.afterRescue(data));
+    this.events.once('shutdown', () => sound.night(false));
   }
 
   // ---------- HUD ----------
@@ -238,8 +240,9 @@ export class Paddle extends Phaser.Scene {
   // ---------- Trip events ----------
 
   launchFerry() {
-    const a = toLocal(48.5352, -123.0120), b = toLocal(48.5300, -122.9700);
-    this.ferry = { x: a.x, y: a.y, heading: bearing(a.x, a.y, b.x, b.y), speed: 7, to: b, horn: false };
+    // Outbound: the inbound route in reverse — around the inside of Brown Island, then east.
+    this.ferry = createMover([...FERRY_ROUTE].reverse(), 7);
+    this.ferry.horn = false;
     sound.horn();
     this.note('A ferry is leaving Friday Harbor. Stay clear of its lane.', 5000);
   }
@@ -247,15 +250,14 @@ export class Paddle extends Phaser.Scene {
   stepFerry(dt) {
     const f = this.ferry;
     if (!f) return;
-    f.x += Math.sin(f.heading) * f.speed * dt;
-    f.y += Math.cos(f.heading) * f.speed * dt;
+    stepMover(f, dt);
     const d = Math.hypot(f.x - this.player.x, f.y - this.player.y);
     if (d < 220 && !f.horn) {
       f.horn = true;
       sound.horn();
       this.note('Five short blasts would mean danger. Keep clear — ferries cannot stop quickly.', 5000);
     }
-    if (Math.hypot(f.x - f.to.x, f.y - f.to.y) < 60) this.ferry = null;
+    if (f.done) this.ferry = null;
   }
 
   wildlife(dt) {
@@ -568,6 +570,10 @@ export class Paddle extends Phaser.Scene {
       this.teach();
       this.checkArrival();
     }
+
+    // Night music after dark.
+    const m = this.minute % 1440, dark = m > 1285 || m < 320;
+    if (dark !== this.dark) { this.dark = dark; sound.night(dark && state.save.settings.nightMusic !== false); }
 
     // Save the position now and then, so Continue picks up mid-crossing.
     this.saveT = (this.saveT ?? 0) + dt;

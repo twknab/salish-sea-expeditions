@@ -2,7 +2,11 @@
 // and nothing needs a licence. Three buses — sea, wildlife, music — plus quiet UI ticks. Licensed
 // field recordings can later replace any voice behind the same functions.
 
+import { createNightMusic } from './nightMusic.js';
+
 let ctx = null;
+let night = null;
+let nightWanted = false;
 let bus = null;
 let amb = null;
 const vol = { sea: 0.9, wildlife: 0.9, music: 0.4 };
@@ -132,6 +136,7 @@ function scheduleMusic() {
   const notes = [196, 220, 246.9, 293.7, 329.6, 392, 440];
   const play = () => {
     if (!ctx) return;
+    if (night?.playing) { setTimeout(play, 20000); return; } // the night track has the floor
     const base = notes[Math.floor(Math.random() * 3)];
     const chord = [base, base * 1.5, base * 2 * (Math.random() < 0.5 ? 1.125 : 1.25)];
     chord.forEach((f, i) => tone(bus.music, { f0: f, type: 'triangle', a: 2.5, peak: 0.05, d: 6, when: i * 0.9, pan: (i - 1) * 0.4 }));
@@ -151,9 +156,18 @@ export const sound = {
         if (!AC) return;
         ctx = new AC();
         build();
+        night = createNightMusic(ctx, bus.music);
+        if (nightWanted) night.start();
       }
       if (ctx.state !== 'running') ctx.resume();
     } catch { /* audio is optional */ }
+  },
+
+  /** Night music on or off (fades). Respects the Music volume and the night-music setting. */
+  night(on) {
+    nightWanted = on;
+    if (!night) return;
+    if (on) night.start(); else night.stop();
   },
 
   setVolumes(v) {

@@ -1,6 +1,8 @@
 // Wildlife encounters under Be Whale Wise rules (FR-015, US6).
 import { toLocal, clamp } from './geo.js';
 import { speciesById } from '../content/species.js';
+import { ORCA_ROUTE } from '../content/chart.js';
+import { createMover, stepMover, pathLength, pointAt } from './route.js';
 
 // Where things are seen. `r` is sighting radius; encounters with rules are handled separately.
 export const SIGHTINGS = [
@@ -22,11 +24,23 @@ export function sightingsAt(x, y, seen) {
   return SIGHTINGS.filter((s) => !seen.has(s.speciesId) && Math.hypot(x - s.x, y - s.y) < s.r).map((s) => s.speciesId);
 }
 
-// The orca pod: passes up the channel on the flood. Starts south of the player when triggered.
-export function createOrcaPass(player, t) {
+// The orca pod travels up the channel along ORCA_ROUTE (always on the water), starting about
+// 1.3 km behind the point on the route nearest the player.
+function nearestAlong(path, x, y) {
+  let best = 0, bd = Infinity;
+  for (let d = 0; d <= pathLength(path); d += 25) {
+    const p = pointAt(path, d);
+    const dd = Math.hypot(p.x - x, p.y - y);
+    if (dd < bd) { bd = dd; best = d; }
+  }
+  return best;
+}
+
+export function createOrcaPass(player, t, route = ORCA_ROUTE) {
+  const mover = createMover(route, 2.6, Math.max(0, nearestAlong(route, player.x, player.y) - 1300));
   return {
-    speciesId: 'orca', kind: 'orca',
-    x: player.x + 520, y: player.y - 1300, heading: -0.18, speed: 2.6,
+    speciesId: 'orca', kind: 'orca', mover,
+    x: mover.x, y: mover.y, heading: mover.heading, speed: 2.6,
     members: [{ dx: 0, dy: 0, bull: true }, { dx: -40, dy: 30 }, { dx: 30, dy: -45 }, { dx: -15, dy: -80, calf: true }],
     started: t, closest: Infinity, violation: false, respectful: true, state: 'approaching',
   };
@@ -34,8 +48,13 @@ export function createOrcaPass(player, t) {
 
 /** Advance the pod; judge the player's behaviour against the rule. */
 export function stepOrcaPass(pod, player, dt) {
-  pod.x += Math.sin(pod.heading) * pod.speed * dt;
-  pod.y += Math.cos(pod.heading) * pod.speed * dt;
+  if (pod.mover) {
+    stepMover(pod.mover, dt);
+    pod.x = pod.mover.x; pod.y = pod.mover.y; pod.heading = pod.mover.heading;
+  } else {
+    pod.x += Math.sin(pod.heading) * pod.speed * dt;
+    pod.y += Math.cos(pod.heading) * pod.speed * dt;
+  }
   const dx = pod.x - player.x, dy = pod.y - player.y;
   const d = Math.hypot(dx, dy);
   pod.closest = Math.min(pod.closest, d);
@@ -48,7 +67,8 @@ export function stepOrcaPass(pod, player, dt) {
     pod.violation = true;
     pod.respectful = false;
   }
-  if (pod.y > player.y + 1500) pod.state = 'gone';
+  const past = pod.mover ? pod.mover.done || (pod.closest < Infinity && d > pod.closest + 1200 && pod.y > player.y) : pod.y > player.y + 1500;
+  if (past) pod.state = 'gone';
   else if (d < rule) pod.state = 'passing';
   return { distance: d, warn, rule };
 }

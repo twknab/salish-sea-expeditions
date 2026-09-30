@@ -8,6 +8,7 @@ import { night } from '../../src/sim/camp.js';
 import { tripScore } from '../../src/sim/score.js';
 import { load, save, freshSave, SAVE_KEY } from '../../src/sim/save.js';
 import { sealState, createOrcaPass, stepOrcaPass } from '../../src/sim/wildlife.js';
+import { toLocal } from '../../src/sim/geo.js';
 
 test('without a paddle float, self-rescue is still possible (the scramble), just harder', () => {
   const r = availableRescues(new Set(), false);
@@ -91,14 +92,15 @@ test('seals: 100 yards keeps them resting; closer alerts, then flushes them', ()
 });
 
 test('orcas: holding still is respectful; paddling at them inside the rule is not', () => {
-  const still = { x: 0, y: 0, vx: 0, vy: 0 };
+  const at = toLocal(48.567, -123.022); // beside the orcas' route up the channel
+  const still = { ...at, vx: 0, vy: 0 };
   const pod = createOrcaPass(still, 0);
-  for (let i = 0; i < 2000; i++) stepOrcaPass(pod, still, 0.5);
+  for (let i = 0; i < 4000 && pod.state !== 'gone'; i++) stepOrcaPass(pod, still, 0.5);
   assert.equal(pod.respectful, true);
-  const chaser = { x: 0, y: 0, vx: 0, vy: 0 };
+  const chaser = { ...at, vx: 0, vy: 0 };
   const pod2 = createOrcaPass(chaser, 0);
-  for (let i = 0; i < 2000; i++) {
-    const dx = pod2.x - chaser.x, dy = pod2.y - chaser.y, d = Math.hypot(dx, dy);
+  for (let i = 0; i < 4000 && pod2.state !== 'gone'; i++) {
+    const dx = pod2.x - chaser.x, dy = pod2.y - chaser.y, d = Math.hypot(dx, dy) || 1;
     chaser.vx = (dx / d) * 1.5; chaser.vy = (dy / d) * 1.5;
     chaser.x += chaser.vx * 0.5; chaser.y += chaser.vy * 0.5;
     stepOrcaPass(pod2, chaser, 0.5);

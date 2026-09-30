@@ -4,7 +4,9 @@ import Phaser from 'phaser';
 import { WorldView, drawFerry } from '../render/world.js';
 import { text, button, lessonCard, fadeIn } from '../ui/widgets.js';
 import { COLOR, CSS, layout, px } from '../ui/theme.js';
-import { toLocal, bearing } from '../sim/geo.js';
+import { toLocal } from '../sim/geo.js';
+import { FERRY_ROUTE } from '../content/chart.js';
+import { createMover, stepMover, pathLength, pointAt } from '../sim/route.js';
 import { wind } from '../sim/wind.js';
 import { sound } from '../audio/soundscape.js';
 import { lessonById } from '../content/lessons.js';
@@ -26,10 +28,11 @@ export class Ferry extends Phaser.Scene {
   create() {
     fadeIn(this);
     this.world = new WorldView(this, { viewW: 2600 });
-    this.a = toLocal(48.556, -122.955);
-    this.b = toLocal(48.5357, -123.0130);
-    this.f = { x: this.a.x, y: this.a.y, heading: bearing(this.a.x, this.a.y, this.b.x, this.b.y) };
-    this.world.cam.x = (this.a.x + this.b.x) / 2; this.world.cam.y = (this.a.y + this.b.y) / 2;
+    // Across the channel, round the inside (north-west) of Brown Island, into the terminal.
+    this.f = createMover(FERRY_ROUTE, 0);
+    this.routeLen = pathLength(FERRY_ROUTE);
+    const mid = pointAt(FERRY_ROUTE, this.routeLen * 0.6);
+    this.world.cam.x = mid.x; this.world.cam.y = mid.y;
     this.t = 0; this.p = 0;
     this.spotted = new Set();
     this.pins = this.add.graphics().setDepth(20);
@@ -65,8 +68,9 @@ export class Ferry extends Phaser.Scene {
     this.t += dt;
     this.p = Math.min(1, this.p + dt / 70);
     const e = this.p * this.p * (3 - 2 * this.p);
-    this.f.x = this.a.x + (this.b.x - this.a.x) * e;
-    this.f.y = this.a.y + (this.b.y - this.a.y) * e;
+    // Ease in and out along the route, turning smoothly at the waypoints.
+    this.f.dist = e * this.routeLen;
+    stepMover(this.f, dt);
     sound.update(dt);
     sound.ambience({ sea: 0.4, wind: 0.35 });
     const w = this.world;

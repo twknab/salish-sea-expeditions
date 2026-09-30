@@ -33,6 +33,7 @@ export class Camp extends Phaser.Scene {
     this.card = lessonCard(this, { title: 'Jones Island', text: info.text, sourceIds: info.sourceIds }, { y: layout.safe.top + 12, depth: 50, autoHide: 6500 });
     this.time.delayedCall(1200, () => this.chooseSite());
     sound.ambience({ sea: 0.2, wind: 0.1, surf: 0.7, rip: 0 });
+    this.events.once('shutdown', () => sound.night(false));
     this.clock = text(this, layout.W - 18, layout.safe.top + 14, '', 14, { serif: true, weight: '600', origin: [1, 0] }).setDepth(40);
   }
 
@@ -182,6 +183,7 @@ export class Camp extends Phaser.Scene {
 
   nightfall() {
     this.clearUi();
+    if (state.save.settings.nightMusic !== false) sound.night(true);
     this.card?.active && this.card.dismiss();
     const target = 1440 + 360;
     this.tweens.addCounter({
@@ -211,6 +213,7 @@ export class Camp extends Phaser.Scene {
   }
 
   morning() {
+    sound.night(false);
     const r = night(this.site, this.food, this.arrive);
     const t = this.t;
     t.record.nights = 1;

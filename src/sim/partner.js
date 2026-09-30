@@ -2,6 +2,25 @@
 // human would see — positions, current, the other boat — and never touches kayak state directly.
 import { emptyInput } from './input.js';
 import { bearing, angleDiff, dir, clamp } from './geo.js';
+import { shoreDistance } from './field.js';
+
+/**
+ * Steer around land: if the water ahead along `track` runs out within `look` metres, turn toward
+ * whichever side stays clear longest. Returns an adjusted track.
+ */
+export function avoidLand(x, y, track, look = 80) {
+  const clear = (h) => {
+    let min = Infinity;
+    for (const d of [look * 0.35, look * 0.7, look]) min = Math.min(min, shoreDistance(x + Math.sin(h) * d, y + Math.cos(h) * d));
+    return min;
+  };
+  if (clear(track) > 25) return track;
+  for (const off of [0.35, 0.7, 1.05, 1.4, 1.8]) {
+    const l = clear(track - off), r = clear(track + off);
+    if (l > 25 || r > 25) return l >= r ? track - off : track + off;
+  }
+  return track + Math.PI; // boxed in: back out
+}
 
 /**
  * Heading to steer so that boat velocity + current points along `track` (a ferry angle).
@@ -42,7 +61,8 @@ export function partnerInput(brain, world, dt) {
     return inp;
   }
   // Lead toward the goal, plus some of the player's own direction so we travel together.
-  const track = dist > 3 ? bearing(me.x, me.y, goal.x, goal.y) : player.heading;
+  const rawTrack = dist > 3 ? bearing(me.x, me.y, goal.x, goal.y) : player.heading;
+  const track = avoidLand(me.x, me.y, rawTrack);
   const want = ferryHeading(track, Math.max(0.6, me.speed), world.current);
   const err = angleDiff(want, me.heading);
   brain.cadence -= dt;

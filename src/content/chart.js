@@ -122,3 +122,18 @@ export const BOUNDS = (() => {
   const a = toLocal(48.515, -123.075), b = toLocal(48.640, -122.975);
   return { minX: a.x, minY: a.y, maxX: b.x, maxY: b.y };
 })();
+
+// Routes for vessels and animals, checked against the shoreline by tests/sim/routes.test.js.
+// The inbound ferry crosses from Upright Channel, passes on the inside (north-west) of Brown
+// Island and turns into the Friday Harbor terminal. Outbound runs the same line in reverse.
+export const FERRY_TERMINAL = toLocal(48.5357, -123.0130);
+export const FERRY_ROUTE = ll([
+  [48.5440, -122.9500], [48.5450, -122.9720], [48.5440, -122.9900], [48.5418, -123.0020],
+  [48.5415, -123.0070], [48.5398, -123.0110], [48.5370, -123.0128], [48.5357, -123.0130],
+]);
+
+// Orcas travel mid-channel, up San Juan Channel toward Spieden Channel.
+export const ORCA_ROUTE = ll([
+  [48.540, -122.992], [48.550, -122.998], [48.560, -123.004], [48.572, -123.012],
+  [48.585, -123.020], [48.600, -123.035], [48.614, -123.060], [48.628, -123.075],
+]);
