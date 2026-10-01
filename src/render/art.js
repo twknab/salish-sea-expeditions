@@ -18,6 +18,7 @@ export const ART = {
   paddlerSide: { svg: paddlerSide, w: 640, h: 440, view: [150, 40, 640, 440] },
   paddle: { svg: paddle, w: 1000, h: 230, view: [0, 80, 1000, 230] },
   kayakSide: { svg: kayakSide, w: 1000, h: 150, view: [0, 105, 1000, 150] },
+  kayakSideSolid: { svg: kayakSide, w: 1000, h: 150, view: [0, 105, 1000, 150] },
   // Outfitting: five stacked layers of one figure, the kit flat lay, and the two start postcards.
   wearBase: { svg: wearBase, w: 400, h: 800 },
   wearMid: { svg: wearMid, w: 400, h: 800 },
@@ -45,7 +46,25 @@ export function recolour(svg, skinId) {
  * Rasterise an illustration into a texture of `widthPx` device pixels and resolve with its key.
  * Keys include the skin and size, so a change of skin produces a new texture.
  */
-export function loadArt(scene, name, skinId, widthPx) {
+/** Where each kayak part sits in the side view, when the 3D model drew it (design units). */
+export const sideAnchors = {};
+
+/**
+ * Rasterise an illustration into a texture of `widthPx` device pixels and resolve with its key.
+ * The kayak side views come from the 3D model when it is available (render3d), else the SVG.
+ */
+export async function loadArt(scene, name, skinId, widthPx) {
+  if (name === 'kayakSide' || name === 'kayakSideSolid') {
+    try {
+      const m = await import('../render3d/bake.js');
+      const r = m.bakeSide(scene, skinOf(skinId), widthPx, { ghost: name === 'kayakSide' });
+      if (r) { Object.assign(sideAnchors, r.anchors); return r.key; }
+    } catch { /* fall back to the illustration */ }
+  }
+  return loadSvgArt(scene, name === 'kayakSideSolid' ? 'kayakSide' : name, skinId, widthPx);
+}
+
+function loadSvgArt(scene, name, skinId, widthPx) {
   const a = ART[name];
   const w = Math.round(widthPx), h = Math.round((widthPx * a.h) / a.w);
   const key = `art-${name}-${skinId}-${w}`;

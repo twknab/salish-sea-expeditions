@@ -11,6 +11,14 @@ import {
 // Sprite raster sizes (device pixels). The stroke is drawn in 12 frames.
 const RES = { boat: 320, orca: 256, rock: 360, seal: 120, ferry: 512 };
 const FRAMES = 12;
+import { FRAMES as F3, k3, STROKE_FRAMES } from '../render3d/keys.js';
+
+/** Boats are never shown smaller than 58 pt for a 4.88 m hull: pixels per metre at that floor. */
+const boatPpm = (L) => L / 4.88;
+/** Shown at least this long on screen (points) — a 4.88 m kayak must read on a phone. */
+const BOAT_MIN_PT = 80;
+/** Beam is drawn a little wider than life so the deck and paddler read at phone size. */
+const WIDE = 1.2;
 import { BOUNDS, RIPS } from '../content/chart.js';
 import { layout, px } from '../ui/theme.js';
 
@@ -119,7 +127,7 @@ export class WorldView {
       g = this.scene.add.graphics().setDepth(8);
       this.boats.set(id, g);
     }
-    const L = Math.max(4.9 * this.ppm, px(opts.minPt ?? 58));
+    const L = Math.max(4.9 * this.ppm, px(opts.minPt ?? BOAT_MIN_PT));
     const s = this.toScreen(k.x, k.y);
     if (this.drawBoatSprite(g, k, L, s, opts)) return g;
     g.setVisible(true);
@@ -152,6 +160,7 @@ export class WorldView {
   drawBoatSprite(g, k, L, s, opts) {
     const sc = this.scene, sk = opts.skin;
     if (!sk) return false;
+    if (this.drawBoat3d(g, k, L, s, opts)) return true;
     const R = RES.boat, w = R * 0.75;
     const deckKey = `kdeck-${sk.id}`, upKey = 'khull-up', shKey = 'kshadow';
     const ok = ensureSprite(sc, deckKey, () => kayakTopSVG(sk), w, R)
@@ -177,6 +186,30 @@ export class WorldView {
     return true;
   }
 
+  /** The lit 3D boat and paddler (render3d), at true scale; false until they are baked. */
+  drawBoat3d(g, k, L, s, opts) {
+    const sc = this.scene, sk = opts.skin;
+    const deck = k3.deck(sk.id), tone = opts.pfd === 0xe9f1ee ? 'white' : 'yellow';
+    // All or nothing, for every boat at once: never one 3D boat beside a 2D one, a 3D boat with a
+    // missing paddler, or a stroke with missing frames. The bake sets scene.ready3d when complete.
+    if (!sc.ready3d || !sc.textures.exists(deck)) return false;
+    g.setVisible(false);
+    const m = boatPpm(L), rot = k.heading;
+    const heelVis = k.upright ? Math.cos(Math.min(1.2, Math.abs(k.heel))) : 1;
+    const B = F3.boat, P = F3.paddler;
+    if (!k.upright) { this.spr(k3.up, s.x, s.y, B.spanZ * m * WIDE, B.spanX * m, rot, 1, 8); return true; }
+    this.spr(deck, s.x, s.y, B.spanZ * m * heelVis * WIDE, B.spanX * m, rot, 1, 8);
+    const f = opts.resting ? 'rest' : Math.floor(((((opts.phase ?? 0) % 1) + 1) % 1) * STROKE_FRAMES) % STROKE_FRAMES;
+    const key = k3.paddler(tone, f);
+    if (sc.textures.exists(key)) {
+      // The paddler's frame is centred P.cx metres forward of the cockpit; lean shifts them to the edge.
+      const fwd = P.cx * m, lean = (k.edge ?? 0) * m * 0.06 * WIDE;
+      const x = s.x + Math.sin(rot) * fwd + Math.cos(rot) * lean, y = s.y - Math.cos(rot) * fwd + Math.sin(rot) * lean;
+      this.spr(key, x, y, P.spanZ * m * heelVis * WIDE, P.spanX * m, rot, 1, 9);
+    }
+    return true;
+  }
+
   /** Record and draw fading wakes behind moving boats. */
   drawWakes(entries, dt) {
     const g = this.wakeG;
@@ -193,7 +226,7 @@ export class WorldView {
       }
       for (const p of w) p.age += dt;
       while (w.length && w[0].age > 9) w.shift();
-      const L = Math.max(4.9 * this.ppm, px(58));
+      const L = Math.max(4.9 * this.ppm, px(BOAT_MIN_PT));
       for (const p of w) {
         const a = Math.max(0, 1 - p.age / 9);
         const s = this.toScreen(p.x, p.y);
@@ -228,7 +261,13 @@ export function drawOrcas(world, pod, t) {
     const up = cyc < 0.35 ? Math.sin((cyc / 0.35) * Math.PI) : 0;
     const L = size * (m.calf ? 0.6 : 1);
     const rot = (pod.heading ?? 0) + Math.sin(t * 0.4 + i) * 0.06;
-    if (ready) {
+    const kind = m.bull ? 'bull' : 'cow';
+    if (sc.textures.exists(k3.orca(kind, 3))) {
+      // True scale against the boats; calves are smaller. Deep: a dim shape. Up: back and fin out.
+      const mm = boatPpm(Math.max(4.9 * ppm, px(BOAT_MIN_PT))) * (m.calf ? 0.55 : 1), O = F3.orca;
+      world.spr(k3.orca(kind, 0), s.x, s.y, O.spanZ * mm, O.spanX * mm, rot, 0.28 * (1 - up), 6);
+      if (up > 0.05) world.spr(k3.orca(kind, up < 0.4 ? 1 : up < 0.75 ? 2 : 3), s.x, s.y, O.spanZ * mm, O.spanX * mm, rot, 1, 6);
+    } else if (ready) {
       // Below the surface the body is a dim green-black shape; breaking the surface it sharpens.
       world.spr(m.bull ? 'orca-bull' : 'orca', s.x, s.y, L / 4, L, rot, 0.22 + 0.78 * up, 6);
     } else if (up > 0.05) {
@@ -260,6 +299,21 @@ export function drawSeals(world, rock, state, t, from = null) {
   const ready = ensureSprite(sc, 'seal-rock', sealRockSVG, RES.rock, RES.rock * 0.65)
     & [0, 1, 2].map((v) => ensureSprite(sc, `seal-${v}`, () => sealSVG(v), RES.seal / 3, RES.seal)).every(Boolean)
     & ensureSprite(sc, 'seal-head', sealHeadSVG, RES.seal / 2, RES.seal / 2);
+  if (sc.textures.exists(k3.rock) && sc.textures.exists(k3.seal(2))) {
+    // The reef at the same size as before; seals placed on it, turning to watch an approaching boat.
+    world.spr(k3.rock, s.x, s.y, R * 2.6, R * 2.6, 0.3, 1, 5);
+    const look = from ? Math.atan2(from.x - rock.x, from.y - rock.y) : null;
+    const spots = [[-0.42, -0.1], [-0.15, 0.06], [0.1, -0.08], [0.33, 0.1], [0.5, -0.04]];
+    if (state !== 'flushed') spots.forEach(([dx, dy], i) => {
+      const rot = state === 'alert' && look != null ? look : 1.3 + i * 1.7;
+      world.spr(k3.seal(i), s.x + dx * R * 1.6, s.y + dy * R * 1.6, R * 0.3, R * 0.6, rot, 1, 6);
+    });
+    else for (let i = 0; i < 5; i++) {
+      const a = (i / 5) * Math.PI * 2 + t * 0.3;
+      world.spr(k3.sealHead, s.x + Math.cos(a) * R * 1.6, s.y + Math.sin(a) * R * 1.1, R * 0.4, R * 0.4, a, 1, 6);
+    }
+    return;
+  }
   if (!ready) {
     g.fillStyle(0x5a574f, 1);
     g.fillEllipse(s.x, s.y, R * 2.2, R * 1.3);
@@ -288,6 +342,11 @@ export function drawFerry(world, f) {
   const g = world.overG, sc = world.scene;
   const s = world.toScreen(f.x, f.y);
   const L = Math.max(110 * world.ppm, px(60));
+  if (sc.textures.exists(k3.ferry)) {
+    const F = F3.ferry, mm = L / 110;
+    world.spr(k3.ferry, s.x, s.y, F.spanZ * mm, F.spanX * mm, f.heading, 1, 7);
+    return;
+  }
   if (ensureSprite(sc, 'ferry', ferrySVG, RES.ferry / 5, RES.ferry)) {
     world.spr('ferry', s.x + L * 0.015, s.y + L * 0.02, L * 0.21, L * 1.01, f.heading, 0.3, 6).setTint?.(0x00161c);
     world.spr('ferry', s.x, s.y, L * 0.2, L, f.heading, 1, 7).clearTint?.();

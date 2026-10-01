@@ -65,6 +65,8 @@ export class Paddle extends Phaser.Scene {
     this.skin = skinOf(state.save.skin);
     // The partner paddles a different skin, so you can tell the boats apart.
     this.partnerSkin = SKINS.find((s) => s.id !== this.skin.id && s.deck !== this.skin.deck) ?? SKINS[1];
+    // Lit 3D boats, paddlers and wildlife, baked in the background; 2D sprites stand in meanwhile.
+    import('../render3d/bake.js').then((m) => m.bakeWater(this, [this.skin, this.partnerSkin], { wildlife: this.mode === 'trip' })).catch(() => {});
     this.me = { energy: this.resume?.energy ?? t?.energy ?? 1, fit: state.save.fitScore ?? 0.9, skills: state.save.skills };
     this.partnerPaddler = { energy: 1, fit: 1, skills: { forward: 200, sweep: 200, brace: 200 } };
 

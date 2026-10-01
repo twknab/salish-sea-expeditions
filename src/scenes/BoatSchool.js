@@ -4,7 +4,7 @@
 import Phaser from 'phaser';
 import { text, button, lessonCard, meter, fadeIn } from '../ui/widgets.js';
 import { backdrop } from '../ui/backdrop.js';
-import { loadArt, ART } from '../render/art.js';
+import { loadArt, ART, sideAnchors } from '../render/art.js';
 import { focusRing } from '../ui/focus.js';
 import { COLOR, CSS, layout, px } from '../ui/theme.js';
 import { KAYAK_PARTS, BODY_POINTS, PADDLE_PARTS } from '../content/anatomy.js';
@@ -131,7 +131,7 @@ export class BoatSchool extends Phaser.Scene {
     const pan = { x: 0 };
     const map = await this.art('kayakSide', cy, width, pan);
     const a = ART.kayakSide;
-    const spots = KAYAK_PARTS.map((p) => ({ id: p.id, item: p, pos: map(p.x * 1000, p.y * 300), get x() { return this.pos.x; }, get y() { return this.pos.y; } }));
+    const spots = KAYAK_PARTS.map((p) => ({ id: p.id, item: p, pos: map(...(sideAnchors[p.id] ?? [p.x * 1000, p.y * 300])), get x() { return this.pos.x; }, get y() { return this.pos.y; } }));
     const counter = text(this, W / 2, cy + 62, `0 of ${spots.length} parts · the ghosted lines are the frame, jacks and flotation inside`, 11, { color: CSS.mist, origin: [0.5, 0], align: 'center', wrap: W - 40 }).setDepth(10);
     const hint = text(this, W / 2, cy - 60, '‹  drag  ›', 11, { color: CSS.sun, origin: [0.5, 0], tracking: 2 }).setDepth(10);
     this.layer.push(counter, hint);

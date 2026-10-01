@@ -14,6 +14,8 @@ import { lessonById } from '../content/lessons.js';
 import { PLACES_INFO } from '../content/places.js';
 import { lesson, go } from '../state.js';
 import { pauseButton } from '../ui/pause.js';
+import { skinOf } from '../content/skins.js';
+import { state } from '../state.js';
 
 const SPOTS = [
   { id: 'shaw', name: 'Shaw Island', ...toLocal(48.566, -122.955) },
@@ -28,6 +30,7 @@ export class Ferry extends Phaser.Scene {
   constructor() { super('Ferry'); }
 
   create() {
+    import('../render3d/bake.js').then((m) => m.bakeWater(this, [skinOf(state.save.skin)], { tones: [], wildlife: false })).catch(() => {});
     fadeIn(this);
     this.world = new WorldView(this, { viewW: 2600 });
     // Across the channel, round the inside (north-west) of Brown Island, into the terminal.
