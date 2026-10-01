@@ -1,0 +1,77 @@
+# POST-MERGE: when Checks pass on main, build the image, push it and roll out a new Cloud Run
+# revision to production (all traffic), then check /health.
+# Keyless: GitHub's OIDC token is exchanged for the deployer account via Workload Identity
+# Federation (created by infra/bootstrap, locked to this repository). No-ops until the secrets exist.
+name: Deploy (post-merge)
+on:
+  workflow_run:
+    workflows: [Checks]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch: {}
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+env:
+  REGION: us-west1
+  SERVICE: salish-sea-expeditions
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Skip until deploys are configured
+        id: cfg
+        run: |
+          if [ -z "${{ secrets.GCP_WIF_PROVIDER }}" ]; then
+            echo "Deploy secrets not set yet; see infra/README.md." | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.cfg.outputs.skip != 'true'
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0
+      # Two quick merges can finish CI out of order; never let an older commit overwrite a newer one.
+      - name: Skip if a newer commit is on main
+        id: fresh
+        if: steps.cfg.outputs.skip != 'true'
+        run: |
+          git fetch -q origin main
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+            echo "Skipping: not the newest main; its own deploy will ship it." | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: google-github-actions/auth@v2
+        if: steps.cfg.outputs.skip != 'true' && steps.fresh.outputs.skip != 'true'
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_DEPLOY_SA }}
+      - uses: google-github-actions/setup-gcloud@v2
+        if: steps.cfg.outputs.skip != 'true' && steps.fresh.outputs.skip != 'true'
+      - name: Build and push
+        id: image
+        if: steps.cfg.outputs.skip != 'true' && steps.fresh.outputs.skip != 'true'
+        run: |
+          repo="$REGION-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/salish-sea-expeditions/game"
+          gcloud auth configure-docker "$REGION-docker.pkg.dev" --quiet
+          docker build --platform linux/amd64 -t "$repo:${GITHUB_SHA::12}" .
+          docker push "$repo:${GITHUB_SHA::12}"
+          echo "ref=$(docker inspect --format='{{index .RepoDigests 0}}' "$repo:${GITHUB_SHA::12}")" >> "$GITHUB_OUTPUT"
+      - name: Roll out
+        if: steps.cfg.outputs.skip != 'true' && steps.fresh.outputs.skip != 'true'
+        run: |
+          gcloud run deploy "$SERVICE" --project "${{ secrets.GCP_PROJECT }}" --region "$REGION" \
+            --image "${{ steps.image.outputs.ref }}" --quiet
+          # Preview deploys pin traffic to a named revision; production always follows the newest.
+          gcloud run services update-traffic "$SERVICE" --project "${{ secrets.GCP_PROJECT }}" --region "$REGION" --to-latest --quiet
+          url="$(gcloud run services describe "$SERVICE" --project "${{ secrets.GCP_PROJECT }}" --region "$REGION" --format='value(status.url)')"
+          for i in 1 2 3 4 5 6; do
+            if curl -fsS "$url/health" >/dev/null; then echo "Deployed ${GITHUB_SHA::7} to $url" | tee -a "$GITHUB_STEP_SUMMARY"; exit 0; fi
+            sleep 10
+          done
+          echo "smoke test failed" >&2; exit 1

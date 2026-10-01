@@ -1,0 +1,13 @@
+# What `gcloud run deploy --source .` uploads to Cloud Build (mirrors .gitignore).
+.git
+.gitignore
+node_modules/
+dist/
+tests/smoke/out/
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+terraform.tfvars
+*.auto.tfvars
+.env*

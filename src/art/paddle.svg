@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 380" width="1000" height="380">
+  <!-- A two-piece carbon touring paddle held in the paddler's box. Left blade shows its power face;
+       the right blade is feathered, so it is seen edge-on. Gloved hands a little wider than the
+       shoulders, knuckles in line with the blade's top edge. -->
+  <defs>
+    <linearGradient id="carbon" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4a5157"/>
+      <stop offset="0.35" stop-color="#1c2024"/>
+      <stop offset="0.6" stop-color="#0d0f11"/>
+      <stop offset="1" stop-color="#2a2f34"/>
+    </linearGradient>
+    <pattern id="weave" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="#1a1e22"/>
+      <rect width="4" height="4" fill="#23282d"/>
+      <rect x="4" y="4" width="4" height="4" fill="#23282d"/>
+    </pattern>
+    <linearGradient id="face" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fdfaf1"/>
+      <stop offset="0.55" stop-color="#e9e2cf"/>
+      <stop offset="1" stop-color="#c9c0a8"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fbf7ec"/>
+      <stop offset="0.5" stop-color="#d8d0bb"/>
+      <stop offset="1" stop-color="#a39a82"/>
+    </linearGradient>
+    <linearGradient id="glove" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3c444b"/>
+      <stop offset="1" stop-color="#16191c"/>
+    </linearGradient>
+    <linearGradient id="cuff" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4c6b78"/>
+      <stop offset="1" stop-color="#23394a"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-30%" width="120%" height="180%">
+      <feDropShadow dx="0" dy="10" stdDeviation="9" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+    <!-- A gloved hand gripping the shaft, knuckles up, in a drysuit cuff -->
+    <g id="hand">
+      <path d="M-30 -80 C-28 -50 -26 -30 -24 -18 L26 -18 C26 -32 28 -54 32 -80 Z" fill="url(#cuff)"/>
+      <path d="M-24 -40 C-8 -44 10 -44 26 -40" stroke="#2c4552" stroke-width="2" fill="none"/>
+      <rect x="-27" y="-22" width="54" height="10" rx="4" fill="#1b2b33"/>
+      <!-- back of the hand -->
+      <path d="M-29 -14 C-32 -2 -32 10 -28 16 L30 16 C33 8 33 -4 29 -14 Z" fill="url(#glove)"/>
+      <!-- knuckles and curled fingers wrapping under the shaft -->
+      <path d="M-30 12 C-32 26 -28 40 -18 44 C-12 46 -8 42 -8 36 C-6 44 2 48 8 44 C12 42 12 38 12 34 C14 42 22 46 28 40 C32 36 32 24 30 12 Z" fill="#262b30"/>
+      <g stroke="#0e1113" stroke-width="1.6" fill="none">
+        <path d="M-8 18 C-8 26 -8 32 -8 36"/>
+        <path d="M12 18 C12 26 12 30 12 34"/>
+      </g>
+      <g fill="#48525a" opacity="0.8">
+        <ellipse cx="-18" cy="10" rx="7" ry="3"/>
+        <ellipse cx="2" cy="9" rx="7" ry="3"/>
+        <ellipse cx="21" cy="10" rx="6" ry="3"/>
+      </g>
+      <!-- thumb over the top of the shaft -->
+      <path d="M-26 -6 C-40 -4 -46 6 -40 12 C-34 16 -22 10 -14 6 Z" fill="#2f363c" stroke="#101316" stroke-width="1.2"/>
+    </g>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <!-- Shaft: bent-free straight carbon, with a ferrule joint in the middle -->
+    <rect x="150" y="182" width="700" height="18" rx="9" fill="url(#weave)"/>
+    <rect x="150" y="182" width="700" height="18" rx="9" fill="url(#carbon)" opacity="0.75"/>
+    <rect x="160" y="185" width="680" height="3" rx="1.5" fill="#ffffff" opacity="0.22"/>
+    <rect x="490" y="180" width="22" height="22" rx="4" fill="#8b949a"/>
+    <rect x="496" y="180" width="3" height="22" fill="#c9d0d4"/>
+    <!-- Drip rings -->
+    <ellipse cx="225" cy="191" rx="6" ry="20" fill="#1b1e21"/>
+    <ellipse cx="775" cy="191" rx="6" ry="20" fill="#1b1e21"/>
+    <ellipse cx="223" cy="187" rx="2" ry="12" fill="#6b747a"/>
+    <ellipse cx="773" cy="187" rx="2" ry="12" fill="#6b747a"/>
+
+    <!-- Left blade: power face toward you. Asymmetric touring shape: straighter top edge, fuller
+         lower edge, a spine down the middle. -->
+    <path d="M160 181 C120 176 80 170 46 168 C20 168 6 180 6 198 C6 222 26 236 58 234 C92 230 128 214 160 203 Z" fill="url(#face)"/>
+    <path d="M160 191 C120 192 70 196 10 200" stroke="#b9b09a" stroke-width="4" fill="none"/>
+    <path d="M160 189 C120 190 70 194 10 198" stroke="#ffffff" stroke-width="1.2" fill="none" opacity="0.7"/>
+    <path d="M160 181 C120 176 80 170 46 168 C20 168 6 180 6 198 C6 222 26 236 58 234 C92 230 128 214 160 203" stroke="#1c2024" stroke-width="3.5" fill="none"/>
+    <path d="M40 174 C70 172 110 176 146 182" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.55"/>
+    <path d="M24 214 C60 222 100 212 140 200" stroke="#9e957e" stroke-width="2" fill="none" opacity="0.6"/>
+    <!-- Right blade: feathered about 60°, so it is seen nearly edge-on -->
+    <path d="M840 186 C890 183 940 180 972 180 C988 181 996 186 996 191 C996 197 988 202 972 203 C940 203 890 199 840 196 Z" fill="url(#edge)"/>
+    <path d="M846 188 C900 186 950 185 994 188" stroke="#ffffff" stroke-width="1.4" fill="none" opacity="0.8"/>
+    <path d="M840 186 C890 183 940 180 972 180 C988 181 996 186 996 191 C996 197 988 202 972 203 C940 203 890 199 840 196" stroke="#1c2024" stroke-width="3" fill="none"/>
+  </g>
+
+  <use href="#hand" transform="translate(360 190)"/>
+  <use href="#hand" transform="translate(640 190)"/>
+</svg>

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" width="400" height="800">
+  <!-- Outfitting, layer 1 of 5: a paddler standing, front view, in a wool/synthetic base layer.
+       The figure is a neutral mannequin (no skin tone, no hair) so it implies no race or gender.
+       All five layers share this 400 × 800 canvas and stack in order. -->
+  <defs>
+    <linearGradient id="mq" x1="0" y1="0" x2="1" y2="0.3">
+      <stop offset="0" stop-color="#d3dcd8"/><stop offset="0.55" stop-color="#b3c1bc"/><stop offset="1" stop-color="#8d9c97"/>
+    </linearGradient>
+    <linearGradient id="bt" x1="100" y1="0" x2="300" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#666d77"/><stop offset="0.5" stop-color="#4c535c"/><stop offset="1" stop-color="#363b42"/>
+    </linearGradient>
+    <linearGradient id="bl" x1="120" y1="0" x2="280" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4a5059"/><stop offset="0.5" stop-color="#383d45"/><stop offset="1" stop-color="#282c32"/>
+    </linearGradient>
+    <radialGradient id="shadow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#000" stop-opacity="0.35"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="200" cy="778" rx="120" ry="16" fill="url(#shadow)"/>
+  <!-- Legs in leggings, socks -->
+  <g stroke="url(#bl)" stroke-width="52" stroke-linecap="round" fill="none">
+    <path d="M170 430 C166 520 160 600 160 680 L158 738"/>
+    <path d="M230 430 C234 520 240 600 240 680 L242 738"/>
+  </g>
+  <g fill="#8a8172">
+    <ellipse cx="152" cy="760" rx="30" ry="15"/><rect x="134" y="728" width="46" height="34" rx="12"/>
+    <ellipse cx="248" cy="760" rx="30" ry="15"/><rect x="220" y="728" width="46" height="34" rx="12"/>
+  </g>
+  <path d="M136 734 L180 734 M220 734 L264 734" stroke="#6f675a" stroke-width="3"/>
+  <!-- Pelvis -->
+  <path d="M128 408 L272 408 L278 470 C250 490 150 490 122 470 Z" fill="url(#bl)"/>
+  <path d="M200 430 L200 482" stroke="#23272c" stroke-width="2" opacity="0.6"/>
+  <!-- Hands, neck, head: the mannequin -->
+  <ellipse cx="103" cy="476" rx="15" ry="25" fill="url(#mq)" transform="rotate(3 103 476)"/>
+  <ellipse cx="297" cy="476" rx="15" ry="25" fill="url(#mq)" transform="rotate(-3 297 476)"/>
+  <rect x="181" y="132" width="38" height="52" rx="14" fill="url(#mq)"/>
+  <ellipse cx="200" cy="104" rx="37" ry="45" fill="url(#mq)"/>
+  <ellipse cx="163" cy="108" rx="6" ry="11" fill="#a4b2ad"/><ellipse cx="237" cy="108" rx="6" ry="11" fill="#98a6a1"/>
+  <path d="M176 76 C186 66 204 64 214 70" stroke="#ffffff" stroke-width="4" fill="none" opacity="0.35" stroke-linecap="round"/>
+  <!-- Base top -->
+  <path d="M178 176 C160 180 128 186 110 196 C98 204 96 222 100 240 L116 250 C124 300 132 360 128 424 L272 424 C268 360 276 300 284 250 L300 240 C304 222 302 204 290 196 C272 186 240 180 222 176 C214 188 186 188 178 176 Z" fill="url(#bt)"/>
+  <path d="M178 176 C186 190 214 190 222 176" stroke="#2e3238" stroke-width="4" fill="none"/>
+  <!-- Flatlock seams and a waffle-knit hint -->
+  <g stroke="#7b838d" stroke-width="1.5" fill="none" opacity="0.6">
+    <path d="M122 200 C140 230 150 260 148 300"/><path d="M278 200 C260 230 250 260 252 300"/>
+    <path d="M132 418 C170 424 230 424 268 418"/>
+  </g>
+  <g stroke="#2e3238" stroke-width="3" opacity="0.8"><path d="M86 444 L119 447"/><path d="M314 444 L281 447"/></g>
+  <g stroke="#0c1a1f" stroke-opacity="0.35" stroke-width="41" stroke-linecap="round" fill="none"><path d="M112 214 C104 300 100 380 102 448"/><path d="M288 214 C296 300 300 380 298 448"/></g>
+  <!-- Arms in the base top -->
+  <g stroke="url(#bt)" stroke-width="36" stroke-linecap="round" fill="none">
+    <path d="M112 214 C104 300 100 380 102 448"/>
+    <path d="M288 214 C296 300 300 380 298 448"/>
+  </g>
+</svg>

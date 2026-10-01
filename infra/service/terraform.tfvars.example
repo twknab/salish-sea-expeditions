@@ -1,0 +1,5 @@
+project_id               = "your-project-id"
+region                   = "us-west1"
+image                    = "us-west1-docker.pkg.dev/your-project-id/salish-sea-expeditions/game@sha256:<digest>"
+deployer_service_account = "sse-deployer@your-project-id.iam.gserviceaccount.com" # or ""
+domain                   = "" # e.g. "salish.timknab.dev"

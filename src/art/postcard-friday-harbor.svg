@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" width="600" height="380">
+  <!-- Friday Harbor from the water: the town on its hill above the marina masts, the ferry landing,
+       a floatplane at the harbour, a madrona leaning over the shore, and Mount Baker far off across
+       the islands to the east. Drawn for the game. -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7fb0c9"/><stop offset="0.7" stop-color="#cfe2e6"/><stop offset="1" stop-color="#e8efe9"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6fa3a8"/><stop offset="0.5" stop-color="#2d6f73"/><stop offset="1" stop-color="#123d45"/>
+    </linearGradient>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4c6e4a"/><stop offset="1" stop-color="#2d4a33"/>
+    </linearGradient>
+    <linearGradient id="bark" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b8491f"/><stop offset="0.5" stop-color="#d9713a"/><stop offset="1" stop-color="#8a3313"/>
+    </linearGradient>
+    <linearGradient id="snow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#c5d3dc"/>
+    </linearGradient>
+    <filter id="haze"><feGaussianBlur stdDeviation="0.8"/></filter>
+  </defs>
+  <rect width="600" height="380" fill="url(#sky)"/>
+  <!-- Mount Baker, far off -->
+  <path d="M340 132 L392 92 C398 88 404 88 410 92 L470 134 Z" fill="url(#snow)" opacity="0.85" filter="url(#haze)"/>
+  <path d="M388 100 L380 118 L398 108 L404 126 L412 110" stroke="#9fb3bf" stroke-width="2" fill="none" opacity="0.6"/>
+  <!-- Distant islands -->
+  <path d="M250 140 C320 126 420 128 600 138 L600 156 L250 156 Z" fill="#8fa9ad" opacity="0.8"/>
+  <!-- The town on its hill -->
+  <path d="M0 110 C60 96 120 100 180 118 C230 132 280 144 330 158 L330 196 L0 196 Z" fill="url(#hill)"/>
+  <g fill="#355a3a"><circle cx="30" cy="104" r="16"/><circle cx="60" cy="100" r="14"/><circle cx="100" cy="104" r="18"/><circle cx="150" cy="112" r="15"/></g>
+  <g>
+    <rect x="40" y="126" width="26" height="18" fill="#e9dcc2"/><path d="M38 126 L53 116 L68 126 Z" fill="#8b4a3a"/>
+    <rect x="74" y="132" width="30" height="20" fill="#d6c8a8"/><path d="M72 132 L89 122 L106 132 Z" fill="#5b6a70"/>
+    <rect x="112" y="138" width="22" height="16" fill="#f0eadb"/><path d="M110 138 L123 130 L136 138 Z" fill="#9a5540"/>
+    <rect x="140" y="146" width="34" height="20" fill="#c9b690"/><path d="M138 146 L157 136 L176 146 Z" fill="#4d5a60"/>
+    <rect x="180" y="150" width="26" height="18" fill="#e4d3b0"/><path d="M178 150 L193 142 L208 150 Z" fill="#7d3f30"/>
+    <rect x="60" y="154" width="36" height="22" fill="#b98d66"/><rect x="100" y="160" width="30" height="18" fill="#efe6d3"/>
+    <rect x="212" y="160" width="40" height="22" fill="#d9c9a5"/><path d="M210 160 L232 150 L254 160 Z" fill="#6a4a3a"/>
+  </g>
+  <g fill="#2b3a40" opacity="0.8">
+    <rect x="46" y="132" width="5" height="5"/><rect x="56" y="132" width="5" height="5"/><rect x="80" y="138" width="5" height="5"/><rect x="92" y="138" width="5" height="5"/>
+    <rect x="146" y="152" width="5" height="5"/><rect x="160" y="152" width="5" height="5"/><rect x="218" y="166" width="6" height="5"/><rect x="234" y="166" width="6" height="5"/>
+  </g>
+  <!-- Waterfront and breakwater -->
+  <path d="M0 188 L340 190 L340 198 L0 198 Z" fill="#5b4a3a"/>
+  <rect y="196" width="600" height="184" fill="url(#sea)"/>
+  <!-- Marina: floats and a forest of masts -->
+  <g fill="#e9e4d8"><rect x="10" y="214" width="250" height="4"/><rect x="30" y="234" width="210" height="4"/></g>
+  <g stroke="#f4f1ea" stroke-width="1.6">
+    <path d="M24 212 L24 150"/><path d="M40 212 L40 162"/><path d="M58 212 L58 142"/><path d="M76 212 L76 170"/><path d="M92 212 L92 156"/>
+    <path d="M112 212 L112 146"/><path d="M130 212 L130 166"/><path d="M150 212 L150 152"/><path d="M170 212 L170 174"/><path d="M190 212 L190 158"/>
+    <path d="M210 212 L210 168"/><path d="M232 212 L232 150"/><path d="M50 232 L50 176"/><path d="M84 232 L84 186"/><path d="M120 232 L120 170"/><path d="M160 232 L160 180"/><path d="M200 232 L200 176"/>
+  </g>
+  <g fill="#ffffff">
+    <path d="M16 212 L34 212 L32 206 L18 206 Z"/><path d="M50 212 L66 212 L64 206 L52 206 Z"/><path d="M84 212 L100 212 L98 206 L86 206 Z"/>
+    <path d="M104 212 L122 212 L120 206 L106 206 Z"/><path d="M142 212 L160 212 L158 206 L144 206 Z"/><path d="M182 212 L200 212 L198 206 L184 206 Z"/>
+    <path d="M224 212 L242 212 L240 206 L226 206 Z"/><path d="M42 232 L60 232 L58 226 L44 226 Z"/><path d="M112 232 L130 232 L128 226 L114 226 Z"/><path d="M192 232 L210 232 L208 226 L194 226 Z"/>
+  </g>
+  <!-- Ferry landing with a ferry alongside -->
+  <g fill="#5b4a3a"><rect x="300" y="186" width="8" height="30"/><rect x="316" y="188" width="8" height="28"/><rect x="420" y="190" width="8" height="26"/></g>
+  <path d="M290 196 L340 196 L340 200 L290 202 Z" fill="#6e7a7e"/>
+  <path d="M330 206 L470 206 L464 222 L336 222 Z" fill="#ffffff"/><path d="M332 209 L468 209 L466 214 L334 214 Z" fill="#2f7d5a"/>
+  <rect x="346" y="190" width="108" height="16" fill="#f6f8f7"/><rect x="352" y="194" width="96" height="5" fill="#1d2a2f"/>
+  <rect x="392" y="180" width="14" height="10" fill="#ffffff"/>
+  <!-- Floatplane on the water -->
+  <g transform="translate(470 236)">
+    <path d="M0 10 L40 10 L44 14 L2 14 Z" fill="#e9ecea"/><path d="M4 18 L42 18 L44 20 L6 20 Z" fill="#c9cfd2"/>
+    <path d="M10 0 L34 0 L38 10 L6 10 Z" fill="#f2b441"/><rect x="14" y="2" width="16" height="4" fill="#1d2a2f"/>
+    <path d="M-10 4 L56 4 L56 6 L-10 6 Z" fill="#f6f8f7"/><path d="M34 0 L42 -8 L44 -8 L40 4 Z" fill="#f2b441"/>
+    <g stroke="#9aa6a8" stroke-width="1.5"><path d="M14 14 L12 18"/><path d="M32 14 L34 18"/></g>
+  </g>
+  <!-- Sparkle and ripples -->
+  <g stroke="#ffffff" stroke-linecap="round" opacity="0.5">
+    <path d="M300 260 L350 260" stroke-width="1.5"/><path d="M360 280 L420 280" stroke-width="1.5"/><path d="M200 300 L240 300" stroke-width="1.2"/><path d="M80 330 L130 330" stroke-width="1.2"/>
+  </g>
+  <!-- Two kayaks heading out (black & blue, red & white) -->
+  <g transform="translate(250 300) rotate(-8)">
+    <path d="M0 0 C20 -5 70 -5 90 0 C70 5 20 5 0 0 Z" fill="#1b1e21"/><path d="M60 -3 L78 -2 L78 2 L60 3 Z" fill="#2d9be0"/>
+    <ellipse cx="40" cy="0" rx="7" ry="2.5" fill="#0c0e10"/><circle cx="40" cy="-4" r="4" fill="#e7a33a"/>
+    <path d="M24 -14 L56 10" stroke="#2b2b2b" stroke-width="2"/>
+  </g>
+  <g transform="translate(330 330) rotate(-6)">
+    <path d="M0 0 C20 -5 70 -5 90 0 C70 5 20 5 0 0 Z" fill="#d21f3c"/><path d="M60 -3 L78 -2 L78 2 L60 3 Z" fill="#f6f6f4"/>
+    <ellipse cx="40" cy="0" rx="7" ry="2.5" fill="#0c0e10"/><circle cx="40" cy="-4" r="4" fill="#e9f1ee"/>
+    <path d="M56 -12 L24 10" stroke="#2b2b2b" stroke-width="2"/>
+  </g>
+  <!-- Madrona leaning in from the right, peeling red bark -->
+  <path d="M600 200 C570 190 540 160 530 110 C526 90 530 60 540 40 L552 42 C544 64 542 92 548 112 C556 150 580 176 600 186 Z" fill="url(#bark)"/>
+  <path d="M536 108 C520 96 500 94 486 100" stroke="#b8491f" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M542 70 C560 58 578 54 596 58" stroke="#c45a28" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <g fill="#3d6b3a"><ellipse cx="490" cy="92" rx="30" ry="16"/><ellipse cx="540" cy="36" rx="36" ry="18"/><ellipse cx="584" cy="52" rx="30" ry="16"/><ellipse cx="516" cy="70" rx="22" ry="12"/></g>
+  <g fill="#5d8f4e"><ellipse cx="482" cy="86" rx="16" ry="7"/><ellipse cx="530" cy="30" rx="20" ry="8"/><ellipse cx="578" cy="46" rx="16" ry="7"/></g>
+  <path d="M600 200 L600 380 L560 380 C570 300 580 240 600 200 Z" fill="#6b5a44"/>
+</svg>

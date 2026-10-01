@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" width="600" height="380">
+  <!-- Anacortes ferry terminal in late-afternoon light, looking west: a white-and-green island ferry at the slip, the
+       wing walls and transfer span, a walk-on passenger with a wheeled kayak bag, and the San Juan
+       Islands in layers to the west. Drawn for the game; no operator marks. -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8fb3c4"/><stop offset="0.55" stop-color="#f1d3ae"/><stop offset="1" stop-color="#f6e2c4"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9dbfc4"/><stop offset="0.4" stop-color="#4d8a92"/><stop offset="1" stop-color="#1b4d55"/>
+    </linearGradient>
+    <linearGradient id="hullg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d7dfe0"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fff4d6"/><stop offset="0.4" stop-color="#ffe2a8" stop-opacity="0.7"/><stop offset="1" stop-color="#ffe2a8" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="haze"><feGaussianBlur stdDeviation="1.2"/></filter>
+    <clipPath id="card"><rect width="600" height="380" rx="0"/></clipPath>
+  </defs>
+  <g clip-path="url(#card)">
+    <rect width="600" height="380" fill="url(#sky)"/>
+    <circle cx="470" cy="150" r="90" fill="url(#sun)"/>
+    <!-- Islands to the west, fading with distance -->
+    <path d="M0 176 C60 162 110 158 170 168 C220 150 290 146 350 160 C420 150 500 156 600 166 L600 200 L0 200 Z" fill="#a9bcc4" filter="url(#haze)"/>
+    <path d="M0 188 C50 176 120 172 180 182 C240 170 300 176 360 184 C430 172 520 176 600 184 L600 206 L0 206 Z" fill="#7f99a3"/>
+    <path d="M-10 200 C40 186 100 180 150 190 C190 176 250 180 300 196 L300 212 L-10 212 Z" fill="#4f6f66"/>
+    <!-- Sea -->
+    <rect y="200" width="600" height="180" fill="url(#sea)"/>
+    <g stroke="#fff3d9" stroke-linecap="round" opacity="0.55">
+      <path d="M420 214 L500 214" stroke-width="2"/><path d="M400 226 L520 226" stroke-width="1.5"/><path d="M430 240 L490 240" stroke-width="1.5"/>
+      <path d="M60 260 L110 260" stroke-width="1.2"/><path d="M200 300 L240 300" stroke-width="1.2"/>
+    </g>
+    <!-- Wing walls: timber dolphins either side of the slip -->
+    <g fill="#5b4a3a">
+      <rect x="198" y="170" width="10" height="92" rx="2"/><rect x="214" y="176" width="10" height="86" rx="2"/><rect x="230" y="182" width="10" height="80" rx="2"/>
+      <rect x="456" y="182" width="10" height="84" rx="2"/><rect x="472" y="176" width="10" height="90" rx="2"/>
+    </g>
+    <g fill="#3a2f26"><rect x="196" y="166" width="46" height="8" rx="2"/><rect x="454" y="172" width="30" height="8" rx="2"/></g>
+    <!-- The ferry, bow into the slip -->
+    <g>
+      <path d="M180 236 L520 236 L508 262 L196 262 Z" fill="url(#hullg)"/>
+      <path d="M182 240 L518 240 L514 248 L186 248 Z" fill="#2f7d5a"/>
+      <rect x="214" y="206" width="276" height="30" fill="#f6f8f7"/>
+      <g fill="#1d2a2f"><rect x="222" y="214" width="260" height="8" rx="2"/></g>
+      <g fill="#f6f8f7" opacity="0.95">
+        <rect x="222" y="214" width="2" height="8"/><rect x="250" y="214" width="2" height="8"/><rect x="278" y="214" width="2" height="8"/>
+        <rect x="306" y="214" width="2" height="8"/><rect x="334" y="214" width="2" height="8"/><rect x="362" y="214" width="2" height="8"/>
+        <rect x="390" y="214" width="2" height="8"/><rect x="418" y="214" width="2" height="8"/><rect x="446" y="214" width="2" height="8"/>
+      </g>
+      <rect x="240" y="188" width="224" height="18" fill="#ffffff"/>
+      <path d="M240 200 L464 200" stroke="#2f7d5a" stroke-width="3"/>
+      <!-- Pilothouses at both ends and the stack -->
+      <rect x="244" y="174" width="34" height="14" fill="#ffffff"/><rect x="246" y="177" width="30" height="5" fill="#1d2a2f"/>
+      <rect x="426" y="174" width="34" height="14" fill="#ffffff"/><rect x="428" y="177" width="30" height="5" fill="#1d2a2f"/>
+      <rect x="340" y="164" width="22" height="24" fill="#ffffff"/><rect x="340" y="164" width="22" height="6" fill="#1d2a2f"/>
+      <path d="M346 150 C350 142 358 140 364 144" stroke="#e8e2d8" stroke-width="5" fill="none" opacity="0.6" stroke-linecap="round"/>
+      <!-- Car deck opening and reflection -->
+      <rect x="196" y="236" width="24" height="18" fill="#2a3438"/>
+    </g>
+    <path d="M190 266 L508 266" stroke="#ffffff" stroke-width="3" opacity="0.35"/>
+    <g opacity="0.25" transform="translate(0 530) scale(1 -1)"><path d="M180 236 L520 236 L508 262 L196 262 Z" fill="#ffffff"/></g>
+    <!-- Terminal: transfer span and passenger ramp -->
+    <path d="M0 250 L190 238 L190 248 L0 262 Z" fill="#6e7a7e"/>
+    <path d="M0 262 L190 248 L190 252 L0 268 Z" fill="#4a5457"/>
+    <path d="M40 214 L200 206 L200 210 L40 220 Z" fill="#c9d0d2"/>
+    <g stroke="#8a9598" stroke-width="2"><path d="M60 218 L60 252"/><path d="M100 216 L100 248"/><path d="M140 214 L140 246"/><path d="M180 208 L180 242"/></g>
+    <!-- Foreground: the terminal walkway with a walk-on paddler and their wheeled kayak bag -->
+    <path d="M0 312 L600 300 L600 380 L0 380 Z" fill="#3f4b4f"/>
+    <path d="M0 312 L600 300" stroke="#cfd6d8" stroke-width="3"/>
+    <g stroke="#9aa6a8" stroke-width="3"><path d="M0 300 L600 288"/><path d="M40 300 L40 312"/><path d="M160 297 L160 310"/><path d="M280 295 L280 307"/><path d="M400 292 L400 305"/><path d="M520 290 L520 302"/></g>
+    <g transform="translate(96 256)">
+      <!-- The bag: a tall teal roller (the whole kayak, frame and skin, inside) -->
+      <rect x="30" y="8" width="30" height="60" rx="5" fill="#1f5a66"/>
+      <rect x="33" y="44" width="24" height="20" rx="3" fill="#20292e" opacity="0.7"/>
+      <path d="M36 8 L36 0 L54 0 L54 8" stroke="#15181b" stroke-width="3" fill="none"/>
+      <circle cx="36" cy="70" r="4" fill="#15181b"/><circle cx="54" cy="70" r="4" fill="#15181b"/>
+      <!-- The paddler, walking, rain shell and cap -->
+      <path d="M8 20 C6 10 12 4 18 4 C24 4 28 10 26 20 Z" fill="#e7a33a"/>
+      <circle cx="17" cy="0" r="6" fill="#b7c4bf"/><path d="M11 -2 C12 -8 22 -8 23 -2 Z" fill="#20292e"/>
+      <path d="M10 20 L6 46 L12 46 L16 24 Z M24 20 L28 46 L22 46 L20 26 Z" fill="#2f4a56"/>
+      <path d="M24 12 L32 20" stroke="#e7a33a" stroke-width="4" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>

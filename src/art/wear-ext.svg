@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" width="400" height="800">
+  <!-- Outfitting, layer 5 of 5: neoprene skull cap, sunglasses, gloves and booties. -->
+  <defs>
+    <linearGradient id="nx" x1="0" y1="0" x2="1" y2="0.4">
+      <stop offset="0" stop-color="#3a4046"/><stop offset="0.6" stop-color="#1f2428"/><stop offset="1" stop-color="#121518"/>
+    </linearGradient>
+    <linearGradient id="lens" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5a8ea0"/><stop offset="0.4" stop-color="#1b2a33"/><stop offset="1" stop-color="#0a1014"/>
+    </linearGradient>
+  </defs>
+  <!-- Skull cap -->
+  <path d="M162 104 C160 72 178 56 200 56 C222 56 240 72 238 104 C230 96 216 90 200 90 C184 90 170 96 162 104 Z" fill="url(#nx)"/>
+  <path d="M160 100 C160 118 166 128 170 132 L170 110 Z M240 100 C240 118 234 128 230 132 L230 110 Z" fill="url(#nx)"/>
+  <path d="M200 58 L200 90" stroke="#4a5258" stroke-width="2"/>
+  <!-- Sunglasses -->
+  <path d="M168 104 L232 104" stroke="#15181b" stroke-width="4"/>
+  <rect x="170" y="100" width="26" height="17" rx="7" fill="url(#lens)"/>
+  <rect x="204" y="100" width="26" height="17" rx="7" fill="url(#lens)"/>
+  <path d="M175 104 L186 104" stroke="#ffffff" stroke-width="2" opacity="0.5"/>
+  <!-- Gloves -->
+  <g fill="url(#nx)">
+    <path d="M87 452 C85 468 87 490 95 502 C101 510 115 510 119 500 C123 486 123 466 119 452 Z"/>
+    <path d="M313 452 C315 468 313 490 305 502 C299 510 285 510 281 500 C277 486 277 466 281 452 Z"/>
+  </g>
+  <g stroke="#4a5258" stroke-width="1.5"><path d="M101 480 L101 502"/><path d="M109 480 L109 504"/><path d="M299 480 L299 502"/><path d="M291 480 L291 504"/></g>
+  <!-- Booties with grippy soles -->
+  <g fill="url(#nx)">
+    <path d="M120 716 L190 716 L192 756 C192 774 170 782 148 780 C122 778 112 768 114 754 Z"/>
+    <path d="M280 716 L210 716 L208 756 C208 774 230 782 252 780 C278 778 288 768 286 754 Z"/>
+  </g>
+  <g fill="#c86a1e"><path d="M114 766 C130 784 176 786 192 770 L192 776 C176 792 128 790 114 772 Z"/><path d="M286 766 C270 784 224 786 208 770 L208 776 C224 792 272 790 286 772 Z"/></g>
+  <g stroke="#4a5258" stroke-width="2"><path d="M122 726 L190 726"/><path d="M210 726 L278 726"/></g>
+</svg>

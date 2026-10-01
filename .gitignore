@@ -1,0 +1,12 @@
+node_modules/
+dist/
+tests/smoke/out/
+.DS_Store
+*.log
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+terraform.tfvars
+*.auto.tfvars
+.env*

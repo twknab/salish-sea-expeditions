@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" width="400" height="800">
+  <!-- Outfitting, layer 3 of 5: the drysuit — latex neck and wrist gaskets, built-in socks,
+       a diagonal front entry zip, reinforced knees and seat. -->
+  <defs>
+    <linearGradient id="ds" x1="90" y1="0" x2="310" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5a7c8a"/><stop offset="0.5" stop-color="#3a5866"/><stop offset="1" stop-color="#253b46"/>
+    </linearGradient>
+    <linearGradient id="dl" x1="110" y1="0" x2="290" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4c6b78"/><stop offset="0.5" stop-color="#34505c"/><stop offset="1" stop-color="#22363f"/>
+    </linearGradient>
+    <linearGradient id="sock" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6b7f88"/><stop offset="1" stop-color="#4a5c65"/>
+    </linearGradient>
+  </defs>
+  <!-- Legs, with built-in socks -->
+  <g stroke="url(#dl)" stroke-width="68" stroke-linecap="round" fill="none">
+    <path d="M170 432 C166 520 160 600 160 680 L158 722"/><path d="M230 432 C234 520 240 600 240 680 L242 722"/>
+  </g>
+  <g fill="url(#sock)">
+    <path d="M124 718 L192 718 L190 752 C190 772 170 778 150 776 C126 774 116 764 118 752 Z"/>
+    <path d="M276 718 L208 718 L210 752 C210 772 230 778 250 776 C274 774 284 764 282 752 Z"/>
+  </g>
+  <path d="M124 718 L192 718 M208 718 L276 718" stroke="#1b2a31" stroke-width="3"/>
+  <!-- Reinforced knees and seat -->
+  <g fill="#1f323b" opacity="0.85">
+    <path d="M136 568 C150 556 176 556 190 568 L188 628 C174 640 150 640 136 628 Z"/>
+    <path d="M264 568 C250 556 224 556 210 568 L212 628 C226 640 250 640 264 628 Z"/>
+  </g>
+  <path d="M118 398 L282 398 L290 478 C254 500 146 500 110 478 Z" fill="url(#dl)"/>
+  <!-- Torso -->
+  <path d="M174 166 C152 172 118 180 98 192 C82 204 82 226 88 248 L108 258 C116 310 120 370 116 440 L284 440 C280 370 284 310 292 258 L312 248 C318 226 318 204 302 192 C282 180 248 172 226 166 Z" fill="url(#ds)"/>
+  <!-- Shoulder yoke panels -->
+  <path d="M174 166 C152 172 118 180 98 192 C92 198 90 206 90 214 C120 206 150 206 172 214 Z" fill="#6b8f9c" opacity="0.55"/>
+  <path d="M226 166 C248 172 282 180 302 192 C308 198 310 206 310 214 C280 206 250 206 228 214 Z" fill="#4a6d7a" opacity="0.55"/>
+  <!-- Neck: latex gasket under a neoprene collar -->
+  <path d="M180 140 C192 134 208 134 220 140 L222 168 C210 174 190 174 178 168 Z" fill="#15181b"/>
+  <path d="M168 160 C186 176 214 176 232 160 L236 176 C214 194 186 194 164 176 Z" fill="#20292e"/>
+  <!-- Diagonal front entry zip with its teeth, and the relief zip -->
+  <path d="M132 214 L266 404" stroke="#0f1519" stroke-width="7" stroke-linecap="round"/>
+  <path d="M132 214 L266 404" stroke="#c9cfd2" stroke-width="2.5" stroke-dasharray="3 3"/>
+  <rect x="258" y="394" width="12" height="18" rx="3" fill="#c9cfd2" transform="rotate(-35 264 403)"/>
+  <path d="M176 410 L224 470" stroke="#0f1519" stroke-width="4" stroke-linecap="round"/>
+  <path d="M118 432 C170 442 230 442 282 432" stroke="#1b2a31" stroke-width="3" fill="none"/>
+  <g stroke="#0c1a1f" stroke-opacity="0.35" stroke-width="57" stroke-linecap="round" fill="none"><path d="M112 214 C104 300 100 380 102 448"/><path d="M288 214 C296 300 300 380 298 448"/></g>
+  <!-- Sleeves, wrist gaskets -->
+  <g stroke="url(#ds)" stroke-width="52" stroke-linecap="round" fill="none">
+    <path d="M112 214 C104 300 100 380 102 448"/><path d="M288 214 C296 300 300 380 298 448"/>
+  </g>
+  <g fill="#15181b">
+    <rect x="85" y="438" width="36" height="16" rx="6" transform="rotate(3 103 446)"/>
+    <rect x="279" y="438" width="36" height="16" rx="6" transform="rotate(-3 297 446)"/>
+  </g>
+</svg>

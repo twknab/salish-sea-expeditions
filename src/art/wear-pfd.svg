@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" width="400" height="800">
+  <!-- Outfitting, layer 4 of 5: spray skirt (grab loop out) and PFD with whistle, knife and VHF. -->
+  <defs>
+    <linearGradient id="neo" x1="100" y1="0" x2="300" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3a4046"/><stop offset="0.5" stop-color="#23282c"/><stop offset="1" stop-color="#15181b"/>
+    </linearGradient>
+    <linearGradient id="pfd" x1="100" y1="0" x2="300" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f6c15a"/><stop offset="0.5" stop-color="#e7a33a"/><stop offset="1" stop-color="#b87422"/>
+    </linearGradient>
+  </defs>
+  <!-- Spray skirt: tunnel up the chest, deck hanging to mid-thigh -->
+  <path d="M108 420 C150 432 250 432 292 420 L318 520 C260 544 140 544 82 520 Z" fill="url(#neo)"/>
+  <path d="M82 520 C140 544 260 544 318 520" stroke="#50585e" stroke-width="3" fill="none"/>
+  <path d="M184 536 C178 560 222 560 216 536" stroke="#f08a24" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <circle cx="200" cy="552" r="7" fill="#f08a24"/>
+  <path d="M118 330 L282 330 L290 426 C250 436 150 436 110 426 Z" fill="url(#neo)"/>
+  <!-- PFD -->
+  <path d="M146 176 C136 176 124 184 122 196 L120 250 C112 256 108 270 110 290 L112 390 C150 404 250 404 288 390 L290 290 C292 270 288 256 280 250 L278 196 C276 184 264 176 254 176 L236 176 C232 214 220 236 200 236 C180 236 168 214 164 176 Z" fill="url(#pfd)"/>
+  <!-- Arm openings -->
+  <path d="M122 250 C132 262 136 282 132 300 L112 296" fill="#c58026" opacity="0.6"/>
+  <path d="M278 250 C268 262 264 282 268 300 L288 296" fill="#a8641a" opacity="0.6"/>
+  <!-- Front zip and side straps -->
+  <path d="M200 238 L200 398" stroke="#23272b" stroke-width="5"/>
+  <path d="M200 238 L200 398" stroke="#c9cfd2" stroke-width="1.6" stroke-dasharray="3 3"/>
+  <g stroke="#23272b" stroke-width="7"><path d="M112 356 C150 364 250 364 288 356"/><path d="M112 378 C150 386 250 386 288 378"/></g>
+  <rect x="150" y="354" width="18" height="14" rx="3" fill="#15181b"/><rect x="232" y="376" width="18" height="14" rx="3" fill="#15181b"/>
+  <!-- Pockets: VHF (with antenna) on the left, a second pocket on the right -->
+  <path d="M134 262 C150 256 176 258 184 262 L184 318 C168 322 148 322 134 318 Z" fill="#d18f2e" stroke="#9c5f18" stroke-width="2"/>
+  <rect x="150" y="226" width="8" height="40" rx="3" fill="#15181b"/>
+  <rect x="146" y="252" width="18" height="12" rx="2" fill="#2b3136"/>
+  <path d="M216 262 C224 258 250 256 266 262 L266 318 C252 322 232 322 216 318 Z" fill="#c9852a" stroke="#8a5414" stroke-width="2"/>
+  <!-- Whistle on its cord; knife on the lash tab -->
+  <path d="M254 236 C268 244 270 260 262 272" stroke="#e24b2c" stroke-width="2.5" fill="none"/>
+  <path d="M252 270 L276 270 L278 282 L256 284 Z" fill="#e24b2c"/><circle cx="262" cy="277" r="3" fill="#7b1f10"/>
+  <rect x="226" y="206" width="16" height="36" rx="5" fill="#15181b"/><rect x="229" y="200" width="10" height="12" rx="3" fill="#f2b441"/>
+  <!-- Reflective patches and shoulder adjusters -->
+  <g fill="#dfe6e8" opacity="0.9"><rect x="128" y="190" width="22" height="7" rx="2"/><rect x="250" y="190" width="22" height="7" rx="2"/></g>
+  <g fill="#15181b"><rect x="134" y="178" width="20" height="8" rx="2"/><rect x="246" y="178" width="20" height="8" rx="2"/></g>
+</svg>
