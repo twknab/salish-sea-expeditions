@@ -670,10 +670,10 @@ export class Paddle extends Phaser.Scene {
     drv.phase += dt * (0.4 + 0.9 * drv.drive) * (k.upright ? 1 : 0);
     const restingNow = this.resting || drv.drive < 0.08;
     w.drawWakes([['p', k], ['q', this.partner]], dt);
-    w.overG.clear();
+    w.beginFrame();
 
     if (this.mode === 'trip') {
-      drawSeals(w, PLACES.sealRocks, this.sealStateNow ?? 'resting', this.visualTime);
+      drawSeals(w, PLACES.sealRocks, this.sealStateNow ?? 'resting', this.visualTime, k);
       ring(w, PLACES.sealRocks.x, PLACES.sealRocks.y, 91, COLOR.sun, 0.25);
       if (this.pod) { drawOrcas(w, this.pod, this.visualTime); ring(w, k.x, k.y, 914, COLOR.danger, 0.35); }
       if (this.ferry) drawFerry(w, this.ferry);

@@ -6,38 +6,52 @@ there is no database and the runtime service account has **no project roles**. D
 (`us-west1`), scale to zero, at most three instances, 1 CPU and 256 MiB. Registry storage and
 Cloud Run usage can cost money; the instance limit is not a billing cap.
 
-## First deployment
+## First deployment (from your machine)
 
-Prerequisites: a GCP project with billing, Terraform ≥ 1.6, Docker with Buildx, and the Google
-Cloud CLI. Authenticate locally — never commit credentials:
+Prerequisites: Terraform ≥ 1.6, Docker running (Buildx), and the Google Cloud CLI, logged in.
+Never commit credentials:
 
 ```sh
 gcloud auth login
 gcloud auth application-default login
+gcloud config set project twk-experiments
 ```
 
 From the repository root:
 
 ```sh
-bash deploy/cloud-run.sh YOUR_PROJECT_ID us-west1 twknab/salish-sea-expeditions
+bash deploy/cloud-run.sh            # current gcloud project, us-west1, this GitHub repo
+bash deploy/cloud-run.sh twk-experiments us-west1 twknab/salish-sea-expeditions   # explicit
+YES=1 bash deploy/cloud-run.sh      # approve the Terraform plans automatically
 ```
 
-It applies `infra/bootstrap` (APIs, the image registry, and keyless GitHub deploys for the named
-repository), builds and pushes a linux/amd64 image, resolves its immutable digest, applies
-`infra/service` (the public Cloud Run service) and prints the URL. Leave the third argument off to
-skip CI deploys. Two Terraform roots avoid the first-deploy trap: Cloud Run cannot start before an
-image exists.
+It checks your login, project, billing and Docker first, then:
 
-## Deploy on every merge
+1. applies `infra/bootstrap` — APIs, the image registry, and keyless GitHub deploys for the repo;
+2. builds and pushes a linux/amd64 image tagged with the commit, and resolves its digest;
+3. applies `infra/service` — the public Cloud Run service — rolls out that image, waits for
+   `/health`, and prints the URL.
 
-The script prints three values; add them as GitHub repository secrets (Settings → Secrets and
-variables → Actions): `GCP_PROJECT`, `GCP_DEPLOY_SA`, `GCP_WIF_PROVIDER`. From then on, when CI
-passes on `main`, `.github/workflows/deploy.yml` builds the image, pushes it and rolls out a new
-revision — no keys stored anywhere. The deployer can push to this one registry, deploy Cloud Run
-revisions and act as this one runtime account; it cannot change IAM.
+If the GitHub CLI is logged in, it offers to set the three repository secrets for you. Two
+Terraform roots avoid the first-deploy trap: Cloud Run cannot start before an image exists.
 
-Terraform ignores the service's image after the first apply (CI owns rollouts), so a later
-`terraform apply` never rolls the game back.
+## CI/CD: pre-merge and post-merge
+
+| Stage | Workflow | When | What |
+|---|---|---|---|
+| Pre-merge | `Checks` (`ci.yml`) | every pull request, and `main` | tests, build, every scene in headless Chromium (screenshots kept 7 days), server check, audit, Terraform fmt/validate |
+| Pre-merge | `Preview` (`preview.yml`) | pull requests from this repo | builds the PR, deploys a **no-traffic** revision tagged `pr-<n>`, posts its private URL on the PR; removes the tag when the PR closes |
+| Post-merge | `Deploy (post-merge)` (`deploy.yml`) | `Checks` passed on `main` | builds, pushes, rolls out to production (all traffic), checks `/health`; skips if a newer commit is already on `main` |
+
+Previews and deploys need the three secrets (`GCP_PROJECT`, `GCP_DEPLOY_SA`, `GCP_WIF_PROVIDER`)
+and do nothing until they exist. No keys are stored anywhere: GitHub's OIDC token is exchanged for
+the deployer account, which is locked to this repository and can only push to this registry,
+deploy Cloud Run revisions and act as the runtime account; it cannot change IAM. Forked pull
+requests get checks, never previews. Optionally add required reviewers to the `production`
+environment in GitHub to gate deploys by hand.
+
+Terraform ignores the service's image and traffic after the first apply (CI owns rollouts and
+preview tags), so a later `terraform apply` never rolls the game back or removes a preview.
 
 ## Custom domain (optional)
 

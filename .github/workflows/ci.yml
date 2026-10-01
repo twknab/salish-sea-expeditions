@@ -1,14 +1,19 @@
-# Every push and pull request: tests, build, server check, audit, Terraform format and validation.
-name: CI
+# PRE-MERGE (1 of 2): every pull request, and main after each merge. Tests, build, every scene in
+# headless Chromium, server check, audit, Terraform format and validation. "Post-merge deploy"
+# waits for this to pass on main.
+name: Checks
 on:
   push:
     branches: [main]
   pull_request:
 permissions:
   contents: read
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   check:
-    name: Test, build, audit
+    name: Test, build, smoke, audit
     runs-on: ubuntu-latest
     env:
       PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
@@ -25,6 +30,17 @@ jobs:
         run: npm run build
       - name: Server syntax
         run: node --check server/server.mjs
+      - name: Smoke — open every scene in headless Chromium
+        run: |
+          npx playwright install --with-deps chromium
+          npm run smoke
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-screenshots
+          path: tests/smoke/out/*.png
+          retention-days: 7
+          if-no-files-found: ignore
       - name: Dependency audit (high and critical)
         run: npm audit --audit-level=high --omit=dev
   terraform:

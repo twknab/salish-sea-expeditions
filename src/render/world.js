@@ -3,6 +3,14 @@ import Phaser from 'phaser';
 import { WORLD_FRAG, daylight } from './waterShader.js';
 import { buildLandMask } from './landMask.js';
 import { drawKayakTop, HULL, PFD } from './kayakArt.js';
+import {
+  ensureSprite, kayakTopSVG, hullUpSVG, shadowSVG, paddlerTopSVG, PFD_TONES,
+  orcaSVG, sealSVG, sealHeadSVG, sealRockSVG, ferrySVG,
+} from './sprites.js';
+
+// Sprite raster sizes (device pixels). The stroke is drawn in 12 frames.
+const RES = { boat: 320, orca: 256, rock: 360, seal: 120, ferry: 512 };
+const FRAMES = 12;
 import { BOUNDS, RIPS } from '../content/chart.js';
 import { layout, px } from '../ui/theme.js';
 
@@ -56,6 +64,8 @@ export class WorldView {
 
     this.wakeG = scene.add.graphics().setDepth(5);
     this.overG = scene.add.graphics().setDepth(6); // wildlife, ferry, rings
+    this.pool = []; // reusable images for sprites, re-dealt every frame
+    this.poolIdx = 0;
     this.boats = new Map();
     this.wakes = new Map();
   }
@@ -85,6 +95,23 @@ export class WorldView {
     this.u.rips = RIPS.slice(0, 2).map((r, i) => [r.x, r.y, r.r, ripStrength[i] ?? 0]);
   }
 
+  /** Start a frame: clear the overlay and take back every sprite. */
+  beginFrame() {
+    this.overG.clear();
+    for (const im of this.pool) im.setVisible(false);
+    this.poolIdx = 0;
+  }
+
+  /** Place a pooled sprite: centre (x, y) in device pixels, display size w × h. */
+  spr(key, x, y, w, h, rot = 0, alpha = 1, depth = 6) {
+    let im = this.pool[this.poolIdx];
+    if (!im) { im = this.scene.add.image(0, 0, key); this.pool.push(im); }
+    this.poolIdx++;
+    if (im.texture.key !== key) im.setTexture(key);
+    im.clearTint?.();
+    return im.setPosition(x, y).setDisplaySize(w, h).setRotation(rot).setAlpha(alpha).setDepth(depth).setVisible(true);
+  }
+
   /** Draw a kayak (id → graphics). Visual size is never smaller than `minPt` points. */
   drawBoat(id, k, opts = {}) {
     let g = this.boats.get(id);
@@ -94,6 +121,8 @@ export class WorldView {
     }
     const L = Math.max(4.9 * this.ppm, px(opts.minPt ?? 58));
     const s = this.toScreen(k.x, k.y);
+    if (this.drawBoatSprite(g, k, L, s, opts)) return g;
+    g.setVisible(true);
     g.setPosition(s.x, s.y);
     g.setRotation(k.heading);
     const heelVis = k.upright ? Math.cos(Math.min(1.2, Math.abs(k.heel))) : 1;
@@ -117,6 +146,35 @@ export class WorldView {
       phase: opts.phase ?? 0, lean: k.edge, resting: opts.resting,
     });
     return g;
+  }
+
+  /** The illustrated boat: shadow, deck (or upturned hull), and the paddler mid-stroke. */
+  drawBoatSprite(g, k, L, s, opts) {
+    const sc = this.scene, sk = opts.skin;
+    if (!sk) return false;
+    const R = RES.boat, w = R * 0.75;
+    const deckKey = `kdeck-${sk.id}`, upKey = 'khull-up', shKey = 'kshadow';
+    const ok = ensureSprite(sc, deckKey, () => kayakTopSVG(sk), w, R)
+      & ensureSprite(sc, upKey, hullUpSVG, w, R) & ensureSprite(sc, shKey, () => shadowSVG(600, 800), w * 0.5, R * 0.5);
+    const tone = opts.pfd === 0xe9f1ee ? 'white' : 'yellow';
+    const frame = opts.resting ? 'rest' : Math.floor(((((opts.phase ?? 0) % 1) + 1) % 1) * FRAMES) % FRAMES;
+    const pKey = `kpad-${tone}-${frame}`;
+    const pOk = ensureSprite(sc, pKey, () => paddlerTopSVG(frame === 'rest' ? 0 : frame / FRAMES, PFD_TONES[tone], frame === 'rest'), w, R);
+    // Warm the rest of the stroke so the animation never waits on a frame.
+    if (pOk) for (let i = 0; i < FRAMES; i++) ensureSprite(sc, `kpad-${tone}-${i}`, () => paddlerTopSVG(i / FRAMES, PFD_TONES[tone]), w, R);
+    if (!ok) return false;
+    g.setVisible(false);
+    const heelVis = k.upright ? Math.cos(Math.min(1.2, Math.abs(k.heel))) : 1;
+    const W = L * 0.75, rot = k.heading;
+    this.spr(shKey, s.x + L * 0.025, s.y + L * 0.035, W * heelVis, L * 1.02, rot, 0.9, 7);
+    if (!k.upright) { this.spr(upKey, s.x, s.y, W, L, rot, 1, 8); return true; }
+    this.spr(deckKey, s.x, s.y, W * heelVis, L, rot, 1, 8);
+    if (pOk) {
+      // The paddler sits up out of the boat: lean shifts them toward the edge.
+      const lean = (k.edge ?? 0) * L * 0.012;
+      this.spr(pKey, s.x + Math.cos(rot) * lean, s.y + Math.sin(rot) * lean, W, L, rot, 1, 9);
+    }
+    return true;
   }
 
   /** Record and draw fading wakes behind moving boats. */
@@ -155,85 +213,91 @@ export class WorldView {
   }
 }
 
-/** Draw an orca pod (dorsal fins, backs, blows) onto a graphics layer. */
+/** Draw an orca pod: illustrated backs and dorsal fins as they surface, a shadow when down, and blows. */
 export function drawOrcas(world, pod, t) {
-  const g = world.overG;
+  const g = world.overG, sc = world.scene;
   const ppm = world.ppm;
-  const size = Math.max(7 * ppm, px(22));
+  // Never smaller than the boats (which are shown at least 58 pt for a 4.9 m hull).
+  const size = Math.max(7 * ppm, px(82));
+  const ready = ensureSprite(sc, 'orca-bull', () => orcaSVG(true), RES.orca / 4, RES.orca)
+    & ensureSprite(sc, 'orca', () => orcaSVG(false), RES.orca / 4, RES.orca);
   for (const [i, m] of pod.members.entries()) {
     const x = pod.x + m.dx, y = pod.y + m.dy;
     const s = world.toScreen(x, y);
     const cyc = (t * 0.35 + i * 0.27) % 1; // surfacing cycle
     const up = cyc < 0.35 ? Math.sin((cyc / 0.35) * Math.PI) : 0;
     const L = size * (m.calf ? 0.6 : 1);
-    if (up > 0.05) {
+    const rot = (pod.heading ?? 0) + Math.sin(t * 0.4 + i) * 0.06;
+    if (ready) {
+      // Below the surface the body is a dim green-black shape; breaking the surface it sharpens.
+      world.spr(m.bull ? 'orca-bull' : 'orca', s.x, s.y, L / 4, L, rot, 0.22 + 0.78 * up, 6);
+    } else if (up > 0.05) {
       g.fillStyle(0x0c0f12, 0.95 * up);
       g.fillEllipse(s.x, s.y, L * 0.28, L);
-      // Saddle patch and eye patch.
-      g.fillStyle(0xd8dde0, 0.7 * up);
-      g.fillEllipse(s.x, s.y + L * 0.18, L * 0.16, L * 0.14);
-      // Dorsal fin: tall on the bull.
-      g.fillStyle(0x05070a, up);
-      const fin = L * (m.bull ? 0.42 : 0.2);
-      g.fillTriangle(s.x - L * 0.05, s.y, s.x + L * 0.05, s.y, s.x, s.y - fin);
-    } else {
-      g.fillStyle(0x0c0f12, 0.25);
-      g.fillEllipse(s.x, s.y, L * 0.2, L * 0.8);
+    }
+    if (up > 0.05) {
+      // A thin wash of white water around the back as it rolls.
+      g.fillStyle(0xe8f4f1, 0.08 * up);
+      g.fillEllipse(s.x, s.y, L * 0.34, L * 0.8);
     }
     // Blow: a brief white plume as they surface.
     if (cyc > 0.02 && cyc < 0.12) {
       const b = 1 - Math.abs(cyc - 0.07) / 0.05;
-      g.fillStyle(0xffffff, 0.55 * b);
-      g.fillCircle(s.x, s.y - L * 0.25, L * 0.18 * (0.6 + b));
+      const hx = s.x + Math.sin(rot) * L * 0.38, hy = s.y - Math.cos(rot) * L * 0.38;
+      for (let j = 0; j < 4; j++) {
+        g.fillStyle(0xffffff, 0.22 * b);
+        g.fillCircle(hx + Math.sin(j * 2.1) * L * 0.04, hy + Math.cos(j * 1.7) * L * 0.04, L * (0.08 + 0.06 * j) * (0.6 + b));
+      }
     }
   }
 }
 
-/** Draw hauled-out seals on their rocks. */
-export function drawSeals(world, rock, state, t) {
-  const g = world.overG;
+/** Harbour seals hauled out on their rock; alert ones turn to watch you; flushed ones are heads in the water. */
+export function drawSeals(world, rock, state, t, from = null) {
+  const g = world.overG, sc = world.scene;
   const s = world.toScreen(rock.x, rock.y);
-  const R = Math.max(18 * world.ppm, px(26));
-  g.fillStyle(0x5a574f, 1);
-  g.fillEllipse(s.x, s.y, R * 2.2, R * 1.3);
-  g.fillStyle(0x7a766b, 1);
-  g.fillEllipse(s.x - R * 0.2, s.y - R * 0.15, R * 1.6, R * 0.8);
+  const R = Math.max(18 * world.ppm, px(44));
+  const ready = ensureSprite(sc, 'seal-rock', sealRockSVG, RES.rock, RES.rock * 0.65)
+    & [0, 1, 2].map((v) => ensureSprite(sc, `seal-${v}`, () => sealSVG(v), RES.seal / 3, RES.seal)).every(Boolean)
+    & ensureSprite(sc, 'seal-head', sealHeadSVG, RES.seal / 2, RES.seal / 2);
+  if (!ready) {
+    g.fillStyle(0x5a574f, 1);
+    g.fillEllipse(s.x, s.y, R * 2.2, R * 1.3);
+    return;
+  }
+  world.spr('seal-rock', s.x, s.y, R * 2.4, R * 1.56, 0, 1, 5);
+  const look = from ? Math.atan2(from.x - rock.x, from.y - rock.y) : null;
   const n = state === 'flushed' ? 0 : 5;
   for (let i = 0; i < n; i++) {
     const a = (i / 5) * Math.PI * 2 + 0.4;
     const x = s.x + Math.cos(a) * R * 0.55, y = s.y + Math.sin(a) * R * 0.3;
-    g.fillStyle([0x8a8578, 0x6e6a60, 0xa39e8e][i % 3], 1);
-    g.fillEllipse(x, y, R * 0.42, R * 0.2);
-    if (state === 'alert') { g.fillStyle(0x3a3833, 1); g.fillCircle(x + R * 0.2, y - R * 0.08, R * 0.08); }
+    const rest = a + Math.PI / 2 + Math.sin(i * 3.1) * 0.5;
+    const rot = state === 'alert' && look != null ? look : rest;
+    world.spr(`seal-${i % 3}`, x, y, R * 0.2, R * 0.6, rot, 1, 6);
   }
   if (state === 'flushed') {
     for (let i = 0; i < 5; i++) {
-      const a = (i / 5) * Math.PI * 2 + t;
-      g.fillStyle(0x3a3833, 0.8);
-      g.fillCircle(s.x + Math.cos(a) * R * 1.4, s.y + Math.sin(a) * R * 0.9, R * 0.1);
+      const a = (i / 5) * Math.PI * 2 + t * 0.3;
+      world.spr('seal-head', s.x + Math.cos(a) * R * 1.5, s.y + Math.sin(a) * R * 1.0, R * 0.45, R * 0.45, 0, 0.9, 6);
     }
   }
 }
 
-/** A Washington State Ferries–style vessel from above: long white hull, green trim. */
+/** A large double-ended island ferry from above. */
 export function drawFerry(world, f) {
-  const g = world.overG;
+  const g = world.overG, sc = world.scene;
   const s = world.toScreen(f.x, f.y);
   const L = Math.max(110 * world.ppm, px(60));
+  if (ensureSprite(sc, 'ferry', ferrySVG, RES.ferry / 5, RES.ferry)) {
+    world.spr('ferry', s.x + L * 0.015, s.y + L * 0.02, L * 0.21, L * 1.01, f.heading, 0.3, 6).setTint?.(0x00161c);
+    world.spr('ferry', s.x, s.y, L * 0.2, L, f.heading, 1, 7).clearTint?.();
+    return;
+  }
   const B = L * 0.2;
-  g.save?.();
   const c = Math.cos(f.heading), sn = Math.sin(f.heading);
   const pt = (x, y) => ({ x: s.x + x * c - y * sn, y: s.y + x * sn + y * c });
-  const hull = [pt(0, -L / 2), pt(B / 2, -L * 0.36), pt(B / 2, L * 0.36), pt(0, L / 2), pt(-B / 2, L * 0.36), pt(-B / 2, -L * 0.36)];
-  g.fillStyle(0x00161c, 0.3);
-  g.fillPoints(hull.map((p) => ({ x: p.x + L * 0.02, y: p.y + L * 0.03 })), true);
   g.fillStyle(0xf4f4ef, 1);
-  g.fillPoints(hull, true);
-  g.fillStyle(0x2f7a4a, 1);
-  const deck = [pt(B * 0.32, -L * 0.3), pt(B * 0.32, L * 0.3), pt(-B * 0.32, L * 0.3), pt(-B * 0.32, -L * 0.3)];
-  g.fillPoints(deck, true);
-  g.fillStyle(0xe9e9e2, 1);
-  g.fillPoints([pt(B * 0.22, -L * 0.12), pt(B * 0.22, L * 0.12), pt(-B * 0.22, L * 0.12), pt(-B * 0.22, -L * 0.12)], true);
+  g.fillPoints([pt(0, -L / 2), pt(B / 2, -L * 0.36), pt(B / 2, L * 0.36), pt(0, L / 2), pt(-B / 2, L * 0.36), pt(-B / 2, -L * 0.36)], true);
 }
 
 export function ring(world, x, y, r, color, alpha = 0.5) {

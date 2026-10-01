@@ -1,0 +1,76 @@
+# PRE-MERGE (2 of 2): every pull request from this repository gets its own preview — a Cloud Run
+# revision that takes no public traffic, at a private tagged URL (pr-<number>---…run.app). The
+# link is posted on the pull request and updated on every push; closing the PR removes the tag.
+# Keyless like the production deploy, and a no-op until the deploy secrets exist.
+name: Preview
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+env:
+  REGION: us-west1
+  SERVICE: salish-sea-expeditions
+  TAG: pr-${{ github.event.pull_request.number }}
+jobs:
+  preview:
+    # Forks get no OIDC token and no secrets: they are checked, not previewed.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    environment: preview
+    steps:
+      - name: Skip until deploys are configured
+        id: cfg
+        run: |
+          if [ -z "${{ secrets.GCP_WIF_PROVIDER }}" ]; then
+            echo "Deploy secrets not set yet; see infra/README.md." | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.cfg.outputs.skip != 'true' && github.event.action != 'closed'
+      - uses: google-github-actions/auth@v2
+        if: steps.cfg.outputs.skip != 'true'
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_DEPLOY_SA }}
+      - uses: google-github-actions/setup-gcloud@v2
+        if: steps.cfg.outputs.skip != 'true'
+      - name: Remove the preview (PR closed)
+        if: steps.cfg.outputs.skip != 'true' && github.event.action == 'closed'
+        run: |
+          gcloud run services update-traffic "$SERVICE" --project "${{ secrets.GCP_PROJECT }}" --region "$REGION" \
+            --remove-tags "$TAG" --quiet || echo "No preview tag to remove."
+      - name: Build, push and deploy the preview (no traffic)
+        id: deploy
+        if: steps.cfg.outputs.skip != 'true' && github.event.action != 'closed'
+        run: |
+          repo="$REGION-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/salish-sea-expeditions/game"
+          sha="${{ github.event.pull_request.head.sha }}"
+          gcloud auth configure-docker "$REGION-docker.pkg.dev" --quiet
+          docker build --platform linux/amd64 -t "$repo:pr-${sha::12}" .
+          docker push "$repo:pr-${sha::12}"
+          ref="$(docker inspect --format='{{index .RepoDigests 0}}' "$repo:pr-${sha::12}")"
+          gcloud run deploy "$SERVICE" --project "${{ secrets.GCP_PROJECT }}" --region "$REGION" \
+            --image "$ref" --no-traffic --tag "$TAG" --quiet
+          url="$(gcloud run services describe "$SERVICE" --project "${{ secrets.GCP_PROJECT }}" --region "$REGION" \
+            --format=json | python3 -c "import json,sys; t=[x for x in json.load(sys.stdin)['status']['traffic'] if x.get('tag')=='$TAG']; print(t[0]['url'] if t else '')")"
+          for i in 1 2 3 4 5 6; do curl -fsS "$url/health" >/dev/null && break; sleep 10; done
+          curl -fsS "$url/health" >/dev/null
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Preview of ${sha::7}: $url" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Post the link on the pull request
+        if: steps.deploy.outputs.url != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- preview-link -->';
+            const body = `${marker}\n**Preview:** ${{ steps.deploy.outputs.url }}\n\nBuilt from \`${context.payload.pull_request.head.sha.slice(0, 7)}\`. Takes no public traffic; removed when this PR closes.`;
+            const { data: comments } = await github.rest.issues.listComments({ ...context.repo, issue_number: context.issue.number });
+            const mine = comments.find((c) => c.body?.includes(marker));
+            if (mine) await github.rest.issues.updateComment({ ...context.repo, comment_id: mine.id, body });
+            else await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body });

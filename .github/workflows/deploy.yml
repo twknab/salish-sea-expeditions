@@ -1,10 +1,11 @@
-# When CI passes on main, build the image, push it and roll out a new Cloud Run revision.
+# POST-MERGE: when Checks pass on main, build the image, push it and roll out a new Cloud Run
+# revision to production (all traffic), then check /health.
 # Keyless: GitHub's OIDC token is exchanged for the deployer account via Workload Identity
 # Federation (created by infra/bootstrap, locked to this repository). No-ops until the secrets exist.
-name: Deploy
+name: Deploy (post-merge)
 on:
   workflow_run:
-    workflows: [CI]
+    workflows: [Checks]
     types: [completed]
     branches: [main]
   workflow_dispatch: {}
@@ -66,6 +67,8 @@ jobs:
         run: |
           gcloud run deploy "$SERVICE" --project "${{ secrets.GCP_PROJECT }}" --region "$REGION" \
             --image "${{ steps.image.outputs.ref }}" --quiet
+          # Preview deploys pin traffic to a named revision; production always follows the newest.
+          gcloud run services update-traffic "$SERVICE" --project "${{ secrets.GCP_PROJECT }}" --region "$REGION" --to-latest --quiet
           url="$(gcloud run services describe "$SERVICE" --project "${{ secrets.GCP_PROJECT }}" --region "$REGION" --format='value(status.url)')"
           for i in 1 2 3 4 5 6; do
             if curl -fsS "$url/health" >/dev/null; then echo "Deployed ${GITHUB_SHA::7} to $url" | tee -a "$GITHUB_STEP_SUMMARY"; exit 0; fi

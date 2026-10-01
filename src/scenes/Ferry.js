@@ -86,7 +86,7 @@ export class Ferry extends Phaser.Scene {
     const w = this.world;
     w.follow(this.f.x, this.f.y, { x: 0, y: 0 }, dt * 0.3);
     w.setConditions({ minute: 430 + this.t * 0.5, wind: wind(430), current: { x: -0.2, y: -0.3 }, sea: 0.2, boat: this.f, time: this.t, fog: 0.25 });
-    w.overG.clear();
+    w.beginFrame();
     w.drawWakes([['f', { x: this.f.x, y: this.f.y, heading: this.f.heading, speed: 4, upright: true }]], dt);
     drawFerry(w, this.f);
     this.pins.clear();

@@ -111,9 +111,10 @@ resource "google_cloud_run_v2_service" "game" {
     }
   }
 
-  # CI rolls out new images; Terraform owns everything else.
+  # CI rolls out new images and owns traffic (production follows the newest revision; pull-request
+  # previews are tagged revisions with no traffic). Terraform owns everything else.
   lifecycle {
-    ignore_changes = [template[0].containers[0].image, client, client_version]
+    ignore_changes = [template[0].containers[0].image, client, client_version, traffic]
   }
 }
 
