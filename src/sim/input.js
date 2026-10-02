@@ -12,6 +12,9 @@ export function emptyInput() {
  */
 export function rotationQuality(stroke) {
   if (!stroke) return 0;
-  const q = 0.1 + 0.45 * stroke.reach + 0.3 * stroke.smoothness + (stroke.exitAtHip ? 0.15 : 0);
+  const q = 0.15 + 0.45 * stroke.reach + 0.25 * stroke.smoothness + (stroke.exitAtHip ? 0.15 : 0);
   return Math.max(0, Math.min(1, q));
 }
+
+/** The line between a rotation stroke and an arm stroke. A good, honest swipe clears it. */
+export const GOOD_STROKE = 0.6;

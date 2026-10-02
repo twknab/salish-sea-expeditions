@@ -184,7 +184,7 @@ function tube(points, r, mat, closed = false) {
 
 /**
  * Build the whole kayak for a skin. `ghost` makes the skin translucent and shows the frame,
- * jacks and flotation bags inside (Boat School). Returns { group, anchors } where anchors are
+ * jacks and flotation bags inside (Kayak School). Returns { group, anchors } where anchors are
  * named 3D points for labelling parts in a render.
  */
 export function buildKayak(sk, { ghost = false } = {}) {

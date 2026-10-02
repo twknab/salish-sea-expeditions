@@ -30,7 +30,7 @@ Before anything else in the trip, the player picks a skin from the five real col
 whole boat from the side and from above, recoloured as they choose.
 
 **Independent Test**: Picking a skin redraws both views; the choice persists and the water, POV and
-Boat School use it. Assembly no longer asks again.
+Kayak School use it. Assembly no longer asks again.
 
 ### User Story 3 - Dress for immersion, layer by layer (Priority: P1)
 
@@ -55,7 +55,7 @@ names both countries' minimums.
 
 - **FR-001** The start choice is two illustrated postcards (Anacortes terminal, Friday Harbor).
 - **FR-002** A new Outfitting scene runs once per trip after the start choice: Boat → Clothing →
-  Kit, then continues to the Ferry or Boat School.
+  Kit, then continues to the Ferry or Kayak School.
 - **FR-003** Skin choice moves from Assembly to Outfitting (Assembly keeps it only when no skin was
   ever chosen).
 - **FR-004** Clothing content lives in `src/content/kit.js` with `sourceIds`, validated by tests.

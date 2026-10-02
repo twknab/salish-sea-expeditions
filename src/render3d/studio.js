@@ -65,14 +65,25 @@ export function getStudio() {
  * canvas of `w × h` pixels covering `spanX × spanZ` metres around (`cx`, `cz`). In the image the
  * model's +x points up. `water: false` removes the sea plane (e.g. for side views).
  */
-export function capture(object, { w, h, spanX, spanZ, cx = 0, cz = 0, tilt = 0, water = true, view = 'top' }) {
+export function capture(object, { w, h, spanX, spanZ, cx = 0, cz = 0, tilt = 0, water = true, view = 'top', az = 0.7, el = 0.3, fitMargin }) {
   const st = getStudio();
   if (!st) return null;
   const { renderer, scene } = st;
   scene.add(object);
   st.water.visible = water;
   let cam;
-  if (view === 'top') {
+  if (view === 'orbit') {
+    // A three-quarter portrait: fitted to the model's bounding sphere, from azimuth `az` and
+    // elevation `el` (radians), with a little margin. Ignores the span arguments.
+    const box = new THREE.Box3().setFromObject(object), sphere = box.getBoundingSphere(new THREE.Sphere());
+    const r = sphere.radius * (fitMargin ?? 1.06), c = sphere.center, aspect = w / h;
+    cam = new THREE.OrthographicCamera(-r * aspect, r * aspect, r, -r, 0.01, r * 20);
+    const dir = new THREE.Vector3(Math.cos(el) * Math.sin(az), Math.sin(el), Math.cos(el) * Math.cos(az));
+    cam.position.copy(c).addScaledVector(dir, r * 6);
+    cam.up.set(0, 1, 0);
+    cam.lookAt(c);
+    spanX = spanZ = r * 2; cx = c.x; cz = c.z;
+  } else if (view === 'top') {
     // Orthographic, looking down; screen-up is +x (the bow), screen-right is +z (starboard).
     cam = new THREE.OrthographicCamera(-spanZ / 2, spanZ / 2, spanX / 2, -spanX / 2, 0.1, 60);
     const d = 20;
@@ -89,8 +100,16 @@ export function capture(object, { w, h, spanX, spanZ, cx = 0, cz = 0, tilt = 0, 
   // Fit the sun's shadow box to what is being photographed, from a 1.6 m seal to a 110 m ferry.
   const R = Math.max(spanX, spanZ) * 0.75;
   const sun = st.sun, scam = sun.shadow.camera;
-  sun.target.position.set(cx, 0, view === 'top' ? cz : 0);
-  sun.position.set(cx - 0.33 * R * 3, R * 3, (view === 'top' ? cz : 0) - 0.44 * R * 3);
+  const tz = view === 'side' ? 0 : cz;
+  if (view === 'orbit') {
+    // Key light up and to one side of the camera, so a portrait is modelled, never backlit.
+    const ty = object.userData.centreY ?? 0;
+    sun.target.position.set(cx, ty, tz);
+    sun.position.set(cx + Math.sin(az + 0.8) * R * 2.2, ty + R * 3, tz + Math.cos(az + 0.8) * R * 2.2);
+  } else {
+    sun.target.position.set(cx, 0, tz);
+    sun.position.set(cx - 0.33 * R * 3, R * 3, tz - 0.44 * R * 3);
+  }
   scam.left = -R; scam.right = R; scam.top = R; scam.bottom = -R; scam.near = R * 0.1; scam.far = R * 8;
   scam.updateProjectionMatrix();
   sun.target.updateMatrixWorld();

@@ -66,4 +66,15 @@ if (!only || only.includes('wild')) {
   show(capture(s1, { w: 128, h: 256, spanX: 2, spanZ: 1, water: false }), 'seal', 64);
   show(capture(buildFerry(), { w: 128, h: 512, spanX: 120, spanZ: 30 }), 'ferry', 64);
 }
+import { SPECIES_MODELS } from '../src/render3d/species3d.js';
+if (only.includes('species')) {
+  const pick = new URLSearchParams(location.search).get('ids')?.split(',');
+  for (const [id, m] of Object.entries(SPECIES_MODELS)) {
+    if (pick && !pick.includes(id)) continue;
+    try {
+      const obj = m.build();
+      show(capture(obj, { w: 256, h: 256, view: 'orbit', az: m.portrait.az, el: m.portrait.el, water: false }), id, 128);
+    } catch (e) { console.error(id, e.message); }
+  }
+}
 window.done = true;

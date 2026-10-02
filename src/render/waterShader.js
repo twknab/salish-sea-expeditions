@@ -116,7 +116,13 @@ void main() {
     vec3 sand = vec3(0.72, 0.64, 0.48);
     vec3 edge = mix(rock, sand, smoothstep(0.6, 0.75, fbm(w * 0.01 + 5.0)));
     col = mix(edge, forest, smoothstep(0.02, 0.06, e));
+    // Driftwood and dry seaweed at the tide line; a dark wet margin right at the water.
+    float wrack = smoothstep(0.7, 0.85, noise(w * 0.5 + 2.0)) * smoothstep(0.03, 0.012, e) * smoothstep(0.004, 0.012, e);
+    col = mix(col, vec3(0.36, 0.30, 0.2), wrack * 0.7);
+    col = mix(col, vec3(0.22, 0.2, 0.17), smoothstep(0.012, 0.0, e) * 0.6);
     col *= shade;
+    // Canopy relief: every crown casts a shadow onto the one behind it, toward the sun.
+    col *= 0.78 + 0.22 * smoothstep(0.3, 0.75, noise(cp * 1.9 + uSun.xy * 0.8));
     // Tree shadows toward the low sun.
     col *= 0.85 + 0.15 * smoothstep(0.3, 0.7, noise((w + uSun.xy * 3.0) * 0.09));
   } else {
@@ -134,13 +140,18 @@ void main() {
     }
     vec3 n = normalize(vec3(-slope, 1.0));
     float depth = pow(near, 1.6);
-    vec3 deep = vec3(0.03, 0.17, 0.21);
-    vec3 mid = vec3(0.06, 0.30, 0.32);
-    vec3 shallow = vec3(0.20, 0.45, 0.40);
+    vec3 deep = vec3(0.02, 0.12, 0.19);
+    vec3 mid = vec3(0.05, 0.28, 0.33);
+    vec3 shallow = vec3(0.16, 0.50, 0.46);
     vec3 base = mix(deep, mid, smoothstep(0.0, 0.5, depth));
     base = mix(base, shallow, smoothstep(0.45, 0.95, depth));
-    // Sea floor showing through the shallows: sand and rock mottling.
-    base = mix(base, vec3(0.40, 0.50, 0.40), smoothstep(0.8, 1.0, depth) * 0.35 * fbm(w * 0.05));
+    // Sea floor showing through the shallows: pale sand, eelgrass patches and dark boulders, with
+    // the light caustics playing over them.
+    float floorN = fbm(w * 0.05), boulders = smoothstep(0.66, 0.74, fbm(w * 0.09 + 17.0));
+    vec3 seabed = mix(vec3(0.52, 0.56, 0.42), vec3(0.14, 0.30, 0.18), smoothstep(0.5, 0.65, fbm(w * 0.02 + 9.0)));
+    seabed = mix(seabed, vec3(0.16, 0.17, 0.15), boulders);
+    float caustic = 0.85 + 0.3 * smoothstep(0.55, 0.8, fbm(w * 0.35 + vec2(t * 0.5, t * 0.3)));
+    base = mix(base, seabed * caustic, smoothstep(0.78, 1.0, depth) * (0.45 + 0.25 * floorN));
 
     // Wind patches: glassy water mirrors the sky; ruffled water is darker and textured.
     float windK = clamp(length(uWind) / 6.0, 0.0, 1.0);
@@ -152,7 +163,7 @@ void main() {
     // Long, soft sheen bands on glassy water.
     col0 += uSky * 0.06 * (1.0 - ruffle) * smoothstep(0.4, 0.9, fbm(vec2(w.x * 0.004, w.y * 0.0015) + t * 0.01));
     vec3 hv = normalize(uSun + vec3(0.0, 0.0, 1.0));
-    float spec = pow(max(dot(n, hv), 0.0), 220.0) * 2.2 + pow(max(dot(n, hv), 0.0), 40.0) * 0.12;
+    float spec = pow(max(dot(n, hv), 0.0), 220.0) * 2.4 + pow(max(dot(n, hv), 0.0), 36.0) * 0.16 + pow(max(dot(n, hv), 0.0), 8.0) * 0.03;
     // Sub-pixel glitter: when waves are too small to draw, draw their sparkle instead.
     vec2 cell = floor(gl_FragCoord.xy * 0.5);
     float tw = hash(cell + floor(t * 6.0 + hash(cell) * 6.0));
@@ -190,8 +201,12 @@ void main() {
     float lap = smoothstep(0.34, 0.49, land) * (0.55 + 0.45 * sin(land * 90.0 - t * 1.7 + fbm(w * 0.08) * 6.0));
     float caps = smoothstep(0.72, 0.9, fbm(w * 0.08 - uWind * t * 0.05)) * smoothstep(0.45, 0.9, uSea);
     float ripFoam = smoothstep(0.55, 0.8, fbm(w * 0.16 + vec2(t * 0.5, -t * 0.8))) * rip;
-    float foam = clamp(lap * 0.8 + caps * 0.7 + ripFoam * 0.9, 0.0, 1.0);
+    // Crests: where the water is steep it breaks a little, more as the sea gets up.
+    float crest = smoothstep(0.55, 1.1, length(slope)) * smoothstep(0.25, 0.8, uSea) * 0.6;
+    float foam = clamp(lap * 0.8 + caps * 0.7 + ripFoam * 0.9 + crest, 0.0, 1.0);
     col0 = mix(col0, vec3(0.92, 0.96, 0.95), foam * (0.55 + 0.45 * noise(w * 0.9 + t)));
+    // The wet, dark band just under the shore, and the pale sand where the land begins.
+    col0 = mix(col0, vec3(0.30, 0.42, 0.40), smoothstep(0.38, 0.49, land) * 0.5);
 
     // Night: bioluminescence where the water is disturbed near the boat.
     if (uGlow > 0.0) {

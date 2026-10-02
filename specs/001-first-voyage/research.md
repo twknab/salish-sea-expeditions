@@ -95,7 +95,7 @@ Decisions made while planning, with what was rejected and why.
     head is modelled as releasing the blade before the snap completes.
   - Rocker (hull jacks) on a small dial in the cockpit HUD.
   - Keyboard equivalents on desktop (A/D strokes, Q/E edge, Space brace).
-- **Rationale**: Maps the Boat School lessons straight onto the controls, so learning the
+- **Rationale**: Maps the Kayak School lessons straight onto the controls, so learning the
   controls *is* learning the technique (Principle I, FR-000b).
 
 ## R8. The partner as a seat (FR-010)

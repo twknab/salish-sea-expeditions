@@ -5,10 +5,13 @@
 import { Group, Vector3 } from 'three';
 import { capture, dispose, getStudio } from './studio.js';
 import { buildKayak } from './kayak.js';
-import { buildPaddler, deckShadowCatcher } from './paddler.js';
+import { skinOf } from '../content/skins.js';
+const skinOfDefault = () => skinOf(typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('sse.save.v1') ?? '{}').skin : undefined);
+import { buildPaddler, deckShadowCatcher, buildGreenlandPaddle, PADDLE } from './paddler.js';
 import { buildOrca, buildSeal, buildRock, buildFerry } from './wildlife.js';
 
-import { FRAMES, STROKE_FRAMES, ORCA_DEPTHS, k3 } from './keys.js';
+import { SPECIES_MODELS } from './species3d.js';
+import { FRAMES, STROKE_FRAMES, ORCA_DEPTHS, k3, kSp } from './keys.js';
 
 const yieldFrame = () => new Promise((r) => setTimeout(r, 0));
 const queued = new Set();
@@ -74,7 +77,7 @@ export async function bakeWater(scene, skins, { tones = ['yellow', 'white'], wil
 }
 
 /**
- * The side view (bow left) for Boat School, Assembly and Outfitting, `w` pixels wide in the same
+ * The side view (bow left) for Kayak School, Assembly and Outfitting, `w` pixels wide in the same
  * 1000 × 150 window the 2D illustration used, plus each named part projected into that window's
  * design units (x 0..1000, y 105..255 of a 1000 × 300 drawing) so hotspots land on the model.
  */
@@ -105,4 +108,106 @@ export function bakeDeck(scene, sk) {
   if (!c) return null;
   scene.textures.addCanvas(key, c);
   return key;
+}
+
+// ---------- Species (spec 005) ----------
+
+/** A field-guide portrait. Synchronous; returns the key, or null without a studio or model. */
+export function bakePortrait(scene, id, size = 256) {
+  const key = kSp.portrait(id), m = SPECIES_MODELS[id];
+  if (scene.textures.exists(key)) return key;
+  if (!m || !getStudio()) return null;
+  const obj = m.build();
+  const c = capture(obj, { w: size, h: size, view: 'orbit', az: m.portrait.az, el: m.portrait.el, water: false });
+  dispose(obj);
+  if (!c) return null;
+  scene.textures.addCanvas(key, c);
+  return key;
+}
+
+/**
+ * How a species looks from above on the water. Cetaceans get two images — a dim body below the
+ * surface ('a') and the back breaking it ('b'); birds are photographed soaring; jellies and kelp
+ * without the water plane so they show through it.
+ */
+export function bakeTop(scene, id) {
+  const m = SPECIES_MODELS[id], t = m?.top;
+  if (!t || !getStudio()) return null;
+  const size = t.span > 6 ? 256 : 128;
+  const frame = (o) => ({ w: size, h: size, spanX: t.span, spanZ: t.span, ...o });
+  const shoot = (v, make, f) => {
+    const key = kSp.top(id, v);
+    if (scene.textures.exists(key)) return key;
+    const obj = make();
+    const c = capture(obj, frame(f));
+    dispose(obj);
+    if (c) scene.textures.addCanvas(key, c);
+    return key;
+  };
+  const make = t.build ?? m.build;
+  if (t.depths) {
+    shoot('a', make, { water: false });
+    shoot('b', () => { const o = make(); o.position.y = -(o.userData.girth ?? 0.3) * 0.75; return o; }, { water: true });
+  } else shoot('a', make, { water: !!t.water });
+  return kSp.top(id, 'a');
+}
+
+/** Queue the water views for the species sighted on this trip. */
+export async function bakeSightings(scene, ids) {
+  if (!getStudio()) return;
+  for (const id of new Set(ids)) {
+    if (!SPECIES_MODELS[id]?.top) continue;
+    await yieldFrame();
+    if (!scene.sys?.isActive?.()) return;
+    try { bakeTop(scene, id); } catch (e) { console.warn('bake failed', id, e); }
+  }
+}
+
+/**
+ * The Greenland paddle for the paddle lesson, lying across the screen `w` pixels wide, with its
+ * named points projected into design units (x 0..1000, y 0..H in a 1000-wide drawing).
+ */
+export function bakePaddle(scene, w) {
+  const key = `k3-paddle-${Math.round(w)}`;
+  const aspect = 0.22, span = PADDLE.length + 0.12;
+  const g = buildGreenlandPaddle();
+  g.rotation.z = Math.PI / 2; // along x, bow to the left
+  g.rotation.y = 0.35; // a little turned, so the blade's diamond section reads
+  const frame = { w: Math.round(w), h: Math.round(w * aspect), spanX: span, spanZ: span * aspect, view: 'side', water: false };
+  const canvas = scene.textures.exists(key) ? null : capture(g, frame);
+  const anchors = {};
+  if (canvas || scene.textures.exists(key)) {
+    const cam = canvas?.camera;
+    if (canvas) scene.textures.addCanvas(key, canvas);
+    if (cam) for (const [id, p] of Object.entries(g.userData.anchors)) {
+      const v = new Vector3(...p).applyMatrix4(g.matrixWorld.identity().compose(g.position, g.quaternion, g.scale)).project(cam);
+      anchors[id] = [((v.x + 1) / 2) * 1000, ((1 - v.y) / 2) * 1000 * aspect];
+    }
+  }
+  dispose(g);
+  return { key, anchors, aspect };
+}
+
+/**
+ * The seated paddler in a see-through kayak, from the side, for the "you wear a kayak" lesson:
+ * feet on the pegs, knees up under the deck, hips in the seat, back on the backband, head up.
+ */
+export function bakeSeated(scene, w) {
+  const key = `k3-seated-${Math.round(w)}`;
+  const aspect = 0.5, spanX = 2.6, cx = 0.3;
+  const g = new Group();
+  const boat = buildKayak(skinOfDefault(), { ghost: true }).group;
+  const who = buildPaddler({ phase: 0.1, legs: true });
+  g.add(boat, who);
+  const frame = { w: Math.round(w), h: Math.round(w * aspect), spanX, spanZ: spanX * aspect, cx, cz: 0.42, view: 'side', water: false };
+  const anchors = {};
+  const canvas = scene.textures.exists(key) ? null : capture(g, frame);
+  if (canvas) scene.textures.addCanvas(key, canvas);
+  const cam = canvas?.camera;
+  if (cam) for (const [id, p] of Object.entries(who.userData.anchors)) {
+    const v = new Vector3(...p).project(cam);
+    anchors[id] = [((v.x + 1) / 2) * 1000, ((1 - v.y) / 2) * 1000 * aspect];
+  }
+  dispose(g);
+  return { key, anchors, aspect };
 }

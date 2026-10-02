@@ -1,6 +1,6 @@
-// Boat School, on the beach (US0): the boat, the body, the paddle — then calm-water drills.
-// Each stage is an illustration (src/art) with tap targets; every target is also reachable with
-// the keyboard (Tab / arrows, Enter).
+// Kayak School, on the beach (US0): the boat, the body, the paddle — then calm-water drills.
+// Rule: everything fits on the screen. The boat is shown whole, then each part on its own zoomed
+// screen; nothing is panned or clipped. Every control is also reachable with the keyboard.
 import Phaser from 'phaser';
 import { text, button, lessonCard, meter, fadeIn } from '../ui/widgets.js';
 import { backdrop } from '../ui/backdrop.js';
@@ -38,11 +38,13 @@ export class BoatSchool extends Phaser.Scene {
     this.handles = [];
     this.card?.active && this.card.destroy();
     this.input.removeAllListeners('pointerdown');
+    this.input.keyboard?.removeAllListeners('keydown-RIGHT');
+    this.input.keyboard?.removeAllListeners('keydown-LEFT');
   }
 
   header(title, sub) {
     const W = layout.W, y = layout.safe.top + 18;
-    this.layer.push(text(this, W / 2, y, 'BOAT SCHOOL', 11, { tracking: 3, color: CSS.mist, origin: [0.5, 0] }).setDepth(10));
+    this.layer.push(text(this, W / 2, y, 'KAYAK SCHOOL', 11, { tracking: 3, color: CSS.mist, origin: [0.5, 0] }).setDepth(10));
     this.layer.push(text(this, W / 2, y + 20, title, 26, { serif: true, weight: '600', origin: [0.5, 0] }).setDepth(10));
     this.layer.push(text(this, W / 2, y + 58, sub, 13.5, { color: CSS.fog, origin: [0.5, 0], align: 'center', wrap: W - 50 }).setDepth(10));
   }
@@ -122,37 +124,73 @@ export class BoatSchool extends Phaser.Scene {
     return { draw };
   }
 
-  // 1. The boat: drawn large, and dragged side to side to see it all.
+  // 1. The boat: shown whole, then part by part, each zoomed to fill the frame.
   async stageBoat() {
     this.clear();
-    this.header('Know your boat', 'A folding sea kayak: 16 ft long, 22.5 in wide, about 22 kg. Tap each part; drag to see the whole boat.');
-    const W = layout.W, width = W * 2.8, cy = layout.safe.top + 215;
-    const maxPan = (width - W) / 2 + 8;
-    const pan = { x: 0 };
-    const map = await this.art('kayakSide', cy, width, pan);
-    const a = ART.kayakSide;
-    const spots = KAYAK_PARTS.map((p) => ({ id: p.id, item: p, pos: map(...(sideAnchors[p.id] ?? [p.x * 1000, p.y * 300])), get x() { return this.pos.x; }, get y() { return this.pos.y; } }));
-    const counter = text(this, W / 2, cy + 62, `0 of ${spots.length} parts · the ghosted lines are the frame, jacks and flotation inside`, 11, { color: CSS.mist, origin: [0.5, 0], align: 'center', wrap: W - 40 }).setDepth(10);
-    const hint = text(this, W / 2, cy - 60, '‹  drag  ›', 11, { color: CSS.sun, origin: [0.5, 0], tracking: 2 }).setDepth(10);
-    this.layer.push(counter, hint);
-    let ui;
-    const setPan = (x, animate = false) => {
-      const to = Math.max(-maxPan, Math.min(maxPan, x));
-      if (!animate) { pan.x = to; pan.apply(); ui?.draw(); return; }
-      this.tweens.add({ targets: pan, x: to, duration: 450, ease: 'Sine.easeInOut', onUpdate: () => { pan.apply(); ui?.draw(); } });
+    this.header('Know your boat', 'A folding sea kayak: 16 ft long, 22.5 in wide, about 22 kg. Step through it, part by part.');
+    const W = layout.W, frameW = W - 24, frameH = Math.round(frameW * 0.42), fx = 12, fy = layout.safe.top + 118;
+    // The frame the boat is seen through: a rounded window with the water behind it.
+    const frame = this.add.graphics().setDepth(9);
+    frame.fillStyle(0x0b2b33, 0.55); frame.fillRoundedRect(px(fx), px(fy), px(frameW), px(frameH), px(18));
+    frame.lineStyle(px(1), 0xffffff, 0.18); frame.strokeRoundedRect(px(fx), px(fy), px(frameW), px(frameH), px(18));
+    this.layer.push(frame);
+    const maskG = this.make.graphics({}, false);
+    maskG.fillStyle(0xffffff, 1); maskG.fillRoundedRect(px(fx + 1), px(fy + 1), px(frameW - 2), px(frameH - 2), px(17));
+    const mask = maskG.createGeometryMask();
+    // The side view at three times the frame width, so a zoomed part is still sharp.
+    const key = await loadArt(this, 'kayakSide', this.skin, px(frameW * 3));
+    const a = ART.kayakSide, baseW = frameW, baseH = (baseW * a.h) / a.w;
+    const img = this.add.image(px(fx + frameW / 2), px(fy + frameH / 2), key).setDepth(10).setDisplaySize(px(baseW), px(baseH)).setMask(mask);
+    this.layer.push(img);
+    const dot = this.add.graphics().setDepth(12).setMask(mask);
+    this.layer.push(dot);
+    const vy = a.view?.[1] ?? 0;
+    const anchorOf = (p) => sideAnchors[p.id] ?? [p.x * 1000, p.y * 300];
+    const parts = KAYAK_PARTS;
+    const counter = text(this, W / 2, fy + frameH + 10, '', 11, { color: CSS.mist, origin: [0.5, 0], tracking: 1 }).setDepth(10);
+    this.layer.push(counter);
+    let i = -1, zoomTween = null;
+    const show = (n) => {
+      i = n;
+      zoomTween?.stop();
+      const whole = n < 0;
+      const zoom = whole ? 1 : 2.8;
+      const w = baseW * zoom, h = baseH * zoom;
+      let cx = fx + frameW / 2, cy = fy + frameH / 2;
+      if (!whole) {
+        const [ax, ay] = anchorOf(parts[n]);
+        // Centre the part in the frame, but keep the picture covering the frame.
+        const px0 = (ax / a.w) * w, py0 = ((ay - vy) / a.h) * h;
+        cx = fx + frameW / 2 - (px0 - w / 2);
+        cy = fy + frameH / 2 - (py0 - h / 2);
+        cx = Math.min(fx + w / 2, Math.max(fx + frameW - w / 2, cx));
+        cy = Math.min(fy + h / 2 + 4, Math.max(fy + frameH - h / 2 - 4, cy));
+      }
+      zoomTween = this.tweens.add({ targets: img, x: px(cx), y: px(cy), displayWidth: px(w), displayHeight: px(h), duration: 520, ease: 'Sine.easeInOut', onUpdate: drawDot, onComplete: drawDot });
+      counter.setText(whole ? `${parts.length} parts · Next to begin` : `${parts[n].name.toUpperCase()}  ·  ${n + 1} of ${parts.length}`);
+      if (whole) { this.card?.active && this.card.destroy(); this.card = null; } else { this.showCard(parts[n]); this.card.y = px(fy + frameH + 36); sound.unlock(); sound.ui('tap'); }
+      prev.setEnabled(!whole);
+      next.label.setText(n >= parts.length - 1 ? 'Next: your body' : whole ? 'Begin' : 'Next part');
     };
-    ui = this.hotspots(spots, {
-      need: 5,
-      onFocus: (s) => setPan(pan.x + (W / 2 - s.x), true),
-      onVisit: (n) => counter.setText(`${n} of ${spots.length} parts · the ghosted lines are the frame, jacks and flotation inside`),
-      onDone: () => this.layer.push(button(this, W / 2, layout.H - layout.safe.bottom - 44, 'Next: your body', () => this.stageBody(), { w: 240 }).setDepth(45)),
-    });
-    // Drag to pan.
-    let drag = null;
-    this.input.on('pointerdown', (p) => { if (Math.abs(p.y / layout.S - cy) < 90) drag = { x: p.x, from: pan.x }; });
-    this.input.on('pointermove', (p) => { if (drag && p.isDown) { setPan(drag.from + (p.x - drag.x) / layout.S); hint.setAlpha(0.3); } });
-    this.input.on('pointerup', () => { drag = null; });
-    this.arrowsClaimed = false;
+    const drawDot = () => {
+      dot.clear();
+      if (i < 0) return;
+      const [ax, ay] = anchorOf(parts[i]);
+      const w = img.displayWidth / layout.S, h = img.displayHeight / layout.S;
+      const x = img.x / layout.S - w / 2 + (ax / a.w) * w, y = img.y / layout.S - h / 2 + ((ay - vy) / a.h) * h;
+      dot.lineStyle(px(2), COLOR.sun, 0.95); dot.strokeCircle(px(x), px(y), px(16));
+      dot.fillStyle(COLOR.sun, 0.9); dot.fillCircle(px(x), px(y), px(4));
+    };
+    const by = layout.H - layout.safe.bottom - 44;
+    const prev = button(this, 70, by, 'Back', () => show(i - 1), { primary: false, w: 110, h: 44, size: 14 }).setDepth(45);
+    const next = button(this, W - 120, by, 'Begin', () => {
+      if (i >= parts.length - 1) { this.stageBody(); return; }
+      show(i + 1);
+    }, { w: 200, h: 48, size: 15 }).setDepth(45);
+    this.layer.push(prev, next);
+    this.input.keyboard?.on('keydown-RIGHT', () => i < parts.length - 1 && show(i + 1));
+    this.input.keyboard?.on('keydown-LEFT', () => i >= 0 && show(i - 1));
+    show(-1);
   }
 
   // 2. The body: you wear a kayak.
@@ -161,8 +199,19 @@ export class BoatSchool extends Phaser.Scene {
     lesson('wearTheBoat');
     this.header('You wear a kayak', 'Fit yourself to the boat, from the feet up. Tap each point in order.');
     const W = layout.W, width = W, cy = layout.safe.top + 260;
-    const map = await this.art('paddlerSide', cy, width);
-    const spots = BODY_POINTS.map((b) => ({ id: b.id, item: b, ...map(...BODY_SPOTS[b.id]) }));
+    const m = await import('../render3d/bake.js').catch(() => null);
+    const r = m?.bakeSeated(this, px(width - 8));
+    let spots;
+    if (r?.key && this.sys.isActive()) {
+      const w = width - 8, h = w * r.aspect;
+      const img = this.add.image(px(W / 2), px(cy), r.key).setDepth(10).setDisplaySize(px(w), px(h));
+      this.layer.push(img);
+      const x0 = W / 2 - w / 2, y0 = cy - h / 2;
+      spots = BODY_POINTS.map((b) => { const [ax, ay] = r.anchors[b.id]; return { id: b.id, item: b, x: x0 + (ax / 1000) * w, y: y0 + (ay / (1000 * r.aspect)) * h }; });
+    } else {
+      const map = await this.art('paddlerSide', cy, width);
+      spots = BODY_POINTS.map((b) => ({ id: b.id, item: b, ...map(...BODY_SPOTS[b.id]) }));
+    }
     const fit = meter(this, 40, cy + 146, W - 80, 7, COLOR.good).setDepth(10);
     fit.set(0);
     this.layer.push(fit, text(this, W / 2, cy + 160, 'CONNECTION TO THE BOAT', 9.5, { tracking: 1.2, color: CSS.mist, origin: [0.5, 0] }).setDepth(10));
@@ -179,20 +228,35 @@ export class BoatSchool extends Phaser.Scene {
     });
   }
 
-  // 3. The paddle.
+  // 3. The paddle: a Greenland paddle, from the 3D model.
   async stagePaddle() {
     this.clear();
-    this.header('Your paddle', 'Power comes from the torso, not the arms. Tap each part.');
-    const W = layout.W, width = W - 12, cy = layout.safe.top + 200;
-    const map = await this.art('paddle', cy, width);
+    this.header('Your paddle', 'A Greenland paddle: cedar, long and narrow, unfeathered. Power comes from the torso. Tap each part.');
+    const W = layout.W, width = W - 16, cy = layout.safe.top + 200;
+    const m = await import('../render3d/bake.js').catch(() => null);
+    const r = m?.bakePaddle(this, px(width));
+    let map;
+    if (r?.key && this.sys.isActive()) {
+      const h = width * r.aspect;
+      const img = this.add.image(px(W / 2), px(cy), r.key).setDepth(10).setDisplaySize(px(width), px(h));
+      this.layer.push(img);
+      const x0 = W / 2 - width / 2, y0 = cy - h / 2;
+      map = (x, y) => ({ x: x0 + (x / 1000) * width, y: y0 + (y / (1000 * r.aspect)) * h });
+      this.paddleAnchors = r.anchors;
+    } else {
+      map = await this.art('paddle', cy, width);
+      this.paddleAnchors = null;
+    }
+    const anchors = this.paddleAnchors ?? { blade: [160, 110], loom: [500, 110], shoulder: [620, 110], tip: [980, 110] };
     // The paddler's box: hands a little wider than the shoulders, in front of the chest.
-    const tl = map(300, 60), br = map(700, 300);
+    const bx = cy + 90;
     const box = this.add.graphics().setDepth(11);
     box.lineStyle(px(1.5), COLOR.sun, 0.7);
-    for (let x = tl.x; x < br.x; x += 10) { box.lineBetween(px(x), px(tl.y), px(Math.min(x + 5, br.x)), px(tl.y)); box.lineBetween(px(x), px(br.y), px(Math.min(x + 5, br.x)), px(br.y)); }
-    for (let y = tl.y; y < br.y; y += 10) { box.lineBetween(px(tl.x), px(y), px(tl.x), px(Math.min(y + 5, br.y))); box.lineBetween(px(br.x), px(y), px(br.x), px(Math.min(y + 5, br.y))); }
-    this.layer.push(box, text(this, (tl.x + br.x) / 2, tl.y - 16, "THE PADDLER'S BOX", 9.5, { tracking: 1.2, color: CSS.sun, origin: [0.5, 0] }).setDepth(11));
-    const spots = PADDLE_PARTS.map((p) => ({ id: p.id, item: p, ...map(...PADDLE_SPOTS[p.id]) }));
+    const bl = W / 2 - 90, br = W / 2 + 90, bt = bx, bb = bx + 70;
+    for (let x = bl; x < br; x += 10) { box.lineBetween(px(x), px(bt), px(Math.min(x + 5, br)), px(bt)); box.lineBetween(px(x), px(bb), px(Math.min(x + 5, br)), px(bb)); }
+    for (let y = bt; y < bb; y += 10) { box.lineBetween(px(bl), px(y), px(bl), px(Math.min(y + 5, bb))); box.lineBetween(px(br), px(y), px(br), px(Math.min(y + 5, bb))); }
+    this.layer.push(box, text(this, W / 2, bt - 16, "THE PADDLER'S BOX", 9.5, { tracking: 1.2, color: CSS.sun, origin: [0.5, 0] }).setDepth(11));
+    const spots = PADDLE_PARTS.map((p) => ({ id: p.id, item: p, ...(p.id === 'box' ? { x: W / 2, y: (bt + bb) / 2 } : map(...(anchors[p.id] ?? anchors.loom))) }));
     this.hotspots(spots, {
       onDone: () => {
         lesson('rotation');

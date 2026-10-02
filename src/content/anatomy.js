@@ -1,4 +1,4 @@
-// Boat School: the boat, the body, the paddle (FR-000a). Positions (x, y) are fractions of the
+// Kayak School: the boat, the body, the paddle (FR-000a). Positions (x, y) are fractions of the
 // side-view illustration (src/art/kayak-side.svg), used to place tap targets.
 
 export const KAYAK_PARTS = [
@@ -24,15 +24,17 @@ export const BODY_POINTS = [
 ];
 
 export const PADDLE_PARTS = [
-  { id: 'blade', name: 'Blade & power face', text: 'The power face is the side that pulls against the water — it faces you on a forward stroke.', sourceIds: ['aca'] },
-  { id: 'shaft', name: 'Shaft & grip', text: 'Hands a little wider than your shoulders, knuckles in line with the top edge of the blade. Grip lightly.', sourceIds: ['aca'] },
-  { id: 'feather', name: 'Feather', text: 'The two blades are often set at an angle to each other so the blade in the air slices through the wind.', sourceIds: ['aca'] },
+  { id: 'blade', name: 'Blade', text: 'Long, narrow and unfeathered: the Greenland paddle is the Arctic original. A narrow blade enters quietly and buries fully, so it pulls with the whole torso rather than yanking the shoulders.', sourceIds: ['arctic', 'aca'] },
+  { id: 'loom', name: 'Loom', text: 'The short centre shaft. Hold it with your hands at its shoulders, knuckles up, thumbs and forefingers lightly around the blade roots — a loose grip you can feel the water through.', sourceIds: ['arctic'] },
+  { id: 'shoulder', name: 'Shoulders', text: 'Where the loom widens into the blade. Your hands rest against them, so you always know where the blade is without looking, and the paddle can slide out along the blade for a long, extended stroke or roll.', sourceIds: ['arctic'] },
+  { id: 'tip', name: 'Tip & cant', text: 'The blade goes in angled slightly forward (canted), so it slices in cleanly and holds the water as it moves back. Cedar, carved to the paddler’s own arm span — the oldest kind of custom fit.', sourceIds: ['arctic', 'burke'] },
   { id: 'box', name: 'The paddler’s box', text: 'Keep your hands in front of your chest, in the box formed by your arms and shoulders. It protects your shoulders and keeps the power in your torso.', sourceIds: ['aca'] },
 ];
 
 export const DRILLS = [
-  { id: 'forward', title: 'Forward stroke: rotate, don’t pull', skill: 'forward', text: 'Wind up your torso, plant the blade by your feet and unwind. Your arms stay nearly straight; the stroke ends at your hip. Swipe long and smooth from the top of a thumb zone to the bottom.', goal: 'Six rotation strokes in a row' },
+  { id: 'forward', title: 'Forward stroke: rotate, don’t pull', skill: 'forward', text: 'Wind up your torso, plant the blade by your feet and unwind. Your arms stay nearly straight; the stroke ends at your hip. Swipe from the top of a blade zone down to the hip line, steadily — not a flick.', goal: 'Six rotation strokes' },
+  { id: 'reverse', title: 'Reverse stroke: look back, push', skill: 'forward', text: 'Rotate to look over your shoulder, plant the back of the blade behind your hip and push it forward to your feet. The same torso, the other way. Swipe upward in a blade zone.', goal: 'Four reverse strokes' },
   { id: 'edge', title: 'Edging: lift a knee', skill: 'edging', text: 'Lift one knee to tilt the kayak onto its chine, keeping your head and body over the boat. Drag the hips strip toward the side you want to go down.', goal: 'Hold an edge for three seconds' },
-  { id: 'sweep', title: 'Sweep on edge', skill: 'sweep', text: 'A wide arc from bow to stern turns the boat away from the blade. Edge toward the sweep side and it turns far more.', goal: 'Turn half a circle with edged sweeps' },
+  { id: 'sweep', title: 'Turning: the sweep stroke', skill: 'sweep', text: 'A wide arc from bow to stern turns the boat away from the blade: sweep on the left to turn right. Edge toward the sweep side and it turns far more. Swipe outward across a blade zone while holding an edge.', goal: 'Turn half a circle with edged sweeps' },
   { id: 'brace', title: 'Low brace and hip snap', skill: 'brace', text: 'When you tip, slap the back of the blade flat on the water on the low side, then snap your hips to bring the boat back under you. Head stays down — it comes up last.', goal: 'Recover from three wobbles' },
 ];

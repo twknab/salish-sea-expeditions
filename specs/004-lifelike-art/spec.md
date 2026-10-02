@@ -40,7 +40,7 @@ Considered and rejected:
 - **US1 (P1)** The kayaks on the water are lit 3D boats in the chosen skin, with a paddler whose
   torso rotates and whose blades enter and leave the water through a smooth 24-frame stroke.
 - **US2 (P1)** Orcas, harbour seals on their rock, and the ferry are lit 3D models.
-- **US3 (P1)** Boat School's kayak side view is rendered from the same model, with the frame
+- **US3 (P1)** Kayak School's kayak side view is rendered from the same model, with the frame
   visible through a translucent skin, and the part hotspots projected from the model.
 - **US4 (P2)** Everything is crisp at any zoom: mipmaps, device-resolution rasters.
 

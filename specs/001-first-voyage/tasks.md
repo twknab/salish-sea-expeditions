@@ -8,7 +8,7 @@ description: "Tasks for First Voyage"
 
 **Tests**: Required by constitution IX for all simulation logic (`node:test`), plus a smoke test.
 
-**Order**: Build order follows story priority. US0 (Boat School), US1 (the crossing) and US9 (the
+**Order**: Build order follows story priority. US0 (Kayak School), US1 (the crossing) and US9 (the
 sea looks and sounds alive) together are the MVP.
 
 ## Format: `[ID] [P?] [Story] Description`
@@ -33,7 +33,7 @@ sea looks and sounds alive) together are the MVP.
 - [x] T013 [P] `src/audio/soundscape.js` — buses (sea, wildlife, music), unlock on gesture, synthesised voices
 - [x] T014 `src/main.js`, `src/scenes/Boot.js` — game config at device resolution, quality tier, scene registry
 
-## Phase 3: US0 — Boat School (P1) 🎯 MVP
+## Phase 3: US0 — Kayak School (P1) 🎯 MVP
 
 - [x] T015 [P] [US0] `src/sim/kayak.js` — physics step from PaddlerInput (rotation efficiency, edge-sharpened sweeps, rocker, trim, current, wind); tests
 - [x] T016 [P] [US0] `src/sim/stability.js` — heel from waves and edge, brace with hip snap and head down, capsize; tests

@@ -4,7 +4,7 @@
 // technique: a long, smooth swipe from reach to hip IS torso rotation; a flick on the hips strip
 // IS the hip snap; holding the blade on the low side IS the brace.
 import Phaser from 'phaser';
-import { emptyInput, rotationQuality } from '../sim/input.js';
+import { emptyInput, rotationQuality, GOOD_STROKE } from '../sim/input.js';
 import { COLOR, CSS, layout, px, textStyle } from './theme.js';
 
 const HIP_LINE = 0.78; // fraction of zone height where the hip is
@@ -207,9 +207,9 @@ export class TouchControls {
     }
     if (dy < -z.h * 0.25) return { side, kind: 'reverse', reach: 0.5, smoothness: 0.8, exitAtHip: true };
     if (dy < z.h * 0.2) return null;
-    const reach = Phaser.Math.Clamp(1 - ((a.y - z.y) / z.h - 0.08) * 2.2, 0, 1);
+    const reach = Phaser.Math.Clamp(1 - ((a.y - z.y) / z.h - 0.12) * 1.8, 0, 1); // start in the top third = a full reach
     const hipY = z.y + z.h * HIP_LINE;
-    const exitAtHip = Math.abs(b.y - hipY) < z.h * 0.13;
+    const exitAtHip = Math.abs(b.y - hipY) < z.h * 0.22; // a generous hip: the point is the end, not a pixel
     // Smoothness: a steady pull that keeps moving toward the hip in a clean line, and not a jab.
     let path = 0, forward = 0;
     for (let i = 1; i < tr.pts.length; i++) {
@@ -221,21 +221,21 @@ export class TouchControls {
     const straight = path > 0 ? Math.hypot(dx, dy) / path : 1;
     const monotone = path > 0 ? forward / path : 1;
     let smooth = Phaser.Math.Clamp((straight - 0.6) / 0.35, 0, 1) * 0.5 + monotone * 0.5;
-    smooth = Math.min(smooth, Phaser.Math.Clamp((dur - 80) / 220, 0.15, 1));
+    smooth = Math.min(smooth, Phaser.Math.Clamp((dur - 40) / 140, 0.2, 1)); // only a real jab (< ~180 ms) is penalised
     return { side, kind: 'forward', reach, smoothness: smooth, exitAtHip };
   }
 
   flash(st) {
     const z = this.zones()[st.side];
     const q = rotationQuality(st);
-    const label = st.kind !== 'forward' ? (st.kind === 'sweep' ? 'Sweep' : 'Reverse') : q >= 0.7 ? 'Rotation' : st.reach < 0.4 ? 'Reach further' : !st.exitAtHip ? 'Exit at the hip' : 'Arms — rotate';
-    this.feedback.setText(label).setColor(st.kind !== 'forward' || q >= 0.7 ? CSS.good : CSS.sun);
+    const label = st.kind !== 'forward' ? (st.kind === 'sweep' ? 'Sweep' : 'Reverse') : q >= GOOD_STROKE ? 'Rotation' : st.reach < 0.4 ? 'Reach further' : !st.exitAtHip ? 'Exit at the hip' : 'Arms — rotate';
+    this.feedback.setText(label).setColor(st.kind !== 'forward' || q >= GOOD_STROKE ? CSS.good : CSS.sun);
     this.feedback.setPosition(px(z.x + z.w / 2), px(z.y - 14)).setAlpha(1);
     this.scene.tweens.killTweensOf(this.feedback);
     this.scene.tweens.add({ targets: this.feedback, alpha: 0, delay: 500, duration: 500 });
     const f = this.fx;
     f.clear();
-    f.fillStyle(st.kind === 'forward' && q < 0.7 ? COLOR.sun : COLOR.good, 0.18);
+    f.fillStyle(st.kind === 'forward' && q < GOOD_STROKE ? COLOR.sun : COLOR.good, 0.18);
     f.fillRoundedRect(px(z.x), px(z.y), px(z.w), px(z.h), px(22));
     this.scene.tweens.addCounter({ from: 1, to: 0, duration: 380, onUpdate: (tw) => f.setAlpha(tw.getValue()) });
   }

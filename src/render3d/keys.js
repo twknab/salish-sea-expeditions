@@ -22,3 +22,9 @@ export const k3 = {
   orca: (kind, d) => `k3-orca-${kind}-${d}`,
   rock: 'k3-rock', seal: (i) => `k3-seal-${i % 3}`, sealHead: 'k3-seal-head', ferry: 'k3-ferry',
 };
+
+/** Keys for species art: a three-quarter portrait, and how it looks on the water. */
+export const kSp = {
+  portrait: (id) => `k3-por-${id}`,
+  top: (id, v = 'a') => `k3-top-${id}-${v}`,
+};

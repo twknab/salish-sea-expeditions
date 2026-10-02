@@ -221,11 +221,14 @@ export const sound = {
   /** A paddle stroke: the catch, then drips. `q` = rotation quality, `pan` −1..1. */
   stroke(q = 0.8, pan = 0) {
     if (!ctx) return;
-    burst(bus.sea, { freq: 1800, sweepTo: 420, q: 0.8, a: 0.02, peak: 0.16 + 0.1 * q, d: 0.32, pan });
-    burst(bus.sea, { freq: 160, type: 'lowpass', a: 0.01, peak: 0.12, d: 0.12, pan });
-    for (let i = 0; i < 3 + Math.floor(Math.random() * 3); i++) {
-      const f = 1400 + Math.random() * 1800;
-      tone(bus.sea, { f0: f, f1: f * 1.6, a: 0.003, peak: 0.018 + Math.random() * 0.02, d: 0.07, when: 0.35 + Math.random() * 0.5, pan: pan * 0.7 });
+    // A blade slipping into water: a soft, low "gloop" as it catches, a hush as it pulls, and a
+    // few sweet drips as it lifts. Nothing sharp. A better stroke is quieter and cleaner.
+    const cleanness = 0.6 + 0.4 * q;
+    burst(bus.sea, { freq: 520, sweepTo: 240, type: 'lowpass', q: 0.9, a: 0.03, peak: 0.09, d: 0.22, pan });
+    burst(bus.sea, { freq: 1200, sweepTo: 700, q: 0.5, a: 0.06, peak: 0.035 * (1.4 - q), d: 0.4, pan });
+    for (let i = 0; i < 2 + Math.floor(Math.random() * 3); i++) {
+      const f = 2200 + Math.random() * 2200;
+      tone(bus.sea, { f0: f, f1: f * 0.92, a: 0.004, peak: 0.008 + Math.random() * 0.01 * cleanness, d: 0.11, when: 0.45 + Math.random() * 0.55, pan: pan * 0.6 });
     }
   },
 

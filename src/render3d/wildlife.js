@@ -20,9 +20,9 @@ function noise3(x, y, z) {
   return acc;
 }
 /** Colours are authored in sRGB; vertex colours are linear. */
-const lin = (c) => c.map((v) => Math.pow(v, 2.2));
+export const lin = (c) => c.map((v) => Math.pow(v, 2.2));
 
-const fbm = (x, y, z) => noise3(x, y, z) * 0.55 + noise3(x * 2.1, y * 2.1, z * 2.1) * 0.3 + noise3(x * 4.3, y * 4.3, z * 4.3) * 0.15;
+export const fbm = (x, y, z) => noise3(x, y, z) * 0.55 + noise3(x * 2.1, y * 2.1, z * 2.1) * 0.3 + noise3(x * 4.3, y * 4.3, z * 4.3) * 0.15;
 
 /**
  * Loft a body along x from elliptical sections. `profile(t)` → { w, h, y } half-width, half-height
@@ -52,7 +52,7 @@ export function loft(length, profile, colour, nT = 160, nA = 72) {
   return g;
 }
 
-function flat(shape, depth, mat) {
+export function flat(shape, depth, mat) {
   const g = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: depth * 0.4, bevelSize: depth * 0.5, bevelSegments: 3, curveSegments: 24 });
   g.translate(0, 0, -depth / 2);
   const m = new THREE.Mesh(g, mat);
@@ -63,7 +63,7 @@ function flat(shape, depth, mat) {
 // ---------- Orca ----------
 
 /** An orca: `bull` has the tall straight dorsal fin; others a shorter, curved (falcate) one. */
-export function buildOrca({ bull = false, calf = false } = {}) {
+export function buildOrca({ bull = false, calf = false, openSaddle = false } = {}) {
   const L = calf ? 3 : bull ? 7.5 : 6.2;
   const girth = L * 0.105;
   const black = [0.03, 0.035, 0.04], white = [0.92, 0.94, 0.95], grey = [0.42, 0.45, 0.48];
@@ -79,9 +79,10 @@ export function buildOrca({ bull = false, calf = false } = {}) {
     // Grey saddle just behind the dorsal fin, swept back, on the top of the back.
     const st = (t - 0.46) / 0.09;
     const saddle = st > 0 && st < 1 && up > 0.78 + 0.18 * Math.abs(st - 0.4);
+    const notch = openSaddle && saddle && Math.abs(Math.sin(a)) < 0.07 && st > 0.25 && st < 0.75;
     // White chin and belly, and the flank sweep behind.
     const belly = (up < -0.5 && t < 0.62) || (up < -0.1 && lat > 0.6 && t > 0.56 && t < 0.68);
-    return eye || belly ? white : saddle ? grey : black;
+    return eye || belly ? white : saddle && !notch ? grey : black;
   };
   const skin = new THREE.MeshPhysicalMaterial({ vertexColors: true, roughness: 0.32, clearcoat: 0.7, clearcoatRoughness: 0.25 });
   const finMat = new THREE.MeshPhysicalMaterial({ color: 0x050607, roughness: 0.3, clearcoat: 0.7 });

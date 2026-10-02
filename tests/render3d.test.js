@@ -49,3 +49,18 @@ test('lofted bodies have colours and finite vertices', () => {
   finite(g);
   assert.equal(g.attributes.color.count, g.attributes.position.count);
 });
+
+test('every species model builds finite geometry and belongs to a field-guide page', async () => {
+  const { SPECIES_MODELS } = await import('../src/render3d/species3d.js');
+  const { speciesById } = await import('../src/content/species.js');
+  const { SPECIES_TOP } = await import('../src/render3d/topkinds.js');
+  for (const [id, m] of Object.entries(SPECIES_MODELS)) {
+    if (id !== 'cormorantRookery') assert.ok(speciesById[id], `model for unknown species ${id}`);
+    const obj = m.build();
+    let verts = 0;
+    obj.traverse((o) => { if (o.geometry) verts += finite(o.geometry); });
+    assert.ok(verts > 30, `${id} has geometry`);
+    if (SPECIES_TOP[id]) assert.ok(m.top, `${id} is drawn on the water but has no top view`);
+  }
+  for (const id of Object.keys(SPECIES_TOP)) assert.ok(SPECIES_MODELS[id]?.top, `${id} top view without a model`);
+});

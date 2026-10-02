@@ -17,11 +17,33 @@ export const SIGHTINGS = [
   { speciesId: 'douglasFir', ...toLocal(48.5500, -123.0170), r: 400 },
   { speciesId: 'moonJelly', ...toLocal(48.6105, -123.0440), r: 250 },
   { speciesId: 'oystercatcher', ...toLocal(48.6118, -123.0400), r: 250 },
+  // Spec 005. Placed by habitat near the route (open water, near shore, or on the shore itself);
+  // the places are illustrative, not records. `chance` = how often the animal is there on a trip.
+  { speciesId: 'waterJelly', x: -98, y: 24, r: 300 },
+  { speciesId: 'kingfisher', x: -272, y: 490, r: 350 },
+  { speciesId: 'californiaSeaLion', x: 648, y: 289, r: 300 },
+  { speciesId: 'garryOak', x: -249, y: 569, r: 350 },
+  { speciesId: 'sugarKelp', x: 133, y: 1101, r: 300 },
+  { speciesId: 'dallsPorpoise', x: 266, y: 1774, r: 700 },
+  { speciesId: 'lionsMane', x: 205, y: 2490, r: 300 },
+  { speciesId: 'redCedar', x: -377, y: 2620, r: 350 },
+  { speciesId: 'peregrine', x: -664, y: 2865, r: 350 },
+  { speciesId: 'seaOtter', x: -1282, y: 3612, r: 300, chance: 0.3 },
+  { speciesId: 'pelagicCormorant', x: -624, y: 6058, r: 350, rookery: true },
+  { speciesId: 'minke', x: -1626, y: 5073, r: 700, chance: 0.6 },
+  { speciesId: 'stellerSeaLion', x: -2387, y: 5359, r: 300 },
+  { speciesId: 'friedEggJelly', x: -1661, y: 6281, r: 300 },
+  { speciesId: 'humpback', x: -2784, y: 6424, r: 700, chance: 0.6 },
 ];
 
+/** The sightings present on this trip: the rarer animals are not always there. */
+export function tripSightings(rand = Math.random) {
+  return SIGHTINGS.filter((s) => !s.chance || rand() < s.chance);
+}
+
 /** Species newly sighted at (x, y), given those already seen. */
-export function sightingsAt(x, y, seen) {
-  return SIGHTINGS.filter((s) => !seen.has(s.speciesId) && Math.hypot(x - s.x, y - s.y) < s.r).map((s) => s.speciesId);
+export function sightingsAt(x, y, seen, list = SIGHTINGS) {
+  return list.filter((s) => !seen.has(s.speciesId) && Math.hypot(x - s.x, y - s.y) < s.r).map((s) => s.speciesId);
 }
 
 // The orca pod travels up the channel along ORCA_ROUTE (always on the water), starting about
@@ -36,12 +58,23 @@ function nearestAlong(path, x, y) {
   return best;
 }
 
-export function createOrcaPass(player, t, route = ORCA_ROUTE) {
+/**
+ * The two orca ecotypes that share these waters and never mix. Bigg's hunt mammals in small,
+ * quiet family groups and are now the more often seen; Southern Residents eat salmon and travel in
+ * larger, more vocal groups. `roll` (0..1) picks one; tests pass it to be deterministic.
+ */
+export const ECOTYPES = {
+  biggsOrca: { members: [{ dx: 0, dy: 0, bull: true }, { dx: -40, dy: 30 }, { dx: 30, dy: -45 }, { dx: -15, dy: -80, calf: true }] },
+  southernResident: { members: [{ dx: 0, dy: 0, bull: true }, { dx: -45, dy: 35 }, { dx: 35, dy: -40 }, { dx: -20, dy: -85, calf: true }, { dx: 70, dy: 40 }, { dx: -80, dy: -30 }, { dx: 20, dy: 110, bull: true }] },
+};
+
+export function createOrcaPass(player, t, route = ORCA_ROUTE, roll = Math.random()) {
   const mover = createMover(route, 2.6, Math.max(0, nearestAlong(route, player.x, player.y) - 1300));
+  const speciesId = roll < 0.6 ? 'biggsOrca' : 'southernResident';
   return {
-    speciesId: 'orca', kind: 'orca', mover,
+    speciesId, kind: 'orca', mover,
     x: mover.x, y: mover.y, heading: mover.heading, speed: 2.6,
-    members: [{ dx: 0, dy: 0, bull: true }, { dx: -40, dy: 30 }, { dx: 30, dy: -45 }, { dx: -15, dy: -80, calf: true }],
+    members: ECOTYPES[speciesId].members.map((m) => ({ ...m })),
     started: t, closest: Infinity, violation: false, respectful: true, state: 'approaching',
   };
 }
@@ -58,7 +91,7 @@ export function stepOrcaPass(pod, player, dt) {
   const dx = pod.x - player.x, dy = pod.y - player.y;
   const d = Math.hypot(dx, dy);
   pod.closest = Math.min(pod.closest, d);
-  const rule = speciesById.orca.approachMetres;
+  const rule = speciesById[pod.speciesId ?? 'biggsOrca'].approachMetres;
   // Closing speed: the part of the player's ground velocity pointing at the whales.
   const closing = d > 0 ? (player.vx * dx + player.vy * dy) / d : 0;
   let warn = false;
