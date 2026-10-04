@@ -32,6 +32,9 @@ import { assess, handlingPenalty } from '../sim/packing.js';
 import { state, trip, lesson, observe, go, persist } from '../state.js';
 import { pauseButton } from '../ui/pause.js';
 
+/** Why the last forward stroke was graded as arms, in the words of the fix. */
+const armsWhy = (st) => !st ? 'rotate, don’t pull' : st.reach < 0.4 ? 'start higher: the top of the blade zone is your feet' : !st.exitAtHip ? 'finish at the hip line' : 'pull steadily, not a flick';
+
 const ZOOMS = [90, 240, 700, 2200];
 
 export class Paddle extends Phaser.Scene {
@@ -200,7 +203,8 @@ export class Paddle extends Phaser.Scene {
     const d = DRILLS[i];
     if (!d) return;
     this.card?.active && this.card.dismiss();
-    this.card = lessonCard(this, { title: d.title, text: `${d.text}\n\nGoal: ${d.goal}.`, sourceIds: ['aca'] }, { y: layout.safe.top + 98, depth: 60 });
+    const keys = !this.sys.game.device.input.touch && this.input.keyboard && d.keys ? `\nKeyboard: ${d.keys}.` : '';
+    this.card = lessonCard(this, { title: d.title, text: `${d.text}\n\nGoal: ${d.goal}.${keys}`, sourceIds: ['aca'] }, { y: layout.safe.top + 98, depth: 60 });
     this.card.setScrollFactor(0);
     this.drillBar?.destroy();
     this.drillBar = meter(this, 30, layout.H - layout.safe.bottom - 206, layout.W - 60, 5, COLOR.sun).setScrollFactor(0).setDepth(33);
@@ -215,11 +219,16 @@ export class Paddle extends Phaser.Scene {
     let p = 0;
     if (d.id === 'forward') {
       // Every rotation stroke counts; an arm stroke just does not. Six, and you have it.
-      s.count += events.filter((e) => e === 'strokeGood').length;
+      const good = events.filter((e) => e === 'strokeGood').length;
+      s.count += good;
       p = s.count / 6;
+      if (good && s.count < 6) this.note(`${s.count} of 6 rotation strokes`, 2500);
+      else if (events.includes('strokeArms')) this.note(`Not counted — ${armsWhy(this.controls.last)}`, 3000);
     } else if (d.id === 'reverse') {
-      s.count += events.filter((e) => e === 'reverse').length;
+      const n = events.filter((e) => e === 'reverse').length;
+      s.count += n;
       p = s.count / 4;
+      if (n && s.count < 4) this.note(`${s.count} of 4 reverse strokes`, 2500);
     } else if (d.id === 'edge') {
       s.t = Math.abs(this.player.edge) > 0.6 ? s.t + dt : Math.max(0, s.t - dt * 2);
       p = s.t / 3;

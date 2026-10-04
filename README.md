@@ -47,7 +47,8 @@ Friday Harbor → Jones Island, about 4½ nautical miles, one night out.
 
 | Do this | On the phone | Keyboard |
 | --- | --- | --- |
-| Forward stroke | Swipe down a blade zone — long and smooth, from the top to the hip line, is torso rotation | A / D |
+| Forward stroke | Swipe down a blade zone — long and smooth, from the top to the hip line, is torso rotation | A / D or ← → |
+| Reverse stroke | Swipe up a blade zone | S or ↓ |
 | Sweep turn | Swipe outward across a blade zone | Z / C |
 | Edge (lift a knee) | Drag the hips bar | Q / E (hold) |
 | Brace | Hold a thumb still on the low side's blade zone… | J / L (hold) |
