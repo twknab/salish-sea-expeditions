@@ -25,7 +25,8 @@
 - [x] T013e Kayak School: camera tour of the boat's parts, the body and the paddle on the real models, then the five drills
 - [x] T013f Water, wind, splash, drip, hull-slap, horn and gull sounds synthesized (tools/synth-audio.mjs)
 - [x] T013g Psychedelic techno soundtrack as six synced stems with a mood per scene (tools/synth-soundtrack.mjs)
-- [x] T013h Paddler rebuilt: proportions, dress layers, IK arms, sunglasses, cap, PFD with straps
+- [x] T013h Paddler rebuilt as one skinned mesh on a Skeleton3D (body_mesh.gd): lofted trunk and limbs with analytic normals, joints blended across bones, dress layers, IK arms, a lofted Greenland paddle
+- [x] T013i Kayak School reachable from the title in one tap; ferry crossing shortened
 
 ## Slice 2 — measure and decide
 
