@@ -11,7 +11,7 @@ uniform float t = 0.0;
 uniform vec3 deep_color : source_color = vec3(0.02, 0.09, 0.13);
 uniform vec3 shallow_color : source_color = vec3(0.10, 0.34, 0.36);
 uniform vec3 sand_color : source_color = vec3(0.55, 0.52, 0.40);
-uniform vec3 sky_color : source_color = vec3(0.50, 0.64, 0.76);
+uniform vec3 sky_color : source_color = vec3(0.40, 0.54, 0.66);
 uniform sampler2D ripple : hint_normal, filter_linear_mipmap, repeat_enable;
 uniform float ripple_scale = 0.18;
 uniform vec3 island_center = vec3(0.0, 0.0, -140.0);

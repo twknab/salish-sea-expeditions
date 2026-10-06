@@ -4,7 +4,7 @@
 extends Node3D
 
 @export var hour := 8.5
-@export var sea_state := 0.3
+@export var sea_state := 0.22
 
 @onready var water: MeshInstance3D = $Water
 @onready var kayak: Kayak = $Kayak
@@ -16,7 +16,6 @@ extends Node3D
 var _t := 0.0
 var _sun: DirectionalLight3D
 var _count := 0
-var _dbg := 0.0
 
 func _ready() -> void:
 	_sky()
@@ -35,7 +34,7 @@ func _sky() -> void:
 	var sky := Sky.new()
 	var pm := ProceduralSkyMaterial.new()
 	pm.sky_top_color = Color("3f6f9a")
-	pm.sky_horizon_color = Color("c7d6df")
+	pm.sky_horizon_color = Color("a9bcc8")
 	pm.ground_bottom_color = Color("1a3a44")
 	pm.ground_horizon_color = Color("b9c9d0")
 	pm.sun_angle_max = 18.0
@@ -69,10 +68,6 @@ func _process(delta: float) -> void:
 	kayak.sea_time = _t
 	# The water plane rides along under the boat so the sea never ends.
 	water.global_position = Vector3(kayak.global_position.x, 0.0, kayak.global_position.z)
-	_dbg += delta
-	if _dbg > 3.0:
-		_dbg = 0.0
-		print("[sse] ", kayak.debug_line(), " cam=", ($CameraRig as Node3D).global_position, " camchild=", ($CameraRig as CameraRig).camera_position())
 	speed_label.text = "%.1f kn" % absf(kayak.speed_knots())
 	var deg := fposmod(rad_to_deg(kayak.heading), 360.0)
 	heading_label.text = "%03d°" % int(round(deg))

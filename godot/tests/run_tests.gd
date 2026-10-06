@@ -46,6 +46,6 @@ func _init() -> void:
 	# Buoyancy: nothing above the water, weight share at the settle depth, capped.
 	check(StrokeMath.buoyancy(-0.1, 100.0, 0.1) == 0.0, "no lift above water")
 	check(absf(StrokeMath.buoyancy(0.1, 100.0, 0.1) - 100.0) < 1e-6, "weight share at settle depth")
-	check(StrokeMath.buoyancy(5.0, 100.0, 0.1) <= 220.0 + 1e-6, "lift is capped")
+	check(StrokeMath.buoyancy(5.0, 100.0, 0.1) <= 400.0 + 1e-6, "lift is capped")
 	print("tests: %d passed, %d failed" % [_n - _fails, _fails])
 	quit(1 if _fails > 0 else 0)

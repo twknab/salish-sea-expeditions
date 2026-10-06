@@ -12,6 +12,6 @@ func _process(_d: float) -> bool:
 		var k: Node3D = _scene.get_node("Kayak")
 		var cam: Node3D = _scene.get_node("CameraRig")
 		print("t=%ds pos=%s up=%s fwd=%s cam=%s" % [_f / 60, k.global_position, k.global_basis.y, -k.global_basis.z, cam.global_position])
-	if _f >= 360:
+	if _f >= 720:
 		quit()
 	return false

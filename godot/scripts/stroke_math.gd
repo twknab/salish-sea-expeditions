@@ -26,4 +26,4 @@ static func stroke_yaw(q: float, rocker: float) -> float:
 static func buoyancy(depth: float, share_weight: float, settle: float) -> float:
 	if depth <= 0.0:
 		return 0.0
-	return minf(depth / settle, 2.2) * share_weight
+	return minf(depth / settle, 4.0) * share_weight

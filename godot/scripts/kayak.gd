@@ -31,7 +31,7 @@ func debug_line() -> String:
 func _ready() -> void:
 	mass = 100.0
 	linear_damp = 0.35
-	angular_damp = 2.5
+	angular_damp = 4.0
 	can_sleep = false
 	var mesh := MeshInstance3D.new()
 	mesh.mesh = Hull.build_mesh(deck_color, hull_color, panel_color)
@@ -41,7 +41,7 @@ func _ready() -> void:
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	mat.roughness = 0.35
 	mat.metallic = 0.0
-	mat.specular = 0.55
+	mat.metallic_specular = 0.55
 	mesh.material_override = mat
 	# The hull model points its bow along +x; the body's forward is -z, so turn the model.
 	mesh.rotation.y = PI / 2.0
@@ -64,7 +64,7 @@ func _ready() -> void:
 	add_child(_paddler)
 
 func _physics_process(delta: float) -> void:
-	var share := mass * 9.81 / _probes.size()
+	var share := mass * 9.81 / 4.0  # about four probes carry the boat at any moment
 	for p in _probes:
 		var wp := global_transform * p
 		var wy := Waves.height(wp.x, wp.z, sea_time, sea_state)
@@ -73,7 +73,7 @@ func _physics_process(delta: float) -> void:
 		if f > 0.0:
 			var at := wp - global_position
 			var vel := linear_velocity + angular_velocity.cross(at)
-			f -= vel.y * share * 0.9  # water damps vertical motion at the probe
+			f -= vel.y * share * 1.6  # water damps vertical motion at the probe
 			apply_force(Vector3.UP * maxf(f, 0.0), at)
 	# Hull drag: a keel line resists sideways slip, the fine ends let it run forward.
 	var fwd := -global_basis.z
@@ -84,7 +84,9 @@ func _physics_process(delta: float) -> void:
 	apply_central_force(-right * v_s * mass * 2.2)
 	apply_central_force(-fwd * v_f * absf(v_f) * mass * 0.12)
 	# Edging: a knee lift rolls the boat; the chine probes bring it back when the knee relaxes.
-	apply_torque(fwd * edge * 38.0 - fwd * angular_velocity.dot(fwd) * 30.0)
+	# Paddler and hull together are a self-righting pair: the roll angle itself pulls the boat back.
+	var roll := asin(clampf(global_basis.y.cross(Vector3.UP).dot(fwd), -1.0, 1.0))
+	apply_torque(fwd * edge * 38.0 - fwd * angular_velocity.dot(fwd) * 40.0 + fwd * roll * 90.0)
 	speed = v_f
 	heading = atan2(fwd.x, -fwd.z)
 	if _paddler:

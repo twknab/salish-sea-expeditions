@@ -93,24 +93,24 @@ func _forest() -> void:
 	mm.use_colors = true
 	var cone := CylinderMesh.new()
 	cone.top_radius = 0.0
-	cone.bottom_radius = 1.6
-	cone.height = 7.0
+	cone.bottom_radius = 1.3
+	cone.height = 5.5
 	cone.radial_segments = 7
 	mm.mesh = cone
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed
 	var places: Array[Transform3D] = []
 	var tints: Array[Color] = []
-	for k in range(2600):
+	for k in range(1800):
 		var x := rng.randf_range(-radius, radius)
 		var z := rng.randf_range(-radius, radius)
 		var y := height_at(x, z)
 		if y < 3.2:
 			continue
-		var s := rng.randf_range(0.7, 1.4)
+		var s := rng.randf_range(0.6, 1.1)
 		var t := Transform3D(Basis.from_euler(Vector3(0.0, rng.randf() * TAU, 0.0)).scaled(Vector3(s, s * rng.randf_range(0.9, 1.5), s)), Vector3(x, y + 3.2 * s, z))
 		places.append(t)
-		tints.append(Color("2f5a33").lerp(Color("1e3b24"), rng.randf()))
+		tints.append(Color(0.035, 0.1, 0.04).lerp(Color(0.02, 0.055, 0.025), rng.randf()))
 	mm.instance_count = places.size()
 	for i in range(places.size()):
 		mm.set_instance_transform(i, places[i])
@@ -119,7 +119,6 @@ func _forest() -> void:
 	mmi.multimesh = mm
 	var mat := StandardMaterial3D.new()
 	mat.vertex_color_use_as_albedo = true
-	mat.vertex_color_is_srgb = true
 	mat.roughness = 0.95
 	mmi.material_override = mat
 	add_child(mmi)
