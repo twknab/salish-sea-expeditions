@@ -93,8 +93,8 @@ static func greenland_paddle() -> ArrayMesh:
 				else:
 					st.add_vertex(a); st.add_vertex(b); st.add_vertex(c)
 					st.add_vertex(a); st.add_vertex(c); st.add_vertex(d)
-	st.generate_normals()
 	st.index()
+	st.generate_normals()
 	return st.commit()
 
 func begin_stroke(side: int, kind: String) -> void:
@@ -145,10 +145,10 @@ func advance(delta: float, edge: float) -> void:
 		var shoulder: Vector3 = joints["shoulder_" + s]
 		var target: Vector3
 		if standing:
-			target = Vector3(sg * 0.24, -0.12, 0.06)
+			target = Vector3(sg * 0.25, -0.1, 0.1)
 		else:
 			target = _rig.to_local(_paddle.to_global(Vector3(sg * HAND, 0.0, 0.0)))
-		var pole := Vector3(sg * 0.7, -0.4, -0.3)
+		var pole := Vector3(sg * 0.7, -0.4, -0.3) if not standing else Vector3(sg * 0.4, -0.1, -0.8)
 		var elbow := IK.two_bone(shoulder, target, UPPER, FORE + HANDLEN, pole)
 		var dir := (target - elbow).normalized()
 		joints["elbow_" + s] = elbow

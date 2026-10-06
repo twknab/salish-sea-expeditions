@@ -62,17 +62,19 @@ func build(parent: Node3D, palette: Dictionary, dress: int, legs: bool) -> void:
 			_blob(JOINTS["shoulder_" + s] * Vector3(0.78, 1.0, 1.0) + Vector3(0, 0.02, 0), Vector3(0.09, 0.05, 0.12), palette.pfd, "chest")
 	_tube("neck", "head", [[0.052, 0.05], [0.058, 0.055]], palette.gasket if dress >= 2 else skin, 12, "chest", "head")
 	# Head: skull as an ellipsoid loft, a jaw, a nose; cap or hair on top.
-	_blob(JOINTS.head + Vector3(0, 0.12, 0), Vector3(0.095, 0.115, 0.105), skin, "head")
-	_blob(JOINTS.head + Vector3(0, 0.055, 0.03), Vector3(0.07, 0.065, 0.075), skin, "head")
-	_blob(JOINTS.head + Vector3(0, 0.1, 0.105), Vector3(0.016, 0.02, 0.02), skin, "head")
+	_blob(JOINTS.head + Vector3(0, 0.125, 0.0), Vector3(0.092, 0.118, 0.104), skin, "head")
+	_blob(JOINTS.head + Vector3(0, 0.06, 0.025), Vector3(0.072, 0.07, 0.078), skin, "head")
+	_blob(JOINTS.head + Vector3(0, 0.1, 0.1), Vector3(0.014, 0.018, 0.018), skin, "head")
 	for s in [-1.0, 1.0]:
-		_blob(JOINTS.head + Vector3(s * 0.038, 0.135, 0.085), Vector3(0.012, 0.012, 0.008), Color(0.08, 0.07, 0.06), "head")
+		_blob(JOINTS.head + Vector3(s * 0.092, 0.11, -0.005), Vector3(0.012, 0.022, 0.016), skin, "head")  # ears
+	for s in [-1.0, 1.0]:
+		_blob(JOINTS.head + Vector3(s * 0.036, 0.135, 0.088), Vector3(0.011, 0.011, 0.007), Color(0.08, 0.07, 0.06), "head")
 	if dress >= 4:
-		_blob(JOINTS.head + Vector3(0, 0.135, 0.095), Vector3(0.085, 0.02, 0.02), palette.gasket, "head")  # sunglasses
-		_blob(JOINTS.head + Vector3(0, 0.185, -0.005), Vector3(0.1, 0.075, 0.108), palette.cap, "head")   # neoprene cap
-		_blob(JOINTS.head + Vector3(0, 0.18, 0.08), Vector3(0.1, 0.012, 0.07), palette.cap, "head")      # brim
+		_blob(JOINTS.head + Vector3(0, 0.137, 0.09), Vector3(0.082, 0.018, 0.022), palette.gasket, "head")  # sunglasses
+		_blob(JOINTS.head + Vector3(0, 0.175, -0.003), Vector3(0.097, 0.085, 0.108), palette.cap, "head")  # neoprene cap
+		_blob(JOINTS.head + Vector3(0, 0.168, 0.085), Vector3(0.095, 0.01, 0.06), palette.cap, "head")      # brim
 	else:
-		_blob(JOINTS.head + Vector3(0, 0.185, -0.01), Vector3(0.098, 0.07, 0.106), palette.hair, "head")
+		_blob(JOINTS.head + Vector3(0, 0.172, -0.008), Vector3(0.095, 0.082, 0.106), palette.hair, "head")
 	# Arms: shoulder ball, upper arm, elbow, forearm tapering to the wrist gasket, a hand.
 	for s in ["l", "r"]:
 		_blob(JOINTS["shoulder_" + s], Vector3(0.062, 0.062, 0.062), palette.pfd if pfd else suit, "upper_arm_" + s)
@@ -89,8 +91,8 @@ func build(parent: Node3D, palette: Dictionary, dress: int, legs: bool) -> void:
 			_tube("knee_" + s, "ankle_" + s, [[0.058, 0.058], [0.04, 0.042]], suit, 12, "thigh_" + s, "foot_" + s)
 			_tube("ankle_" + s, "toe_" + s, [[0.045, 0.05], [0.04, 0.035]], boots, 10, "shin_" + s, "")
 			_blob(JOINTS["ankle_" + s] + Vector3(0, -0.01, -0.03), Vector3(0.045, 0.04, 0.05), boots, "foot_" + s)
-	_st.generate_normals()
 	_st.index()
+	_st.generate_normals()
 	var mesh := _st.commit()
 	mesh_instance = MeshInstance3D.new()
 	mesh_instance.mesh = mesh

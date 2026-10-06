@@ -111,6 +111,6 @@ static func build_mesh(deck: Color, hull: Color, panel: Color) -> ArrayMesh:
 			st.set_color(ca); st.add_vertex(a)
 			st.set_color(cd); st.add_vertex(d)
 			st.set_color(cc); st.add_vertex(c)
-	st.generate_normals()
 	st.index()
+	st.generate_normals()
 	return st.commit()
