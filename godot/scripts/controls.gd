@@ -57,6 +57,15 @@ func _gui_input(ev: InputEvent) -> void:
 	elif ev is InputEventScreenDrag:
 		_move(ev.index, ev.position)
 		accept_event()
+	elif ev is InputEventMouseButton and ev.button_index == MOUSE_BUTTON_LEFT:
+		if ev.pressed:
+			_down(100, ev.position)
+		else:
+			_up(100, ev.position)
+		accept_event()
+	elif ev is InputEventMouseMotion and (ev.button_mask & MOUSE_BUTTON_MASK_LEFT):
+		_move(100, ev.position)
+		accept_event()
 
 func _now() -> float:
 	return Time.get_ticks_msec() / 1000.0

@@ -23,6 +23,10 @@ var strokes_arm := 0
 const SETTLE := 0.1
 var _probes: Array[Vector3] = []
 var _paddler: Paddler
+var _hull_mesh: MeshInstance3D
+
+func debug_line() -> String:
+	return "kayak pos=%s aabb=%s vis=%s" % [global_position, _hull_mesh.get_aabb().size, _hull_mesh.is_visible_in_tree()]
 
 func _ready() -> void:
 	mass = 100.0
@@ -33,13 +37,16 @@ func _ready() -> void:
 	mesh.mesh = Hull.build_mesh(deck_color, hull_color, panel_color)
 	var mat := StandardMaterial3D.new()
 	mat.vertex_color_use_as_albedo = true
+	mat.vertex_color_is_srgb = true
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	mat.roughness = 0.35
 	mat.metallic = 0.0
 	mat.specular = 0.55
 	mesh.material_override = mat
 	# The hull model points its bow along +x; the body's forward is -z, so turn the model.
-	mesh.rotation.y = -PI / 2.0
+	mesh.rotation.y = PI / 2.0
 	add_child(mesh)
+	_hull_mesh = mesh
 	var shape := CollisionShape3D.new()
 	var box := BoxShape3D.new()
 	box.size = Vector3(Hull.B, 0.3, Hull.L * 0.96)
@@ -66,7 +73,7 @@ func _physics_process(delta: float) -> void:
 		if f > 0.0:
 			var at := wp - global_position
 			var vel := linear_velocity + angular_velocity.cross(at)
-			f -= vel.y * share * 0.35  # water damps vertical motion at the probe
+			f -= vel.y * share * 0.9  # water damps vertical motion at the probe
 			apply_force(Vector3.UP * maxf(f, 0.0), at)
 	# Hull drag: a keel line resists sideways slip, the fine ends let it run forward.
 	var fwd := -global_basis.z

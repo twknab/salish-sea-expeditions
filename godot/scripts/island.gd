@@ -119,6 +119,7 @@ func _forest() -> void:
 	mmi.multimesh = mm
 	var mat := StandardMaterial3D.new()
 	mat.vertex_color_use_as_albedo = true
+	mat.vertex_color_is_srgb = true
 	mat.roughness = 0.95
 	mmi.material_override = mat
 	add_child(mmi)

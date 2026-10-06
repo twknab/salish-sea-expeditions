@@ -17,6 +17,9 @@ func _ready() -> void:
 	add_child(_cam)
 	_snap()
 
+func camera_position() -> Vector3:
+	return _cam.global_position
+
 func _snap() -> void:
 	_fwd = -_target.global_basis.z
 	_fwd.y = 0.0

@@ -8,10 +8,10 @@ render_mode cull_disabled, depth_draw_always;
 uniform vec4 waves[4];          // dir.x, dir.z, steepness, wavelength — mirrored in waves.gd
 uniform float sea_state : hint_range(0.0, 1.0) = 0.3;
 uniform float t = 0.0;
-uniform vec3 deep_color : source_color = vec3(0.03, 0.14, 0.18);
-uniform vec3 shallow_color : source_color = vec3(0.16, 0.42, 0.42);
+uniform vec3 deep_color : source_color = vec3(0.02, 0.09, 0.13);
+uniform vec3 shallow_color : source_color = vec3(0.10, 0.34, 0.36);
 uniform vec3 sand_color : source_color = vec3(0.55, 0.52, 0.40);
-uniform vec3 sky_color : source_color = vec3(0.62, 0.74, 0.84);
+uniform vec3 sky_color : source_color = vec3(0.50, 0.64, 0.76);
 uniform sampler2D ripple : hint_normal, filter_linear_mipmap, repeat_enable;
 uniform float ripple_scale = 0.18;
 uniform vec3 island_center = vec3(0.0, 0.0, -140.0);
@@ -58,11 +58,11 @@ void fragment() {
 	NORMAL_MAP_DEPTH = 1.0;
 	vec3 water = mix(sand_color, mix(shallow_color, deep_color, depth_t), smoothstep(0.0, 0.25, depth_t));
 	float fresnel = pow(1.0 - clamp(dot(normalize(NORMAL), VIEW), 0.0, 1.0), 4.0);
-	vec3 col = mix(water, sky_color, 0.35 + 0.55 * fresnel);
+	vec3 col = mix(water, sky_color, 0.12 + 0.6 * fresnel);
 	col = mix(col, vec3(0.92, 0.95, 0.96), crest * 0.8);
 	ALBEDO = col;
-	ROUGHNESS = mix(0.06, 0.22, crest);
-	SPECULAR = 0.6;
+	ROUGHNESS = mix(0.14, 0.3, crest);
+	SPECULAR = 0.4;
 	METALLIC = 0.0;
 	ALPHA = 1.0;
 }

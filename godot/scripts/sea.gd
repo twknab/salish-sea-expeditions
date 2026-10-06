@@ -16,6 +16,7 @@ extends Node3D
 var _t := 0.0
 var _sun: DirectionalLight3D
 var _count := 0
+var _dbg := 0.0
 
 func _ready() -> void:
 	_sky()
@@ -45,7 +46,7 @@ func _sky() -> void:
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	env.ambient_light_sky_contribution = 0.9
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.tonemap_exposure = 1.05
+	env.tonemap_exposure = 0.95
 	env.fog_enabled = true
 	env.fog_light_color = Color("c0d0d8")
 	env.fog_density = 0.0016
@@ -57,7 +58,7 @@ func _sky() -> void:
 	var elev := deg_to_rad(-12.0 - 46.0 * sin(clampf((hour - 6.0) / 14.0, 0.0, 1.0) * PI))
 	_sun.rotation = Vector3(elev, deg_to_rad(-55.0 + (hour - 6.0) * 12.0), 0.0)
 	_sun.light_color = Color("fff1d6")
-	_sun.light_energy = 1.3
+	_sun.light_energy = 1.1
 	_sun.shadow_enabled = true
 	_sun.directional_shadow_max_distance = 60.0
 	add_child(_sun)
@@ -68,7 +69,11 @@ func _process(delta: float) -> void:
 	kayak.sea_time = _t
 	# The water plane rides along under the boat so the sea never ends.
 	water.global_position = Vector3(kayak.global_position.x, 0.0, kayak.global_position.z)
-	speed_label.text = "%.1f kn" % kayak.speed_knots()
+	_dbg += delta
+	if _dbg > 3.0:
+		_dbg = 0.0
+		print("[sse] ", kayak.debug_line(), " cam=", ($CameraRig as Node3D).global_position, " camchild=", ($CameraRig as CameraRig).camera_position())
+	speed_label.text = "%.1f kn" % absf(kayak.speed_knots())
 	var deg := fposmod(rad_to_deg(kayak.heading), 360.0)
 	heading_label.text = "%03d°" % int(round(deg))
 
