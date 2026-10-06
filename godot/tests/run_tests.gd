@@ -77,5 +77,22 @@ func _init() -> void:
 	# Sounds exist for every call the game makes.
 	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull"]:
 		check(FileAccess.file_exists("res://audio/%s.wav" % n), "audio %s present" % n)
+	# The skinned body: one mesh, a bone per BONES row, head above feet, and a pose that moves a hand.
+	var holder := Node3D.new()
+	root.add_child(holder)
+	var body := BodyMesh.new()
+	body.build(holder, { "skin": Color.WHITE, "suit": Color.BLUE, "pfd": Color.YELLOW, "gasket": Color.BLACK, "glove": Color.BLACK, "boot": Color.BLACK, "cap": Color.BLACK, "hair": Color.BLACK }, 4, true)
+	check(body.skeleton.get_bone_count() == BodyMesh.BONES.size(), "a bone per row")
+	var aabb := body.mesh_instance.mesh.get_aabb()
+	check(aabb.size.y > 1.6 and aabb.size.y < 2.0, "figure about 1.7 m tall, got %f" % aabb.size.y)
+	check(body.mesh_instance.mesh.get_surface_count() == 1, "one surface")
+	var before := body.skeleton.get_bone_pose(body.bone("forearm_r"))
+	body.pose({ "shoulder_r": BodyMesh.JOINTS.shoulder_r, "elbow_r": Vector3(0.4, 0.5, 0.2), "wrist_r": Vector3(0.5, 0.7, 0.3), "hand_r": Vector3(0.55, 0.78, 0.33) })
+	var after := body.skeleton.get_bone_pose(body.bone("forearm_r"))
+	check(not before.is_equal_approx(after), "posing changes the forearm's local pose")
+	var g := body.skeleton.get_bone_global_pose(body.bone("hand_r")).origin
+	check(g.distance_to(Vector3(0.5, 0.7, 0.3)) < 0.05, "hand bone sits at the wrist it was given, got %s" % g)
+	var paddle := Paddler.greenland_paddle()
+	check(paddle.get_aabb().size.x > 2.1 and paddle.get_aabb().size.z < 0.1, "Greenland paddle is long and narrow")
 	print("tests: %d passed, %d failed" % [_n - _fails, _fails])
 	quit(1 if _fails > 0 else 0)

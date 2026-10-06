@@ -4,7 +4,7 @@
 ## is where the route is first learned. "Lean on the rail" only lets the time pass faster.
 extends Node3D
 
-const SPEED := 14.0
+const SPEED := 22.0
 const LANDING_Z := -2300.0
 
 var _ferry: FerryModel

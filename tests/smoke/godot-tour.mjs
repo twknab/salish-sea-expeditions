@@ -16,6 +16,7 @@ const TOURS_ALL = {
   ferry: [{ wait: 6000 }],
   school: [{ tap: [340, 770] }, { wait: 1500 }, { tap: [340, 770] }, { wait: 2500 }],
   trip: [{ swipe: [100, 660, 100, 757, 400] }, { wait: 2500 }],
+  'school-body': [...Array.from({ length: 12 }, () => [{ tap: [340, 770] }, { wait: 900 }]).flat(), { wait: 1500 }, { shot: 'school-feet' }, { tap: [340, 770] }, { wait: 1500 }, { tap: [340, 770] }, { wait: 1500 }, { shot: 'school-hips' }, { tap: [340, 770] }, { wait: 1200 }, { tap: [340, 770] }, { wait: 1800 }],
 };
 const TOURS = Object.fromEntries(Object.entries(TOURS_ALL).filter(([k]) => !ONLY.length || ONLY.includes(k)));
 let failed = 0;
@@ -24,7 +25,7 @@ for (const [scene, steps] of Object.entries(TOURS)) {
   const logs = [];
   page.on('console', (m) => logs.push(`[${m.type()}] ${m.text()}`));
   page.on('pageerror', (e) => logs.push(`[pageerror] ${e.message}`));
-  await page.goto(`http://localhost:4177/?scene=${scene}`);
+  await page.goto(`http://localhost:4177/?scene=${scene.split('-')[0]}`);
   await page.waitForTimeout(wait);
   for (const a of steps) {
     if (a.tap) { await page.mouse.move(a.tap[0], a.tap[1]); await page.mouse.down(); await page.waitForTimeout(120); await page.mouse.up(); }
