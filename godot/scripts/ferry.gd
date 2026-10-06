@@ -32,8 +32,9 @@ func _ready() -> void:
 	cam.fov = 62.0
 	cam.near = 0.3
 	cam.far = 3000.0
-	cam.position = Vector3(-2.0, 12.9, -FerryModel.LENGTH * 0.36 + 5.0)
-	cam.rotation = Vector3(deg_to_rad(-14.0), 0.0, 0.0)
+	# Between the forward wheelhouse (ends 0.3 L from midships) and the bow rail (0.36 L), on the sun deck.
+	cam.position = Vector3(-2.0, 12.7, -FerryModel.LENGTH * 0.36 + 1.6)
+	cam.rotation = Vector3(deg_to_rad(-16.0), 0.0, 0.0)
 	_ferry.add_child(cam)
 	# The islands, placed along the run (not to chart scale — the order and the sides are right).
 	_spots = [
