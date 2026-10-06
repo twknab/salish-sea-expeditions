@@ -18,8 +18,11 @@ var _tracks := {}  # index → {zone, pts: Array[Vector3(x, y, t)]}
 var _hips_index := -1
 var _edge := 0.0
 var _edge_held := false
+var _key_brace := false
 var _flash := {}  # zone → remaining seconds
 var _label: Label
+var last := {}        # the last forward stroke's grading, for coaching
+var braced := false   # a thumb held still on a blade zone (or J/L down) is a low brace
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -154,6 +157,7 @@ func _evaluate(tr: Dictionary) -> void:
 	var smooth := clampf((straight - 0.6) / 0.35, 0.0, 1.0) * 0.5 + monotone * 0.5
 	smooth = minf(smooth, clampf((dur - 0.04) / 0.14, 0.2, 1.0))
 	var q := StrokeMath.rotation_quality(reach, smooth, exit_at_hip)
+	last = { "reach": reach, "smoothness": smooth, "exit_at_hip": exit_at_hip, "q": q }
 	var good := q >= StrokeMath.GOOD_STROKE
 	var label := "Rotation" if good else ("Reach further" if reach < 0.4 else ("Exit at the hip" if not exit_at_hip else "Arms — rotate"))
 	_flash_zone(tr.zone, label, good)
@@ -179,6 +183,17 @@ func _say(zone: String, msg: String, good: bool = false) -> void:
 	hint.emit(msg)
 
 func _process(delta: float) -> void:
+	# A finger held still in a blade zone for a moment is a brace: the blade flat on the water.
+	var held := false
+	var now := _now()
+	for tr in _tracks.values():
+		if tr.zone == "miss":
+			continue
+		var a: Vector3 = tr.pts[0]
+		var b: Vector3 = tr.pts[tr.pts.size() - 1]
+		if now - a.z > 0.14 and Vector2(b.x - a.x, b.y - a.y).length() < 14.0:
+			held = true
+	braced = held or _key_brace
 	if _label.modulate.a > 0.0:
 		_label.modulate.a = maxf(0.0, _label.modulate.a - delta / 1.6)
 	var dirty := false
@@ -204,10 +219,13 @@ func _unhandled_input(ev: InputEvent) -> void:
 			KEY_Z: _key_stroke(-1, "sweep")
 			KEY_C: _key_stroke(1, "sweep")
 			KEY_S, KEY_DOWN: _key_stroke(1, "reverse")
+			KEY_J, KEY_L: _key_brace = true
 			KEY_Q: _edge = -1.0; _edge_held = true; edge_changed.emit(_edge); queue_redraw()
 			KEY_E: _edge = 1.0; _edge_held = true; edge_changed.emit(_edge); queue_redraw()
 	elif ev is InputEventKey and not ev.pressed and (ev.keycode == KEY_Q or ev.keycode == KEY_E):
 		_edge_held = false
+	elif ev is InputEventKey and not ev.pressed and (ev.keycode == KEY_J or ev.keycode == KEY_L):
+		_key_brace = false
 
 func _key_stroke(side: int, kind: String) -> void:
 	var zone := "left" if side < 0 else "right"

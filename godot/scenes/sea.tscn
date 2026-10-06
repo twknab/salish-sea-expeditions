@@ -1,42 +1,13 @@
-[gd_scene load_steps=11 format=3 uid="uid://sse_sea_scene"]
+[gd_scene load_steps=6 format=3 uid="uid://sse_sea_scene"]
 
 [ext_resource type="Script" path="res://scripts/sea.gd" id="1_sea"]
-[ext_resource type="Shader" path="res://shaders/sea.gdshader" id="2_shader"]
 [ext_resource type="Script" path="res://scripts/kayak.gd" id="3_kayak"]
 [ext_resource type="Script" path="res://scripts/camera_rig.gd" id="4_cam"]
 [ext_resource type="Script" path="res://scripts/controls.gd" id="5_controls"]
 [ext_resource type="Script" path="res://scripts/island.gd" id="6_island"]
 
-[sub_resource type="FastNoiseLite" id="noise_ripple"]
-frequency = 0.06
-fractal_octaves = 3
-
-[sub_resource type="NoiseTexture2D" id="tex_ripple"]
-width = 256
-height = 256
-seamless = true
-as_normal_map = true
-bump_strength = 6.0
-noise = SubResource("noise_ripple")
-
-[sub_resource type="ShaderMaterial" id="mat_sea"]
-shader = ExtResource("2_shader")
-shader_parameter/sea_state = 0.3
-shader_parameter/t = 0.0
-shader_parameter/ripple = SubResource("tex_ripple")
-
-[sub_resource type="PlaneMesh" id="mesh_sea"]
-size = Vector2(700, 700)
-subdivide_width = 180
-subdivide_depth = 180
-
 [node name="Sea" type="Node3D"]
 script = ExtResource("1_sea")
-
-[node name="Water" type="MeshInstance3D" parent="."]
-mesh = SubResource("mesh_sea")
-material_override = SubResource("mat_sea")
-cast_shadow = 0
 
 [node name="Island" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -140)

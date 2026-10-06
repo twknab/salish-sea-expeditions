@@ -50,3 +50,8 @@ with `npx vite preview --port 4173` running, for a single screenshot.
 - The sea shader and `waves.gd` must stay the same formula; the kayak floats on what is drawn.
 - Export size is the risk: 38 MB wasm. Measure on a phone before porting anything else
   (`specs/007-godot-rewrite/spec.md`, go/no-go table).
+- Content, sounds and the soundtrack are generated: `node tools/export-content.mjs`,
+  `node tools/synth-audio.mjs`, `node tools/synth-soundtrack.mjs`; outputs are committed under
+  `godot/content` and `godot/audio`. `App` (autoload) owns the scene order; `Sound` owns loops,
+  one-shots and the stem moods. `?scene=ferry` jumps to a screen in the web build.
+- `tests/debug_scenes.gd` instantiates every scene headless; run it before an export.

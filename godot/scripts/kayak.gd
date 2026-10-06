@@ -33,20 +33,7 @@ func _ready() -> void:
 	linear_damp = 0.35
 	angular_damp = 4.0
 	can_sleep = false
-	var mesh := MeshInstance3D.new()
-	mesh.mesh = Hull.build_mesh(deck_color, hull_color, panel_color)
-	var mat := StandardMaterial3D.new()
-	mat.vertex_color_use_as_albedo = true
-	mat.vertex_color_is_srgb = true
-	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	mat.roughness = 0.35
-	mat.metallic = 0.0
-	mat.metallic_specular = 0.55
-	mesh.material_override = mat
-	# The hull model points its bow along +x; the body's forward is -z, so turn the model.
-	mesh.rotation.y = PI / 2.0
-	add_child(mesh)
-	_hull_mesh = mesh
+	build_hull()
 	var shape := CollisionShape3D.new()
 	var box := BoxShape3D.new()
 	box.size = Vector3(Hull.B, 0.3, Hull.L * 0.96)
@@ -62,6 +49,46 @@ func _ready() -> void:
 	_paddler = Paddler.new()
 	_paddler.position = Vector3(0.0, 0.16, 0.0)
 	add_child(_paddler)
+
+## (Re)build the hull mesh in the current colours; the scene calls it again after picking a skin.
+func build_hull() -> void:
+	if _hull_mesh:
+		_hull_mesh.queue_free()
+	var mesh := MeshInstance3D.new()
+	mesh.mesh = Hull.build_mesh(deck_color, hull_color, panel_color)
+	var mat := StandardMaterial3D.new()
+	mat.vertex_color_use_as_albedo = true
+	mat.vertex_color_is_srgb = true
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.roughness = 0.35
+	mat.metallic = 0.0
+	mat.metallic_specular = 0.55
+	mesh.material_override = mat
+	# The hull model points its bow along +x; the body's forward is -z, so turn the model.
+	mesh.rotation.y = PI / 2.0
+	add_child(mesh)
+	_hull_mesh = mesh
+
+## Where a named point of the paddler or paddle is, in the kayak's local space.
+func paddler_anchor(id: String) -> Vector3:
+	if _paddler and _paddler.anchors.has(id):
+		return _paddler.position + _paddler.anchors[id]
+	return Vector3(0, 0.4, 0)
+
+var _wobble_t := 0.0
+
+## A wave on the beam: a roll impulse the paddler must brace against (the brace drill, tide rips).
+func kick(strength: float) -> void:
+	apply_torque_impulse(-global_basis.z * (1.0 if randf() < 0.5 else -1.0) * strength * 60.0)
+	_wobble_t = 1.4
+
+func wobbling() -> bool:
+	return _wobble_t > 0.0
+
+## A brace caught it: calm the roll.
+func settle() -> void:
+	angular_velocity = Vector3(angular_velocity.x * 0.3, angular_velocity.y, angular_velocity.z * 0.3)
+	_wobble_t = 0.0
 
 func _physics_process(delta: float) -> void:
 	var share := mass * 9.81 / 4.0  # about four probes carry the boat at any moment
@@ -89,6 +116,7 @@ func _physics_process(delta: float) -> void:
 	apply_torque(fwd * edge * 38.0 - fwd * angular_velocity.dot(fwd) * 40.0 + fwd * roll * 90.0)
 	speed = v_f
 	heading = atan2(fwd.x, -fwd.z)
+	_wobble_t = maxf(0.0, _wobble_t - delta)
 	if _paddler:
 		_paddler.advance(delta, edge)
 

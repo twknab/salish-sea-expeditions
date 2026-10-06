@@ -47,5 +47,35 @@ func _init() -> void:
 	check(StrokeMath.buoyancy(-0.1, 100.0, 0.1) == 0.0, "no lift above water")
 	check(absf(StrokeMath.buoyancy(0.1, 100.0, 0.1) - 100.0) < 1e-6, "weight share at settle depth")
 	check(StrokeMath.buoyancy(5.0, 100.0, 0.1) <= 400.0 + 1e-6, "lift is capped")
+	# Content: every source id a card cites resolves to a credit, and the opening is in order.
+	var f := FileAccess.open("res://content/content.json", FileAccess.READ)
+	check(f != null, "content.json present")
+	if f:
+		var c = JSON.parse_string(f.get_as_text())
+		check(c is Dictionary and c.has("kayakParts") and c.has("layers") and c.has("places"), "content has the opening's data")
+		var ids := {}
+		for cr in c.credits:
+			ids[cr.id] = true
+		var missing := 0
+		for key in ["kayakParts", "bodyPoints", "paddleParts", "layers", "kit", "places", "lessons", "legal"]:
+			for item in c[key]:
+				for sid in item.get("sourceIds", []):
+					if not ids.has(sid):
+						missing += 1
+						printerr("unknown source ", sid, " in ", key)
+		check(missing == 0, "all sourceIds resolve")
+		check(c.drills.size() == 5 and c.drills[0].id == "forward", "five drills, forward first")
+	# IK: the elbow keeps both bone lengths and bends toward the pole.
+	var sh := Vector3(0.2, 1.4, 0)
+	var hand := Vector3(0.45, 1.1, 0.3)
+	var el := IK.two_bone(sh, hand, 0.3, 0.27, Vector3(1, -1, 0))
+	check(absf(el.distance_to(sh) - 0.3) < 1e-4, "upper arm length kept")
+	check(absf(el.distance_to(hand) - 0.27) < 1e-4, "forearm length kept")
+	check(el.y < (sh.y + hand.y) / 2.0, "elbow bends downward toward the pole")
+	var far := IK.two_bone(sh, sh + Vector3(2, 0, 0), 0.3, 0.27, Vector3.DOWN)
+	check(absf(far.distance_to(sh) - 0.3) < 1e-4, "out of reach straightens, upper length kept")
+	# Sounds exist for every call the game makes.
+	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull"]:
+		check(FileAccess.file_exists("res://audio/%s.wav" % n), "audio %s present" % n)
 	print("tests: %d passed, %d failed" % [_n - _fails, _fails])
 	quit(1 if _fails > 0 else 0)

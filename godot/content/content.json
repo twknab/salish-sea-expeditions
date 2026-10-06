@@ -1,0 +1,1374 @@
+{
+ "acknowledgment": {
+  "reviewStatus": "draft",
+  "title": "A place of First Peoples",
+  "paragraphs": [
+   "The islands and waters of this journey are the homelands of Coast Salish peoples, who have lived on, fished, travelled and cared for them since time immemorial — and still do.",
+   "Among them are the Lummi, Samish, Swinomish, Songhees and W̱SÁNEĆ peoples, and other Nations whose ties to these islands reach across today’s border.",
+   "You paddle here as a guest. Travel lightly, and listen."
+  ],
+  "sourceIds": [
+   "burke"
+  ],
+  "note": "Draft — to be reviewed with the Nations named before public release."
+ },
+ "safetyNote": {
+  "title": "Before you paddle",
+  "paragraphs": [
+   "Salish Sea Expeditions teaches real sea-kayaking skills, but a game is not a substitute for instruction and practice on the water.",
+   "Learn rescues with a qualified instructor, paddle with others, check real tide and current predictions, and dress for immersion.",
+   "The chart in this game is simplified. Do not use it for navigation."
+  ]
+ },
+ "seaTemp": {
+  "winter": 8,
+  "summer": [
+   10,
+   12
+  ],
+  "immersionBelow": 21
+ },
+ "layers": [
+  {
+   "id": "base",
+   "name": "Base layer",
+   "art": "wearBase",
+   "text": "Wool or synthetic, next to the skin. It moves sweat away so you stay dry inside everything else. Cotton holds water and stops insulating — leave it at home.",
+   "sourceIds": [
+    "rei-wear",
+    "pm-wear"
+   ]
+  },
+  {
+   "id": "insulation",
+   "name": "Insulating layer",
+   "art": "wearMid",
+   "text": "Fleece top and bottoms, chosen for the water, not the air. The Salish Sea is about 8 °C in winter and only 10–12 °C in summer — dress for a swim whenever it is below about 21 °C.",
+   "sourceIds": [
+    "pm-wear",
+    "guillemot"
+   ]
+  },
+  {
+   "id": "drysuit",
+   "name": "Drysuit",
+   "art": "wearDry",
+   "text": "A waterproof, breathable shell with latex gaskets at the neck and wrists and built-in socks. It keeps the water out; the layers underneath keep you warm. Crouch and let the trapped air out before you close the zip.",
+   "sourceIds": [
+    "drysuit",
+    "guillemot"
+   ]
+  },
+  {
+   "id": "pfd",
+   "name": "Spray skirt & PFD",
+   "art": "wearPfd",
+   "text": "The skirt seals you into the cockpit — grab loop outside, always. The PFD goes on last and stays on: a whistle on its cord, a blunt-tipped rescue knife, the VHF in a pocket.",
+   "sourceIds": [
+    "aca",
+    "bask"
+   ]
+  },
+  {
+   "id": "extremities",
+   "name": "Head, hands & feet",
+   "art": "wearExt",
+   "text": "A neoprene cap, gloves or pogies, and booties. Head and hands lose warmth fast, and booties save your feet from barnacles and oyster shell when you land. Sunglasses for the glare off the water.",
+   "sourceIds": [
+    "guillemot",
+    "pm-wear"
+   ]
+  }
+ ],
+ "kitGroups": [
+  {
+   "id": "pfd",
+   "name": "On you",
+   "text": "Worn, or clipped to your PFD — it has to come with you if the boat does not."
+  },
+  {
+   "id": "deck",
+   "name": "On deck",
+   "text": "Under the deck lines, where you can reach it without opening anything."
+  },
+  {
+   "id": "inside",
+   "name": "Inside the boat",
+   "text": "In dry bags, loaded through the cockpit — this kayak has no hatches."
+  }
+ ],
+ "kit": [
+  {
+   "id": "pfdVest",
+   "group": "pfd",
+   "name": "PFD",
+   "x": 0.18571428571428572,
+   "y": 0.175,
+   "text": "Worn every minute on the water, zipped and snug. It only works if you have it on.",
+   "sourceIds": [
+    "cgaux-paddlers"
+   ]
+  },
+  {
+   "id": "whistle",
+   "group": "pfd",
+   "name": "Whistle",
+   "x": 0.42857142857142855,
+   "y": 0.115,
+   "text": "Required in both countries. Carries farther than a shout and never loses its voice.",
+   "sourceIds": [
+    "cgaux-paddlers",
+    "mec-mandatory"
+   ]
+  },
+  {
+   "id": "knife",
+   "group": "pfd",
+   "name": "Rescue knife",
+   "x": 0.42857142857142855,
+   "y": 0.235,
+   "text": "Blunt-tipped, on the PFD, for a tangled line. Reachable with either hand.",
+   "sourceIds": [
+    "bask"
+   ]
+  },
+  {
+   "id": "vhf",
+   "gear": "vhf",
+   "group": "pfd",
+   "name": "VHF radio",
+   "x": 0.65,
+   "y": 0.175,
+   "text": "On you, not in the boat. Channel 16 reaches the Coast Guard and the ferries; you can hear traffic before you see it.",
+   "sourceIds": [
+    "bask"
+   ]
+  },
+  {
+   "id": "headlamp",
+   "gear": "headlamp",
+   "group": "pfd",
+   "name": "Light",
+   "x": 0.85,
+   "y": 0.175,
+   "text": "Camp after sunset — and the white light the rules ask you to have ready if you are on the water after dark.",
+   "sourceIds": [
+    "colregs",
+    "mec-mandatory"
+   ]
+  },
+  {
+   "id": "pump",
+   "gear": "pump",
+   "group": "deck",
+   "name": "Bilge pump",
+   "x": 0.18571428571428572,
+   "y": 0.43,
+   "text": "After a re-entry the cockpit is full of water. Required in Canada (a pump or a bailer).",
+   "sourceIds": [
+    "bask",
+    "mec-mandatory"
+   ]
+  },
+  {
+   "id": "paddleFloat",
+   "gear": "paddleFloat",
+   "group": "deck",
+   "name": "Paddle float",
+   "x": 0.5,
+   "y": 0.43,
+   "text": "Turns your paddle into an outrigger so you can climb back in alone.",
+   "sourceIds": [
+    "bask"
+   ]
+  },
+  {
+   "id": "throwbag",
+   "group": "deck",
+   "name": "Throw bag, 15 m",
+   "x": 0.8142857142857143,
+   "y": 0.43,
+   "text": "A buoyant heaving line. Required in Canadian waters — you will cross into them.",
+   "sourceIds": [
+    "mec-mandatory"
+   ]
+  },
+  {
+   "id": "towline",
+   "group": "deck",
+   "name": "Tow line",
+   "x": 0.18571428571428572,
+   "y": 0.565,
+   "text": "On a quick-release belt. For a tired partner, or a boat that has lost its paddler.",
+   "sourceIds": [
+    "bask",
+    "kitsap-list"
+   ]
+  },
+  {
+   "id": "chart",
+   "gear": "chart",
+   "group": "deck",
+   "name": "Chart & compass",
+   "x": 0.5,
+   "y": 0.565,
+   "text": "In a clear case on the deck in front of you. The phone is a backup, not the plan.",
+   "sourceIds": [
+    "kitsap-list"
+   ]
+  },
+  {
+   "id": "spare",
+   "gear": "spare",
+   "group": "deck",
+   "name": "Spare paddle",
+   "x": 0.8142857142857143,
+   "y": 0.565,
+   "text": "In two halves under the deck lines. Paddles do get dropped.",
+   "sourceIds": [
+    "bask"
+   ]
+  },
+  {
+   "id": "tent",
+   "gear": "tent",
+   "group": "inside",
+   "name": "Tent",
+   "x": 0.18571428571428572,
+   "y": 0.745,
+   "text": "Poles out of the bag and packed flat: long, thin things fit a folding kayak best.",
+   "sourceIds": [
+    "kitsap-list"
+   ]
+  },
+  {
+   "id": "sleep",
+   "gear": "sleep",
+   "group": "inside",
+   "name": "Sleeping bag & pad",
+   "x": 0.5,
+   "y": 0.745,
+   "text": "In your driest bag. A wet sleeping bag makes a cold night colder.",
+   "sourceIds": [
+    "kitsap-list"
+   ]
+  },
+  {
+   "id": "food",
+   "gear": "food",
+   "group": "inside",
+   "name": "Food & stove",
+   "x": 0.8142857142857143,
+   "y": 0.745,
+   "text": "Food in a hard canister: Jones Island’s raccoons open zips.",
+   "sourceIds": [
+    "wa-parks-jones"
+   ]
+  },
+  {
+   "id": "water",
+   "gear": "water",
+   "group": "inside",
+   "name": "Water, 8 L",
+   "x": 0.18571428571428572,
+   "y": 0.9,
+   "text": "Jones Island’s tap normally runs May to September, but it is off until further notice. Carry it all.",
+   "sourceIds": [
+    "wa-parks-jones"
+   ]
+  },
+  {
+   "id": "layers",
+   "gear": "layers",
+   "group": "inside",
+   "name": "Camp clothes",
+   "x": 0.5,
+   "y": 0.9,
+   "text": "Dry clothes that never touch the sea: a warm layer, a hat, dry socks.",
+   "sourceIds": [
+    "guillemot"
+   ]
+  },
+  {
+   "id": "firstAid",
+   "gear": "firstAid",
+   "group": "inside",
+   "name": "First-aid kit",
+   "x": 0.8142857142857143,
+   "y": 0.9,
+   "text": "Blisters, cuts, and the day you need more — plus a way to call for help.",
+   "sourceIds": [
+    "kitsap-list"
+   ]
+  }
+ ],
+ "legal": [
+  {
+   "country": "United States",
+   "items": [
+    "A wearable life jacket (PFD) for each person",
+    "A whistle or horn",
+    "A white light — a torch will do — ready to show from sunset to sunrise and in fog"
+   ],
+   "sourceIds": [
+    "cgaux-paddlers",
+    "colregs"
+   ]
+  },
+  {
+   "country": "Canada",
+   "items": [
+    "A PFD or lifejacket for each person",
+    "A whistle",
+    "A 15 m buoyant heaving line",
+    "A bailer or a pump",
+    "A light, if out after dark or in fog"
+   ],
+   "sourceIds": [
+    "mec-mandatory"
+   ]
+  }
+ ],
+ "gear": [
+  {
+   "id": "tent",
+   "name": "Tent",
+   "massKg": 2.2,
+   "essential": false,
+   "bulky": true,
+   "enables": [
+    "shelter"
+   ],
+   "text": "A night out needs a roof."
+  },
+  {
+   "id": "sleep",
+   "name": "Sleeping bag & pad",
+   "massKg": 2,
+   "essential": false,
+   "bulky": true,
+   "enables": [
+    "sleep"
+   ],
+   "text": "Keep it in the driest bag you have."
+  },
+  {
+   "id": "water",
+   "name": "Water, 8 L",
+   "massKg": 8,
+   "essential": true,
+   "bulky": false,
+   "enables": [
+    "hydration"
+   ],
+   "text": "Jones Island’s tap normally runs May to September, but it has been off until further notice — carry all your water. Heavy: pack it low and central."
+  },
+  {
+   "id": "food",
+   "name": "Food & stove",
+   "massKg": 3.5,
+   "essential": true,
+   "bulky": false,
+   "enables": [
+    "dinner"
+   ],
+   "text": "Pack it in a hard canister; raccoons are waiting."
+  },
+  {
+   "id": "layers",
+   "name": "Warm layers",
+   "massKg": 1,
+   "essential": true,
+   "bulky": true,
+   "enables": [
+    "warmth"
+   ],
+   "text": "Even in July, the Salish Sea is about 10–12 °C."
+  },
+  {
+   "id": "firstAid",
+   "name": "First-aid kit",
+   "massKg": 0.6,
+   "essential": true,
+   "bulky": false,
+   "enables": [
+    "firstAid"
+   ],
+   "text": "Blisters, cuts, and the day you need more."
+  },
+  {
+   "id": "pump",
+   "name": "Bilge pump",
+   "massKg": 0.6,
+   "essential": true,
+   "deck": true,
+   "bulky": false,
+   "enables": [
+    "pumpOut"
+   ],
+   "text": "Clip it on deck: after a re-entry you need it immediately."
+  },
+  {
+   "id": "paddleFloat",
+   "name": "Paddle float",
+   "massKg": 0.4,
+   "essential": true,
+   "deck": true,
+   "bulky": false,
+   "enables": [
+    "pfRescue"
+   ],
+   "text": "Makes solo re-entry far easier. Keep it on deck, within reach."
+  },
+  {
+   "id": "spare",
+   "name": "Spare paddle",
+   "massKg": 1,
+   "essential": true,
+   "deck": true,
+   "bulky": false,
+   "enables": [
+    "spare"
+   ],
+   "text": "Split paddle under the deck lines."
+  },
+  {
+   "id": "vhf",
+   "name": "VHF radio",
+   "massKg": 0.3,
+   "essential": true,
+   "deck": true,
+   "bulky": false,
+   "enables": [
+    "radio"
+   ],
+   "text": "Channel 16 for emergencies; you can hear ferry traffic too."
+  },
+  {
+   "id": "headlamp",
+   "name": "Headlamp",
+   "massKg": 0.1,
+   "essential": true,
+   "bulky": false,
+   "enables": [
+    "light"
+   ],
+   "text": "Camp chores after sunset, and a light to be seen by."
+  },
+  {
+   "id": "chart",
+   "name": "Chart & compass",
+   "massKg": 0.3,
+   "essential": true,
+   "deck": true,
+   "bulky": false,
+   "enables": [
+    "navigation"
+   ],
+   "text": "In a clear bag on the deck, where you can read it."
+  }
+ ],
+ "kayakParts": [
+  {
+   "id": "bow",
+   "name": "Bow",
+   "x": 0.04,
+   "y": 0.527,
+   "text": "The front of the kayak. It rises to meet waves and carries the front flotation bag.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "stern",
+   "name": "Stern",
+   "x": 0.965,
+   "y": 0.533,
+   "text": "The back of the kayak. The stern flotation bag and heavier dry bags ride here.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "deck",
+   "name": "Deck",
+   "x": 0.25,
+   "y": 0.5,
+   "text": "The top of the boat. Deck lines give you and your partner something to grab in a rescue.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "hull",
+   "name": "Hull",
+   "x": 0.3,
+   "y": 0.673,
+   "text": "The underside, in the water. Its shape decides how the boat tracks, turns and feels on edge. The hull is white below a black perimeter line, so an upturned boat is easy to spot.",
+   "sourceIds": [
+    "aca",
+    "trak"
+   ]
+  },
+  {
+   "id": "keel",
+   "name": "Keel",
+   "x": 0.48,
+   "y": 0.713,
+   "text": "The spine along the bottom. It helps the boat run straight.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "chine",
+   "name": "Chine",
+   "x": 0.76,
+   "y": 0.633,
+   "text": "Where the side of the hull turns under. Tilting onto the chine — edging — is how you carve a turn.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "cockpit",
+   "name": "Cockpit & coaming",
+   "x": 0.46,
+   "y": 0.507,
+   "text": "Where you sit. The raised rim, the coaming, is what the spray skirt seals around. On this folding kayak, gear also loads through the cockpit — there are no hatches.",
+   "sourceIds": [
+    "trak",
+    "aca"
+   ]
+  },
+  {
+   "id": "skirt",
+   "name": "Spray skirt",
+   "x": 0.53,
+   "y": 0.463,
+   "text": "A neoprene or nylon deck you wear. It seals you in so waves stay out. Always leave the grab loop outside — it is how you release it in a wet exit.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "frame",
+   "name": "Frame & skin",
+   "x": 0.152,
+   "y": 0.613,
+   "text": "An aluminium frame inside a tough waterproof skin — a modern descendant of the skin-on-frame kayaks of Arctic peoples. The tubes are colour-coded, blue forward of the cockpit and red aft, around carbon ribs, so it goes together the same way every time. The whole boat packs into one wheeled bag about 104 cm tall and 24 kg — small enough to walk onto a ferry.",
+   "sourceIds": [
+    "trak",
+    "arctic"
+   ]
+  },
+  {
+   "id": "jacks",
+   "name": "Hull jacks",
+   "x": 0.546,
+   "y": 0.603,
+   "text": "Three jacks — one along each side, one on the keel — tension the skin and set the rocker. Less rocker tracks straight on a crossing; more rocker turns quickly among rocks. You can adjust them while paddling.",
+   "sourceIds": [
+    "trak",
+    "paddlingmag"
+   ]
+  },
+  {
+   "id": "float",
+   "name": "Flotation bags",
+   "x": 0.79,
+   "y": 0.62,
+   "text": "Dry bags fore and aft that hold your gear and keep the kayak afloat if you capsize. A half-empty boat without them would fill with water.",
+   "sourceIds": [
+    "trak"
+   ]
+  }
+ ],
+ "bodyPoints": [
+  {
+   "id": "feet",
+   "name": "Feet on the pegs",
+   "text": "Balls of the feet on the foot pegs, toes relaxed. Each stroke pushes through the foot on the stroke side.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "knees",
+   "name": "Knees in the thigh braces",
+   "text": "Knees up and out, pressing lightly into the thigh braces. This is your steering wheel — lift a knee and the boat tilts.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "hips",
+   "name": "Hips connect you",
+   "text": "You wear a kayak, you do not sit in it. The hips carry the connection from the body to the boat: lower body steers and tilts, upper body drives.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "back",
+   "name": "Backband at the pelvis",
+   "text": "The backband supports the pelvis, not the shoulders. Sit tall, slightly forward — never slumped against it.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "head",
+   "name": "Head over the boat",
+   "text": "Keep your head over the kayak. The body follows the head: lift it too early in a brace or roll and you go over.",
+   "sourceIds": [
+    "aca"
+   ]
+  }
+ ],
+ "paddleParts": [
+  {
+   "id": "blade",
+   "name": "Blade",
+   "text": "Long, narrow and unfeathered: the Greenland paddle is the Arctic original. A narrow blade enters quietly and buries fully, so it pulls with the whole torso rather than yanking the shoulders.",
+   "sourceIds": [
+    "arctic",
+    "aca"
+   ]
+  },
+  {
+   "id": "loom",
+   "name": "Loom",
+   "text": "The short centre shaft. Hold it with your hands at its shoulders, knuckles up, thumbs and forefingers lightly around the blade roots — a loose grip you can feel the water through.",
+   "sourceIds": [
+    "arctic"
+   ]
+  },
+  {
+   "id": "shoulder",
+   "name": "Shoulders",
+   "text": "Where the loom widens into the blade. Your hands rest against them, so you always know where the blade is without looking, and the paddle can slide out along the blade for a long, extended stroke or roll.",
+   "sourceIds": [
+    "arctic"
+   ]
+  },
+  {
+   "id": "tip",
+   "name": "Tip & cant",
+   "text": "The blade goes in angled slightly forward (canted), so it slices in cleanly and holds the water as it moves back. Cedar, carved to the paddler’s own arm span — the oldest kind of custom fit.",
+   "sourceIds": [
+    "arctic",
+    "burke"
+   ]
+  },
+  {
+   "id": "box",
+   "name": "The paddler’s box",
+   "text": "Keep your hands in front of your chest, in the box formed by your arms and shoulders. It protects your shoulders and keeps the power in your torso.",
+   "sourceIds": [
+    "aca"
+   ]
+  }
+ ],
+ "drills": [
+  {
+   "id": "forward",
+   "title": "Forward stroke: rotate, don’t pull",
+   "skill": "forward",
+   "text": "Wind up your torso, plant the blade by your feet and unwind. Your arms stay nearly straight; the stroke ends at your hip. Swipe from the top of a blade zone down to the hip line, steadily — not a flick.",
+   "goal": "Six rotation strokes",
+   "keys": "A and D (or ← →) for a left and right stroke"
+  },
+  {
+   "id": "reverse",
+   "title": "Reverse stroke: look back, push",
+   "skill": "forward",
+   "text": "Rotate to look over your shoulder, plant the back of the blade behind your hip and push it forward to your feet. The same torso, the other way. Swipe upward in a blade zone.",
+   "goal": "Four reverse strokes",
+   "keys": "S (or ↓)"
+  },
+  {
+   "id": "edge",
+   "title": "Edging: lift a knee",
+   "skill": "edging",
+   "text": "Lift one knee to tilt the kayak onto its chine, keeping your head and body over the boat. Drag the hips strip toward the side you want to go down.",
+   "goal": "Hold an edge for three seconds",
+   "keys": "hold Q or E"
+  },
+  {
+   "id": "sweep",
+   "title": "Turning: the sweep stroke",
+   "skill": "sweep",
+   "text": "A wide arc from bow to stern turns the boat away from the blade: sweep on the left to turn right. Edge toward the sweep side and it turns far more. Swipe outward across a blade zone while holding an edge.",
+   "goal": "Turn half a circle with edged sweeps",
+   "keys": "Z or C while holding Q or E"
+  },
+  {
+   "id": "brace",
+   "title": "Low brace and hip snap",
+   "skill": "brace",
+   "text": "When you tip, slap the back of the blade flat on the water on the low side, then snap your hips to bring the boat back under you. Head stays down — it comes up last.",
+   "goal": "Recover from three wobbles",
+   "keys": "hold J or L on the low side, then tap K"
+  }
+ ],
+ "places": [
+  {
+   "id": "anacortes",
+   "name": "Anacortes ferry terminal",
+   "text": "Washington State Ferries leave Anacortes for the San Juan Islands. A folding kayak rides aboard as walk-on luggage — no car, no roof rack.",
+   "sourceIds": [
+    "wsf"
+   ]
+  },
+  {
+   "id": "fridayHarbor",
+   "name": "Friday Harbor",
+   "text": "The islands’ largest town and ferry landing on San Juan Island: a working harbour of fishing boats, sailboats, kayak outfitters and a busy summer waterfront.",
+   "sourceIds": [
+    "wsf"
+   ]
+  },
+  {
+   "id": "labs",
+   "name": "Friday Harbor Laboratories",
+   "text": "The University of Washington’s marine research station, just north of town. Scientists have studied the rich waters of the San Juans here for over a century.",
+   "sourceIds": [
+    "fhl"
+   ]
+  },
+  {
+   "id": "shaw",
+   "name": "Shaw Island",
+   "text": "The smallest of the ferry-served islands, quiet and wooded, across the channel from Friday Harbor.",
+   "sourceIds": [
+    "wsf"
+   ]
+  },
+  {
+   "id": "yellow",
+   "name": "Yellow Island",
+   "text": "A tiny island protected as a nature preserve, famous for spring wildflowers.",
+   "sourceIds": [
+    "wdfw"
+   ]
+  },
+  {
+   "id": "jones",
+   "name": "Jones Island Marine State Park",
+   "text": "A small island park reachable only by water, with paddle-in campsites on the Cascadia Marine Trail — and famously bold raccoons.",
+   "sourceIds": [
+    "wa-parks-jones",
+    "wwta"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "id": "wearTheBoat",
+   "scene": "BoatSchool",
+   "skill": "fit",
+   "title": "You wear a kayak",
+   "text": "Feet on the pegs, knees in the braces, backband at the pelvis. The better the fit, the more your hips can do.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "rotation",
+   "scene": "BoatSchool",
+   "skill": "forward",
+   "title": "Power comes from the torso",
+   "text": "Arms tire in minutes; the torso and legs can paddle all day. A rotation stroke moves the boat further for less effort.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "edging",
+   "scene": "BoatSchool",
+   "skill": "edging",
+   "title": "Edging",
+   "text": "Lift a knee to tilt the kayak while your body stays upright over it. Edging is the root of turning, bracing and rolling.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "hipSnap",
+   "scene": "BoatSchool",
+   "skill": "brace",
+   "title": "The hip snap",
+   "text": "A sharp knee lift that rolls the boat back under you. The blade only supports you for a moment; the hips do the work, and the head comes up last.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "kayakHeritage",
+   "scene": "Assembly",
+   "title": "Where the kayak comes from",
+   "text": "Skin-on-frame kayaks were developed over thousands of years by Arctic peoples — Inuit, Yup’ik and Unangan among them — for hunting in cold seas. The traditional watercraft of the Salish Sea is a different boat: the Coast Salish cedar canoe.",
+   "sourceIds": [
+    "arctic",
+    "burke"
+   ]
+  },
+  {
+   "id": "hullJacks",
+   "scene": "Assembly",
+   "title": "Tension the hull",
+   "text": "A folding kayak is only as good as its tension. A slack skin wanders and flexes; a tight one tracks true.",
+   "sourceIds": [
+    "trak"
+   ]
+  },
+  {
+   "id": "trim",
+   "scene": "Packing",
+   "title": "Heavy low and central",
+   "text": "Water, food and fuel go low and close to the cockpit; light, bulky things go to the ends. A bow-heavy boat ploughs and a stern-heavy boat weathercocks.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "paddleFloat",
+   "scene": "Packing",
+   "title": "The paddle float",
+   "text": "A paddle float turns your paddle into an outrigger so you can climb back in alone. You can re-enter without one — it is just much harder.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "essentials",
+   "scene": "Packing",
+   "title": "Carry the essentials",
+   "text": "Pump, paddle float, spare paddle, whistle and light, VHF radio, water, food, warm layers and a first-aid kit. You carry them for the day you need them.",
+   "sourceIds": [
+    "aca",
+    "uscg"
+   ]
+  },
+  {
+   "id": "chartReading",
+   "scene": "Planning",
+   "skill": "navigation",
+   "title": "Reading the chart",
+   "text": "Distances at sea are measured in nautical miles — one minute of latitude, 1,852 metres. The compass rose gives true bearings; the numbers in the water are depths.",
+   "sourceIds": [
+    "noaa-chart"
+   ]
+  },
+  {
+   "id": "slackWater",
+   "scene": "Planning",
+   "skill": "navigation",
+   "title": "Slack water",
+   "text": "Between flood and ebb the current pauses. Crossing near slack, or riding a favourable current, is the single biggest decision of the day.",
+   "sourceIds": [
+    "noaa-tides",
+    "aca"
+   ]
+  },
+  {
+   "id": "windAgainstTide",
+   "scene": "Planning",
+   "skill": "navigation",
+   "title": "Wind against tide",
+   "text": "When the wind blows against the current, waves get shorter and steeper. A moderate breeze over a strong ebb can turn a channel into breaking chop.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "ferryAngle",
+   "scene": "Paddle",
+   "skill": "navigation",
+   "title": "Ferry angle",
+   "text": "Point partly upstream so the current and your paddling add up to a straight line over the ground. Pick a landmark behind your target and keep the two lined up.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "eddyRest",
+   "scene": "Paddle",
+   "title": "Rest in the eddies",
+   "text": "Behind points and in bays the current slows or even flows backwards. Paddlers hop from eddy to eddy to rest and to move against the stream.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "kelpRest",
+   "scene": "Paddle",
+   "title": "Kelp is a harbour",
+   "text": "Bull kelp damps waves and slows current. Drape a stalk over your deck and you can rest without drifting.",
+   "sourceIds": [
+    "eopugetsound",
+    "aca"
+   ]
+  },
+  {
+   "id": "rips",
+   "scene": "Paddle",
+   "title": "Tide rips",
+   "text": "Where fast water meets a point or shallows it stands up in rough, confused waves. Keep a low brace ready, or go around.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "ferries",
+   "scene": "Paddle",
+   "title": "Stay clear of the ferries",
+   "text": "Ferries run through San Juan Channel. A kayak is hard to see and must not impede them: cross their lane quickly, at right angles, and as a group.",
+   "sourceIds": [
+    "uscg",
+    "wsf"
+   ]
+  },
+  {
+   "id": "orcaDistance",
+   "scene": "Paddle",
+   "title": "Give orcas room",
+   "text": "In Washington, stay at least 1,000 yards from Southern Resident orcas; never paddle into their path. If whales come near, stop paddling and let them pass.",
+   "sourceIds": [
+    "wa-srkw",
+    "bewhalewise"
+   ]
+  },
+  {
+   "id": "sealDistance",
+   "scene": "Paddle",
+   "title": "Let seals rest",
+   "text": "Stay at least 100 yards from seals hauled out on rocks. If heads turn toward you or animals shuffle toward the water, you are too close.",
+   "sourceIds": [
+    "noaa-mm",
+    "bewhalewise"
+   ]
+  },
+  {
+   "id": "coldWater",
+   "scene": "Rescue",
+   "skill": "rescue",
+   "title": "1 – 10 – 1",
+   "text": "About 1 minute to get your breathing under control, about 10 minutes of useful movement to get out, about 1 hour before hypothermia takes consciousness. Act while your hands still work.",
+   "sourceIds": [
+    "coldwater"
+   ]
+  },
+  {
+   "id": "wetExit",
+   "scene": "Rescue",
+   "skill": "rescue",
+   "title": "Wet exit",
+   "text": "Lean forward, pull the grab loop, push the boat away with your hands at your hips and come up beside it. Keep hold of the boat and the paddle.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "pfRescue",
+   "scene": "Rescue",
+   "skill": "rescue",
+   "title": "Paddle-float re-entry",
+   "text": "Float on one blade, the other blade under the deck lines behind the cockpit, kick up onto the back deck, hook a leg in, turn and slide down — keeping weight on the float side.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "noFloat",
+   "scene": "Rescue",
+   "skill": "rescue",
+   "title": "Re-entry without a float",
+   "text": "A scramble onto the back deck, belly down and low, is possible in calm water with practice. It is harder in waves — which is why the float earns its place.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "tRescue",
+   "scene": "Rescue",
+   "skill": "rescue",
+   "title": "Assisted T-rescue",
+   "text": "Your partner lifts your bow across their deck to drain it, rights the boat and holds it steady while you climb back in from the side.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "roll",
+   "scene": "Rescue",
+   "skill": "roll",
+   "title": "The roll",
+   "text": "Set up along the side of the boat, sweep the blade out on the surface and snap the hips. The boat comes up first, then the body, then the head.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "pumpOut",
+   "scene": "Rescue",
+   "skill": "rescue",
+   "title": "Pump out",
+   "text": "A flooded cockpit makes the boat heavy and tippy. Skirt on, then pump until it is dry.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
+   "id": "highTide",
+   "scene": "Camp",
+   "skill": "campcraft",
+   "title": "Camp above the tide",
+   "text": "Look for the wrack line of drift logs and seaweed and pitch well above it. Tonight’s high water is higher than this afternoon’s.",
+   "sourceIds": [
+    "lnt",
+    "noaa-tides"
+   ]
+  },
+  {
+   "id": "raccoons",
+   "scene": "Camp",
+   "skill": "campcraft",
+   "title": "Raccoons are clever",
+   "text": "Island raccoons open zips and untie knots. Store food in a hard container or a hung bag, never in the tent.",
+   "sourceIds": [
+    "wa-parks-jones"
+   ]
+  },
+  {
+   "id": "lnt",
+   "scene": "Camp",
+   "skill": "campcraft",
+   "title": "Leave no trace",
+   "text": "Camp on durable surfaces, pack out everything you pack in, and leave the island as you found it.",
+   "sourceIds": [
+    "lnt"
+   ]
+  },
+  {
+   "id": "tidepools",
+   "scene": "TidePools",
+   "title": "Tide-pool manners",
+   "text": "Look with your eyes; touch gently with one wet finger. Never pull an animal off a rock, and turn any rock you lift back exactly as it was.",
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  }
+ ],
+ "credits": [
+  {
+   "id": "trak",
+   "title": "TRAK 2.0 specifications and FAQ",
+   "author": "TRAK Kayaks",
+   "url": "https://www.trakkayaks.com/pages/faq",
+   "licence": "Facts cited; no marks or images used"
+  },
+  {
+   "id": "paddlingmag",
+   "title": "Folding kayak review: TRAK 2.0",
+   "author": "Paddling Magazine",
+   "url": "https://paddlingmag.com/boats/kayaks/folding-kayak-review-trak-2-0-touring-kayak/",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "aca",
+   "title": "Coastal Kayaking skills curriculum",
+   "author": "American Canoe Association",
+   "url": "https://americancanoe.org",
+   "licence": "Technique cited"
+  },
+  {
+   "id": "coldwater",
+   "title": "Cold Water Boot Camp — the 1-10-1 principle",
+   "author": "Dr. Gordon Giesbrecht",
+   "url": "https://www.coldwaterbootcamp.com",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "uscg",
+   "title": "Boating safety and navigation rules (Rule 9, narrow channels)",
+   "author": "U.S. Coast Guard",
+   "url": "https://www.navcen.uscg.gov",
+   "licence": "Public domain (US Government)"
+  },
+  {
+   "id": "bewhalewise",
+   "title": "Be Whale Wise guidelines",
+   "author": "Be Whale Wise partnership (US & Canada)",
+   "url": "https://www.bewhalewise.org",
+   "licence": "Guidance cited"
+  },
+  {
+   "id": "wa-srkw",
+   "title": "RCW 77.15.740 — protection of Southern Resident orcas (1,000-yard buffer from 2025)",
+   "author": "Washington State Legislature",
+   "url": "https://app.leg.wa.gov/rcw/default.aspx?cite=77.15.740",
+   "licence": "Public law"
+  },
+  {
+   "id": "noaa-mm",
+   "title": "Marine life viewing guidelines",
+   "author": "NOAA Fisheries",
+   "url": "https://www.fisheries.noaa.gov/topic/marine-life-viewing-guidelines",
+   "licence": "Public domain (US Government)"
+  },
+  {
+   "id": "noaa-species",
+   "title": "Species directory (killer whale, humpback, harbor seal, Steller sea lion, harbor porpoise)",
+   "author": "NOAA Fisheries",
+   "url": "https://www.fisheries.noaa.gov/species-directory",
+   "licence": "Public domain (US Government)"
+  },
+  {
+   "id": "eopugetsound",
+   "title": "Encyclopedia of Puget Sound",
+   "author": "Puget Sound Institute, University of Washington Tacoma",
+   "url": "https://www.eopugetsound.org",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "wdfw",
+   "title": "Species and habitats",
+   "author": "Washington Department of Fish and Wildlife",
+   "url": "https://wdfw.wa.gov/species-habitats",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "lnt",
+   "title": "The Seven Principles",
+   "author": "Leave No Trace Center for Outdoor Ethics",
+   "url": "https://lnt.org/why/7-principles/",
+   "licence": "Principles cited"
+  },
+  {
+   "id": "wa-parks-jones",
+   "title": "Jones Island Marine State Park",
+   "author": "Washington State Parks",
+   "url": "https://parks.wa.gov/find-parks/state-parks/jones-island-marine-state-park",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "wwta",
+   "title": "Cascadia Marine Trail",
+   "author": "Washington Water Trails Association",
+   "url": "https://www.wwta.org",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "fhl",
+   "title": "Friday Harbor Laboratories",
+   "author": "University of Washington",
+   "url": "https://fhl.uw.edu",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "wsf",
+   "title": "Washington State Ferries — Anacortes / San Juan Islands route",
+   "author": "Washington State Department of Transportation",
+   "url": "https://wsdot.wa.gov/travel/washington-state-ferries",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "noaa-chart",
+   "title": "Chart 18434, San Juan Channel (reference for approximate outlines)",
+   "author": "NOAA Office of Coast Survey",
+   "url": "https://charts.noaa.gov",
+   "licence": "Public domain (US Government)"
+  },
+  {
+   "id": "noaa-tides",
+   "title": "Tides & Currents prediction methodology",
+   "author": "NOAA CO-OPS",
+   "url": "https://tidesandcurrents.noaa.gov",
+   "licence": "Public domain (US Government)"
+  },
+  {
+   "id": "arctic",
+   "title": "Arctic Studies Center — kayaks and Arctic peoples",
+   "author": "Smithsonian Institution",
+   "url": "https://naturalhistory.si.edu/research/anthropology/programs/arctic-studies-center",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "burke",
+   "title": "Coast Salish art and canoe culture",
+   "author": "Burke Museum of Natural History and Culture",
+   "url": "https://www.burkemuseum.org",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "phaser",
+   "title": "Phaser 4",
+   "author": "Phaser Studio",
+   "url": "https://phaser.io",
+   "licence": "MIT"
+  },
+  {
+   "id": "three",
+   "title": "three.js",
+   "author": "three.js authors",
+   "url": "https://threejs.org",
+   "licence": "MIT"
+  },
+  {
+   "id": "synth",
+   "title": "All sound and art",
+   "author": "Generated in code for this game",
+   "url": "",
+   "licence": "Original work"
+  },
+  {
+   "id": "pm-wear",
+   "title": "What to wear kayaking: the complete guide",
+   "author": "Paddling Magazine",
+   "url": "https://paddlingmag.com/safer-paddling/what-to-wear-kayaking/",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "rei-wear",
+   "title": "What to wear kayaking: layering tips",
+   "author": "REI Co-op",
+   "url": "https://www.rei.com/learn/expert-advice/kayaking-what-to-wear.html",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "guillemot",
+   "title": "Kayaking class gear list and dressing for cold water",
+   "author": "Guillemot Kayaks",
+   "url": "https://guillemot-kayaks.com/sea-kayak/kayaking-class-gear-list-and-dressing-cold-water",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "drysuit",
+   "title": "Wetsuit vs. drysuit for paddling",
+   "author": "PaddlingLight",
+   "url": "https://www.paddlinglight.com/articles/wetsuit-vs-drysuit-for-paddling/",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "bask",
+   "title": "Safety gear",
+   "author": "Bay Area Sea Kayakers",
+   "url": "https://www.bask.org/safety-gear/",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "kitsap-list",
+   "title": "Sea kayak equipment checklist",
+   "author": "Paddlers of Kitsap",
+   "url": "https://www.pwckitsap.org/sea-kayak-equipment-checklist/",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "cgaux-paddlers",
+   "title": "A Paddler’s Guide to Safety",
+   "author": "U.S. Coast Guard Auxiliary",
+   "url": "https://edept.cgaux.org/pdf/PaddlersGuideSafety042023.pdf",
+   "licence": "Public domain (US Government)"
+  },
+  {
+   "id": "colregs",
+   "title": "Navigation Rules, Rule 25(d) — vessels under oars",
+   "author": "U.S. Coast Guard Navigation Center",
+   "url": "https://www.navcen.uscg.gov/navigation-rules-amalgamated",
+   "licence": "Public domain (US Government)"
+  },
+  {
+   "id": "mec-mandatory",
+   "title": "Mandatory paddling gear for kayaks, canoes and SUPs",
+   "author": "MEC (summarising Transport Canada)",
+   "url": "https://www.mec.ca/en/explore/mandatory-paddling-gear",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "fhl-mammals",
+   "title": "Marine Mammals of the Salish Sea",
+   "author": "Friday Harbor Laboratories, University of Washington",
+   "url": "https://depts.washington.edu/fhlk12/links/NatHistory/mammals.pdf",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "fws-otter",
+   "title": "Results of the 2023 survey of the sea otter population in Washington State",
+   "author": "U.S. Fish and Wildlife Service",
+   "url": "https://www.fws.gov/sites/default/files/documents/2024-05/final-washington-sea-otter-survey-2023-report.pdf",
+   "licence": "Public domain (US Government)"
+  },
+  {
+   "id": "seadoc-pycno",
+   "title": "Iconic sunflower sea star listed as critically endangered",
+   "author": "SeaDoc Society",
+   "url": "https://www.seadocsociety.org/blog/iconic-sunflower-sea-star-listed-critically-endangered-after-nearly-getting-wiped-out",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "nobel-gfp",
+   "title": "Discovery of green fluorescent protein, GFP (Nobel lecture, 2008)",
+   "author": "Osamu Shimomura",
+   "url": "https://www.nobelprize.org/uploads/2018/06/shimomura_lecture.pdf",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "allaboutbirds",
+   "title": "All About Birds",
+   "author": "Cornell Lab of Ornithology",
+   "url": "https://www.allaboutbirds.org",
+   "licence": "Facts cited"
+  },
+  {
+   "id": "birdweb",
+   "title": "BirdWeb",
+   "author": "Seattle Audubon Society",
+   "url": "https://birdweb.org",
+   "licence": "Facts cited"
+  }
+ ],
+ "skins": [
+  {
+   "id": "blackBlue",
+   "name": "Black & Blue",
+   "deck": "#1b1e21",
+   "deckHi": "#4a5056",
+   "panel": "#2d9be0",
+   "hull": "#f0f1ee"
+  },
+  {
+   "id": "blackGreen",
+   "name": "Black & Green",
+   "deck": "#1b1e21",
+   "deckHi": "#4a5056",
+   "panel": "#4fc43a",
+   "hull": "#f0f1ee"
+  },
+  {
+   "id": "blackSilver",
+   "name": "Black & Silver",
+   "deck": "#1b1e21",
+   "deckHi": "#4a5056",
+   "panel": "#eceef0",
+   "hull": "#f0f1ee"
+  },
+  {
+   "id": "red",
+   "name": "Red & White",
+   "deck": "#d21f3c",
+   "deckHi": "#ef6a7c",
+   "panel": "#f6f6f4",
+   "hull": "#f0f1ee"
+  },
+  {
+   "id": "yellow",
+   "name": "Yellow & Blue",
+   "deck": "#f2d016",
+   "deckHi": "#fbe985",
+   "panel": null,
+   "hull": "#f0f1ee"
+  }
+ ]
+}

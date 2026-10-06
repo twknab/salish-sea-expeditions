@@ -69,6 +69,8 @@ node tests/smoke/godot-shot.mjs                                  # headless smok
 STATIC_DIR=build/web node server/server.mjs                      # serve it on :8080
 ```
 
+The opening follows the Phaser game in order — title, acknowledgment, outfitting, the ferry (mandatory), Kayak School, the water — with content exported from `src/content` by `tools/export-content.mjs`, sounds from `tools/synth-audio.mjs` and a six-stem techno soundtrack from `tools/synth-soundtrack.mjs`. `node tests/smoke/godot-tour.mjs` screenshots every scene.
+
 Needs Godot 4.5 and its web export templates (`.github/workflows/godot.yml` shows the install).
 
 ## Run it

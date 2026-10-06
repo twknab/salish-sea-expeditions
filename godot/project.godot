@@ -15,6 +15,11 @@ config/description="A realistic sea-kayaking game in the San Juan and Gulf Islan
 run/main_scene="res://scenes/sea.tscn"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 
+[autoload]
+
+App="*res://scripts/app.gd"
+Sound="*res://scripts/sound.gd"
+
 [display]
 
 window/size/viewport_width=390
