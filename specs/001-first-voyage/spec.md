@@ -21,11 +21,11 @@ smooth), VIII (legally and respectfully sourced). IX governs how it is built.
 ## User Scenarios & Testing *(mandatory)*
 
 **Play order** (priority is build order; this is the order a player meets things): title, land
-acknowledgment and safety note → optional walk-on ferry → **Boat School: know your boat, your body,
+acknowledgment and safety note → optional walk-on ferry → **Kayak School: know your boat, your body,
 your paddle** → assembly and packing → trip planning → the crossing (wildlife, capsize, tide rip)
 → camp and tide pools → debrief.
 
-### User Story 0 - Boat School: know your boat, your body, your paddle (Priority: P1, first)
+### User Story 0 - Kayak School: know your boat, your body, your paddle (Priority: P1, first)
 
 Before anything else, on the beach at Friday Harbor, the player is introduced to the folding sea
 kayak they will paddle all game, and to the idea that a kayak is **worn, not sat in**.
@@ -54,7 +54,7 @@ bow. Every later scene builds on these, and the debrief tracks them as named ski
 boat is controlled through the hips and the paddle is driven by the torso. It is also the single
 most transferable lesson a new sea kayaker can take away.
 
-**Independent Test**: A fresh player completes Boat School in under five minutes and can then name
+**Independent Test**: A fresh player completes Kayak School in under five minutes and can then name
 five parts of the kayak, explain edging, and perform a stroke, sweep, brace and hip snap in the
 calm-water practice area.
 
@@ -71,7 +71,7 @@ calm-water practice area.
    more sharply than when flat.
 5. **Given** a wobble, **When** the player braces and snaps the hips with head down, **Then** the
    boat rights; **When** they lift their head first, **Then** the brace fails and a tip explains.
-6. **Given** Boat School is complete, **When** the player later capsizes, **Then** the roll and
+6. **Given** Kayak School is complete, **When** the player later capsizes, **Then** the roll and
    brace gestures they meet reuse the same hip-snap motion they learned here.
 
 ---
@@ -460,7 +460,7 @@ reviewers rate it against the beauty criteria (SC-009, SC-010).
 
 ### Measurable Outcomes
 
-- **SC-000**: After Boat School, at least four of five playtesters can explain edging and say that
+- **SC-000**: After Kayak School, at least four of five playtesters can explain edging and say that
   power comes from the torso and control from the hips.
 - **SC-001**: A first-time player completes the whole First Voyage, launch to debrief, in 15 to 30
   minutes.

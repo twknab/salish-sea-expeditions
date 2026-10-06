@@ -107,3 +107,17 @@ test('orcas: holding still is respectful; paddling at them inside the rule is no
   }
   assert.equal(pod2.respectful, false);
 });
+
+test('orca passes are one ecotype or the other, never mixed, and old saves keep their orca', async () => {
+  const { createOrcaPass } = await import('../../src/sim/wildlife.js');
+  const { load } = await import('../../src/sim/save.js');
+  const p = { x: 0, y: 0 };
+  assert.equal(createOrcaPass(p, 0, undefined, 0.1).speciesId, 'biggsOrca');
+  const sr = createOrcaPass(p, 0, undefined, 0.9);
+  assert.equal(sr.speciesId, 'southernResident');
+  assert.ok(sr.members.length > createOrcaPass(p, 0, undefined, 0.1).members.length, 'residents travel in larger groups');
+  const store = { getItem: () => JSON.stringify({ v: 1, fieldGuide: { orca: '2026-09-30' } }) };
+  const s = load(store);
+  assert.equal(s.fieldGuide.biggsOrca, '2026-09-30');
+  assert.equal(s.fieldGuide.orca, undefined);
+});

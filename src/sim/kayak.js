@@ -6,7 +6,7 @@
 // - Edging the boat toward the sweep side sharpens a sweep turn.
 // - Rocker (hull jacks): less rocker tracks straighter, more rocker turns quicker.
 import { clamp, dir } from './geo.js';
-import { rotationQuality } from './input.js';
+import { rotationQuality, GOOD_STROKE } from './input.js';
 import { stepHeel } from './stability.js';
 
 export function createKayak(opts = {}) {
@@ -56,7 +56,7 @@ export function stepKayak(k, input, env, paddler, dt, heelDt = dt) {
       const yaw = 0.05 * (1.6 - q) * (0.6 + 0.8 * k.rocker);
       k.turnRate += -side * yaw;
       cost += 0.00018 * (1.5 - q) * Math.min(wgt, 1.5); // a trip is thousands of strokes
-      events.push(q >= 0.7 ? 'strokeGood' : 'strokeArms');
+      events.push(q >= GOOD_STROKE ? 'strokeGood' : 'strokeArms');
     } else if (s.kind === 'sweep') {
       const edgeHelp = 1 + 0.9 * clamp(k.edge * side, 0, 1); // tilt toward the sweep side
       const turn = 0.22 * edgeHelp * (0.6 + 0.8 * k.rocker) * (1 + 0.03 * skill('sweep'));

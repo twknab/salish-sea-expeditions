@@ -4,7 +4,7 @@
 // technique: a long, smooth swipe from reach to hip IS torso rotation; a flick on the hips strip
 // IS the hip snap; holding the blade on the low side IS the brace.
 import Phaser from 'phaser';
-import { emptyInput, rotationQuality } from '../sim/input.js';
+import { emptyInput, rotationQuality, GOOD_STROKE } from '../sim/input.js';
 import { COLOR, CSS, layout, px, textStyle } from './theme.js';
 
 const HIP_LINE = 0.78; // fraction of zone height where the hip is
@@ -24,6 +24,7 @@ export class TouchControls {
     this.headDown = true;
     this.lastBraceRelease = -1;
     this.tracks = new Map();
+    this.misses = new Map();
     this.hipsPointer = null;
     this.enabled = true;
     this.height = opts.height ?? 200;
@@ -54,7 +55,7 @@ export class TouchControls {
       s.add.text(0, 0, 'HIPS', textStyle(9.5, { color: CSS.mist, tracking: 1.2 })).setScrollFactor(0).setDepth(41).setOrigin(0.5),
       s.add.text(0, 0, 'RIGHT BLADE', textStyle(9.5, { color: CSS.mist, tracking: 1.2 })).setScrollFactor(0).setDepth(41).setOrigin(0.5),
     ];
-    this.feedback = s.add.text(0, 0, '', textStyle(13, { color: CSS.sun, weight: '600' })).setScrollFactor(0).setDepth(43).setOrigin(0.5).setAlpha(0);
+    this.feedback = s.add.text(0, 0, '', textStyle(14.5, { color: CSS.sun, weight: '600' })).setScrollFactor(0).setDepth(43).setOrigin(0.5).setAlpha(0);
     this.layoutGraphics();
 
     s.input.on('pointerdown', (p) => this.down(p));
@@ -121,9 +122,13 @@ export class TouchControls {
   down(p) {
     if (!this.enabled) return;
     const k = this.which(p);
-    if (!k) return;
-    this.events.emit('touch');
     const now = stamp(p);
+    if (!k) {
+      // Not in a zone: remember where it began, so a swipe on the water can be answered rather than ignored.
+      if (p.y / layout.S > layout.H * 0.3) this.misses.set(p.id, { x: p.x / layout.S, y: p.y / layout.S, t: now });
+      return;
+    }
+    this.events.emit('touch');
     if (k === 'hips') {
       this.hipsPointer = { id: p.id, lastX: p.x, lastT: now, v: 0 };
       this.edgeHeld = true;
@@ -158,6 +163,13 @@ export class TouchControls {
   }
 
   up(p) {
+    const miss = this.misses.get(p.id);
+    if (miss) {
+      this.misses.delete(p.id);
+      const dy = p.y / layout.S - miss.y, dx = p.x / layout.S - miss.x;
+      if (Math.abs(dy) > 30 && Math.abs(dy) > Math.abs(dx)) this.hint(null, 'Swipe inside a blade zone ↓');
+      return;
+    }
     if (this.hipsPointer && this.hipsPointer.id === p.id) {
       this.hipsPointer = null;
       this.edgeHeld = false;
@@ -206,10 +218,13 @@ export class TouchControls {
       return { side, kind: outward > 0 ? 'sweep' : 'reverse', reach: 0.9, smoothness: 0.9, exitAtHip: true };
     }
     if (dy < -z.h * 0.25) return { side, kind: 'reverse', reach: 0.5, smoothness: 0.8, exitAtHip: true };
-    if (dy < z.h * 0.2) return null;
-    const reach = Phaser.Math.Clamp(1 - ((a.y - z.y) / z.h - 0.08) * 2.2, 0, 1);
+    if (dy < z.h * 0.2) {
+      if (dy > 8) this.hint(side, 'Longer — top to the hip line');
+      return null;
+    }
+    const reach = Phaser.Math.Clamp(1 - ((a.y - z.y) / z.h - 0.12) * 1.8, 0, 1); // start in the top third = a full reach
     const hipY = z.y + z.h * HIP_LINE;
-    const exitAtHip = Math.abs(b.y - hipY) < z.h * 0.13;
+    const exitAtHip = Math.abs(b.y - hipY) < z.h * 0.22; // a generous hip: the point is the end, not a pixel
     // Smoothness: a steady pull that keeps moving toward the hip in a clean line, and not a jab.
     let path = 0, forward = 0;
     for (let i = 1; i < tr.pts.length; i++) {
@@ -221,21 +236,30 @@ export class TouchControls {
     const straight = path > 0 ? Math.hypot(dx, dy) / path : 1;
     const monotone = path > 0 ? forward / path : 1;
     let smooth = Phaser.Math.Clamp((straight - 0.6) / 0.35, 0, 1) * 0.5 + monotone * 0.5;
-    smooth = Math.min(smooth, Phaser.Math.Clamp((dur - 80) / 220, 0.15, 1));
+    smooth = Math.min(smooth, Phaser.Math.Clamp((dur - 40) / 140, 0.2, 1)); // only a real jab (< ~180 ms) is penalised
     return { side, kind: 'forward', reach, smoothness: smooth, exitAtHip };
+  }
+
+  /** A word of coaching for a gesture that was not a stroke, over the zone (or centred above both). */
+  hint(side, msg) {
+    const z = this.zones();
+    const r = side ? z[side] : { x: z.left.x, w: z.right.x + z.right.w - z.left.x, y: z.left.y };
+    this.feedback.setText(msg).setColor(CSS.sun).setPosition(px(r.x + r.w / 2), px(r.y - 14)).setAlpha(1);
+    this.scene.tweens.killTweensOf(this.feedback);
+    this.scene.tweens.add({ targets: this.feedback, alpha: 0, delay: 1400, duration: 500 });
   }
 
   flash(st) {
     const z = this.zones()[st.side];
     const q = rotationQuality(st);
-    const label = st.kind !== 'forward' ? (st.kind === 'sweep' ? 'Sweep' : 'Reverse') : q >= 0.7 ? 'Rotation' : st.reach < 0.4 ? 'Reach further' : !st.exitAtHip ? 'Exit at the hip' : 'Arms — rotate';
-    this.feedback.setText(label).setColor(st.kind !== 'forward' || q >= 0.7 ? CSS.good : CSS.sun);
+    const label = st.kind !== 'forward' ? (st.kind === 'sweep' ? 'Sweep' : 'Reverse') : q >= GOOD_STROKE ? 'Rotation' : st.reach < 0.4 ? 'Reach further' : !st.exitAtHip ? 'Exit at the hip' : 'Arms — rotate';
+    this.feedback.setText(label).setColor(st.kind !== 'forward' || q >= GOOD_STROKE ? CSS.good : CSS.sun);
     this.feedback.setPosition(px(z.x + z.w / 2), px(z.y - 14)).setAlpha(1);
     this.scene.tweens.killTweensOf(this.feedback);
-    this.scene.tweens.add({ targets: this.feedback, alpha: 0, delay: 500, duration: 500 });
+    this.scene.tweens.add({ targets: this.feedback, alpha: 0, delay: 900, duration: 500 });
     const f = this.fx;
     f.clear();
-    f.fillStyle(st.kind === 'forward' && q < 0.7 ? COLOR.sun : COLOR.good, 0.18);
+    f.fillStyle(st.kind === 'forward' && q < GOOD_STROKE ? COLOR.sun : COLOR.good, 0.18);
     f.fillRoundedRect(px(z.x), px(z.y), px(z.w), px(z.h), px(22));
     this.scene.tweens.addCounter({ from: 1, to: 0, duration: 380, onUpdate: (tw) => f.setAlpha(tw.getValue()) });
   }
@@ -284,6 +308,12 @@ export class TouchControls {
     const good = (side, kind = 'forward') => ({ side, kind, reach: 0.9, smoothness: 0.9, exitAtHip: true });
     kb.on('keydown-A', () => { const s = good('left'); this.pending.push(s); this.flash(s); });
     kb.on('keydown-D', () => { const s = good('right'); this.pending.push(s); this.flash(s); });
+    kb.on('keydown-LEFT', () => { const s = good('left'); this.pending.push(s); this.flash(s); });
+    kb.on('keydown-RIGHT', () => { const s = good('right'); this.pending.push(s); this.flash(s); });
+    let revSide = 'left';
+    const reverse = () => { revSide = revSide === 'left' ? 'right' : 'left'; const s = good(revSide, 'reverse'); this.pending.push(s); this.flash(s); };
+    kb.on('keydown-S', reverse);
+    kb.on('keydown-DOWN', reverse);
     kb.on('keydown-Z', () => { const s = good('left', 'sweep'); this.pending.push(s); this.flash(s); });
     kb.on('keydown-C', () => { const s = good('right', 'sweep'); this.pending.push(s); this.flash(s); });
     kb.on('keydown-Q', () => { this.edge = -1; this.edgeHeld = true; this.drawKnob(); });

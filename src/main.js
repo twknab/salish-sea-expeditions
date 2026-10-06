@@ -54,7 +54,8 @@ const game = new Phaser.Game({
   antialias: true,
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH, zoom: 1 / DPR },
   input: { activePointers: 4 },
-  render: { powerPreference: 'high-performance', autoMobileTextures: true },
+  // Mipmaps keep the baked 3D sprites crisp when small and steady while they turn.
+  render: { powerPreference: 'high-performance', autoMobileTextures: true, mipmapFilter: 'LINEAR_MIPMAP_LINEAR', maxTextures: 1 },
   scene: [Boot, Title, Acknowledgment, StartChoice, Outfit, Ferry, BoatSchool, Assembly, Packing, Planning, Paddle, Rescue, Camp, TidePools, Debrief, FieldGuide, Credits, About, Pause],
 });
 

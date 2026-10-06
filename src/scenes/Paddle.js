@@ -1,8 +1,8 @@
 // On the water. Two modes:
-//  - 'school': calm, shallow water off Friday Harbor for Boat School drills (US0)
+//  - 'school': calm, shallow water off Friday Harbor for Kayak School drills (US0)
 //  - 'trip':   the crossing from Friday Harbor to Jones Island (US1, US6, US9)
 import Phaser from 'phaser';
-import { WorldView, drawOrcas, drawSeals, drawFerry, ring } from '../render/world.js';
+import { WorldView, drawOrcas, drawSeals, drawFerry, drawSightings, ring } from '../render/world.js';
 import { POV_FRAG } from '../render/povShader.js';
 import { SKINS, skinOf, hex } from '../content/skins.js';
 
@@ -27,10 +27,13 @@ import { createMover, stepMover } from '../sim/route.js';
 import { lessonById } from '../content/lessons.js';
 import { DRILLS } from '../content/anatomy.js';
 import { speciesById } from '../content/species.js';
-import { sightingsAt, createOrcaPass, stepOrcaPass, sealState } from '../sim/wildlife.js';
+import { sightingsAt, tripSightings, createOrcaPass, stepOrcaPass, sealState } from '../sim/wildlife.js';
 import { assess, handlingPenalty } from '../sim/packing.js';
 import { state, trip, lesson, observe, go, persist } from '../state.js';
 import { pauseButton } from '../ui/pause.js';
+
+/** Why the last forward stroke was graded as arms, in the words of the fix. */
+const armsWhy = (st) => !st ? 'rotate, don’t pull' : st.reach < 0.4 ? 'start higher: the top of the blade zone is your feet' : !st.exitAtHip ? 'finish at the hip line' : 'pull steadily, not a flick';
 
 const ZOOMS = [90, 240, 700, 2200];
 
@@ -65,6 +68,11 @@ export class Paddle extends Phaser.Scene {
     this.skin = skinOf(state.save.skin);
     // The partner paddles a different skin, so you can tell the boats apart.
     this.partnerSkin = SKINS.find((s) => s.id !== this.skin.id && s.deck !== this.skin.deck) ?? SKINS[1];
+    // Lit 3D boats, paddlers and wildlife, baked in the background; 2D sprites stand in meanwhile.
+    import('../render3d/bake.js').then(async (m) => {
+      await m.bakeWater(this, [this.skin, this.partnerSkin], { wildlife: this.mode === 'trip' });
+      if (this.mode === 'trip') await m.bakeSightings(this, this.sightings.map((s) => s.speciesId));
+    }).catch(() => {});
     this.me = { energy: this.resume?.energy ?? t?.energy ?? 1, fit: state.save.fitScore ?? 0.9, skills: state.save.skills };
     this.partnerPaddler = { energy: 1, fit: 1, skills: { forward: 200, sweep: 200, brace: 200 } };
 
@@ -87,6 +95,7 @@ export class Paddle extends Phaser.Scene {
     this.prompted = new Set(state.save.trip?.prompted ?? []);
     this.seen = new Set(Object.keys(state.save.fieldGuide));
     this.pod = null;
+    this.sightings = tripSightings();
     this.sealMin = Infinity;
     this.sealJudged = false;
     this.ferry = null;
@@ -186,7 +195,7 @@ export class Paddle extends Phaser.Scene {
     });
   }
 
-  // ---------- Boat School drills ----------
+  // ---------- Kayak School drills ----------
 
   startDrill(i) {
     this.drill = i;
@@ -194,7 +203,8 @@ export class Paddle extends Phaser.Scene {
     const d = DRILLS[i];
     if (!d) return;
     this.card?.active && this.card.dismiss();
-    this.card = lessonCard(this, { title: d.title, text: `${d.text}\n\nGoal: ${d.goal}.`, sourceIds: ['aca'] }, { y: layout.safe.top + 98, depth: 60 });
+    const keys = !this.sys.game.device.input.touch && this.input.keyboard && d.keys ? `\nKeyboard: ${d.keys}.` : '';
+    this.card = lessonCard(this, { title: d.title, text: `${d.text}\n\nGoal: ${d.goal}.${keys}`, sourceIds: ['aca'] }, { y: layout.safe.top + 98, depth: 60 });
     this.card.setScrollFactor(0);
     this.drillBar?.destroy();
     this.drillBar = meter(this, 30, layout.H - layout.safe.bottom - 206, layout.W - 60, 5, COLOR.sun).setScrollFactor(0).setDepth(33);
@@ -208,9 +218,17 @@ export class Paddle extends Phaser.Scene {
     const s = this.drillState;
     let p = 0;
     if (d.id === 'forward') {
-      if (events.includes('strokeGood')) s.count++;
-      if (events.includes('strokeArms')) s.count = Math.max(0, s.count - 1);
+      // Every rotation stroke counts; an arm stroke just does not. Six, and you have it.
+      const good = events.filter((e) => e === 'strokeGood').length;
+      s.count += good;
       p = s.count / 6;
+      if (good && s.count < 6) this.note(`${s.count} of 6 rotation strokes`, 2500);
+      else if (events.includes('strokeArms')) this.note(`Not counted — ${armsWhy(this.controls.last)}`, 3000);
+    } else if (d.id === 'reverse') {
+      const n = events.filter((e) => e === 'reverse').length;
+      s.count += n;
+      p = s.count / 4;
+      if (n && s.count < 4) this.note(`${s.count} of 4 reverse strokes`, 2500);
     } else if (d.id === 'edge') {
       s.t = Math.abs(this.player.edge) > 0.6 ? s.t + dt : Math.max(0, s.t - dt * 2);
       p = s.t / 3;
@@ -227,7 +245,7 @@ export class Paddle extends Phaser.Scene {
     if (p >= 1) {
       sound.success();
       award(state.save.skills, d.skill, 30);
-      const ids = { forward: 'rotation', edge: 'edging', sweep: 'edging', brace: 'hipSnap' };
+      const ids = { forward: 'rotation', reverse: 'rotation', edge: 'edging', sweep: 'edging', brace: 'hipSnap' };
       lesson(ids[d.id], 'demonstrated');
       if (this.drill + 1 < DRILLS.length) {
         this.note('Nicely done.');
@@ -242,7 +260,7 @@ export class Paddle extends Phaser.Scene {
 
   finishSchool() {
     this.card?.active && this.card.dismiss();
-    const c = lessonCard(this, { title: 'Boat School complete', text: 'Power from the torso, control from the hips, head down in a brace. Everything from here builds on this. Next: assemble and pack your own boat for the trip.', sourceIds: ['aca'] }, {
+    const c = lessonCard(this, { title: 'Kayak School complete', text: 'Power from the torso, control from the hips, head down in a brace. Everything from here builds on this. Next: assemble and pack your own boat for the trip.', sourceIds: ['aca'] }, {
       y: layout.safe.top + 110, depth: 60, action: 'Continue', onAction: () => go(this, 'Assembly'),
     });
     c.setScrollFactor(0);
@@ -275,9 +293,9 @@ export class Paddle extends Phaser.Scene {
   wildlife(dt) {
     const k = this.player;
     // Sightings.
-    for (const id of sightingsAt(k.x, k.y, this.seen)) {
+    for (const id of sightingsAt(k.x, k.y, this.seen, this.sightings)) {
       this.seen.add(id);
-      if (observe(id)) this.toast(`Field guide: ${speciesById[id].common}`);
+      if (observe(id)) this.toast(`Field guide: ${speciesById[id].common}`, id);
       if (id === 'baldEagle') sound.eagle(0.4);
       if (id === 'pigeonGuillemot' || id === 'rhinoAuklet') sound.gull(-0.3);
     }
@@ -289,7 +307,7 @@ export class Paddle extends Phaser.Scene {
     if (ds < 420 && !this.prompted.has('sealDistance')) this.showLesson('sealDistance');
     if (ds < 400 && !this.seen.has('harbourSeal')) {
       this.seen.add('harbourSeal');
-      if (observe('harbourSeal')) this.toast('Field guide: Harbour seal');
+      if (observe('harbourSeal')) this.toast('Field guide: Harbour seal', 'harbourSeal');
     }
     if (ds > 600 && this.sealMin < 400 && !this.sealJudged) {
       this.sealJudged = true;
@@ -325,7 +343,7 @@ export class Paddle extends Phaser.Scene {
       if (this.pod.state === 'gone') {
         const rec = trip()?.record;
         if (rec) { if (this.pod.respectful) rec.respectful++; else rec.violations++; }
-        if (observe('orca')) this.toast('Field guide: Orca');
+        if (observe(this.pod.speciesId)) this.toast(`Field guide: ${speciesById[this.pod.speciesId].common}`, this.pod.speciesId);
         this.toast(this.pod.respectful ? 'The orcas passed. You gave them room.' : 'The orcas passed — next time, hold still.');
         this.pod = null;
         this.podDone = true;
@@ -335,9 +353,23 @@ export class Paddle extends Phaser.Scene {
     }
   }
 
-  toast(msg) {
+  toast(msg, speciesId = null) {
+    // One at a time: a second sighting waits until the first has had its moment.
+    const t0 = this.time.now, busyUntil = this.toastUntil ?? 0;
+    if (t0 < busyUntil) { this.time.delayedCall(busyUntil - t0 + 100, () => this.toast(msg, speciesId)); this.toastUntil = busyUntil + 3300; return; }
+    this.toastUntil = t0 + 3300;
     const W = layout.W;
     const y = layout.H - layout.safe.bottom - 250;
+    // A new species brings its portrait with it (drawn now if it is not already).
+    let por = null;
+    if (speciesId) {
+      import('../render3d/bake.js').then((m) => {
+        const key = m.bakePortrait(this, speciesId, 256);
+        if (!key || !t.active) return;
+        por = this.add.image(px(W / 2), px(y - 52), key).setDisplaySize(px(84), px(84)).setScrollFactor(0).setDepth(62).setAlpha(0);
+        this.tweens.add({ targets: por, alpha: 1, duration: 250, yoyo: true, hold: 2600, onComplete: () => por.destroy() });
+      }).catch(() => {});
+    }
     const t = text(this, W / 2, y, msg, 13, { color: CSS.ink, weight: '600', origin: [0.5, 0.5] }).setScrollFactor(0).setDepth(62);
     const bg = this.add.graphics().setScrollFactor(0).setDepth(61);
     const w = t.width + px(28), h = t.height + px(14);
@@ -675,6 +707,7 @@ export class Paddle extends Phaser.Scene {
     if (this.mode === 'trip') {
       drawSeals(w, PLACES.sealRocks, this.sealStateNow ?? 'resting', this.visualTime, k);
       ring(w, PLACES.sealRocks.x, PLACES.sealRocks.y, 91, COLOR.sun, 0.25);
+      drawSightings(w, this.sightings, this.visualTime);
       if (this.pod) { drawOrcas(w, this.pod, this.visualTime); ring(w, k.x, k.y, 914, COLOR.danger, 0.35); }
       if (this.ferry) drawFerry(w, this.ferry);
       // Destination marker.
@@ -695,7 +728,7 @@ export class Paddle extends Phaser.Scene {
       const d = PLACES.destination;
       this.tDist.setText(`${nm(Math.hypot(d.x - k.x, d.y - k.y)).toFixed(1)} nm to Jones`);
     } else {
-      this.tTide.setText('Boat School · calm water');
+      this.tTide.setText('Kayak School · calm water');
       this.tDist.setText('');
     }
     this.tSpeed.setText(`${knots(Math.hypot(k.vx, k.vy)).toFixed(1)} kn`);

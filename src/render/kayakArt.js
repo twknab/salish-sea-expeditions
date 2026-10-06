@@ -135,7 +135,7 @@ export function drawKayakTop(g, L, opts = {}) {
   return { B };
 }
 
-/** Side view for Boat School anatomy. Returns part anchor positions in local coordinates. */
+/** Side view for Kayak School anatomy. Returns part anchor positions in local coordinates. */
 export function drawKayakSide(g, W, opts = {}) {
   const H = W * 0.11;
   const hull = opts.hull ?? HULL.player;
@@ -198,7 +198,7 @@ export function drawKayakSide(g, W, opts = {}) {
  * stroke. Drysuit, PFD, sun hat, sunglasses and a neck gaiter: a real paddler's kit, and a figure
  * that reads as a person without implying anyone's race or gender.
  * `P(x, y)` maps design units (origin at the seat, y down) to device pixels; `u` is px per unit.
- * Returns the anatomy points used for Boat School's fit taps.
+ * Returns the anatomy points used for Kayak School's fit taps.
  */
 export function drawPaddlerSide(g, P, u, opts = {}) {
   const hull = opts.hull ?? HULL.player;

@@ -55,3 +55,14 @@ test('steering toward a shore turns away from it', () => {
   assert.ok(shoreDistance(ahead.x, ahead.y) > 0, 'the new track is on the water');
   assert.notEqual(t, toward);
 });
+
+test('every sighting sits in its habitat: swimmers on water, trees and perched birds ashore', async () => {
+  const { SIGHTINGS } = await import('../../src/sim/wildlife.js');
+  const { onLand } = await import('../../src/sim/field.js');
+  const ashore = new Set(['kingfisher', 'garryOak', 'redCedar', 'peregrine', 'pelagicCormorant', 'madrona', 'douglasFir', 'baldEagle', 'heron', 'oystercatcher', 'riverOtter', 'pigeonGuillemot']);
+  const swimmers = ['waterJelly', 'californiaSeaLion', 'sugarKelp', 'dallsPorpoise', 'lionsMane', 'seaOtter', 'minke', 'stellerSeaLion', 'friedEggJelly', 'humpback'];
+  for (const s of SIGHTINGS) {
+    if (swimmers.includes(s.speciesId)) assert.ok(!onLand(s.x, s.y), `${s.speciesId} is on land`);
+    if (['garryOak', 'redCedar', 'peregrine', 'pelagicCormorant', 'kingfisher'].includes(s.speciesId)) assert.ok(onLand(s.x, s.y), `${s.speciesId} is in the water`);
+  }
+});

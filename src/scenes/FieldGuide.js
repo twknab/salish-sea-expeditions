@@ -43,6 +43,23 @@ function emblem(g, x, y, r, s, seen) {
 }
 
 export class FieldGuide extends Phaser.Scene {
+  /**
+   * Replace each emblem with the species' lit 3D portrait as it is drawn (spec 005). Seen species
+   * in full colour; unseen ones as a dark silhouette — a hint of what to look for.
+   */
+  async portraits(g) {
+    const m = await import('../render3d/bake.js').catch(() => null);
+    if (!m) return;
+    for (const tile of this.tiles) {
+      if (!this.sys.isActive()) return;
+      await new Promise((r) => setTimeout(r, 0));
+      const key = m.bakePortrait(this, tile.s.id, 256);
+      if (!key) continue;
+      const img = this.add.image(px(tile.cx), px(tile.cy), key).setDisplaySize(px(70), px(70)).setDepth(11);
+      if (!tile.seen) img.setTint(0x0b2b33).setTintMode(Phaser.TintModes.FILL).setAlpha(0.6);
+    }
+  }
+
   constructor() { super('FieldGuide'); }
 
   create() {
@@ -59,6 +76,7 @@ export class FieldGuide extends Phaser.Scene {
     const g = this.add.graphics().setDepth(10);
     const cols = 3, cw = (W - 24) / cols;
     this.hits = [];
+    this.tiles = [];
     for (const grp of SPECIES_GROUPS) {
       text(this, 18, y, grp.toUpperCase(), 10.5, { tracking: 1.5, color: CSS.sun }).setDepth(10);
       y += 22;
@@ -68,9 +86,11 @@ export class FieldGuide extends Phaser.Scene {
         emblem(g, px(cx), px(cy), px(28), s, !!seen[s.id]);
         text(this, cx, cy + 36, seen[s.id] ? s.common : '— not yet seen —', 11, { color: seen[s.id] ? CSS.foam : CSS.mist, origin: [0.5, 0], align: 'center', wrap: cw - 10 }).setDepth(10);
         this.hits.push({ s, x: cx, y: cy, open: !!seen[s.id] });
+        this.tiles.push({ s, cx, cy, seen: !!seen[s.id] });
       });
       y += Math.ceil(list.length / cols) * 104 + 14;
     }
+    this.portraits(g);
     button(this, W / 2, y + 20, 'Back', () => go(this, this.scene.settings.data?.from ?? 'Title'), { primary: false }).setDepth(10);
     scrollable(this, y + 80);
     this.onBack = () => go(this, this.scene.settings.data?.from ?? 'Title');
@@ -78,8 +98,13 @@ export class FieldGuide extends Phaser.Scene {
       this.card?.active && this.card.destroy();
       const s = hit.s;
       const body = hit.open ? `${s.scientific}\n\n${s.blurb}\n\n${s.facts.map((f) => `· ${f}`).join('\n')}\n\nWhere: ${s.where}` : 'Not yet observed. Keep your eyes open on the water, in the air, in the tide pools and along the shore.';
-      this.card = lessonCard(this, { title: hit.open ? s.common : '?', text: body, sourceIds: hit.open ? s.sourceIds : [] }, { y: layout.safe.top + 60, depth: 60, action: 'Close', onAction: () => this.card.dismiss() });
+      // A large portrait above the page, when it has been drawn.
+      this.big?.destroy();
+      const key = `k3-por-${s.id}`, has = hit.open && this.textures.exists(key);
+      const top = layout.safe.top + (has ? 200 : 60);
+      this.card = lessonCard(this, { title: hit.open ? s.common : '?', text: body, sourceIds: hit.open ? s.sourceIds : [] }, { y: top, depth: 60, action: 'Close', onAction: () => { this.card.dismiss(); this.big?.destroy(); } });
       this.card.setScrollFactor(0);
+      if (has) this.big = this.add.image(px(layout.W / 2), px(layout.safe.top + 105), key).setDisplaySize(px(190), px(190)).setScrollFactor(0).setDepth(61);
     };
     for (const hit of this.hits) focusRing(this).add({ scroll: true, bounds: () => ({ x: hit.x - 32, y: hit.y - 32, w: 64, h: 64 }), activate: () => open(hit) });
     let downY = 0;

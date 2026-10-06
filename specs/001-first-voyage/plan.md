@@ -7,7 +7,7 @@
 ## Summary
 
 Build the first playable slice of Salish Sea Expeditions as a portrait, touch-first web game:
-Boat School on the beach at Friday Harbor (kayak anatomy, hip connection, edging, hip snap,
+Kayak School on the beach at Friday Harbor (kayak anatomy, hip connection, edging, hip snap,
 torso-driven strokes), assembly and packing of the folding kayak, planning a launch from a tide and
 current table, a top-down paddle up San Juan Channel to Jones Island with a computer partner,
 wildlife under Be Whale Wise rules, a capsize with three rescues, a cockpit point-of-view moment,
@@ -47,7 +47,7 @@ gesture; all information carried by sound also shown visually
 
 | Principle | How this plan satisfies it | Status |
 | --- | --- | --- |
-| I. Teach real sea kayaking | Boat School first; controls map to technique (R7); lessons are data with sources; seamanship changes outcomes (launch window, ferry angle, brace) | Pass |
+| I. Teach real sea kayaking | Kayak School first; controls map to technique (R7); lessons are data with sources; seamanship changes outcomes (launch window, ferry angle, brace) | Pass |
 | II. Teach the whole place | Real names and route; field guide with 12+ species; Friday Harbor and research station; tide pools | Pass (coastlines approximate, R4 follow-up) |
 | III. A place of First Peoples | Land acknowledgment frames the game; kayak-history lesson distinguishes Arctic kayak from cedar canoe; cultural content limited to acknowledgment until review; `reviewStatus` in data | Pass |
 | IV. Honest about safety | Safety note on first launch and in About; cold-water model; no death but honest consequences; techniques reviewed | Pass |

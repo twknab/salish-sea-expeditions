@@ -21,13 +21,13 @@ test('every source reference resolves to a credit', () => {
 
 test('every credit is used, apart from the engine and original-work credits', () => {
   const used = new Set(sourced.flatMap((i) => i.sourceIds));
-  for (const c of CREDITS) if (!['phaser', 'synth'].includes(c.id)) assert.ok(used.has(c.id), `unused credit ${c.id}`);
+  for (const c of CREDITS) if (!['phaser', 'three', 'synth'].includes(c.id)) assert.ok(used.has(c.id), `unused credit ${c.id}`);
 });
 
 test('the field guide has at least twelve species across the required groups', () => {
   assert.ok(SPECIES.length >= 12);
   const groups = new Set(SPECIES.map((s) => s.group));
-  for (const g of ['Marine mammals', 'Birds', 'Intertidal & sea life', 'Kelp & seagrass', 'Trees']) assert.ok(groups.has(g), g);
+  for (const g of ['Marine mammals', 'Birds', 'Intertidal & sea life', 'Kelp & seaweeds', 'Trees']) assert.ok(groups.has(g), g);
   for (const s of SPECIES) assert.ok(s.facts.length && s.blurb && s.scientific && s.where, s.id);
 });
 

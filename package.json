@@ -12,7 +12,8 @@
     "smoke": "node tests/smoke/smoke.mjs"
   },
   "dependencies": {
-    "phaser": "4.2.1"
+    "phaser": "4.2.1",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "playwright": "^1.56.1",

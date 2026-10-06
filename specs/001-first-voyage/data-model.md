@@ -11,7 +11,7 @@ north, clockwise positive; time as minutes since local midnight on the trip day.
 | id | string | `player`, `partner` |
 | controller | `'touch' \| 'ai' \| 'remote'` | Only `touch` and `ai` exist in this slice |
 | energy | 0..1 | Drains with effort, recovers with rest (faster in sheltered water) |
-| fit | 0..1 | Connection to the boat from Boat School (feet, knees, backband, skirt) |
+| fit | 0..1 | Connection to the boat from Kayak School (feet, knees, backband, skirt) |
 | skills | `Record<SkillId, number>` | Experience points; level = f(xp) |
 | timeInWater | seconds | Starts at capsize, drives the cold-water model |
 

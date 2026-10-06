@@ -25,7 +25,7 @@ npm run smoke        # boots the build at 390x844, walks the scenes, saves scree
 
 ## Scenario checks (by hand, on a phone)
 
-1. **Boat School**: tap five kayak parts and read their names; fit feet, knees, backband and skirt
+1. **Kayak School**: tap five kayak parts and read their names; fit feet, knees, backband and skirt
    until "connected"; paddle with long smooth strokes and see the efficiency meter beat short jabs;
    edge and sweep for a sharper turn; brace with a hip snap.
 2. **Planning**: launch at 08:00 (young flood, calm) and at 16:00 (ebb against a southerly breeze);

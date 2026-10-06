@@ -6,6 +6,8 @@ const page = await browser.newPage({ viewport: { width: 390, height: 844 }, devi
 const logs = [];
 page.on('console', (m) => logs.push(`[${m.type()}] ${m.text()}`));
 page.on('pageerror', (e) => logs.push(`[pageerror] ${e.message}`));
+// INIT='{"sse.save.v1": {...}}' seeds localStorage before the page loads.
+if (process.env.INIT) await page.addInitScript((kv) => { for (const [k, v] of Object.entries(kv)) localStorage.setItem(k, JSON.stringify(v)); }, JSON.parse(process.env.INIT));
 const url = `http://localhost:4173/${q ? `?scene=${q}` : ''}`;
 await page.goto(url);
 await page.waitForTimeout(+wait);

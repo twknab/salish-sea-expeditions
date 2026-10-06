@@ -71,14 +71,25 @@ export class Outfit extends Phaser.Scene {
     const gen = this.gen;
     const sideY = top + 170, topY = top + 262;
     const deck = this.keep(this.add.graphics().setDepth(10));
-    let side = null;
+    let side = null, top3d = null;
     const name = this.keep(text(this, W / 2, top + 312, '', 17, { serif: true, weight: '600', origin: [0.5, 0], color: CSS.sun }).setDepth(10));
     const draw = async () => {
       const sk = skinOf(state.save.skin);
       name.setText(sk.name);
       deck.setPosition(px(W / 2), px(topY)).setRotation(-Math.PI / 2);
-      drawKayakTop(deck, px(Math.min(W - 40, 360)), { empty: true, skin: sk });
-      const key = await loadArt(this, 'kayakSide', sk.id, px(W - 16));
+      // The lit 3D deck when the 3D chunk is available; the drawn one until then.
+      const len = Math.min(W - 40, 360);
+      const m3 = await import('../render3d/bake.js').catch(() => null);
+      if (gen !== this.gen) return;
+      const k3key = m3?.bakeDeck(this, sk);
+      if (k3key) {
+        deck.clear();
+        const { FRAMES } = await import('../render3d/keys.js');
+        const B = FRAMES.boat, mpp = len / 4.88;
+        if (top3d) top3d.setTexture(k3key); else top3d = this.keep(this.add.image(px(W / 2), px(topY), k3key).setDepth(10).setRotation(-Math.PI / 2));
+        top3d.setDisplaySize(px(B.spanZ * mpp * 1.2), px(B.spanX * mpp));
+      } else drawKayakTop(deck, px(len), { empty: true, skin: sk });
+      const key = await loadArt(this, 'kayakSideSolid', sk.id, px(W - 16));
       if (gen !== this.gen) return;
       if (side) side.setTexture(key); else side = this.keep(this.add.image(px(W / 2), px(sideY), key).setDepth(10));
     };

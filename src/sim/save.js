@@ -19,7 +19,10 @@ export function load(storage) {
     const s = JSON.parse(raw);
     if (s?.v !== 1) return freshSave();
     const f = freshSave();
-    return { ...f, ...s, totals: { ...f.totals, ...s.totals }, settings: { ...f.settings, ...s.settings } };
+    const out = { ...f, ...s, totals: { ...f.totals, ...s.totals }, settings: { ...f.settings, ...s.settings } };
+    // Orcas were one field-guide page before the two ecotypes were split: keep it as Bigg's.
+    if (out.fieldGuide?.orca && !out.fieldGuide.biggsOrca) { out.fieldGuide = { ...out.fieldGuide, biggsOrca: out.fieldGuide.orca }; delete out.fieldGuide.orca; }
+    return out;
   } catch {
     return freshSave();
   }

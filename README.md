@@ -1,6 +1,6 @@
 <p align="center">
   <img src="docs/shot-title.png" width="190" alt="Title screen over the living water of San Juan Channel">
-  <img src="docs/shot-boatschool.png" width="190" alt="Boat School: forward-stroke drill with the thumb zones and hips bar">
+  <img src="docs/shot-boatschool.png" width="190" alt="Kayak School: forward-stroke drill with the thumb zones and hips bar">
   <img src="docs/shot-planning.png" width="190" alt="Planning the launch from the current and wind for the day">
   <img src="docs/shot-cockpit.png" width="190" alt="Cockpit view: the bow, the paddle and the horizon">
 </p>
@@ -26,7 +26,7 @@ Friday Harbor → Jones Island, about 4½ nautical miles, one night out.
 1. **A place of First Peoples** — the game opens with a land acknowledgment (draft, pending review
    with the Nations named) and a safety note.
 2. **Walk-on ferry from Anacortes**, or start in Friday Harbor. Spot the islands from the deck.
-3. **Boat School** — the kayak's anatomy (frame, skin, hull jacks, flotation bags, coaming, skirt),
+3. **Kayak School** — the kayak's anatomy (frame, skin, hull jacks, flotation bags, coaming, skirt),
    how you *wear* a kayak (feet, knees, hips, backband, head), the paddle, then calm-water drills:
    rotation strokes, edging, sweeps on edge, the low brace and hip snap.
 4. **Assemble** the folding kayak — the history of the skin-on-frame kayak plays while the frame
@@ -47,7 +47,8 @@ Friday Harbor → Jones Island, about 4½ nautical miles, one night out.
 
 | Do this | On the phone | Keyboard |
 | --- | --- | --- |
-| Forward stroke | Swipe down a blade zone — long and smooth, from the top to the hip line, is torso rotation | A / D |
+| Forward stroke | Swipe down a blade zone — long and smooth, from the top to the hip line, is torso rotation | A / D or ← → |
+| Reverse stroke | Swipe up a blade zone | S or ↓ |
 | Sweep turn | Swipe outward across a blade zone | Z / C |
 | Edge (lift a knee) | Drag the hips bar | Q / E (hold) |
 | Brace | Hold a thumb still on the low side's blade zone… | J / L (hold) |

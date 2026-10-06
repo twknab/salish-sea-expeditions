@@ -30,8 +30,18 @@ export class TidePools extends Phaser.Scene {
       { id: 'nudibranch', x: this.cx - 30, y: this.cy + 120, r: 22 },
       { id: 'eelgrass', x: this.cx + 110, y: this.cy - 120, r: 34 },
       { id: 'octopus', x: this.cx + 20, y: this.cy - 10, r: 50, hidden: true },
+      // Drawn from the 3D models (spec 005). A sunflower star is a rare, lucky find now.
+      { id: 'sunflowerStar', x: this.cx - 55, y: this.cy - 135, r: 40, art: 86 },
+      { id: 'seaLettuce', x: this.cx + 100, y: this.cy + 5, r: 30, art: 62 },
+      { id: 'turkishTowel', x: this.cx - 100, y: this.cy + 75, r: 30, art: 64 },
     ];
     this.drawPool();
+    import('../render3d/bake.js').then((m) => {
+      for (const sp of this.spots.filter((q) => q.art)) {
+        const key = m.bakePortrait(this, sp.id, 256);
+        if (key && this.sys.isActive()) this.add.image(px(sp.x), px(sp.y), key).setDisplaySize(px(sp.art), px(sp.art)).setDepth(2).setAngle((sp.x * 7) % 360);
+      }
+    }).catch(() => {});
     text(this, W / 2, layout.safe.top + 16, 'Low tide, 06:50', 13, { color: CSS.mist, origin: [0.5, 0], tracking: 1 }).setDepth(20);
     text(this, W / 2, layout.safe.top + 36, 'The tide pools', 26, { serif: true, weight: '600', origin: [0.5, 0] }).setDepth(20);
     this.hint = text(this, W / 2, H - layout.safe.bottom - 110, 'Tap what you see. Hold the big rock to lift it — gently.', 13, { color: CSS.fog, origin: [0.5, 0.5], align: 'center', wrap: W - 60 }).setDepth(20);
