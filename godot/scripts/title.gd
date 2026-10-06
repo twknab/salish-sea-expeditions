@@ -8,9 +8,24 @@ func _ready() -> void:
 	var ui := CanvasLayer.new()
 	ui.layer = 10
 	add_child(ui)
+	var scrim := TextureRect.new()
+	var grad := Gradient.new()
+	grad.set_color(0, Color(0.02, 0.08, 0.1, 0.72))
+	grad.set_color(1, Color(0.02, 0.08, 0.1, 0.0))
+	var gt := GradientTexture2D.new()
+	gt.gradient = grad
+	gt.fill_from = Vector2(0, 0)
+	gt.fill_to = Vector2(0, 1)
+	gt.width = 8; gt.height = 256
+	scrim.texture = gt
+	scrim.stretch_mode = TextureRect.STRETCH_SCALE
+	scrim.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	scrim.anchor_bottom = 0.5
+	scrim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ui.add_child(scrim)
 	var v := UIKit.page(ui, 72, 28)
 	v.add_child(UIKit.kicker("A sea-kayak journey"))
-	v.add_child(UIKit.label("Salish Sea Expeditions", 38, UIKit.FOAM))
+	v.add_child(UIKit.label("Salish Sea Expeditions", 36, UIKit.FOAM, true, true))
 	v.add_child(UIKit.label("The San Juan and Gulf Islands, by folding kayak. Learn the strokes, read the water, and travel lightly through a place of First Peoples.", 14, UIKit.MIST))
 	v.add_child(UIKit.spacer())
 	var begin := UIKit.button("Begin at Anacortes")

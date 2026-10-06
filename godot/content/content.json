@@ -1063,6 +1063,20 @@
  ],
  "credits": [
   {
+   "id": "godot",
+   "title": "Godot Engine 4.5",
+   "author": "Godot Engine contributors",
+   "url": "https://godotengine.org",
+   "licence": "MIT"
+  },
+  {
+   "id": "dejavu",
+   "title": "DejaVu Sans",
+   "author": "DejaVu Fonts",
+   "url": "https://dejavu-fonts.github.io/",
+   "licence": "Bitstream Vera licence (free, with attribution)"
+  },
+  {
    "id": "trak",
    "title": "TRAK 2.0 specifications and FAQ",
    "author": "TRAK Kayaks",

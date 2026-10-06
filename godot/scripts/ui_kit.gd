@@ -19,9 +19,18 @@ static func panel_style(alpha := 0.78, radius := 22) -> StyleBoxFlat:
 	sb.content_margin_top = 16; sb.content_margin_bottom = 16
 	return sb
 
-static func label(text: String, size: int, color: Color = FOAM, wrap := true) -> Label:
+static var _bold: Font = null
+
+static func bold() -> Font:
+	if _bold == null:
+		_bold = load("res://fonts/DejaVuSans-Bold.ttf")
+	return _bold
+
+static func label(text: String, size: int, color: Color = FOAM, wrap := true, heavy := false) -> Label:
 	var l := Label.new()
 	l.text = text
+	if heavy:
+		l.add_theme_font_override("font", bold())
 	l.add_theme_font_size_override("font_size", size)
 	l.add_theme_color_override("font_color", color)
 	if wrap:
@@ -65,7 +74,7 @@ static func card(title: String, body: String, source := "", actions: Array = [],
 	if kicker_text != "":
 		v.add_child(kicker(kicker_text))
 	if title != "":
-		v.add_child(label(title, 20, SUN))
+		v.add_child(label(title, 20, SUN, true, true))
 	if body != "":
 		v.add_child(label(body, 14))
 	if source != "":

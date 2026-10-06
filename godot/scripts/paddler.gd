@@ -200,6 +200,9 @@ func advance(delta: float, edge: float) -> void:
 	if _kind == "sweep":
 		travel *= 1.5
 		dip *= 0.5
+	if p >= 1.0:
+		travel = 0.0
+		dip = 0.0
 	_paddle.rotation = Vector3(0.0, _side * travel, dip)
 	_paddle.position.z = (0.05 - 0.22 * swing) if fwd_kind else (0.05 + 0.2 * swing)
 	_paddle.position.x = -_side * 0.12 * swing

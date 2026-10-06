@@ -41,7 +41,7 @@ func _ready() -> void:
 	_figure = Paddler.new()
 	_figure.standing = true
 	_figure.dress = 0
-	_figure.position = Vector3(0, 0.4, 1.2)
+	_figure.position = Vector3(0, 0.4, 0.0)
 	_subject.add_child(_figure)
 	_cam = Camera3D.new()
 	_cam.fov = 50.0
@@ -89,8 +89,8 @@ func _show() -> void:
 	if p.kind == "layer":
 		_figure.dress = p.level
 		_figure.build()
-	_cam.position = Vector3(0, 2.4, 6.2) if p.kind != "layer" else Vector3(0, 1.6, 4.4)
-	_cam.look_at(Vector3(0, 0.9, 0.2) if p.kind != "layer" else Vector3(0, 1.25, 1.2), Vector3.UP)
+	_cam.position = Vector3(0, 2.4, 6.2) if p.kind != "layer" else Vector3(0, 1.7, 3.9)
+	_cam.look_at(Vector3(0, 0.9, 0.0) if p.kind != "layer" else Vector3(0, 1.35, 0.0), Vector3.UP)
 	var actions: Array = []
 	if _page > 0:
 		actions.append(["Back", func() -> void: _page -= 1; _show(), false])
@@ -128,4 +128,5 @@ func _show() -> void:
 
 func _process(delta: float) -> void:
 	_spin += delta * 0.25
-	_subject.rotation.y = _spin
+	_kayak.rotation.y = _spin
+	_figure.rotation.y = _spin + PI
