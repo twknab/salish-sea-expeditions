@@ -47,5 +47,17 @@ func _ready() -> void:
 	var cm := CylinderMesh.new(); cm.top_radius = 1.1; cm.bottom_radius = 1.3; cm.height = 4.0
 	stack.mesh = cm; stack.material_override = dark; stack.position = Vector3(0, 13.0, 0)
 	add_child(stack)
+	var rail := _m(Color("e6e8e4"), 0.4)
 	for s in [-1.0, 1.0]:
-		_box(self, Vector3(0.06, 1.1, LENGTH * 0.72), _m(Color("e6e8e4"), 0.4), Vector3(s * BEAM * 0.39, 11.6, 0))
+		_box(self, Vector3(0.06, 1.1, LENGTH * 0.72), rail, Vector3(s * BEAM * 0.39, 11.6, 0))
+		_box(self, Vector3(BEAM * 0.78, 0.06, 0.06), rail, Vector3(0, 12.1, s * LENGTH * 0.36))
+		_box(self, Vector3(BEAM * 0.78, 0.06, 0.06), rail, Vector3(0, 11.6, s * LENGTH * 0.36))
+		for i in range(9):
+			_box(self, Vector3(0.05, 1.1, 0.05), rail, Vector3(-BEAM * 0.39 + i * BEAM * 0.0975, 11.6, s * LENGTH * 0.36))
+		# A bench and a lifebuoy on the sun deck, something for the eye at the rail.
+		_box(self, Vector3(3.0, 0.08, 0.5), _m(Color("7a5a3a"), 0.9), Vector3(2.5, 11.6, s * LENGTH * 0.33))
+	var buoy := MeshInstance3D.new()
+	var tm := TorusMesh.new(); tm.inner_radius = 0.28; tm.outer_radius = 0.42
+	buoy.mesh = tm; buoy.material_override = _m(Color("e0532f"), 0.6)
+	buoy.position = Vector3(-BEAM * 0.39 + 0.1, 11.9, -LENGTH * 0.3); buoy.rotation = Vector3(0, 0, PI / 2.0)
+	add_child(buoy)
