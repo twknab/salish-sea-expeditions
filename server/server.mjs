@@ -11,8 +11,9 @@ const TYPES = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.svg': 'image/svg+xml',
   '.png': 'image/png', '.ico': 'image/x-icon', '.txt': 'text/plain; charset=utf-8', '.mp3': 'audio/mpeg',
+  '.wasm': 'application/wasm', '.pck': 'application/octet-stream',
 };
-const ZIP = new Set(['.html', '.js', '.css', '.json', '.webmanifest', '.svg', '.txt']);
+const ZIP = new Set(['.html', '.js', '.css', '.json', '.webmanifest', '.svg', '.txt', '.wasm', '.pck']);
 
 export function createServer(root) {
   const ROOT = path.resolve(root);

@@ -54,6 +54,23 @@ Friday Harbor → Jones Island, about 4½ nautical miles, one night out.
 | Brace | Hold a thumb still on the low side's blade zone… | J / L (hold) |
 | Hip snap | …and flick the hips bar back toward the centre | K |
 
+## Godot rewrite (experiment branch)
+
+`experiment/godot-rewrite` carries a ground-up Godot 4.5 version of the game in `godot/`: a true
+3D sea the kayak floats on, the same hull lines, the same stroke rules and the same touch
+vocabulary. It is an experiment with a go/no-go in `specs/007-godot-rewrite/spec.md`; the Phaser
+game on `main` stays the shipped game until the Godot one is better on a phone.
+
+```bash
+godot --path godot                                               # open in the editor
+godot --headless --path godot -s res://tests/run_tests.gd        # unit tests
+godot --headless --path godot --export-release Web ../build/web/index.html
+node tests/smoke/godot-shot.mjs                                  # headless smoke of the export
+STATIC_DIR=build/web node server/server.mjs                      # serve it on :8080
+```
+
+Needs Godot 4.5 and its web export templates (`.github/workflows/godot.yml` shows the install).
+
 ## Run it
 
 ```bash

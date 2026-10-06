@@ -1,0 +1,49 @@
+# Godot rewrite experiment: unit tests, web export and a headless smoke of the export.
+name: Godot
+on:
+  push:
+    branches: [experiment/godot-rewrite]
+    paths: [godot/**, tests/smoke/godot-shot.mjs, server/**, .github/workflows/godot.yml]
+  pull_request:
+    paths: [godot/**, tests/smoke/godot-shot.mjs, server/**, .github/workflows/godot.yml]
+  workflow_dispatch: {}
+env:
+  GODOT_VERSION: 4.5-stable
+jobs:
+  godot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - name: Cache Godot and web templates
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-web-v1
+      - name: Install Godot and the web export templates
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p ~/godot ~/.local/share/godot/export_templates/${GODOT_VERSION/-/.}
+          V=$GODOT_VERSION
+          curl -sSL -o /tmp/godot.zip "https://github.com/godotengine/godot/releases/download/$V/Godot_v${V}_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d ~/godot && mv ~/godot/Godot_v${V}_linux.x86_64 ~/godot/godot && chmod +x ~/godot/godot
+          curl -sSL -o /tmp/templates.tpz "https://github.com/godotengine/godot/releases/download/$V/Godot_v${V}_export_templates.tpz"
+          (cd ~/.local/share/godot/export_templates/${GODOT_VERSION/-/.} && unzip -o -q -j /tmp/templates.tpz 'templates/web_*' 'templates/version.txt')
+      - run: npm ci --no-audit --no-fund
+      - name: Import
+        run: ~/godot/godot --headless --path godot --import || true
+      - name: Unit tests
+        run: ~/godot/godot --headless --path godot -s res://tests/run_tests.gd
+      - name: Export web
+        run: mkdir -p build/web && ~/godot/godot --headless --path godot --export-release Web ../build/web/index.html
+      - name: Smoke the export
+        run: npx playwright install chromium --with-deps >/dev/null && node tests/smoke/godot-shot.mjs tests/smoke/out/godot.png 25000
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: godot-web, path: "build/web\ntests/smoke/out/godot*.png", retention-days: 7 }

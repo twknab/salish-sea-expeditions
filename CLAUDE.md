@@ -38,3 +38,15 @@ with `npx vite preview --port 4173` running, for a single screenshot.
 - Screens never pan or clip: content fits, or it is split into zoomed sub-screens (Kayak School).
 - Smoke helper: `INIT='{"sse.save.v1":{...}}'` seeds the save before `tests/smoke/shot.mjs` loads.
 - Spec Kit: non-trivial features go specify → plan → tasks → implement; commit the artifacts.
+
+## Godot rewrite (branch `experiment/godot-rewrite`)
+
+- `godot/` is a Godot 4.5 project (Compatibility renderer, web export without threads). Pure
+  logic lives in `class_name` scripts with static functions (`waves.gd`, `hull.gd`,
+  `stroke_math.gd`) so `tests/run_tests.gd` can run them headless; scene scripts stay thin.
+- GDScript gotchas paid for: a value pulled out of a Dictionary is a Variant, so `var x := d.key`
+  fails to infer — write `var x: float = d.key`. Run `--import` once before tests or export so
+  the global class cache knows the `class_name`s.
+- The sea shader and `waves.gd` must stay the same formula; the kayak floats on what is drawn.
+- Export size is the risk: 38 MB wasm. Measure on a phone before porting anything else
+  (`specs/007-godot-rewrite/spec.md`, go/no-go table).
