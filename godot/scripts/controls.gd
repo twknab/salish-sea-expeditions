@@ -51,6 +51,11 @@ func _which(p: Vector2) -> String:
 	return ""
 
 func _gui_input(ev: InputEvent) -> void:
+	# Godot emulates a mouse from every touch (buttons need it); those copies carry the emulation
+	# device id, so each gesture is read once — from the touch on a phone, from the mouse on a desktop.
+	if ev.device == InputEvent.DEVICE_ID_EMULATION:
+		accept_event()
+		return
 	if ev is InputEventScreenTouch:
 		if ev.pressed:
 			_down(ev.index, ev.position)
