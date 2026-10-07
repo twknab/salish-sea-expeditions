@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Salish Sea Expeditions"
 config/description="A realistic sea-kayaking game in the San Juan and Gulf Islands. Godot rewrite experiment."
-run/main_scene="res://scenes/sea.tscn"
+run/main_scene="res://scenes/title.tscn"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 
 [autoload]

@@ -58,3 +58,5 @@ with `npx vite preview --port 4173` running, for a single screenshot.
 - The figure is `BodyMesh`: arrays built by hand with analytic normals. SurfaceTool will not merge
   vertices that carry bone weights, so its generated normals come out faceted — do not go back to it
   for skinned geometry.
+- `run/main_scene` must be `title.tscn`. Smoke scripts that pass `?scene=` never exercise the main
+  scene; `tests/smoke/godot-desktop-shot.mjs` loads the bare page and is the check for that.
