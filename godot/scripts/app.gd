@@ -20,6 +20,7 @@ var save: Dictionary = { "stage": "title", "seenIntro": false, "skin": "blackBlu
 var current := "title"
 var sea_mode := "ambient"   # what sea.tscn should be when it loads: ambient | school | trip
 var school_from := 0        # school phase to resume at
+var _home: CanvasLayer
 
 func _ready() -> void:
 	var f := FileAccess.open("res://content/content.json", FileAccess.READ)
@@ -28,6 +29,17 @@ func _ready() -> void:
 		if parsed is Dictionary:
 			content = parsed
 	_load()
+	# A way home from every screen: a small Title button in the top-left corner.
+	_home = CanvasLayer.new()
+	_home.layer = 50
+	add_child(_home)
+	var b := UIKit.button("Title", false)
+	b.custom_minimum_size = Vector2(0, 34)
+	b.add_theme_font_size_override("font_size", 12)
+	b.position = Vector2(12, 10)
+	b.pressed.connect(func() -> void: go("title"))
+	_home.add_child(b)
+	_home.visible = false
 	# `?scene=ferry` jumps straight to a screen (smoke tests and the editor's play button).
 	var want := _url_param("scene")
 	if want != "" and SCENES.has(want):
@@ -64,6 +76,7 @@ func go(name: String) -> void:
 		save.stage = name
 		persist()
 	Sound.mood({ "title": "title", "acknowledgment": "title", "outfit": "calm", "ferry": "ferry", "school": "calm", "trip": "drive" }.get(name, "calm"))
+	_home.visible = name != "title"
 	get_tree().change_scene_to_file(SCENES[name])
 
 func next() -> void:
