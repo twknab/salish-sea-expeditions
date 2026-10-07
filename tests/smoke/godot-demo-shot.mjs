@@ -10,5 +10,5 @@ page.on('pageerror', (e) => logs.push('pageerror: ' + e.message));
 await page.goto('http://localhost:4176/salish-sea-godot-demo.html');
 await page.waitForTimeout(30000);
 await page.screenshot({ path: 'tests/smoke/out/godot-demo.png' });
-console.log(logs.slice(0, 15).join('\n'));
+console.log(logs.slice(0, 40).join('\n'));
 await browser.close(); server.close();

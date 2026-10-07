@@ -25,9 +25,8 @@ Sound="*res://scripts/sound.gd"
 window/size/viewport_width=390
 window/size/viewport_height=844
 window/size/mode=0
-window/stretch/mode="canvas_items"
+window/stretch/mode="disabled"
 window/stretch/aspect="expand"
-window/handheld/orientation=1
 
 [gui]
 

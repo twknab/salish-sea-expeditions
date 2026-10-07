@@ -1,0 +1,15 @@
+// The export in a wide desktop window (no touch), as the owner sees it in the artifact panel.
+import { chromium } from 'playwright';
+import { createServer } from '../../server/server.mjs';
+const server = createServer(process.argv[2] || 'build/web');
+await new Promise((r) => server.listen(4178, r));
+const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+const page = await browser.newPage({ viewport: { width: 1400, height: 730 }, deviceScaleFactor: 1 });
+const logs = [];
+page.on('console', (m) => logs.push(m.type() + ': ' + m.text()));
+page.on('pageerror', (e) => logs.push('pageerror: ' + e.message));
+await page.goto('http://localhost:4178/' + (process.argv[3] || ''));
+await page.waitForTimeout(25000);
+await page.screenshot({ path: 'tests/smoke/out/godot-desktop.png', timeout: 90000 });
+console.log(logs.filter((l) => /error|ERROR|warn/i.test(l)).slice(0, 20).join('\n'));
+await browser.close(); server.close();

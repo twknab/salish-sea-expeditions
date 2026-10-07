@@ -29,6 +29,10 @@ func _ready() -> void:
 		if parsed is Dictionary:
 			content = parsed
 	_load()
+	# The interface is laid out in points for a 390 × 844 phone and scaled to the window by hand:
+	# the engine's canvas_items stretch dropped the whole 2D layer in landscape windows on the web.
+	get_tree().root.size_changed.connect(_fit)
+	_fit()
 	# A way home from every screen: a small Title button in the top-left corner.
 	_home = CanvasLayer.new()
 	_home.layer = 50
@@ -44,6 +48,11 @@ func _ready() -> void:
 	var want := _url_param("scene")
 	if want != "" and SCENES.has(want):
 		call_deferred("go", want)
+
+func _fit() -> void:
+	var sz := get_tree().root.size
+	var f := minf(sz.x / 390.0, sz.y / 844.0)
+	get_tree().root.content_scale_factor = clampf(f, 0.75, 2.5)
 
 func _url_param(name: String) -> String:
 	if not OS.has_feature("web"):
