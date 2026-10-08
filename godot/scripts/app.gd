@@ -17,6 +17,7 @@ const SCENES := {
 	"plan": "res://scenes/plan.tscn",
 	"camp": "res://scenes/camp.tscn",
 	"guide": "res://scenes/guide.tscn",
+	"debrief": "res://scenes/debrief.tscn",
 }
 
 var content: Dictionary = {}
@@ -109,10 +110,10 @@ func go(name: String) -> void:
 		sea_mode = name
 	elif name == "title":
 		sea_mode = "ambient"
-	if name != "title" and name != "guide":
+	if name != "title" and name != "guide" and name != "debrief":
 		save.stage = name
 		persist()
-	Sound.mood({ "title": "title", "acknowledgment": "title", "outfit": "calm", "ferry": "ferry", "school": "dawn", "pack": "calm", "plan": "calm", "trip": "drive", "camp": "night" }.get(name, "calm"))
+	Sound.mood({ "title": "title", "acknowledgment": "title", "outfit": "calm", "ferry": "ferry", "school": "dawn", "pack": "calm", "plan": "calm", "trip": "drive", "camp": "night", "debrief": "drive" }.get(name, "calm"))
 	_title_btn.visible = name != "title"
 	get_tree().change_scene_to_file(SCENES[name])
 
@@ -127,7 +128,7 @@ func advance_leg() -> void:
 	if Leg.is_last():
 		save.stage = "camp_done"
 		persist()
-		go("title")
+		go("debrief")
 		return
 	save.legIndex = Leg.index() + 1
 	save.erase("launchHour")

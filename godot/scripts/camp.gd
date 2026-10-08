@@ -133,7 +133,7 @@ func _show() -> void:
 	if _step < _steps.size() - 1:
 		actions.append(["Next", func() -> void: _step += 1; _hour_target = _hour0 + 1.1 * _step; _show(), true])
 	else:
-		actions.append(["The expedition ends · home" if Leg.is_last() else "Tomorrow’s float plan", func() -> void: App.advance_leg(), true])
+		actions.append(["The expedition ends · the debrief" if Leg.is_last() else "Tomorrow’s float plan", func() -> void: _leave(), true])
 	var s: Dictionary = _steps[_step] if _step < _steps.size() else { "title": "Camp", "text": "", "sourceIds": [] }
 	var body: String = s.get("text", "")
 	if Leg.is_last() and _step == _steps.size() - 1:
@@ -142,6 +142,13 @@ func _show() -> void:
 		body += "\n\nNo headlamp: the evening chores take twice as long in the dark."
 	_card = UIKit.card(s.get("title", ""), body, App.sources_line(s.get("sourceIds", [])), actions, "%s · %s · %d of %d" % [_leg.get("camp", {}).get("name", "Camp"), Leg.clock(_hour), _step + 1, _steps.size()])
 	_ui.add_child(_card)
+
+## Leaving camp: a night out, and a camp left as found, for the record; the take-out is neither.
+func _leave() -> void:
+	if str(_leg.get("camp", {}).get("kind", "camp")) != "takeout":
+		App.save.nights = int(App.save.get("nights", 0)) + 1
+		App.save.cleanCamps = int(App.save.get("cleanCamps", 0)) + 1
+	App.advance_leg()
 
 func _process(delta: float) -> void:
 	if absf(_hour - _hour_target) > 0.005:

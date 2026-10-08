@@ -30,6 +30,7 @@ var _rescue_step := 0
 const RESCUE_STEPS := ["coldWater", "wetExit", "tRescue", "pumpOut"]   # with a partner alongside, the T-rescue; the paddle float is the solo drill in Kayak School
 var _since_start := 0.0
 var _pack: Dictionary = {}       # Packing.assess of the boat as packed, on a trip
+var _swims_today := 0           # capsizes on this leg, for the day's record
 const RIP_KICK_EVERY := 3.2    # seconds between beam waves in a rip at full strength
 ## Sightings on the leg: what, which species of the field guide it is, where, and how close you
 ## must come to notice it. Positions checked against the terrain: seals and kelp on the islet by
@@ -219,11 +220,17 @@ func _spawn_sightings() -> void:
 func _watch_sightings() -> void:
 	for s in _sightings:
 		if s.seen:
+			# Be Whale Wise: inside the field guide's approach distance is too close, and the debrief counts it.
+			var keep := int(_species(s.conf.species).get("approachMetres", 0))
+			if keep > 0 and not s.close and kayak.global_position.distance_to(s.conf.at) < float(keep):
+				s.close = true
+				note_label.text = "Too close: %d m is the distance. Let it come to you, or not." % keep
 			continue
 		var conf: Dictionary = s.conf
 		if kayak.global_position.distance_to(conf.at) > float(conf.radius):
 			continue
 		s.seen = true
+		s.close = false
 		var sp := _species(conf.species)
 		if sp.is_empty():
 			continue
@@ -297,6 +304,7 @@ func _leg(delta: float) -> void:
 		_arrived = true
 		_groove = 0.0
 		App.save.arrivedHour = _hour
+		_record_day()
 		App.persist()
 		controls.visible = false
 		Sound.gull()
@@ -305,6 +313,32 @@ func _leg(delta: float) -> void:
 		_card = UIKit.card(land_card.get("title", "Landing"), "%s The day is done at %s." % [land_card.get("text", ""), Leg.clock(_hour)], App.sources_line(land_card.get("sourceIds", [])), [["Land and make camp", func() -> void: App.next(), true]], "Landing · day %d" % (Leg.index() + 1))
 		_ui.add_child(UIKit.spacer())
 		_ui.add_child(_card)
+
+## The day for the debrief: the launch and its verdict, the landing, the swims, and the wildlife
+## given room or not. One entry per leg; paddling a day again replaces its entry.
+func _record_day() -> void:
+	var respectful := 0
+	var violations := 0
+	for s in _sightings:
+		if not s.seen or int(_species(s.conf.species).get("approachMetres", 0)) <= 0:
+			continue
+		if bool(s.get("close", false)):
+			violations += 1
+		else:
+			respectful += 1
+	var launch := Leg.launch_hour()
+	var entry := {
+		"leg": Leg.index(), "metres": Leg.length_m(_route), "launchHour": launch, "arrivedHour": _hour,
+		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
+		"swims": _swims_today, "respectful": respectful, "violations": violations,
+	}
+	var days: Array = App.save.get("days", [])
+	var kept: Array = []
+	for d in days:
+		if int(d.get("leg", -1)) != Leg.index():
+			kept.append(d)
+	kept.append(entry)
+	App.save.days = kept
 
 ## On a phone, the option to edge by tilting the handset (off by default; it stays as set).
 func _tilt_chip() -> void:
@@ -474,6 +508,11 @@ func _drill_progress(delta: float) -> void:
 	_drill_bar.value = clampf(p, 0.0, 1.0) * 100.0
 	if p >= 1.0:
 		_drill = -1
+		var done: Array = App.save.get("drills", [])
+		if not done.has(d.id):
+			done.append(d.id)
+			App.save.drills = done
+			App.persist()
 		var next_i := _drills().find(d) + 1
 		note_label.text = "Nicely done."
 		if next_i < _drills().size():
@@ -543,6 +582,7 @@ func _on_capsized() -> void:
 	_groove = 0.0
 	controls.visible = false
 	App.save.swims = int(App.save.get("swims", 0)) + 1
+	_swims_today += 1
 	App.persist()
 	_rescue_step = 0
 	_show_rescue()

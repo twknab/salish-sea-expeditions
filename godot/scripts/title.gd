@@ -29,7 +29,11 @@ func _ready() -> void:
 	v.add_child(UIKit.label("The San Juan and Gulf Islands, by folding kayak. Learn the strokes, read the water, and travel lightly through a place of First Peoples.", 14, UIKit.MIST))
 	v.add_child(UIKit.spacer())
 	var begin := UIKit.button("Begin at Anacortes")
-	begin.pressed.connect(func() -> void: App.save.legIndex = 0; App.go("acknowledgment"))
+	begin.pressed.connect(func() -> void:
+		App.save.legIndex = 0
+		for k in ["days", "nights", "cleanCamps", "launchHour", "arrivedHour"]:  # a fresh record; the field guide and the drills are yours for good
+			App.save.erase(k)
+		App.go("acknowledgment"))
 	v.add_child(begin)
 	var stage: String = App.save.get("stage", "title")
 	if stage != "title" and App.SCENES.has(stage):
@@ -53,6 +57,10 @@ func _ready() -> void:
 				App.go("plan"))
 			row.add_child(again)
 		v.add_child(row)
+	if stage == "camp_done" or not App.save.get("days", []).is_empty():
+		var debrief := UIKit.button("The debrief · how it went", false)
+		debrief.pressed.connect(func() -> void: App.go("debrief"))
+		v.add_child(debrief)
 	var school := UIKit.button("Kayak School · the orientation", false)
 	school.pressed.connect(func() -> void: App.school_from = 0; App.go("school"))
 	v.add_child(school)
