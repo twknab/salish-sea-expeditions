@@ -37,6 +37,22 @@ func _ready() -> void:
 		var cont := UIKit.button("Continue · %s%s" % [day, stage.capitalize()], false)
 		cont.pressed.connect(func() -> void: App.go(stage))
 		v.add_child(cont)
+	if stage == "camp_done":
+		# The expedition is done: any of its days can be paddled again, from its float plan.
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		var legs := Leg.all()
+		for i in range(legs.size()):
+			var day := i
+			var again := UIKit.button("Day %d again" % (day + 1), false)
+			again.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			again.pressed.connect(func() -> void:
+				App.save.legIndex = day
+				App.save.erase("launchHour")
+				App.save.erase("arrivedHour")
+				App.go("plan"))
+			row.add_child(again)
+		v.add_child(row)
 	var school := UIKit.button("Kayak School · the orientation", false)
 	school.pressed.connect(func() -> void: App.school_from = 0; App.go("school"))
 	v.add_child(school)

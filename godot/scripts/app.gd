@@ -24,6 +24,7 @@ var current := "title"
 var sea_mode := "ambient"   # what sea.tscn should be when it loads: ambient | school | trip
 var school_from := 0        # school phase to resume at
 var _home: CanvasLayer
+var _title_btn: Button
 
 func _ready() -> void:
 	var f := FileAccess.open("res://content/content.json", FileAccess.READ)
@@ -46,7 +47,27 @@ func _ready() -> void:
 	b.position = Vector2(12, 10)
 	b.pressed.connect(func() -> void: go("title"))
 	_home.add_child(b)
-	_home.visible = false
+	_title_btn = b
+	_title_btn.visible = false
+	# Sound and music switches, kept in the save and on every screen: a web game must be muteable.
+	var sound_btn := _chip("", 76)
+	var music_btn := _chip("", 76 + 92)
+	var refresh := func() -> void:
+		sound_btn.text = "Sound %s" % ("on" if bool(save.get("sound", true)) else "off")
+		music_btn.text = "Music %s" % ("on" if bool(save.get("music", true)) else "off")
+	sound_btn.pressed.connect(func() -> void:
+		save.sound = not bool(save.get("sound", true))
+		persist()
+		Sound.set_enabled(bool(save.sound))
+		refresh.call())
+	music_btn.pressed.connect(func() -> void:
+		save.music = not bool(save.get("music", true))
+		persist()
+		Sound.set_music(bool(save.music))
+		refresh.call())
+	refresh.call()
+	Sound.call_deferred("set_enabled", bool(save.get("sound", true)))
+	Sound.call_deferred("set_music", bool(save.get("music", true)))
 	# `?scene=ferry` jumps straight to a screen (smoke tests and the editor's play button).
 	var leg_param := _url_param("leg")  # `?leg=1` opens the second day, for checks
 	if leg_param != "":
@@ -91,7 +112,7 @@ func go(name: String) -> void:
 		save.stage = name
 		persist()
 	Sound.mood({ "title": "title", "acknowledgment": "title", "outfit": "calm", "ferry": "ferry", "school": "dawn", "plan": "calm", "trip": "drive", "camp": "night" }.get(name, "calm"))
-	_home.visible = name != "title"
+	_title_btn.visible = name != "title"
 	get_tree().change_scene_to_file(SCENES[name])
 
 ## The water of the current leg's day: the authored day, run later for each day out.
@@ -112,6 +133,14 @@ func advance_leg() -> void:
 	save.erase("arrivedHour")
 	persist()
 	go("plan")
+
+func _chip(text: String, x: float) -> Button:
+	var c := UIKit.button(text, false)
+	c.custom_minimum_size = Vector2(84, 34)
+	c.add_theme_font_size_override("font_size", 12)
+	c.position = Vector2(x, 10)
+	_home.add_child(c)
+	return c
 
 func next() -> void:
 	var i := FLOW.find(current)
