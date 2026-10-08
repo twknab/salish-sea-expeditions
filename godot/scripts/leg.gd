@@ -104,7 +104,8 @@ static func launch_hour() -> float:
 	var app := _app()
 	if app == null:
 		return LAUNCH_HOUR
-	return clampf(float(app.save.get("launchHour", LAUNCH_HOUR)), EARLIEST_LAUNCH, LATEST_LAUNCH)
+	var suggested := float(current().get("suggestedLaunch", LAUNCH_HOUR))  # the leg's own good hour, until you choose
+	return clampf(float(app.save.get("launchHour", suggested)), EARLIEST_LAUNCH, LATEST_LAUNCH)
 
 ## How much harder the stream runs here than the channel's figure, and where that is: {factor, name}.
 ## Rips are authored per leg (tools/geo/leg_routes.py) and fall off smoothly to 1.0 at their radius.

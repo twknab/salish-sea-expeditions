@@ -127,6 +127,11 @@
 - [x] T014ad At camp, once the tent is up, "Walk the shore": the field guide's species for that beach (authored per leg in `leg_routes.py`: firs, Turkish towel, ochre stars, anemones and sea lettuce on Jones; madrone, stars, a nudibranch and sugar kelp on Posey) as cards in the order you meet them walking down, each kept in the save; the walk takes half an hour of the evening. A content test checks every shore id is a species. `?scene=camp&walk=1` opens on the shore
 - [x] T014ae The HUD's channel line wraps on a phone instead of running off the screen, and the chart tile sits below it
 
+## Slice 18 — day three, home on the ebb
+
+- [x] T014af Leg 3 in `leg_routes.py` and the content: Posey Island east through Spieden Channel as it empties and south down San Juan Channel to the town float at Friday Harbor, sixteen kilometres; float plan, landing, and a take-out in place of a camp (close the plan, rinse and fold, what you learned, the ferry home) with no tent and "Look under the float" for the harbour's jellies and eelgrass
+- [x] T014ag Each leg says which stream it rides (`favours`): `Tides.judge` and the verdict read the ebb as helping on the way home, tested; the last card of the expedition carries the tally — days, kilometres, species met, swims
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

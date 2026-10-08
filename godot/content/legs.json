@@ -10,6 +10,8 @@
    "length_m": 11183,
    "channel": "San Juan Channel",
    "floodSetDeg": 330,
+   "favours": "flood",
+   "suggestedLaunch": 9.5,
    "shore": [
     "douglasFir",
     "turkishTowel",
@@ -145,6 +147,8 @@
    "length_m": 9611,
    "channel": "Spieden Channel",
    "floodSetDeg": 285,
+   "favours": "flood",
+   "suggestedLaunch": 9.5,
    "shore": [
     "madrona",
     "seaStar",
@@ -233,6 +237,162 @@
     "posey",
     "rocheHarbor",
     "yellow"
+   ]
+  },
+  {
+   "id": "leg3",
+   "from": "posey",
+   "to": "fridayHarbor",
+   "coveName": "Friday Harbor",
+   "headingDeg": 90,
+   "length_m": 18513,
+   "channel": "Spieden Channel",
+   "floodSetDeg": 330,
+   "favours": "ebb",
+   "suggestedLaunch": 6.0,
+   "shore": [
+    "moonJelly",
+    "waterJelly",
+    "eelgrass"
+   ],
+   "rips": [
+    {
+     "at": [
+      -8500,
+      -10400
+     ],
+     "radius": 1700,
+     "factor": 1.8,
+     "name": "in the narrows of Spieden Channel"
+    },
+    {
+     "at": [
+      840,
+      -2320
+     ],
+     "radius": 900,
+     "factor": 1.35,
+     "name": "off Point Caution"
+    }
+   ],
+   "waypoints": [
+    [
+     -10610.0,
+     -9830.0
+    ],
+    [
+     -10681.5,
+     -9901.6
+    ],
+    [
+     -10633.5,
+     -10045.6
+    ],
+    [
+     -10009.5,
+     -10045.6
+    ],
+    [
+     -9769.5,
+     -10189.6
+    ],
+    [
+     -8905.5,
+     -10189.6
+    ],
+    [
+     -8500.0,
+     -10400.0
+    ],
+    [
+     -5593.5,
+     -10381.6
+    ],
+    [
+     -5500.0,
+     -10450.0
+    ],
+    [
+     -4777.5,
+     -9709.6
+    ],
+    [
+     -4297.5,
+     -9709.6
+    ],
+    [
+     -1849.5,
+     -7357.6
+    ],
+    [
+     -1500.0,
+     -7200.0
+    ],
+    [
+     -1513.5,
+     -6349.6
+    ],
+    [
+     -1417.5,
+     -6253.6
+    ],
+    [
+     -1417.5,
+     -5773.6
+    ],
+    [
+     -409.5,
+     -4765.6
+    ],
+    [
+     300.0,
+     -3200.0
+    ],
+    [
+     406.5,
+     -2941.6
+    ],
+    [
+     646.5,
+     -2701.6
+    ],
+    [
+     646.5,
+     -2509.6
+    ],
+    [
+     1030.5,
+     -2029.6
+    ],
+    [
+     900.0,
+     -1900.0
+    ],
+    [
+     1078.5,
+     -1741.6
+    ],
+    [
+     1030.5,
+     -1453.6
+    ],
+    [
+     420.0,
+     -700.0
+    ]
+   ],
+   "cove": [
+    420,
+    -700
+   ],
+   "labels": [
+    "posey",
+    "spieden",
+    "jones",
+    "yellow",
+    "labs",
+    "fridayHarbor",
+    "shaw"
    ]
   }
  ]

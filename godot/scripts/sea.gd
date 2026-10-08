@@ -43,6 +43,10 @@ const SIGHTINGS := [
 	{ "leg": 1, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-7600.0, 0.0, -10450.0), "face": Vector3(-1, 0, 0), "radius": 420.0 },
 	{ "leg": 1, "kind": "kelp", "species": "bullKelp", "at": Vector3(-9300.0, 0.0, -10080.0), "face": Vector3(-1, 0, 0), "radius": 200.0 },
 	{ "leg": 1, "kind": "eagle", "species": "baldEagle", "at": Vector3(-9600.0, 0.0, -9930.0), "face": Vector3(0, 0, -1), "radius": 320.0 },
+	# Day three, home: the porpoise again in the channel's narrows, seals on the islet by Yellow, the heron at the Labs.
+	{ "leg": 2, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-6200.0, 0.0, -10450.0), "face": Vector3(1, 0, 0), "radius": 420.0 },
+	{ "leg": 2, "kind": "seals", "species": "harbourSeal", "at": Vector3(-1100.0, 0.0, -6330.0), "face": Vector3(0, 0, 1), "radius": 260.0 },
+	{ "leg": 2, "kind": "heron", "species": "heron", "at": Vector3(560.0, 0.0, -1300.0), "face": Vector3(-1, 0, 0), "radius": 220.0 },
 ]
 var _sightings: Array = []   # [{conf, node, seen}]
 const GROOVE_AFTER := 6.0       # seconds of steady holding before the day starts to pass
@@ -145,7 +149,7 @@ func _ready() -> void:
 			_chart.folded = controls.touch() or bool(App.save.get("chartFolded", false))
 			hud.add_child(_chart)
 			match App._url_param("near"):  # starts for checks
-				"jones", "posey":
+				"jones", "posey", "home":
 					kayak.global_position = _dest + Vector3(0.0, 0.1, -900.0)  # 900 m north of the cove
 					kayak.rotation.y = PI  # heading south, into the cove
 				"spieden":

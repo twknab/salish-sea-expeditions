@@ -123,19 +123,22 @@ func along_or_zero() -> Vector3:
 func _show() -> void:
 	if _card:
 		_card.queue_free()
-	if _step >= 1:
+	if _step >= 1 and str(_leg.get("camp", {}).get("kind", "camp")) != "takeout":
 		_pitch()
 	var actions: Array = []
 	if _step > 0:
 		actions.append(["Back", func() -> void: _step -= 1; _hour_target = _hour0 + 1.1 * _step; _show(), false])
 	if _step >= 1 and not _walked:
-		actions.append(["Walk the shore", func() -> void: _walk = 0; _show_walk(), false])
+		actions.append(["Look under the float" if str(_leg.get("camp", {}).get("kind", "camp")) == "takeout" else "Walk the shore", func() -> void: _walk = 0; _show_walk(), false])
 	if _step < _steps.size() - 1:
 		actions.append(["Next", func() -> void: _step += 1; _hour_target = _hour0 + 1.1 * _step; _show(), true])
 	else:
 		actions.append(["The expedition ends · home" if Leg.is_last() else "Tomorrow’s float plan", func() -> void: App.advance_leg(), true])
 	var s: Dictionary = _steps[_step] if _step < _steps.size() else { "title": "Camp", "text": "", "sourceIds": [] }
-	_card = UIKit.card(s.get("title", ""), s.get("text", ""), App.sources_line(s.get("sourceIds", [])), actions, "%s · %s · %d of %d" % [_leg.get("camp", {}).get("name", "Camp"), Leg.clock(_hour), _step + 1, _steps.size()])
+	var body: String = s.get("text", "")
+	if Leg.is_last() and _step == _steps.size() - 1:
+		body += "\n\n" + _tally()
+	_card = UIKit.card(s.get("title", ""), body, App.sources_line(s.get("sourceIds", [])), actions, "%s · %s · %d of %d" % [_leg.get("camp", {}).get("name", "Camp"), Leg.clock(_hour), _step + 1, _steps.size()])
 	_ui.add_child(_card)
 
 func _process(delta: float) -> void:
@@ -178,3 +181,13 @@ func _species(id: String) -> Dictionary:
 		if sp.id == id:
 			return sp
 	return {}
+
+## The expedition in numbers, for the last card: days, distance, what was met, how often you swam.
+func _tally() -> String:
+	var km := 0.0
+	for l in Leg.all():
+		km += Leg.length_m(l)
+	var seen: Array = App.save.get("seen", [])
+	var swims := int(App.save.get("swims", 0))
+	var swim_line := "and never went in" if swims == 0 else ("and went in once" if swims == 1 else "and went in %d times" % swims)
+	return "%d days, %.0f km by paddle, %d of the field guide met along the way, %s." % [Leg.all().size(), km / 1000.0, seen.size(), swim_line]

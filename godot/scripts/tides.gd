@@ -78,7 +78,7 @@ static func wind_against_tide(day: Dictionary, hour: float) -> bool:
 ## Judging a launch hour for a leg that runs north with the flood: the mean current over the leg's
 ## hours (positive helps), the worst chop, and whether wind opposes the tide at any point.
 ## Returns {cur, worst, against, verdict: "good" | "fair" | "poor"}.
-static func judge(day: Dictionary, launch_hour: float, hours: float) -> Dictionary:
+static func judge(day: Dictionary, launch_hour: float, hours: float, favours := "flood") -> Dictionary:
 	var cur := 0.0
 	var worst := 0.0
 	var against := false
@@ -91,21 +91,24 @@ static func judge(day: Dictionary, launch_hour: float, hours: float) -> Dictiona
 		n += 1
 		h += 1.0 / 6.0
 	cur /= float(maxi(n, 1))
+	if favours == "ebb":
+		cur = -cur  # positive means the stream runs the way the leg goes
 	var good := cur >= 0.2 and worst < 0.3 and not against
 	var poor := against or worst > 0.45 or cur < -0.8
 	return { "cur": cur, "worst": worst, "against": against, "verdict": "good" if good else ("poor" if poor else "fair") }
 
 ## The verdict in a sentence, for the plan.
-static func verdict_line(day: Dictionary, launch_hour: float, hours: float) -> String:
-	var j := judge(day, launch_hour, hours)
+static func verdict_line(day: Dictionary, launch_hour: float, hours: float, favours := "flood") -> String:
+	var j := judge(day, launch_hour, hours, favours)
 	var cur := float(j.cur)
-	var carry := "the channel carries you" if cur >= 0.2 else ("you paddle against the ebb" if cur <= -0.2 else "the water is near slack")
+	var against := "the flood" if favours == "ebb" else "the ebb"
+	var carry := "the channel carries you" if cur >= 0.2 else ("you paddle against %s" % against if cur <= -0.2 else "the water is near slack")
 	match String(j.verdict):
 		"good":
 			return "Good: %s, light wind, and no chop to speak of." % carry
 		"poor":
 			if bool(j.against):
-				return "Poor: the afternoon southerly runs against the ebb and the channel stands up in short, steep chop."
+				return "Poor: wind against the stream, and the channel stands up in short, steep chop."
 			return "Poor: %s for the whole leg." % carry
 	return "Fair: %s, but there is chop on the way — keep the bail-outs in mind." % carry
 

@@ -72,6 +72,6 @@ with `npx vite preview --port 4173` running, for a single screenshot.
 - The flow is `App.FLOW`: title → acknowledgment → outfit → ferry → school → plan → trip → camp.
   `?scene=plan|camp` open the stations; `?scene=trip&near=jones` starts 900 m off the cove. The
   expedition is `godot/content/legs.json` (geometry, from `tools/geo/leg_routes.py`) merged with the
-  legs in `src/content/expedition.js` (teaching) by `Leg`; `?leg=1` opens day two.
+  legs in `src/content/expedition.js` (teaching) by `Leg`; `?leg=1` opens day two, `?leg=2` day three.
 - `run/main_scene` must be `title.tscn`. Smoke scripts that pass `?scene=` never exercise the main
   scene; `tests/smoke/godot-desktop-shot.mjs` loads the bare page and is the check for that.
