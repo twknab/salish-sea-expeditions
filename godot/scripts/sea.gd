@@ -51,6 +51,9 @@ const SIGHTINGS := [
 	# off Davison Head and the eagle on the head itself.
 	{ "leg": 1, "kind": "seals", "species": "harbourSeal", "at": Vector3(-6760.0, 0.0, -10920.0), "face": Vector3(0, 0, 1), "radius": 300.0 },
 	{ "leg": 1, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-7600.0, 0.0, -10450.0), "face": Vector3(-1, 0, 0), "radius": 420.0 },
+	# A pod of Bigg's killer whales working Spieden Channel east on the flood, well out from the shore: the card comes up at
+	# 1.4 km, the law's thousand yards is the line, and the sighting counts as given room or not in the debrief.
+	{ "leg": 1, "kind": "orcas", "species": "biggsOrca", "at": Vector3(-8300.0, 0.0, -10700.0), "face": Vector3(1, 0, 0), "radius": 1400.0 },
 	{ "leg": 1, "kind": "kelp", "species": "bullKelp", "at": Vector3(-9300.0, 0.0, -10080.0), "face": Vector3(-1, 0, 0), "radius": 200.0 },
 	{ "leg": 1, "kind": "eagle", "species": "baldEagle", "at": Vector3(-9600.0, 0.0, -9930.0), "face": Vector3(0, 0, -1), "radius": 320.0 },
 	# Day three, home: the porpoise again in the channel's narrows, seals on the islet by Yellow, the heron at the Labs.
@@ -206,6 +209,13 @@ func _ready() -> void:
 					kayak.global_position = Vector3(500.0, 0.1, -2900.0)
 					kayak.rotation.y = -deg_to_rad(340.0)
 					_traffic.place_near(kayak.global_position, 600.0)
+				"orcas":  # `?scene=trip&leg=1&near=orcas`: the pod 1.1 km ahead, coming the other way
+					if App._url_param("close") == "1":  # `&close=1`: in the pod's path as it starts its pass, to look at it
+						kayak.global_position = Vector3(-8800.0, 0.1, -10712.0)
+						kayak.rotation.y = -deg_to_rad(270.0)  # facing west down the pod's line: it comes on from 100 m
+					else:
+						kayak.global_position = Vector3(-7200.0, 0.1, -10700.0)
+						kayak.rotation.y = -deg_to_rad(270.0)
 				"spieden":
 					kayak.global_position = Vector3(-7000.0, 0.1, -10450.0)
 					kayak.rotation.y = -deg_to_rad(270.0)  # west down Spieden Channel, the porpoise ahead
@@ -239,12 +249,12 @@ func _watch_sightings() -> void:
 		if s.seen:
 			# Be Whale Wise: inside the field guide's approach distance is too close, and the debrief counts it.
 			var keep := int(_species(s.conf.species).get("approachMetres", 0))
-			if keep > 0 and not s.close and kayak.global_position.distance_to(s.conf.at) < float(keep):
+			if keep > 0 and not s.close and kayak.global_position.distance_to(s.node.global_position) < float(keep):
 				s.close = true
 				note_label.text = "Too close: %d m is the distance. Let it come to you, or not." % keep
 			continue
 		var conf: Dictionary = s.conf
-		if kayak.global_position.distance_to(conf.at) > float(conf.radius):
+		if kayak.global_position.distance_to(s.node.global_position) > float(conf.radius):
 			continue
 		s.seen = true
 		s.close = false

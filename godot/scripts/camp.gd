@@ -20,6 +20,8 @@ var _tent: MeshInstance3D
 var _leg: Dictionary = {}
 var _walk := -1            # index into the shore walk, -1 when not walking
 var _walked := false
+var _cam: Camera3D
+var _glows := 0            # bioluminescence sparked tonight, for the night card's own line
 
 func _ready() -> void:
 	_hour0 = clampf(float(App.save.get("arrivedHour", 17.5)), 15.5, 19.0)
@@ -62,6 +64,7 @@ func _ready() -> void:
 	_sea.follow = pivot
 	# The camera stands at the water's edge looking up the beach, the cove behind it.
 	var cam := Camera3D.new()
+	_cam = cam
 	cam.fov = 55.0
 	cam.near = 0.2
 	cam.far = 30000.0
@@ -76,6 +79,18 @@ func _ready() -> void:
 	_ui = UIKit.page(ui, 48, 24)
 	_ui.add_child(UIKit.spacer())
 	_steps = _leg.get("camp", {}).get("steps", [])
+	var step_param := App._url_param("step")  # `?scene=camp&step=4` opens on a card, for checks
+	if step_param != "":
+		_step = clampi(int(step_param), 0, maxi(_steps.size() - 1, 0))
+		_hour_target = _night_hour() if _step == _steps.size() - 1 else _hour0 + 1.1 * _step
+		_hour = _hour_target
+		_sea.apply_hour(_hour)
+		if App._url_param("glow") == "1":  # a burst every second and a half, for the screenshot
+			var t := Timer.new()
+			t.wait_time = 1.5
+			t.timeout.connect(func() -> void: _glow(_shore - _inland * 7.0 + _along * randf_range(-3.0, 4.0)))
+			add_child(t)
+			t.start()
 	if App._url_param("walk") == "1":  # `?scene=camp&walk=1` opens on the shore, for checks
 		_step = 1
 		_pitch()
@@ -131,13 +146,15 @@ func _show() -> void:
 	if _step >= 1 and not _walked:
 		actions.append(["Look under the float" if str(_leg.get("camp", {}).get("kind", "camp")) == "takeout" else "Walk the shore", func() -> void: _walk = 0; _show_walk(), false])
 	if _step < _steps.size() - 1:
-		actions.append(["Next", func() -> void: _step += 1; _hour_target = _hour0 + 1.1 * _step; _show(), true])
+		actions.append(["Next", func() -> void: _step += 1; _hour_target = _night_hour() if _step == _steps.size() - 1 else _hour0 + 1.1 * _step; _show(), true])
 	else:
 		actions.append(["The expedition ends · the debrief" if Leg.is_last() else "Tomorrow’s float plan", func() -> void: _leave(), true])
 	var s: Dictionary = _steps[_step] if _step < _steps.size() else { "title": "Camp", "text": "", "sourceIds": [] }
 	var body: String = s.get("text", "")
 	if Leg.is_last() and _step == _steps.size() - 1:
 		body += "\n\n" + _tally()
+	if _step == _steps.size() - 1 and str(_leg.get("camp", {}).get("kind", "camp")) != "takeout":
+		body += "\n\nThe cove is full of bioluminescence on a warm night: tap the water to stir it."
 	if _step == 1 and not Packing.assess(App.save.get("packing", Packing.empty()), App.content.get("gear", [])).get("enables", []).has("light"):
 		body += "\n\nNo headlamp: the evening chores take twice as long in the dark."
 	_card = UIKit.card(s.get("title", ""), body, App.sources_line(s.get("sourceIds", [])), actions, "%s · %s · %d of %d" % [_leg.get("camp", {}).get("name", "Camp"), Leg.clock(_hour), _step + 1, _steps.size()])
@@ -149,6 +166,61 @@ func _leave() -> void:
 		App.save.nights = int(App.save.get("nights", 0)) + 1
 		App.save.cleanCamps = int(App.save.get("cleanCamps", 0)) + 1
 	App.advance_leg()
+
+## The last card is the night: late enough for full dark, whatever hour the boat came in.
+func _night_hour() -> float:
+	return maxf(_hour0 + 1.1 * (_steps.size() - 1), 22.8)
+
+## A hand, a paddle or a tap in the cove at night: the dinoflagellates light where the water moves.
+func _glow(at: Vector3) -> void:
+	_glows += 1
+	var p := CPUParticles3D.new()
+	p.one_shot = true
+	p.explosiveness = 0.9
+	p.amount = 70
+	p.lifetime = 1.6
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_SPHERE
+	p.emission_sphere_radius = 1.6
+	p.direction = Vector3(0, 0, 0)
+	p.spread = 180.0
+	p.initial_velocity_min = 0.2
+	p.initial_velocity_max = 1.2
+	p.gravity = Vector3.ZERO
+	p.scale_amount_min = 0.05
+	p.scale_amount_max = 0.16
+	var ramp := Gradient.new()
+	ramp.set_color(0, Color(0.6, 1.0, 1.0, 0.7))
+	ramp.set_color(1, Color(0.2, 0.7, 1.0, 0.0))
+	p.color_ramp = ramp
+	var sm := SphereMesh.new()
+	sm.radius = 1.0
+	sm.height = 2.0
+	sm.radial_segments = 6
+	sm.rings = 3
+	p.mesh = sm
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.vertex_color_use_as_albedo = true
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.emission_enabled = true
+	mat.emission = Color(0.4, 0.9, 1.0)
+	mat.emission_energy_multiplier = 2.0
+	p.material_override = mat
+	p.position = Vector3(at.x, 0.05, at.z)
+	add_child(p)
+	p.emitting = true
+	p.finished.connect(p.queue_free)
+	Sound.dip(0.3)
+
+func _unhandled_input(ev: InputEvent) -> void:
+	var tap: bool = (ev is InputEventMouseButton and ev.button_index == MOUSE_BUTTON_LEFT and ev.pressed) or (ev is InputEventScreenTouch and ev.pressed)
+	if not tap or _cam == null or _sea.night < 0.5 or _step != _steps.size() - 1:
+		return
+	var from := _cam.project_ray_origin(ev.position)
+	var dir := _cam.project_ray_normal(ev.position)
+	var hit = Plane(Vector3.UP, 0.0).intersects_ray(from, dir)
+	if hit != null and _terrain.height_at(hit.x, hit.z) < 0.0:
+		_glow(hit)
 
 func _process(delta: float) -> void:
 	if absf(_hour - _hour_target) > 0.005:

@@ -7,6 +7,7 @@ extends Node3D
 var kind := "seal"
 var _t := randf() * 10.0
 var _parts: Array[Node3D] = []
+var _blows: Array[Node3D] = []   # the orcas' blow, one puff per animal, shown as it breathes
 var _origin := Vector3.ZERO
 var _heading := Vector3.FORWARD
 
@@ -63,6 +64,7 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"eagle": w._eagle()
 		"kelp": w._kelp()
 		"porpoise": w._porpoise()
+		"orcas": w._orcas()
 	return w
 
 ## Harbour seals hauled out on a rock at the tide line: banana-curved, heads and tails up.
@@ -132,9 +134,52 @@ func _porpoise() -> void:
 	_ball(body, Vector3(0.3, 0.03, 0.12), Color(0.12, 0.13, 0.15), Vector3(0, 0, -0.85))  # flukes
 	_parts.append(body)
 
+## A small pod of Bigg's killer whales on the move: a bull with the tall fin and two smaller
+## animals, black with the white eye patch and the grey saddle, each surfacing on its own beat.
+## The pod travels along its heading at a steady walk and comes back round for the next pass.
+func _orcas() -> void:
+	for i in range(3):
+		var body := Node3D.new()
+		add_child(body)
+		var bull := i == 0
+		var l := 3.6 if bull else 2.8
+		_ball(body, Vector3(0.62 if bull else 0.5, 0.55 if bull else 0.45, l), Color(0.05, 0.05, 0.06), Vector3.ZERO)
+		_ball(body, Vector3(0.3, 0.25, 0.9), Color(0.9, 0.9, 0.9), Vector3(0, -0.28, 0.2))          # the white belly
+		_ball(body, Vector3(0.12, 0.08, 0.3), Color(0.92, 0.92, 0.92), Vector3(0.45, 0.12, l * 0.3)) # eye patch
+		_ball(body, Vector3(-0.12, 0.08, 0.3), Color(0.92, 0.92, 0.92), Vector3(-0.45, 0.12, l * 0.3))
+		_ball(body, Vector3(0.4, 0.12, 0.7), Color(0.55, 0.57, 0.6), Vector3(0, 0.42, -0.5))         # saddle patch
+		_cone(body, 0.34 if bull else 0.24, 1.8 if bull else 0.9, Color(0.05, 0.05, 0.06), Vector3(0, 0.45 + (0.9 if bull else 0.45), -0.1))
+		_ball(body, Vector3(0.9, 0.05, 0.35), Color(0.05, 0.05, 0.06), Vector3(0, 0, -l * 0.55))    # flukes
+		var blow := _ball(body, Vector3(0.7, 1.6, 0.7), Color(0.95, 0.97, 1.0), Vector3(0, 1.6, l * 0.4))  # the blow: a column of spray, shown as it breathes
+		blow.visible = false
+		_blows.append(blow)
+		body.position = Vector3((i - 1) * 9.0, -0.55 if i == 0 else -0.9, -i * 14.0)
+		_parts.append(body)
+
 func _process(delta: float) -> void:
 	_t += delta
 	match kind:
+		"orcas":
+			# The pod travels: the node itself walks its line, 1200 m out and round again, so the
+			# sightings' distance follows the animals and not the water they started in.
+			var along := fmod(_t * 2.4, 1200.0) - 600.0
+			position = _origin + _heading * along
+			for i in range(_parts.size()):
+				var body := _parts[i]
+				var cyc := fmod(_t + i * 3.0, 9.0)
+				var up := clampf(1.0 - absf(cyc - 1.8) / 1.8, 0.0, 1.0)
+				var rest := -0.55 if i == 0 else -0.9  # a travelling pod shows its fins between breaths, the bull's most
+				body.position.y = rest + (0.45 - rest) * sin(up * PI)
+				body.rotation.x = -0.5 * cos(up * PI) * up
+				var blow := _blows[i]
+				blow.visible = up > 0.55
+				blow.scale = Vector3.ONE * clampf((up - 0.55) / 0.45, 0.05, 1.0)
+				if i == 0:
+					if up > 0.95 and not _breathed:
+						_breathed = true
+						Sound.splash(0.5)
+					if up <= 0.0:
+						_breathed = false
 		"seals":
 			for i in range(_parts.size()):
 				var s := _parts[i]
