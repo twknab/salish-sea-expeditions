@@ -273,6 +273,10 @@
 
 - [x] T014bq Every pod in the channel has a whale-watch boat on it, holding off abeam at the field guide's distance for the species, parallel to the animals, engine at idle (`WhaleWatch`, its station pure and tested). Coming within reach of it says so once: the fleet keeps the distance you are asked to keep, and it is watching where you are too. It is there on both passes of the pod; `?leg=1&near=fleet` starts beside it, and `trip-fleet` joins the sweep.
 
+## Slice 54 — the sounds of the channel
+
+- [x] T014br Four more synthesized sounds (`tools/synth-audio.mjs`): the orca's blow, heard loud alongside and as a breath on the wind at a kilometre (`Wildlife.breathed` → `Sound.blow` by distance); the bald eagle's thin chitter when it is sighted; a diesel at idle that comes up as the whale-watch boat nears and glides away (`Sound.set_engine`, a loop, silenced when the water scene goes); and the raccoons' quarrel from the dark on the night card when the food was not hung.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

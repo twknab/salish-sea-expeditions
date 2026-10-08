@@ -281,6 +281,9 @@ func _spawn_sightings() -> void:
 		var node := Wildlife.make(conf.kind, Vector3(at.x, y, at.z), conf.face)
 		add_child(node)
 		_sightings.append({ "conf": conf, "node": node, "seen": false })
+		if conf.kind == "orcas":
+			# The blow carries: loud alongside, a breath on the wind at a kilometre, nothing beyond.
+			node.breathed.connect(func() -> void: Sound.blow(1.0 - clampf(kayak.global_position.distance_to(node.global_position) / 1200.0, 0.0, 1.0)))
 		if conf.kind == "orcas" and mode == "trip":
 			# The whale-watch fleet is on every pod in the channel, holding off abeam at the distance.
 			var boat := WhaleWatch.new()
@@ -340,6 +343,8 @@ func _watch_sightings() -> void:
 			seen.append(conf.species)
 			App.save.seen = seen
 			App.persist()
+		if conf.kind == "eagle":
+			Sound.eagle()
 		var text: String = (_said("orcas") if conf.kind == "orcas" else "") + str(sp.get("blurb", ""))
 		var facts: Array = sp.get("facts", [])
 		if not facts.is_empty():
@@ -569,11 +574,14 @@ func _process(delta: float) -> void:
 	if mode == "trip" and not _arrived and not _swimming:
 		_leg(delta)
 		_watch_traffic(delta)
+	var engine := 0.0
 	for w in _watchers:
 		w.boat.follow(w.pod, w.heading, delta, float(w.keep), float(w.side))
+		engine = maxf(engine, 1.0 - clampf(kayak.global_position.distance_to(w.boat.global_position) / 500.0, 0.0, 1.0))
 		if not w.seen and kayak.global_position.distance_to(w.boat.global_position) < 700.0:
 			w.seen = true
 			note_label.text = "A whale-watch boat holds off the pod abeam at %d m, engine at idle. The fleet keeps the distance you are asked to keep, and it is watching where you are, too." % int(w.keep)
+	Sound.set_engine(engine)
 	if _partner and mode == "trip" and not _arrived:
 		_partner.follow(kayak, sea, delta)
 		if _chart and not _chart.blind:  # in fog the chart keeps the last fix
@@ -903,3 +911,6 @@ func _watch_traffic(delta: float) -> void:
 		var wake_line := "The ferry's wake, bow-on: a few pitches and it is past." if beam < 0.4 else "The ferry's wake on the beam: brace, and next time turn the bow into it."
 		_ferry_verdicts.append("crossed" if _ferry_moved else "held")
 		note_label.text = _said("wake") + wake_line + (" You paddled on as it came: a ferry cannot stop for you, and the lane is its." if _ferry_moved else " You held and let it pass: that is the crossing rule.")
+
+func _exit_tree() -> void:
+	Sound.set_engine(0.0)  # the idle belongs to the water; the next screen starts quiet

@@ -225,6 +225,8 @@ func _show() -> void:
 		body += "\n\n" + HaulOut.night_line(_spot, _day, _hour0)
 		if _has_step("food"):
 			body += " " + FoodStore.night_line(_food)
+			if FoodStore.verdict(_food) != "safe":
+				Sound.raccoons()  # from the dark beyond the tent
 		if _has_step("water"):
 			body += " " + WaterPlan.night_line(_water)
 		body += "\n\nThe cove is full of bioluminescence on a warm night: tap the water to stir it."

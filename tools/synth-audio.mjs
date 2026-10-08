@@ -89,3 +89,49 @@ for (let k = 0; k < 2; k++) {
   for (let i = 0; i < len; i++) { const t = i / SR; const f = 1400 - 500 * t + 40 * Math.sin(2 * Math.PI * 28 * t); out[i] = (Math.sin(2 * Math.PI * f * t) + 0.4 * Math.sin(2 * Math.PI * 2 * f * t)) * Math.sin(Math.PI * t / 0.6) ** 1.5 * 0.4; }
   wav('gull', out);
 }
+
+// Orca blow: a hard, breathy burst — the exhale is a short noise crack with a falling body, the
+// inhale a softer draw right after. Heard across the water before the fin is seen.
+{
+  const len = Math.floor(SR * 0.9), out = new Float32Array(len); const l = lp(2600), h = hp(180);
+  for (let i = 0; i < len; i++) {
+    const t = i / SR;
+    const ex = t < 0.32 ? Math.min(1, t * 90) * Math.exp(-t * 9) : 0;
+    const inh = t > 0.36 ? Math.exp(-(t - 0.36) * 7) * Math.min(1, (t - 0.36) * 20) * 0.35 : 0;
+    out[i] = h(l(rnd())) * (ex * 1.6 + inh);
+  }
+  wav('blow', out);
+}
+// Bald eagle: not the hawk's scream the films use — a thin, stuttering chitter of rising whistles.
+{
+  const len = Math.floor(SR * 1.3), out = new Float32Array(len);
+  const notes = [0.0, 0.14, 0.27, 0.39, 0.5, 0.63, 0.78, 0.95];
+  for (const t0 of notes) for (let i = Math.floor(t0 * SR); i < len; i++) {
+    const t = i / SR - t0; if (t > 0.11) break;
+    const f = 2600 + 900 * t / 0.11 + 60 * Math.sin(2 * Math.PI * 90 * t);
+    out[i] += (Math.sin(2 * Math.PI * f * t) + 0.3 * Math.sin(2 * Math.PI * 2 * f * t)) * Math.sin(Math.PI * t / 0.11) * 0.28;
+  }
+  wav('eagle', out);
+}
+// A diesel at idle, heard across the water: a low, even thrum with a slow unevenness. Seamless loop.
+{
+  const len = SR * 4, out = new Float32Array(len); const l = lp(220);
+  for (let i = 0; i < len; i++) {
+    const t = i / SR;
+    const pulse = Math.max(0, Math.sin(2 * Math.PI * 11.5 * t)) ** 3;
+    out[i] = l(rnd()) * (0.4 + 0.8 * pulse) + Math.sin(2 * Math.PI * 46 * t) * 0.18 * (0.8 + 0.2 * Math.sin(2 * Math.PI * 0.5 * t));
+  }
+  const x = SR * 0.5; for (let i = 0; i < x; i++) { const a = i / x; out[len - x + i] = out[len - x + i] * (1 - a) + out[i] * a; }
+  wav('engine_idle', out);
+}
+// Raccoons in the night: a short quarrel of chitters and a growl, from the dark beyond the tent.
+{
+  const len = Math.floor(SR * 1.6), out = new Float32Array(len); const l = lp(1400);
+  const chits = [0.0, 0.07, 0.13, 0.2, 0.55, 0.61, 0.68, 1.1, 1.17];
+  for (const t0 of chits) for (let i = Math.floor(t0 * SR); i < len; i++) {
+    const t = i / SR - t0; if (t > 0.06) break;
+    out[i] += Math.sin(2 * Math.PI * (1500 + 400 * Math.sin(2 * Math.PI * 60 * t)) * t) * Math.sin(Math.PI * t / 0.06) * 0.22;
+  }
+  for (let i = Math.floor(0.75 * SR); i < Math.floor(1.05 * SR); i++) { const t = i / SR - 0.75; out[i] += l(rnd()) * Math.sin(Math.PI * t / 0.3) * (0.5 + 0.5 * Math.max(0, Math.sin(2 * Math.PI * 28 * t))) * 0.35; }
+  wav('raccoons', out);
+}
