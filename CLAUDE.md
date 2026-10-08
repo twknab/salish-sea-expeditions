@@ -51,9 +51,9 @@ with `npx vite preview --port 4173` running, for a single screenshot.
 - Export size is the risk: 38 MB wasm. Measure on a phone before porting anything else
   (`specs/007-godot-rewrite/spec.md`, go/no-go table).
 - Content, sounds and the soundtrack are generated: `node tools/export-content.mjs`,
-  `node tools/synth-audio.mjs`, `node tools/synth-soundtrack.mjs`; outputs are committed under
-  `godot/content` and `godot/audio`. `App` (autoload) owns the scene order; `Sound` owns loops,
-  one-shots and the stem moods. `?scene=ferry` jumps to a screen in the web build.
+  `node tools/synth-audio.mjs`, `node tools/synth-pieces.mjs` (four MP3 pieces via lamejs); outputs are
+  committed under `godot/content` and `godot/audio`. `App` (autoload) owns the scene order; `Sound`
+  owns loops, one-shots and the pieces (a mood names a piece; two players crossfade). `?scene=ferry` jumps to a screen in the web build.
 - `tests/debug_scenes.gd` instantiates every scene headless; run it before an export.
 - The figure is `BodyMesh`: arrays built by hand with analytic normals. SurfaceTool will not merge
   vertices that carry bone weights, so its generated normals come out faceted — do not go back to it

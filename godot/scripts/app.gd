@@ -86,7 +86,7 @@ func go(name: String) -> void:
 	if name != "title":
 		save.stage = name
 		persist()
-	Sound.mood({ "title": "title", "acknowledgment": "title", "outfit": "calm", "ferry": "ferry", "school": "calm", "plan": "calm", "trip": "drive", "camp": "title" }.get(name, "calm"))
+	Sound.mood({ "title": "title", "acknowledgment": "title", "outfit": "calm", "ferry": "ferry", "school": "dawn", "plan": "calm", "trip": "drive", "camp": "night" }.get(name, "calm"))
 	_home.visible = name != "title"
 	get_tree().change_scene_to_file(SCENES[name])
 

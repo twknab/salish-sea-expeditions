@@ -76,6 +76,13 @@
 - [x] T014i Sightings on the leg: the heron off the Labs, the eagle on Point Caution, the porpoise mid-channel, the kelp and the seals at the islet by Yellow Island, each placed on the shore or water the terrain has there; coming within reach names it once from the field guide (blurb, a fact, the keep-off distance for marine mammals) and keeps it in the save
 - [x] T014j The field guide's species exported to the Godot content; `?scene=trip&near=yellow|labs` open on the sightings for checks
 
+## Slice 8 — four pieces
+
+- [x] T014k `tools/synth-pieces.mjs`: four full-length melodic pieces on one 122 bpm grid — Dawn (half-time, D minor, a slow lead), Crossing (four on the floor, acid arp, a bright A minor lead), Night (no kick, long pads, F major), Harbor (a warm house groove with a plucked lead) — arranged in sections with crossfaded gains, per-section loudness printed so a dead section is caught without ears, encoded as 64 kbps MP3 with lamejs (4.9 MB for ten minutes of music; the six looping stems were 8.3 MB of WAV)
+- [x] T014l `Sound` plays one piece at a time through two players crossfading over 2.5 s; a scene's mood names the piece; the paddling cadence is two beats of the grid (0.984 s)
+- [x] T014m The Chamberlin filter is clamped to a sane cutoff: the bass's wobble used to swing below zero and run away to infinity within a second — the old stems' bass had been doing the same
+- [ ] T014n Listen on real speakers and tune the mixes; the renders were judged by their numbers
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

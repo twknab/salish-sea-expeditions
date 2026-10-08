@@ -11,22 +11,22 @@ var _sea := 0.2
 var _gull_t := 12.0
 var _enabled := true
 
-## The soundtrack: six stems rendered by tools/synth-soundtrack.mjs, all 16 bars at 122 bpm, started
-## together so they stay locked; a mood is a set of stem levels, crossfaded over a few seconds.
-const STEMS := ["music_kick", "music_bass", "music_hats", "music_arp", "music_pad", "music_tex"]
+## The soundtrack: four full-length pieces (tools/synth-pieces.mjs), one playing at a time, crossfaded
+## on a change. A scene asks for a mood; the mood names the piece.
+const PIECES := ["dawn", "crossing", "night", "harbor"]
+const PIECE_DB := -11.0
+const FADE := 2.5  # seconds
 const MOODS := {
-	"off":     { "music_kick": -80, "music_bass": -80, "music_hats": -80, "music_arp": -80, "music_pad": -80, "music_tex": -80 },
-	"title":   { "music_kick": -80, "music_bass": -80, "music_hats": -80, "music_arp": -22, "music_pad": -14, "music_tex": -20 },
-	"calm":    { "music_kick": -80, "music_bass": -26, "music_hats": -30, "music_arp": -20, "music_pad": -14, "music_tex": -22 },
-	"ferry":   { "music_kick": -16, "music_bass": -16, "music_hats": -20, "music_arp": -18, "music_pad": -16, "music_tex": -20 },
-	"drive":   { "music_kick": -13, "music_bass": -14, "music_hats": -18, "music_arp": -15, "music_pad": -18, "music_tex": -18 },
+	"off": "", "title": "dawn", "calm": "harbor", "ferry": "crossing", "drive": "crossing", "night": "night", "dawn": "dawn",
 }
-var _music := {}
-var _music_target := {}
+var _players: Array[AudioStreamPlayer] = []  # two, so one piece can fade out under the next
+var _live := 0
+var _piece := ""   # what is playing
+var _wanted := ""  # what the scene asked for, kept across the music being switched off and on
 var _music_on := true
 
 func _ready() -> void:
-	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull"] + STEMS:
+	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull"]:
 		var s := _load("res://audio/%s.wav" % n)
 		if s:
 			_streams[n] = s
@@ -36,9 +36,12 @@ func _ready() -> void:
 		var p := AudioStreamPlayer.new()
 		add_child(p)
 		_one.append(p)
-	for n in STEMS:
-		_music[n] = _loop(n, -80.0)
-		_music_target[n] = -80.0
+	for i in range(2):
+		var p := AudioStreamPlayer.new()
+		p.bus = "Master"
+		p.volume_db = -80.0
+		add_child(p)
+		_players.append(p)
 	mood("title")
 
 func _load(path: String) -> AudioStreamWAV:
@@ -106,21 +109,39 @@ func gull() -> void:
 
 ## Pick the soundtrack's mood; stems glide to their new levels.
 func mood(name: String) -> void:
-	var m: Dictionary = MOODS.get(name, MOODS.off)
-	for n in STEMS:
-		_music_target[n] = float(m[n]) if _music_on else -80.0
+	_wanted = str(MOODS.get(name, "dawn"))
+	play_piece(_wanted)
+
+## Start a piece, fading the one playing out under it. The same piece asked for again keeps playing;
+## with the music off, nothing starts and whatever plays fades out.
+func play_piece(name: String) -> void:
+	if not _music_on:
+		name = ""
+	if name == _piece:
+		return
+	_piece = name
+	var nxt := 1 - _live
+	var p := _players[nxt]
+	if name != "" and name in PIECES:
+		var stream := load("res://audio/piece_%s.mp3" % name) as AudioStreamMP3
+		if stream:
+			stream.loop = true
+			p.stream = stream
+			p.volume_db = -80.0
+			p.play()
+	_live = nxt
 
 func set_music(on: bool) -> void:
 	_music_on = on
-	if not on:
-		for n in STEMS:
-			_music_target[n] = -80.0
+	play_piece(_wanted)
 
 func _process(delta: float) -> void:
-	for n in STEMS:
-		var p: AudioStreamPlayer = _music[n]
-		var want: float = _music_target[n]
-		p.volume_db = move_toward(p.volume_db, want, delta * (40.0 if want < p.volume_db else 18.0))
+	for i in range(_players.size()):
+		var p := _players[i]
+		var want := PIECE_DB if (i == _live and p.playing and _music_on) else -80.0
+		p.volume_db = move_toward(p.volume_db, want, delta * (80.0 - PIECE_DB) / FADE)
+		if p.volume_db <= -79.0 and p.playing and i != _live:
+			p.stop()
 	_gull_t -= delta
 	if _gull_t <= 0.0:
 		_gull_t = randf_range(14.0, 36.0)
