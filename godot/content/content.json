@@ -1392,6 +1392,10 @@
     "yellow",
     "labs"
    ],
+   "fog": {
+    "until": 7.5,
+    "burn": 1
+   },
    "steps": [
     {
      "id": "route",
@@ -1408,6 +1412,15 @@
      "text": "This leg is the mirror of the first two. Leave Posey at first light, on the last of the night’s ebb: it runs east through Spieden Channel and south down San Juan Channel, the way you are going, before the southerly gets up. Leave mid-morning and you fight the flood; leave on the afternoon ebb and the wind stands it up against you.",
      "sourceIds": [
       "noaa-tides"
+     ]
+    },
+    {
+     "id": "fog",
+     "title": "Fog",
+     "text": "First light on cold water often means fog, and it can close in while you are out. The islands go; the compass does not. Hold the bearing you planned, count your strokes, stay within a paddle length of your partner, and show a light. A long blast every two minutes is a vessel under way: stop, listen for where it is, and keep to the edge of the lane until it has passed. It burns off by mid-morning.",
+     "sourceIds": [
+      "colregs",
+      "coldwater"
      ]
     },
     {

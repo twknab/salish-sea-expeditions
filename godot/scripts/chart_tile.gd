@@ -14,6 +14,7 @@ var route: Array[Vector3] = []
 var dest := Vector3.ZERO
 var boat := Vector3.ZERO
 var heading := 0.0            # radians, 0 north, clockwise
+var blind := false            # in fog: no fix — the arrow is hollow and the tile says so
 var folded := false:
 	set(v):
 		folded = v
@@ -91,8 +92,12 @@ func _draw() -> void:
 	var c := size * 0.5
 	var f := Vector2.from_angle(heading - PI / 2.0)
 	var r := Vector2(-f.y, f.x)
-	draw_colored_polygon(PackedVector2Array([c + f * 8.0, c - f * 6.0 + r * 5.0, c - f * 3.0, c - f * 6.0 - r * 5.0]), Color(0.98, 0.98, 0.95))
-	draw_polyline(PackedVector2Array([c + f * 8.0, c - f * 6.0 + r * 5.0, c - f * 3.0, c - f * 6.0 - r * 5.0, c + f * 8.0]), Color(0.05, 0.1, 0.12, 0.9), 1.0, true)
+	if blind:
+		draw_polyline(PackedVector2Array([c + f * 8.0, c - f * 6.0 + r * 5.0, c - f * 3.0, c - f * 6.0 - r * 5.0, c + f * 8.0]), Color(0.98, 0.98, 0.95, 0.9), 1.5, true)
+		draw_string(UIKit.bold(), Vector2(8, 14), "fog · last fix", HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color(0.1, 0.12, 0.14, 0.9))
+	else:
+		draw_colored_polygon(PackedVector2Array([c + f * 8.0, c - f * 6.0 + r * 5.0, c - f * 3.0, c - f * 6.0 - r * 5.0]), Color(0.98, 0.98, 0.95))
+		draw_polyline(PackedVector2Array([c + f * 8.0, c - f * 6.0 + r * 5.0, c - f * 3.0, c - f * 6.0 - r * 5.0, c + f * 8.0]), Color(0.05, 0.1, 0.12, 0.9), 1.0, true)
 	# North arrow and a scale bar: one kilometre.
 	var font := UIKit.bold()
 	draw_string(font, Vector2(size.x - 14, 14), "N", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(0.1, 0.12, 0.14, 0.9))

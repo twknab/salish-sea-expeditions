@@ -33,6 +33,12 @@ static func wake_beam(kayak_fwd: Vector3, ferry_fwd: Vector3) -> float:
 	return absf(k.dot(f))
 
 ## The roll the wake gives the boat: a few pitches bow-on, the full roll on the beam.
+## Where a sound comes from, in the words a paddler would use: "to the north-east".
+static func bearing_words(from: Vector3, to: Vector3) -> String:
+	var names := ["north", "north-east", "east", "south-east", "south", "south-west", "west", "north-west"]
+	var brg := Leg.bearing_deg(from, to)
+	return "to the " + names[int(round(brg / 45.0)) % 8]
+
 static func wake_kick(beam: float) -> float:
 	return 0.35 + 0.95 * clampf(beam, 0.0, 1.0)
 

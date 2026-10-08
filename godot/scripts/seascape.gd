@@ -22,6 +22,7 @@ var _env: Environment
 var _stars: MeshInstance3D
 var _star_mat: StandardMaterial3D
 var night := 0.0   # 0 by day, 1 at full dark; scenes read it (the camp's bioluminescence waits for it)
+var fog := 0.0     # 0 a clear day, 1 socked in; set_fog() — the leg's morning fog, if it has one
 
 func _ready() -> void:
 	_water = MeshInstance3D.new()
@@ -176,9 +177,25 @@ func apply_hour(h: float) -> void:
 		_sky_mat.sky_top_color = Color("3f6f9a").lerp(Color("2a3f6a"), dusk * 0.6).lerp(Color("05070f"), night)
 		_sky_mat.sky_horizon_color = Color("a9bcc8").lerp(Color("e0a878"), dusk * dusk).lerp(Color("141a2a"), night)
 		_sky_mat.ground_horizon_color = Color("9fb3bc").lerp(Color("10161f"), night)
+	sun.light_energy *= 1.0 - 0.7 * fog
+	if _sky_mat and fog > 0.0:
+		var grey := Color("d8dde0").lerp(Color("141a2a"), night)
+		_sky_mat.sky_top_color = _sky_mat.sky_top_color.lerp(grey, fog * 0.85)
+		_sky_mat.sky_horizon_color = _sky_mat.sky_horizon_color.lerp(grey, fog)
+		_sky_mat.ground_horizon_color = _sky_mat.ground_horizon_color.lerp(grey, fog)
 	if _env:
-		_env.ambient_light_energy = lerpf(1.0, 0.25, night)
-		_env.fog_light_color = Color("c0d0d8").lerp(Color("0c1018"), night)
+		_env.ambient_light_energy = lerpf(1.0, 0.25, night) * (1.0 - 0.3 * fog)
+		_env.fog_light_color = Color("c0d0d8").lerp(Color("d8dde0"), fog).lerp(Color("0c1018"), night)
+		_env.fog_density = Fog.density(fog, fog_density)
+		_env.fog_sky_affect = lerpf(0.2, 0.9, fog)
+
+## How much fog is on the water, 0 to 1. The sky, the sun and the haze follow it.
+func set_fog(a: float) -> void:
+	a = clampf(a, 0.0, 1.0)
+	if absf(a - fog) < 0.002:
+		return
+	fog = a
+	apply_hour(hour)
 
 func _process(delta: float) -> void:
 	time += delta

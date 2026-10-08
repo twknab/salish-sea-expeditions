@@ -35,6 +35,10 @@ var _since_start := 0.0
 var _pack: Dictionary = {}       # Packing.assess of the boat as packed, on a trip
 var _swims_today := 0           # capsizes on this leg, for the day's record
 var _weather_asked := false     # the wind-is-up card goes up once a leg
+var _fog := 0.0                 # Fog.amount of the hour (or 1 under `?fog=1`)
+var _fog_said := false          # the fog note goes up once a leg
+var _fog_signal_t := 0.0        # seconds to the ferry's next blast in the fog
+var _fogged := false            # launched or paddled in fog today, for the record
 var _kelp_said := false         # the kelp's one line, the first time the boat is in it
 var _ferry_moved := false       # paddled on while the ferry closed from the horn to the wake
 var _ferry_verdicts: Array = []  # "held" or "crossed", one per ferry pass this leg, for the record
@@ -120,6 +124,9 @@ func _ready() -> void:
 	controls.edge_changed.connect(func(v: float) -> void: kayak.edge = v)
 	controls.steer_changed.connect(func(v: float) -> void: kayak.steer = v)
 	_ui = UIKit.page($UI, 48, 24)
+	for l: Label in [speed_label, note_label]:  # read against fog-grey as well as blue water
+		l.add_theme_color_override("font_outline_color", Color(0.03, 0.06, 0.08, 0.7))
+		l.add_theme_constant_override("outline_size", 4)
 	if not controls.touch():
 		note_label.size.x = 640.0  # a desktop window has the width: the opening line stays on one line, clear of the destination
 	heading_label.visible = false
@@ -169,6 +176,9 @@ func _ready() -> void:
 			_set_label.size = Vector2(350, 40) if controls.touch() else Vector2(520, 20)
 			hud.add_child(_set_label)
 			_dest_label = UIKit.label("", 13, UIKit.FOAM, false, true)
+			for l: Label in [_set_label, _dest_label]:
+				l.add_theme_color_override("font_outline_color", Color(0.03, 0.06, 0.08, 0.7))
+				l.add_theme_constant_override("outline_size", 4)
 			_dest_label.position = Vector2(20, 150)
 			_dest_label.size = Vector2(360, 24)
 			hud.add_child(_dest_label)
@@ -344,6 +354,20 @@ func _leg(delta: float) -> void:
 		_offer_bailouts(state)
 	var w := Tides.wind(_day, _hour)
 	kayak.wind = Windage.vector(float(w.kn), float(w.fromDeg))
+	# Fog: the leg's morning may start in it. The islands go, the chart loses its fix, the compass
+	# holds the bearing; the ferry sounds its blast every two minutes until it burns off.
+	_fog = 1.0 if App._url_param("fog") == "1" else Fog.amount(_route, _hour)
+	sea.set_fog(_fog)
+	if _chart:
+		_chart.blind = Fog.blind(_fog)
+	if Fog.blind(_fog):
+		_fogged = true
+		if not _fog_said:
+			_fog_said = true
+			if controls.touch():  # three lines is the phone's room
+				note_label.text = "Fog. The chart has no fix; the compass does. Hold %03d°, keep your partner close, and stop for a long blast." % int(round(brg))
+			else:
+				note_label.text = "Fog. The islands are gone and the chart has no fix; the compass does. Hold %03d°, count your strokes, keep your partner a paddle length off. A long blast is a vessel under way: stop and listen." % int(round(brg))
 	sea.set_sea_state(lerpf(sea.sea_state, lerpf(0.10, 0.70, state), minf(1.0, delta * 0.3)))
 	kayak.sea_state = sea.sea_state
 	if factor > 1.15 and kayak.speed > 0.3:
@@ -361,7 +385,10 @@ func _leg(delta: float) -> void:
 	if kayak.assembly < 0.7:
 		trim_note += " · slack hull"
 	_set_label.text = "%s: %s%s · wind %d kn from %03d°%s" % [str(_route.get("channel", "San Juan Channel")), Tides.describe(_day, _hour), rip, int(round(Tides.wind(_day, _hour).kn)), int(round(Tides.wind(_day, _hour).fromDeg)), trim_note]
-	_dest_label.text = "%s · %.1f km · %03d° · %s%s" % [Leg.cove_name(_route), dist / 1000.0, int(round(brg)), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
+	if Fog.blind(_fog):
+		_dest_label.text = "%s · fog, %d m · steer %03d° · %s%s" % [Leg.cove_name(_route), int(Fog.visibility_m(_fog)), int(round(brg)), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
+	else:
+		_dest_label.text = "%s · %.1f km · %03d° · %s%s" % [Leg.cove_name(_route), dist / 1000.0, int(round(brg)), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
 	if dist < 220.0:
 		_arrived = true
 		_groove = 0.0
@@ -394,6 +421,7 @@ func _record_day() -> void:
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
 		"swims": _swims_today, "waits": _waits_today, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
+		"fog": _fogged,
 	}
 	var days: Array = App.save.get("days", [])
 	var kept: Array = []
@@ -472,12 +500,13 @@ func _process(delta: float) -> void:
 		_watch_traffic(delta)
 	if _partner and mode == "trip" and not _arrived:
 		_partner.follow(kayak, sea, delta)
-		if _chart:
+		if _chart and not _chart.blind:  # in fog the chart keeps the last fix
 			_chart.boat = kayak.global_position
 			_chart.heading = kayak.heading
 		_watch_sightings()
 	_places.visible = hud.visible
 	if _places.visible:
+		_places.reach = minf(8000.0, Fog.visibility_m(_fog))  # in fog the shore names go with the shore
 		_places.update(rig.camera())
 	if _drill >= 0:
 		_drill_progress(delta)
@@ -761,6 +790,16 @@ func _watch_traffic(delta: float) -> void:
 	if _traffic.docked():
 		return
 	var d := _traffic.distance_to_boat(kayak.global_position)
+	if Fog.blind(_fog) and d < Fog.HEARD_M:
+		_fog_signal_t -= delta
+		if _fog_signal_t <= 0.0:
+			_fog_signal_t = Fog.SIGNAL_EVERY
+			Sound.horn(d > Traffic.HORN_M)
+			if not _traffic.warned:
+				var where := Traffic.bearing_words(kayak.global_position, _traffic.global_position)
+				note_label.text = ("A long blast in the fog, %s: a vessel under way. Stop and listen; keep to the edge of the lane." if controls.touch() else "A long blast in the fog, %s: a vessel under way, somewhere in the channel. Stop paddling and listen. Keep to the edge of the lane until it has passed.") % where
+	else:
+		_fog_signal_t = 0.0
 	if d < Traffic.WARN_M and not _traffic.warned:
 		_traffic.warned = true
 		_clear_card()
