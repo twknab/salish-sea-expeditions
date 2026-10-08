@@ -62,7 +62,7 @@
 - [x] T014a `plan.gd` + `plan.tscn`: the float plan on a chart — the leg drawn with `ChartRibbon` over the real islands, names floated, the plan read card by card, then Launch; `ChartRibbon` shared with the ferry (and no longer back-face culled)
 - [x] T014b The leg on the water: destination line (name, distance, bearing, clock), the compass's destination mark, the groove — a steady hold settles and the miles and hours pass over the chart, the sun moving with `Seascape.apply_hour` — and landing in the cove at 220 m
 - [x] T014c `camp.gd` + `camp.tscn`: the boat at the tide line of the real cove, the camera out on the water, the tent going up on the pad at the second step, the evening coming on card by card; "Tomorrow's float plan" saves the day and returns to the title for now
-- [ ] T014d Tide and current on the leg from `tripDay` (set and drift; the flood carrying you north), and a real sounding set for the channels
+- [x] T014d Tide and current on the leg from `tripDay`: `tides.gd` (pure, tested) reads height, current and wind by the minute; the current carries the boat over the ground, scaled with the groove's hours; the HUD names the set ("flood 1.0 kn setting 330°") and the wind, and the float plan says what the launch rides. Still to come: a real sounding set for the channels
 
 ## Slice 6 — who's paddling
 
