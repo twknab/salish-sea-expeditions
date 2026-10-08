@@ -141,6 +141,10 @@
 
 - [x] T014aj `server/precompress.mjs` writes brotli and gzip siblings at image build (`Dockerfile.godot`); the server sends a sibling with `Content-Encoding` when the browser accepts it and falls back to gzip on the fly; every file carries an ETag so a revalidation of the engine is a 304. Measured: the 38 MB engine is 6.5 MB as brotli, the 7.8 MB pack 5.9 MB; the whole export goes from 45 MB to about 13 MB on the wire, the first lever on the go/no-go "time to first frame" row
 
+## Slice 21 — the music arrives after the first frame
+
+- [x] T014ak The four pieces are excluded from the web pack (7.8 MB → 2.9 MB) and fetched from `audio/` beside the page once the scene asks for them, cached, and crossfaded in when they land; the editor and headless runs load them from the project as before; CI copies them beside the export
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

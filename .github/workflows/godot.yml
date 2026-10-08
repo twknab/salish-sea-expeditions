@@ -75,6 +75,8 @@ jobs:
         run: timeout 300 ~/godot/godot --headless --path godot -s res://tests/debug_scenes.gd 2>&1 | tee /tmp/scenes.log; grep -q "scenes ok" /tmp/scenes.log && ! grep -q "SCRIPT ERROR" /tmp/scenes.log
       - name: Export web
         run: mkdir -p build/web && ~/godot/godot --headless --path godot --export-release Web ../build/web/index.html
+      - name: The pieces ride beside the pack, fetched after the first frame
+        run: mkdir -p build/web/audio && cp godot/audio/piece_*.mp3 build/web/audio/
       - name: Export size
         run: du -h build/web/index.wasm build/web/index.pck | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Install Chromium

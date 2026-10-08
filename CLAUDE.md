@@ -53,7 +53,9 @@ with `npx vite preview --port 4173` running, for a single screenshot.
 - Content, sounds and the soundtrack are generated: `node tools/export-content.mjs`,
   `node tools/synth-audio.mjs`, `node tools/synth-pieces.mjs` (four MP3 pieces via lamejs); outputs are
   committed under `godot/content` and `godot/audio`. `App` (autoload) owns the scene order; `Sound`
-  owns loops, one-shots and the pieces (a mood names a piece; two players crossfade). `?scene=ferry` jumps to a screen in the web build.
+  owns loops, one-shots and the pieces (a mood names a piece; two players crossfade). The four pieces are
+  excluded from the web pack and fetched from `audio/` beside the page after the first frame (CI copies
+  them there); the editor and headless runs load them from the project. `?scene=ferry` jumps to a screen in the web build.
 - `tests/debug_scenes.gd` instantiates every scene headless; run it before an export.
 - The figure is `BodyMesh`: arrays built by hand with analytic normals. SurfaceTool will not merge
   vertices that carry bone weights, so its generated normals come out faceted — do not go back to it
