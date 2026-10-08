@@ -111,6 +111,20 @@ static func launch_hour() -> float:
 	var suggested := float(current().get("suggestedLaunch", LAUNCH_HOUR))  # the leg's own good hour, until you choose
 	return clampf(float(app.save.get("launchHour", suggested)), EARLIEST_LAUNCH, LATEST_LAUNCH)
 
+## How far a position is off the leg's line: metres to the nearest point of the track.
+static func off_track_m(leg: Dictionary, pos: Vector3) -> float:
+	var w := waypoints(leg)
+	if w.is_empty():
+		return 0.0
+	var p := Vector2(pos.x, pos.z)
+	var best := p.distance_to(Vector2(w[0].x, w[0].z))
+	for i in range(1, w.size()):
+		var a := Vector2(w[i - 1].x, w[i - 1].z)
+		var b := Vector2(w[i].x, w[i].z)
+		var q := Geometry2D.get_closest_point_to_segment(p, a, b)
+		best = minf(best, p.distance_to(q))
+	return best
+
 ## How much harder the stream runs here than the channel's figure, and where that is: {factor, name}.
 ## Rips are authored per leg (tools/geo/leg_routes.py) and fall off smoothly to 1.0 at their radius.
 static func flow_at(leg: Dictionary, pos: Vector3) -> Dictionary:

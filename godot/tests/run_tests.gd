@@ -88,6 +88,8 @@ func _init() -> void:
 	check(Fog.blind(1.0) and not Fog.blind(0.2) and Fog.visibility_m(1.0) < 300.0 and Fog.visibility_m(0.0) > 10000.0, "in fog the chart has no fix and the view is short")
 	check(Fog.density(1.0, 0.00022) > Fog.density(0.5, 0.00022) and Fog.density(0.0, 0.00022) == 0.00022, "the haze thickens with the fog and clears to the day's")
 	check(Fog.plan_line(foggy, 6.0).begins_with("Fog at launch") and Fog.plan_line(foggy, 9.0) == "", "the float plan says so at a launch in fog")
+	var line_leg := {"waypoints": [[0, 0], [1000, 0], [1000, 1000]]}
+	check(absf(Leg.off_track_m(line_leg, Vector3(500, 0, 300)) - 300.0) < 1e-3 and absf(Leg.off_track_m(line_leg, Vector3(1200, 0, 500)) - 200.0) < 1e-3 and Leg.off_track_m(line_leg, Vector3(1000, 0, 1000)) == 0.0, "the distance off the line is to its nearest leg")
 	check(Traffic.bearing_words(Vector3.ZERO, Vector3(0, 0, -100)) == "to the north" and Traffic.bearing_words(Vector3.ZERO, Vector3(100, 0, 0)) == "to the east", "a blast is heard from a direction")
 	check(Windage.drift_force(Vector3(5.0, 0, 0), 100.0, 2.2).x > 0.0, "the drift force is downwind")
 	# The ferry's wake: on the beam when the boat runs parallel to the ferry, bow-on when across it.

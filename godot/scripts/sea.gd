@@ -39,6 +39,8 @@ var _fog := 0.0                 # Fog.amount of the hour (or 1 under `?fog=1`)
 var _fog_said := false          # the fog note goes up once a leg
 var _fog_signal_t := 0.0        # seconds to the ferry's next blast in the fog
 var _fogged := false            # launched or paddled in fog today, for the record
+var _fog_in_hour := -1.0        # when the fog closed in, for the record
+var _fog_off_m := -1.0          # how far off the planned line the boat was when it lifted
 var _kelp_said := false         # the kelp's one line, the first time the boat is in it
 var _ferry_moved := false       # paddled on while the ferry closed from the horn to the wake
 var _ferry_verdicts: Array = []  # "held" or "crossed", one per ferry pass this leg, for the record
@@ -356,7 +358,20 @@ func _leg(delta: float) -> void:
 	kayak.wind = Windage.vector(float(w.kn), float(w.fromDeg))
 	# Fog: the leg's morning may start in it. The islands go, the chart loses its fix, the compass
 	# holds the bearing; the ferry sounds its blast every two minutes until it burns off.
-	_fog = 1.0 if App._url_param("fog") == "1" else Fog.amount(_route, _hour)
+	match App._url_param("fog"):  # `?fog=1` socks any leg in; `?fog=lift` lifts it after a second
+		"1":
+			_fog = 1.0
+		"lift":
+			_fog = 1.0 if _since_start < 1.0 else 0.0
+		_:
+			_fog = Fog.amount(_route, _hour)
+	if Fog.blind(_fog) and _fog_in_hour < 0.0:
+		_fog_in_hour = _hour
+	elif not Fog.blind(_fog) and _fog_in_hour >= 0.0 and _fog_off_m < 0.0:
+		# The fog lifts: the islands come back, and the compass work is judged by where you are.
+		_fog_off_m = Leg.off_track_m(_route, here)
+		var line := "The fog lifts. %s" % ("You are on the line you planned: %s is fine on the bow at %03d°." % [Leg.cove_name(_route), int(round(brg))] if _fog_off_m < 150.0 else "You came out %d m off the line you planned; %s bears %03d°. Dead reckoning drifts with the stream — that is why the fix matters." % [int(_fog_off_m), Leg.cove_name(_route), int(round(brg))])
+		note_label.text = line
 	sea.set_fog(_fog)
 	if _chart:
 		_chart.blind = Fog.blind(_fog)
@@ -421,7 +436,7 @@ func _record_day() -> void:
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
 		"swims": _swims_today, "waits": _waits_today, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
-		"fog": _fogged,
+		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m,
 	}
 	var days: Array = App.save.get("days", [])
 	var kept: Array = []
