@@ -33,6 +33,7 @@ var _hull_mesh: MeshInstance3D
 var trim: Dictionary = { "pitch": 0.0, "ends": 0.0, "top": 0.0 }   # from the packing (Packing.assess); zero for an empty boat
 var assembly := 1.0      # how well the boat went together (Assembly.quality): a slack hull wanders and loses its keel
 var wind := Vector3.ZERO  # the wind over the water, m/s (Windage.vector); the trip sets it by the hour
+var kelp := 0.0           # 0..1, how deep in a kelp bed the boat is: the fronds drag on the hull and the blade
 var _mark: MeshInstance3D
 
 func debug_line() -> String:
@@ -175,6 +176,8 @@ func _physics_process(delta: float) -> void:
 	if assembly < 0.999:
 		apply_torque(Vector3.UP * (1.0 - assembly) * sin(sea_time * 0.9) * 10.0)  # a slack skin flexes and the boat wanders
 	apply_central_force(-fwd * v_f * absf(v_f) * mass * (0.12 + 0.05 * absf(trim.pitch)))  # a boat out of trim pushes water
+	if kelp > 0.0:
+		apply_central_force(-fwd * v_f * mass * 1.4 * kelp)  # bull kelp: a linear drag that makes every stroke a short one
 	# Mass at the ends resists the turn.
 	apply_torque(-Vector3.UP * angular_velocity.y * trim.ends * 30.0)
 	# The wind: the boat drifts downwind, and with way on the bow comes up into it — a stern-heavy boat more so.

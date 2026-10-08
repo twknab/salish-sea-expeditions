@@ -35,6 +35,8 @@ var _since_start := 0.0
 var _pack: Dictionary = {}       # Packing.assess of the boat as packed, on a trip
 var _swims_today := 0           # capsizes on this leg, for the day's record
 var _weather_asked := false     # the wind-is-up card goes up once a leg
+var _kelp_said := false         # the kelp's one line, the first time the boat is in it
+const KELP_REACH := 70.0        # metres from a kelp sighting's centre the bed extends
 var _waits_today := 0           # times the wind was waited out in a lee
 const ROUGH := 0.5              # sea state at which the bail-outs are offered
 const RIP_KICK_EVERY := 3.2    # seconds between beam waves in a rip at full strength
@@ -323,7 +325,16 @@ func _leg(delta: float) -> void:
 	var cur := Tides.current_vector(_day, _hour) * factor
 	# The water of the hour: wind builds the sea, wind against the stream stands it up, and a rip
 	# throws the odd wave on the beam that the paddler must brace for.
-	var state := Tides.sea_state(_day, _hour, factor)
+	# Bull kelp: a bed is a drag on the hull and a lee in a chop — the fronds lie the swell down.
+	var kelp := 0.0
+	for s in _sightings:
+		if s.conf.kind == "kelp":
+			kelp = maxf(kelp, 1.0 - clampf(here.distance_to(s.node.global_position) / KELP_REACH, 0.0, 1.0))
+	kayak.kelp = kelp
+	if kelp > 0.3 and not _kelp_said:
+		_kelp_said = true
+		note_label.text = "In the kelp: the fronds grab the blade and the swell lies down. A kelp bed is a lee, and a slow one."
+	var state := Tides.sea_state(_day, _hour, factor) * (1.0 - 0.6 * kelp)
 	if state >= ROUGH and not _weather_asked and _card == null:
 		_offer_bailouts(state)
 	var w := Tides.wind(_day, _hour)
