@@ -9,7 +9,7 @@ class_name Terrain
 extends Node3D
 
 const CHUNK := 32            # grid cells per chunk side (1.5 km at 48 m)
-const NEAR := 4200.0         # metres from the focus inside which chunks are built at full resolution
+const NEAR := 4200.0         # metres from the focus inside which chunks are built at full resolution (default)
 const FAR_STRIDE := 3        # cells per vertex beyond that
 const PER_FRAME := 6         # chunks (re)built per frame
 const TREE_RADIUS := 2600.0  # metres around the focus where trees are instanced
@@ -29,6 +29,8 @@ var height := 0
 var step := 48.0
 var top_left := Vector2.ZERO
 var focus := Vector3.ZERO
+var near := NEAR             # a scene seen from altitude can shrink this; the ferry's chart does
+var trees_enabled := true    # a chart from 2 km up has no use for trees, and the planting costs
 var _h: PackedFloat32Array
 var _c: PackedByteArray
 var _mat: StandardMaterial3D
@@ -53,7 +55,8 @@ func _process(_delta: float) -> void:
 	# The first frame gets a head start, once the scene has told us where to look, so it does not
 	# open on bare water.
 	_build_some(60 if _chunks.is_empty() else PER_FRAME)
-	_update_trees()
+	if trees_enabled:
+		_update_trees()
 
 ## Grid data, read once per session.
 func _load() -> bool:
@@ -165,7 +168,7 @@ func _build_some(n: int) -> void:
 			var dx := (cx + CHUNK * 0.5 - fx) * step
 			var dz := (cy + CHUNK * 0.5 - fz) * step
 			var d := sqrt(dx * dx + dz * dz)
-			var want := 1 if d < NEAR else FAR_STRIDE
+			var want := 1 if d < near else FAR_STRIDE
 			var have: int = _chunks[key].stride if _chunks.has(key) else 0
 			if have != want:
 				todo.append([d, cx, cy, want])
@@ -230,16 +233,20 @@ func _chunk_mesh(cx: int, cy: int, stride: int) -> ArrayMesh:
 			var nn := Vector3(-hx, 2.0 * stride * step, -hz).normalized()
 			var slope := 1.0 - nn.y
 			var cls := _c[py * width + px]
-			# Sea cells keep their depth (never above the surface), so the shore slopes down under the
-			# water instead of ending at a wall; deep water bottoms out where the sea shader goes opaque.
-			var yv := h if cls != WATER else clampf(h, DEPTH_FLOOR, -1.0)
+			# The water is opaque, so the bottom is never seen: sea cells drop straight to the floor, which
+			# keeps the shore a clean seam where the water plane cuts the slope instead of a band of
+			# z-fighting over every shallow (that band was the whole coastline at a chart's distance).
+			var yv := h if cls != WATER else DEPTH_FLOOR
 			pos.append(Vector3(top_left.x + px * step, yv, top_left.y + py * step))
 			nrm.append(nn)
 			col.append(_colour(cls, h, slope))
 	for j in range(rows - 1):
 		for i in range(cols - 1):
+			# Front faces are counter-clockwise seen from above (+y): a → b → c with x east and z south.
+			# Wound the other way, every flat triangle was back-face culled from a chart's height and the
+			# islands were slivers of shoreline — the error hid at sea level, where slopes face the camera.
 			var a := j * cols + i; var b := a + 1; var c := a + cols; var d := c + 1
-			idx.append_array(PackedInt32Array([a, c, b, b, c, d]))
+			idx.append_array(PackedInt32Array([a, b, c, b, d, c]))
 	var arrays := []
 	arrays.resize(Mesh.ARRAY_MAX)
 	arrays[Mesh.ARRAY_VERTEX] = pos; arrays[Mesh.ARRAY_NORMAL] = nrm; arrays[Mesh.ARRAY_COLOR] = col; arrays[Mesh.ARRAY_INDEX] = idx

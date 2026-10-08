@@ -5,6 +5,7 @@ extends Node3D
 
 @export var hour := 8.5
 @export var sea_state := 0.22
+@export var fog_density := 0.00022  # at sea level Orcas, 12 km off, is a shape in the haze; a chart from altitude wants far less
 @export var follow: Node3D
 ## The real land, when a scene has it: the shader reads its heights for the shallows and the
 ## shore foam, and a flat far plane carries the water out to the horizon under the islands.
@@ -13,6 +14,7 @@ var terrain: Terrain
 var time := 0.0
 var _water: MeshInstance3D
 var _far: MeshInstance3D
+var _debug_no_water := false  # ?debug=nowater hides the sea, to look at the land alone
 var _mat: ShaderMaterial
 var sun: DirectionalLight3D
 
@@ -46,6 +48,7 @@ func _ready() -> void:
 		_mat.set_shader_parameter("map_rect", Vector4(0, 0, 0, 0))
 	if App._url_param("debug") == "depth":
 		_mat.set_shader_parameter("debug_view", 1)
+	_debug_no_water = App._url_param("debug") == "nowater"
 	_water.material_override = _mat
 	_water.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(_water)
@@ -66,6 +69,9 @@ func _ready() -> void:
 	_far.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_far.position.y = -0.6
 	add_child(_far)
+	if _debug_no_water:
+		_water.visible = false
+		_far.visible = false
 	_sky()
 	Sound.set_sea(sea_state)
 
@@ -89,7 +95,7 @@ func _sky() -> void:
 	env.tonemap_exposure = 0.95
 	env.fog_enabled = true
 	env.fog_light_color = Color("c0d0d8")
-	env.fog_density = 0.00022  # Orcas is 12 km off and should be a shape in the haze, not gone
+	env.fog_density = fog_density
 	env.fog_sky_affect = 0.2
 	var we := WorldEnvironment.new()
 	we.environment = env

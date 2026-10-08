@@ -6,5 +6,10 @@ export const PLACES_INFO = [
   { id: 'labs', name: 'Friday Harbor Laboratories', text: 'The University of Washington’s marine research station, just north of town. Scientists have studied the rich waters of the San Juans here for over a century.', sourceIds: ['fhl'] },
   { id: 'shaw', name: 'Shaw Island', text: 'The smallest of the ferry-served islands, quiet and wooded, across the channel from Friday Harbor.', sourceIds: ['wsf'] },
   { id: 'yellow', name: 'Yellow Island', text: 'A tiny island protected as a nature preserve, famous for spring wildflowers.', sourceIds: ['wdfw'] },
+  { id: 'lopez', name: 'Lopez Island', text: 'The flattest and most farmed of the big islands, which is why cyclists love it. The ferry passes its north shore after Thatcher Pass; Upright Head is the point with the ferry landing.', sourceIds: ['wsf'] },
+  { id: 'thatcherPass', name: 'Thatcher Pass', text: 'The gap between Blakely Island to the north and Decatur Island to the south: the door from Rosario Strait into the inner islands. Every Anacortes ferry threads it.', sourceIds: ['wsf', 'noaa-chart'] },
+  { id: 'orcas', name: 'Orcas Island', text: 'The largest and highest of the islands, shaped like a horseshoe around East Sound. Mount Constitution, 732 m, is the high point of the whole archipelago; the ferry passes under its southern shore in Harney Channel.', sourceIds: ['wsf'] },
+  { id: 'waspPassage', name: 'Wasp Passage', text: 'The narrow run between Shaw Island and Crane Island, with the Wasp Islands scattered to the north. Strong currents and small boats: the ferry slows here.', sourceIds: ['wsf', 'noaa-chart'] },
+  { id: 'sanJuan', name: 'San Juan Island', text: 'Home to Friday Harbor, the Lime Kiln whale-watching shore and the old English and American camps. San Juan Channel runs along its east side, and the ferry turns down it for the landing.', sourceIds: ['wsf'] },
   { id: 'jones', name: 'Jones Island Marine State Park', text: 'A small island park reachable only by water, with paddle-in campsites on the Cascadia Marine Trail — and famously bold raccoons.', sourceIds: ['wa-parks-jones', 'wwta'] },
 ];

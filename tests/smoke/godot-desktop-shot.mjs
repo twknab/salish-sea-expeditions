@@ -10,7 +10,7 @@ const logs = [];
 page.on('console', (m) => logs.push(m.type() + ': ' + m.text()));
 page.on('pageerror', (e) => logs.push('pageerror: ' + e.message));
 await page.goto(`http://localhost:${process.env.PORT || 4178}/` + (process.argv[3] || ''));
-await page.waitForTimeout(25000);
+await page.waitForTimeout(+(process.env.WAIT || 25000));
 await page.screenshot({ path: process.env.OUT || 'tests/smoke/out/godot-desktop.png', timeout: 90000 });
 console.log((process.env.LOGS === 'all' ? logs : logs.filter((l) => /error|ERROR|warn/i.test(l)).slice(0, 20)).join('\n'));
 await browser.close(); server.close();
