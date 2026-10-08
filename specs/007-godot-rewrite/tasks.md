@@ -277,6 +277,10 @@
 
 - [x] T014br Four more synthesized sounds (`tools/synth-audio.mjs`): the orca's blow, heard loud alongside and as a breath on the wind at a kilometre (`Wildlife.breathed` → `Sound.blow` by distance); the bald eagle's thin chitter when it is sighted; a diesel at idle that comes up as the whale-watch boat nears and glides away (`Sound.set_engine`, a loop, silenced when the water scene goes); and the raccoons' quarrel from the dark on the night card when the food was not hung.
 
+## Slice 55 — the docs catch up
+
+- [x] T014bs README's Godot paragraph describes the expedition as it is after fifty-four slices (the two days, the fog, the fleet, the camp's choices, the ferry home, the seamanship calls) and the check URLs that open each of them; CLAUDE.md gains the gotchas paid for this run (autoload-reading classes hang the headless tests, `signal` after `extends`, the spawn-before-near order).
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

@@ -57,6 +57,13 @@ with `npx vite preview --port 4173` running, for a single screenshot.
   excluded from the web pack and fetched from `audio/` beside the page after the first frame (CI copies
   them there); the editor and headless runs load them from the project. `?scene=ferry` jumps to a screen in the web build.
 - `tests/debug_scenes.gd` instantiates every scene headless; run it before an export.
+- A `-s` test script can only touch classes that do not read an autoload at compile time: a static
+  helper on `seascape.gd` hung `run_tests.gd` silently (no output, spinning) because the scene script
+  reads `Sound`. Keep the pure maths in its own `class_name` (`Daylight`, `Fog`, `HaulOut`, …) and
+  test that. `signal` lines go after `extends`, or the whole class fails to parse and every script
+  that names it fails with it.
+- On the water, `_spawn_sightings()` runs before the `?near=` switch, so a check start may use what
+  spawned; the chase camera then takes a second to swing behind a boat whose rotation was just set.
 - The figure is `BodyMesh`: arrays built by hand with analytic normals. SurfaceTool will not merge
   vertices that carry bone weights, so its generated normals come out faceted — do not go back to it
   for skinned geometry.
