@@ -104,6 +104,8 @@ func _ready() -> void:
 			_tilt_chip()
 			_dest = Leg.COVE
 			_day = App.content.get("tripDay", {})
+			_hour = Leg.launch_hour()  # the launch the float plan chose
+			sea.apply_hour(_hour)
 			_set_label = UIKit.label("", 12, UIKit.MIST, false)
 			_set_label.position = Vector2(20, 172)
 			_set_label.size = Vector2(360, 20)
@@ -202,6 +204,8 @@ func _leg(delta: float) -> void:
 	if dist < 220.0:
 		_arrived = true
 		_groove = 0.0
+		App.save.arrivedHour = _hour
+		App.persist()
 		controls.visible = false
 		Sound.gull()
 		_clear_card()
