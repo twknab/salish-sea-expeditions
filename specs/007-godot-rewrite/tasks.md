@@ -99,6 +99,10 @@
 - [x] T014t `src/content/expedition.js` is a list of legs — teaching per leg (float plan steps, landing, camp steps) under the same ids — with day two from Jones Island through Spieden Channel to Posey Island, a one-acre marine state park at the mouth of Roche Harbor; places and a Washington State Parks credit for Posey; the content test checks the legs chain
 - [x] T014u `Leg` reads the legs (geometry merged with teaching) and the save's `legIndex`; the plan frames whichever leg is current, the trip launches from where the last one landed with that leg's sightings, the landing card and the camp are the leg's own, and camp's last card goes on to tomorrow's float plan with the tide fifty minutes later (`App.day()`), or home after the last leg. `?leg=1&scene=plan|trip|camp`, `?near=spieden|posey` for checks
 
+## Slice 12 — the chart in the deck bag
+
+- [x] T014v `ChartTile` + `chart.gdshader`: a north-up window of the real islands around the boat on the trip HUD, painted from the same height texture the water reads — land, shoal, deep, an inked coastline — with the leg's track dashed, the cove ringed, the boat as an arrow, a north mark and a kilometre bar; tap or press M to fold it to a corner mark (folded by default on a phone; the choice is kept in the save)
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

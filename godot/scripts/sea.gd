@@ -20,6 +20,7 @@ var _groove := 0.0             # 0..1: a steady cadence has settled and the mile
 var _arrived := false
 var _dest_label: Label
 var _route: Dictionary = {}
+var _chart: ChartTile
 ## Sightings on the leg: what, which species of the field guide it is, where, and how close you
 ## must come to notice it. Positions checked against the terrain: seals and kelp on the islet by
 ## Yellow Island, the heron in the Labs' shallows, the eagle on Point Caution, the porpoise mid-channel.
@@ -127,6 +128,14 @@ func _ready() -> void:
 			_dest_label.size = Vector2(360, 24)
 			hud.add_child(_dest_label)
 			_spawn_sightings()
+			# The chart in the deck bag, under the HUD's lines on the left; folded by default on a phone.
+			_chart = ChartTile.new()
+			_chart.terrain = terrain
+			_chart.route = Leg.waypoints(_route)
+			_chart.dest = _dest
+			_chart.position = Vector2(20, 200)
+			_chart.folded = controls.touch() or bool(App.save.get("chartFolded", false))
+			hud.add_child(_chart)
 			match App._url_param("near"):  # starts for checks
 				"jones", "posey":
 					kayak.global_position = _dest + Vector3(0.0, 0.1, -900.0)  # 900 m north of the cove
@@ -141,7 +150,7 @@ func _ready() -> void:
 					kayak.global_position = Vector3(590.0, 0.1, -1312.0)
 					kayak.rotation.y = -deg_to_rad(250.0)  # the heron 30 m off in the shallows
 			var opening := "Friday Harbor · San Juan Channel opens ahead" if Leg.index() == 0 else "Day %d · %s" % [Leg.index() + 1, str(_route.get("title", ""))]
-			note_label.text = "%s\n%s" % [opening, ("Hold the water to paddle · slide to lean · slide up to back off" if controls.touch() else "Hold W to paddle · A/D lean · S back · Q/E edge · J brace")]
+			note_label.text = "%s\n%s" % [opening, ("Hold the water to paddle · slide to lean · slide up to back off" if controls.touch() else "Hold W to paddle · A/D lean · S back · Q/E edge · J brace · M chart")]
 
 ## Put the animals and the kelp where they live, on the shore or the water the terrain says is there.
 func _spawn_sightings() -> void:
@@ -250,6 +259,9 @@ func _process(delta: float) -> void:
 	_compass.heading = kayak.heading
 	if mode == "trip" and not _arrived:
 		_leg(delta)
+		if _chart:
+			_chart.boat = kayak.global_position
+			_chart.heading = kayak.heading
 		_watch_sightings()
 	_places.visible = hud.visible
 	if _places.visible:
@@ -438,3 +450,9 @@ func _on_stroke(side: int, q: float, kind: String) -> void:
 
 func _why_arms() -> String:
 	return "hold and let the rhythm settle; a tap is an arm stroke"
+
+func _unhandled_input(ev: InputEvent) -> void:
+	if ev is InputEventKey and ev.pressed and not ev.echo and ev.keycode == KEY_M and _chart:
+		_chart.folded = not _chart.folded
+		App.save.chartFolded = _chart.folded
+		App.persist()
