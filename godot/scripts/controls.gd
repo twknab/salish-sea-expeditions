@@ -15,7 +15,7 @@ signal steer_changed(value: float)
 
 const HIPS_H := 46.0
 const PAD := 8.0
-const CADENCE := 1.0        # seconds per stroke, alternating sides: about 60 strokes a minute
+const CADENCE := 0.984      # seconds per stroke, alternating sides: two beats at the soundtrack's 122 bpm, 61 a minute
 const SETTLE := 0.8         # a hold this long is a rhythm; anything shorter is arms
 const TAP := 0.22           # a press released this fast is a tap, not a hold
 const FLICK := 70.0         # pixels sideways within TAP: a sweep
