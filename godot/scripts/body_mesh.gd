@@ -77,7 +77,7 @@ func build(parent: Node3D, palette: Dictionary, dress: int, legs: bool) -> void:
 		_blob(JOINTS.head + Vector3(0, 0.175, -0.003), Vector3(0.097, 0.085, 0.108), palette.cap, "head")
 		_blob(JOINTS.head + Vector3(0, 0.168, 0.085), Vector3(0.095, 0.01, 0.06), palette.cap, "head")
 	else:
-		_blob(JOINTS.head + Vector3(0, 0.172, -0.008), Vector3(0.095, 0.082, 0.106), palette.hair, "head")
+		_hair(palette, skin)
 	# Arms: shoulder ball, upper arm, elbow, forearm tapering to the wrist gasket, a hand.
 	for s in ["l", "r"]:
 		_blob(JOINTS["shoulder_" + s], Vector3(0.062, 0.062, 0.062), palette.pfd if pfd else suit, "upper_arm_" + s)
@@ -112,6 +112,26 @@ func build(parent: Node3D, palette: Dictionary, dress: int, legs: bool) -> void:
 	mesh_instance.material_override = mat
 	mesh_instance.skin = skeleton.create_skin_from_rest_transforms()
 	skeleton.add_child(mesh_instance)
+
+## Hair, by style: a cap of hair on the skull, then what the style adds — a tail, a bun, a wrap.
+func _hair(palette: Dictionary, skin: Color) -> void:
+	var hair: Color = palette.hair
+	var style: String = palette.get("style", "short")
+	var crown := JOINTS.head + Vector3(0, 0.172, -0.008)
+	match style:
+		"crop":
+			_blob(crown + Vector3(0, 0.004, 0), Vector3(0.093, 0.078, 0.104), hair.lerp(skin, 0.25), "head")
+		"long":
+			_blob(crown, Vector3(0.096, 0.084, 0.108), hair, "head")
+			_blob(JOINTS.head + Vector3(0, 0.06, -0.095), Vector3(0.04, 0.14, 0.035), hair, "head")  # the tail down the neck
+		"bun":
+			_blob(crown, Vector3(0.095, 0.08, 0.106), hair, "head")
+			_blob(JOINTS.head + Vector3(0, 0.215, -0.07), Vector3(0.05, 0.045, 0.05), hair, "head")
+		"wrap":
+			_blob(crown + Vector3(0, 0.012, 0), Vector3(0.104, 0.095, 0.114), palette.get("wrap", Color("3a4a6a")), "head")
+			_blob(JOINTS.head + Vector3(0, 0.075, -0.06), Vector3(0.075, 0.09, 0.07), palette.get("wrap", Color("3a4a6a")), "head")
+		_:
+			_blob(crown, Vector3(0.095, 0.082, 0.106), hair, "head")
 
 func _vert(p: Vector3, n: Vector3, c: Color, bone: String, blend_bone: String, w: float) -> int:
 	_pos.append(p)

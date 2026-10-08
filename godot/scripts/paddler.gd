@@ -37,12 +37,14 @@ func build() -> void:
 	for c in get_children():
 		c.queue_free()
 	var suit_color: Color = [Color("8a98a8"), Color("1c2f4a"), Color("1f6f78"), Color("1f6f78"), Color("1f6f78")][clampi(dress, 0, 4)]
+	var who := App.paddler()
 	var palette := {
-		"skin": Color("c9a07a"), "suit": suit_color, "pfd": Color("f2d016"), "gasket": Color("151718"),
-		"glove": Color("1a1d20"), "boot": Color("1a1d20"), "cap": Color("1a1d20"), "hair": Color("4a3626"),
+		"skin": who.skin, "suit": suit_color, "pfd": who.pfd, "gasket": Color("151718"),
+		"glove": Color("1a1d20"), "boot": Color("1a1d20"), "cap": Color("1a1d20"), "hair": who.hair, "style": who.style,
 	}
 	_rig = Node3D.new()
-	_rig.position = Vector3(0, 0.9 if standing else 0.0, 0)
+	_rig.position = Vector3(0, 0.9 * who.scale if standing else 0.0, 0)
+	_rig.scale = Vector3.ONE * who.scale
 	add_child(_rig)
 	_body = BodyMesh.new()
 	_body.build(_rig, palette, dress, standing)

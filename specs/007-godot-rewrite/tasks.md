@@ -64,6 +64,12 @@
 - [x] T014c `camp.gd` + `camp.tscn`: the boat at the tide line of the real cove, the camera out on the water, the tent going up on the pad at the second step, the evening coming on card by card; "Tomorrow's float plan" saves the day and returns to the title for now
 - [ ] T014d Tide and current on the leg from `tripDay` (set and drift; the flood carrying you north), and a real sounding set for the channels
 
+## Slice 6 — who's paddling
+
+- [x] T014e `src/content/paddlers.js`: six ready-made paddlers (Mina, Tomás, Ayla, Kai, Noor, Sam) and the parts — six skin tones, six hair colours, five styles (short, close crop, long tied back, bun, head wrap), three builds, four PFD colours — with no gender declared for any of them
+- [x] T014f `App.paddler()` resolves the look from the save; `BodyMesh` draws the hair styles and the build scales the rig; `Paddler` takes its skin, hair and PFD from it everywhere the figure appears
+- [x] T014g Outfitting opens on "Who's paddling": the presets as a row of faces and the parts beneath, wrapping on a phone, the standing figure rebuilding as you choose
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

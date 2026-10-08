@@ -18,7 +18,7 @@ const SCENES := {
 }
 
 var content: Dictionary = {}
-var save: Dictionary = { "stage": "title", "seenIntro": false, "skin": "blackBlue", "skills": {} }
+var save: Dictionary = { "stage": "title", "seenIntro": false, "skin": "blackBlue", "skills": {}, "paddler": { "skin": "tan", "hair": "dark", "style": "short", "build": "medium", "pfd": "sun" } }
 var current := "title"
 var sea_mode := "ambient"   # what sea.tscn should be when it loads: ambient | school | trip
 var school_from := 0        # school phase to resume at
@@ -109,6 +109,26 @@ func _load() -> void:
 		if parsed is Dictionary:
 			for k in parsed.keys():
 				save[k] = parsed[k]
+
+## The paddler's look, resolved from the save against the parts in content: colours and scale.
+func paddler() -> Dictionary:
+	var parts: Dictionary = content.get("paddlerParts", {})
+	var pick: Dictionary = save.get("paddler", {})
+	var out := { "skin": Color("c9a07a"), "hair": Color("4a3626"), "style": "short", "scale": 1.0, "pfd": Color("f2d016") }
+	for p in parts.get("skin", []):
+		if p.id == pick.get("skin", ""):
+			out.skin = Color(p.hex)
+	for p in parts.get("hair", []):
+		if p.id == pick.get("hair", ""):
+			out.hair = Color(p.hex)
+	for p in parts.get("pfd", []):
+		if p.id == pick.get("pfd", ""):
+			out.pfd = Color(p.hex)
+	for p in parts.get("build", []):
+		if p.id == pick.get("build", ""):
+			out.scale = float(p.scale)
+	out.style = str(pick.get("style", "short"))
+	return out
 
 func skin() -> Dictionary:
 	for s in content.get("skins", []):
