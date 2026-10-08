@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-06
 
-**Status**: Experiment — thirty-seven slices merged (see "What exists today" below and
+**Status**: Experiment — thirty-eight slices merged (see "What exists today" below and
 tasks.md); go/no-go pending the mobile Safari measurement from the Cloud Run URL (see research.md
 and the table at the end)
 
@@ -36,7 +36,7 @@ The Godot build on `main` is a complete three-day expedition, not a tech demo:
   light follow the hour.
 - **On the water**: hold-to-paddle with lean, reverse, brace and edge; the dome compass; a chart
   tile of the real islands; the tide carrying the boat and the wind pushing it; rips off the points; kelp beds that drag on the hull and lie the swell down; the bail-outs offered when the wind is up; the sea state of the
-  hour; a partner holding station; the ferry working the channel with a card, a horn and a wake;
+  hour; a partner holding station; the ferry working the channel with a card, a horn and a wake that is a few pitches bow-on and the full roll on the beam;
   wildlife as its own models with field-guide sightings, a pod of killer whales in Spieden Channel among them, and seals that flush if you come too close; a capsize with secondary stability and
   the rescue taught in the water.
 - **Ashore**: camp on Jones and Posey with the shore walk at low tide, the stars and the

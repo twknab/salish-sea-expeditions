@@ -18,6 +18,7 @@ const STATIONS = [
   ['pack', '?scene=pack&pack=ideal'],
   ['plan', '?scene=plan&step=1'],
   ['trip', '?scene=trip'],
+  ['trip-ferry', '?scene=trip&near=ferry'],
   ['trip-whales', '?scene=trip&leg=1&near=orcas&close=1'],
   ['trip-wind', '?scene=trip&launch=15'],
   ['trip-capsize', '?scene=trip&capsize=1'],

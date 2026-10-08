@@ -769,6 +769,8 @@ func _watch_traffic(delta: float) -> void:
 		Sound.horn()
 	if d < Traffic.WAKE_M and not _traffic.waked:
 		_traffic.waked = true
-		kayak.kick(1.2)
-		Sound.hull_slap(0.8)
-		note_label.text = "The ferry's wake: bow into it, and brace."
+		# Taken bow-on the wake is a few pitches; on the beam it is the roll the card warned of.
+		var beam := Traffic.wake_beam(-kayak.global_basis.z, -_traffic.global_basis.z)
+		kayak.kick(Traffic.wake_kick(beam))
+		Sound.hull_slap(0.4 + 0.5 * beam)
+		note_label.text = "The ferry's wake, bow-on: a few pitches and it is past." if beam < 0.4 else "The ferry's wake on the beam: brace, and next time turn the bow into it."
