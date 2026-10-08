@@ -22,6 +22,8 @@ LEGS = [
         'channel': 'San Juan Channel', 'floodSetDeg': 330,
         # Where the stream runs harder than the channel's figure: the narrows off Point Caution.
         'rips': [{'at': (840, -2320), 'radius': 900, 'factor': 1.35, 'name': 'off Point Caution'}],
+        # What the shore shows at the evening low tide, from the field guide, in the order you meet it walking down.
+        'shore': ['douglasFir', 'turkishTowel', 'seaStar', 'anemone', 'seaLettuce'],
         'labels': ['fridayHarbor', 'labs', 'yellow', 'jones', 'shaw', 'spieden', 'orcas'],
     },
     {
@@ -32,6 +34,7 @@ LEGS = [
         'cove': (-10610, -9830), 'coveName': 'Posey Island', 'headingDeg': 0,
         'channel': 'Spieden Channel', 'floodSetDeg': 285,  # the flood sets west through the channel toward Haro Strait
         'rips': [{'at': (-8500, -10400), 'radius': 1700, 'factor': 1.8, 'name': 'in the narrows of Spieden Channel'}, {'at': (-10000, -10300), 'radius': 800, 'factor': 1.4, 'name': 'off Davison Head'}],
+        'shore': ['madrona', 'seaStar', 'nudibranch', 'sugarKelp'],
         'labels': ['jones', 'spieden', 'spiedenChannel', 'davisonHead', 'posey', 'rocheHarbor', 'yellow'],
     },
 ]
@@ -49,6 +52,7 @@ def main():
             'id': leg['id'], 'from': leg['from'], 'to': leg['to'], 'coveName': leg['coveName'],
             'headingDeg': leg['headingDeg'], 'length_m': round(length(track)),
             'channel': leg['channel'], 'floodSetDeg': leg['floodSetDeg'],
+            'shore': leg['shore'],
             'rips': [{'at': list(r['at']), 'radius': r['radius'], 'factor': r['factor'], 'name': r['name']} for r in leg['rips']],
             'waypoints': [[x, z] for x, z in track], 'cove': list(leg['cove']), 'labels': leg['labels'],
         })

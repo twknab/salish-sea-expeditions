@@ -18,6 +18,8 @@ var _inland := Vector3.FORWARD
 var _along := Vector3.RIGHT
 var _tent: MeshInstance3D
 var _leg: Dictionary = {}
+var _walk := -1            # index into the shore walk, -1 when not walking
+var _walked := false
 
 func _ready() -> void:
 	_hour0 = clampf(float(App.save.get("arrivedHour", 17.5)), 15.5, 19.0)
@@ -74,6 +76,12 @@ func _ready() -> void:
 	_ui = UIKit.page(ui, 48, 24)
 	_ui.add_child(UIKit.spacer())
 	_steps = _leg.get("camp", {}).get("steps", [])
+	if App._url_param("walk") == "1":  # `?scene=camp&walk=1` opens on the shore, for checks
+		_step = 1
+		_pitch()
+		_walk = 0
+		_show_walk()
+		return
 	_show()
 
 ## From the cove's point, the nearest place the land comes up out of the water, and the direction
@@ -120,6 +128,8 @@ func _show() -> void:
 	var actions: Array = []
 	if _step > 0:
 		actions.append(["Back", func() -> void: _step -= 1; _hour_target = _hour0 + 1.1 * _step; _show(), false])
+	if _step >= 1 and not _walked:
+		actions.append(["Walk the shore", func() -> void: _walk = 0; _show_walk(), false])
 	if _step < _steps.size() - 1:
 		actions.append(["Next", func() -> void: _step += 1; _hour_target = _hour0 + 1.1 * _step; _show(), true])
 	else:
@@ -132,3 +142,39 @@ func _process(delta: float) -> void:
 	if absf(_hour - _hour_target) > 0.005:
 		_hour = lerpf(_hour, _hour_target, minf(1.0, delta * 1.5))
 		_sea.apply_hour(_hour)
+
+## The shore at the evening low tide: what the field guide says lives on this beach, in the order
+## you meet it walking down from the trees to the water. Each one met is kept in the save.
+func _show_walk() -> void:
+	if _card:
+		_card.queue_free()
+	var shore: Array = _leg.get("shore", [])
+	if _walk >= shore.size():
+		_walk = -1
+		_walked = true
+		_hour_target += 0.5
+		_show()
+		return
+	var sp := _species(str(shore[_walk]))
+	var seen: Array = App.save.get("seen", [])
+	if not sp.is_empty() and not seen.has(sp.id):
+		seen.append(sp.id)
+		App.save.seen = seen
+		App.persist()
+	var text: String = sp.get("blurb", "")
+	var facts: Array = sp.get("facts", [])
+	if not facts.is_empty():
+		text += "\n\n" + str(facts[0])
+	var where: String = sp.get("where", "")
+	if where != "":
+		text += "\n\n%s." % where
+	var last := _walk >= shore.size() - 1
+	var actions: Array = [["Back to camp" if last else "Next", func() -> void: _walk += 1; _show_walk(), true]]
+	_card = UIKit.card(sp.get("common", "On the shore"), text, App.sources_line(sp.get("sourceIds", [])), actions, "The shore at low tide · %s · %d of %d" % [Leg.clock(_hour), _walk + 1, shore.size()])
+	_ui.add_child(_card)
+
+func _species(id: String) -> Dictionary:
+	for sp in App.content.get("species", []):
+		if sp.id == id:
+			return sp
+	return {}
