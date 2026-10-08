@@ -29,6 +29,7 @@ var _swimming := false       # capsized on the trip: the rescue cards are up
 var _rescue_step := 0
 const RESCUE_STEPS := ["coldWater", "wetExit", "tRescue", "pumpOut"]   # with a partner alongside, the T-rescue; the paddle float is the solo drill in Kayak School
 var _since_start := 0.0
+var _pack: Dictionary = {}       # Packing.assess of the boat as packed, on a trip
 const RIP_KICK_EVERY := 3.2    # seconds between beam waves in a rip at full strength
 ## Sightings on the leg: what, which species of the field guide it is, where, and how close you
 ## must come to notice it. Positions checked against the terrain: seals and kelp on the islet by
@@ -101,6 +102,8 @@ func _ready() -> void:
 	controls.edge_changed.connect(func(v: float) -> void: kayak.edge = v)
 	controls.steer_changed.connect(func(v: float) -> void: kayak.steer = v)
 	_ui = UIKit.page($UI, 48, 24)
+	if not controls.touch():
+		note_label.size.x = 640.0  # a desktop window has the width: the opening line stays on one line, clear of the destination
 	heading_label.visible = false
 	_compass = Compass.new()
 	_compass.set_anchors_preset(Control.PRESET_TOP_RIGHT)
@@ -141,6 +144,12 @@ func _ready() -> void:
 			_dest_label.position = Vector2(20, 150)
 			_dest_label.size = Vector2(360, 24)
 			hud.add_child(_dest_label)
+			# The boat as it was packed: the trim is physics, and the gear left behind is gone.
+			var pack_param := App._url_param("pack")  # `?pack=bow` opens with everything in the bow, for checks
+			var gear: Array = App.content.get("gear", [])
+			var layout: Dictionary = Packing.lopsided(gear, "bowEnd") if pack_param == "bow" else (Packing.suggested(gear) if pack_param == "ideal" else App.save.get("packing", Packing.suggested(gear)))
+			_pack = Packing.assess(layout, gear)
+			kayak.set_trim(_pack)
 			_spawn_sightings()
 			# The ferry works the channel whatever day it is: leaving the landing behind you on day one,
 			# coming in to meet you on the way home.
@@ -281,7 +290,8 @@ func _leg(delta: float) -> void:
 	if terrain.height_at(landing.x, landing.z) < -0.5:
 		kayak.global_position += drift
 	var rip := " · ×%.1f %s" % [factor, str(_flow.name)] if factor > 1.15 else ""
-	_set_label.text = "%s: %s%s · wind %d kn from %03d°" % [str(_route.get("channel", "San Juan Channel")), Tides.describe(_day, _hour), rip, int(round(Tides.wind(_day, _hour).kn)), int(round(Tides.wind(_day, _hour).fromDeg))]
+	var trim_note := " · " + Packing.trim_words(_pack) if Packing.handling_penalty(_pack) > 0.2 else ""
+	_set_label.text = "%s: %s%s · wind %d kn from %03d°%s" % [str(_route.get("channel", "San Juan Channel")), Tides.describe(_day, _hour), rip, int(round(Tides.wind(_day, _hour).kn)), int(round(Tides.wind(_day, _hour).fromDeg)), trim_note]
 	_dest_label.text = "%s · %.1f km · %03d° · %s%s" % [Leg.cove_name(_route), dist / 1000.0, int(round(brg)), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
 	if dist < 220.0:
 		_arrived = true
@@ -475,7 +485,7 @@ func _finish_school() -> void:
 	controls.visible = false
 	_drill_bar.visible = false
 	_clear_card()
-	_card = UIKit.card("Kayak School complete", "Power from the torso, control from the hips, head down in a brace. Everything from here builds on this.", App.sources_line(["aca"]), [["Onto the water", func() -> void: App.go("trip"), true]], "Kayak School")
+	_card = UIKit.card("Kayak School complete", "Power from the torso, control from the hips, head down in a brace. Everything from here builds on this.", App.sources_line(["aca"]), [["Onto the water", func() -> void: App.next(), true]], "Kayak School")
 	_ui.add_child(UIKit.spacer())
 	_ui.add_child(_card)
 
@@ -557,6 +567,8 @@ func _show_rescue() -> void:
 	var text: String = l.get("text", "")
 	if _rescue_step == 0:
 		text = "You are in nine-degree water. %s is turning toward you. " % str(_partner.preset.get("name", "Your partner")) + text
+	if RESCUE_STEPS[_rescue_step] == "pumpOut" and not _pack.get("enables", []).has("pumpOut"):
+		text = "The pump is on the beach at Friday Harbor. Bail with a sponge and a hat: twice as long with a boat full of nine-degree water. " + text
 	_card = UIKit.card(l.get("title", ""), text, App.sources_line(l.get("sourceIds", [])), actions, kicker)
 	_ui.add_child(UIKit.spacer())
 	_ui.add_child(_card)

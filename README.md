@@ -79,7 +79,7 @@ on the chart with the day's water as a graph, the leg on the water with a partne
 wildlife, tide and rips, and camp or the take-out ashore. Content is exported from `src/content`
 by `tools/export-content.mjs`, the legs are laid over the water by `tools/geo/leg_routes.py`,
 sounds come from `tools/synth-audio.mjs` and four full-length pieces from `tools/synth-pieces.mjs`.
-`?scene=plan|trip|camp|guide`, `?leg=0|1|2` and `?near=jones|spieden|posey|ferry` open a station
+`?scene=pack|plan|trip|camp|guide`, `?leg=0|1|2`, `?pack=bow|ideal` and `?near=jones|spieden|posey|ferry` open a station
 or a spot for checks; `specs/007-godot-rewrite/tasks.md` lists every slice.
 
 Needs Godot 4.5 and its web export templates (`.github/workflows/godot.yml` shows the install).

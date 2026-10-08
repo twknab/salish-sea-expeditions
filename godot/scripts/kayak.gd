@@ -30,6 +30,7 @@ var _probes: Array[Vector3] = []
 var _paddler: Paddler
 var paddler_look: Dictionary = {}   # set before the kayak enters the tree to dress someone other than the player
 var _hull_mesh: MeshInstance3D
+var trim: Dictionary = { "pitch": 0.0, "ends": 0.0, "top": 0.0 }   # from the packing (Packing.assess); zero for an empty boat
 var _mark: MeshInstance3D
 
 func debug_line() -> String:
@@ -131,6 +132,13 @@ func paddler_anchor(id: String) -> Vector3:
 var _wobble_t := 0.0
 
 ## A wave on the beam: a roll impulse the paddler must brace against (the brace drill, tide rips).
+## Load the boat: the centre of mass moves with the pitch, so a bow-heavy boat sits bow-down on
+## the water and ploughs; mass at the ends slows the turn; mass on deck softens the righting.
+func set_trim(a: Dictionary) -> void:
+	trim = { "pitch": float(a.get("pitch", 0.0)), "ends": float(a.get("ends", 0.0)), "top": float(a.get("top", 0.0)) }
+	center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_CUSTOM
+	center_of_mass = Vector3(0.0, 0.0, -trim.pitch * 0.6)  # forward is -z
+
 func kick(strength: float) -> void:
 	apply_torque_impulse(-global_basis.z * (1.0 if randf() < 0.5 else -1.0) * strength * 60.0)
 	_wobble_t = 1.4
@@ -162,12 +170,14 @@ func _physics_process(delta: float) -> void:
 	var v_f := v.dot(fwd)
 	var v_s := v.dot(right)
 	apply_central_force(-right * v_s * mass * 2.2)
-	apply_central_force(-fwd * v_f * absf(v_f) * mass * 0.12)
+	apply_central_force(-fwd * v_f * absf(v_f) * mass * (0.12 + 0.05 * absf(trim.pitch)))  # a boat out of trim pushes water
+	# Mass at the ends resists the turn; a stern-heavy boat lets its bow blow off course.
+	apply_torque(-Vector3.UP * angular_velocity.y * trim.ends * 30.0 + Vector3.UP * maxf(0.0, -trim.pitch) * sin(sea_time * 0.7) * 6.0)
 	# Edging: a knee lift rolls the boat; the chine probes bring it back when the knee relaxes.
 	# Paddler and hull together are a self-righting pair: the roll angle itself pulls the boat back.
 	var s := clampf(global_basis.y.cross(Vector3.UP).dot(fwd), -1.0, 1.0)
 	roll = atan2(s, global_basis.y.y)
-	apply_torque(fwd * edge * 38.0 - fwd * angular_velocity.dot(fwd) * 40.0 + fwd * StrokeMath.righting(roll))
+	apply_torque(fwd * edge * 38.0 - fwd * angular_velocity.dot(fwd) * 40.0 + fwd * StrokeMath.righting(roll) * (1.0 - 0.35 * minf(1.0, trim.top)))
 	if not over and StrokeMath.capsized(roll):
 		_over_t += delta
 		if _over_t > 0.6:
@@ -210,6 +220,7 @@ func stroke(side: int, q: float) -> void:
 	var gain := StrokeMath.stroke_speed_gain(q)
 	if speed > StrokeMath.MAX_SPEED:
 		gain = 0.0
+	gain *= 1.0 - 0.25 * minf(1.0, absf(trim.pitch))  # the trim penalty of the Phaser sim
 	apply_central_impulse(fwd * gain * mass * (1.0 - 0.3 * clampf(speed / StrokeMath.MAX_SPEED, 0.0, 1.0)))
 	apply_torque_impulse(Vector3.UP * -side * StrokeMath.stroke_yaw(q, rocker) * 200.0)
 	if q >= StrokeMath.GOOD_STROKE:

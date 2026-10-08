@@ -47,6 +47,26 @@ func _init() -> void:
 	check(StrokeMath.buoyancy(-0.1, 100.0, 0.1) == 0.0, "no lift above water")
 	check(absf(StrokeMath.buoyancy(0.1, 100.0, 0.1) - 100.0) < 1e-6, "weight share at settle depth")
 	check(StrokeMath.buoyancy(5.0, 100.0, 0.1) <= 400.0 + 1e-6, "lift is capped")
+	# Packing: heavy water in the bow end makes the boat bow-heavy; essentials are tracked; the
+	# suggested layout is near level with nothing left behind.
+	var gear: Array = [
+		{ "id": "water", "name": "Water", "massKg": 8.0, "essential": true, "bulky": false, "enables": ["hydration"] },
+		{ "id": "tent", "name": "Tent", "massKg": 2.2, "essential": false, "bulky": true, "enables": ["shelter"] },
+		{ "id": "pump", "name": "Pump", "massKg": 0.6, "essential": true, "deck": true, "bulky": false, "enables": ["pumpOut"] },
+		{ "id": "food", "name": "Food", "massKg": 3.5, "essential": true, "bulky": false, "enables": ["dinner"] },
+	]
+	var bow := Packing.assess(Packing.lopsided(gear, "bowEnd"), gear)
+	check(bow.pitch > 0.9 and bow.missing.is_empty() and bow.ends > 0.99, "everything in the bow end is bow heavy and ends loaded")
+	check(Packing.handling_penalty(bow) > 0.9, "a bow-end boat handles badly")
+	var one := Packing.place(Packing.empty(), "pump", "deck")
+	var a1 := Packing.assess(one, gear)
+	check(a1.missing == ["water", "food"] and a1.enables.has("pumpOut"), "essentials still on the beach are named, packed gear enables")
+	check(Packing.zone_of(Packing.place(one, "pump", ""), "pump") == "", "an item can be taken back out")
+	var ideal := Packing.assess(Packing.suggested(gear), gear)
+	check(ideal.missing.is_empty() and absf(ideal.pitch) < 0.3 and ideal.enables.has("pumpOut"), "the suggested layout is near level with nothing left, pitch %f" % ideal.pitch)
+	check(Packing.zone_of(Packing.suggested(gear), "pump") == "deck", "deck gear rides on deck")
+	check(Packing.trim_words(bow).begins_with("bow heavy") and Packing.trim_words(ideal) == "level", "trim in words")
+	check(Packing.assess(Packing.empty(), gear).pitch == 0.0, "an empty boat is level")
 	# Content: every source id a card cites resolves to a credit, and the opening is in order.
 	var f := FileAccess.open("res://content/content.json", FileAccess.READ)
 	check(f != null, "content.json present")
