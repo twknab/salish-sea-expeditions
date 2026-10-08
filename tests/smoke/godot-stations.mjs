@@ -39,12 +39,13 @@ const STATIONS = [
   ['guide', '?scene=guide&at=credits'],
 ];
 const only = (process.env.ONLY || '').split(',').filter(Boolean);
+const concurrency = Math.max(1, +(process.env.CONCURRENCY || 3)); // pages at once: the sweep is a wait, not a load
 const server = createServer(root);
 await new Promise((r) => server.listen(port, r));
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+const queue = STATIONS.filter(([name]) => !only.length || only.includes(name));
 let failed = 0;
-for (const [name, url] of STATIONS) {
-  if (only.length && !only.includes(name)) continue;
+async function visit([name, url]) {
   const page = await browser.newPage({ viewport: { width: 1400, height: 730 } });
   const logs = [];
   page.on('console', (m) => logs.push(m.type() + ': ' + m.text()));
@@ -54,10 +55,15 @@ for (const [name, url] of STATIONS) {
   await page.screenshot({ path: `tests/smoke/out/station-${name}.png`, timeout: 90000 }).catch((e) => logs.push('pageerror: screenshot ' + e.message));
   const bad = logs.filter((l) => /^pageerror:|SCRIPT ERROR|USER ERROR|SHADER ERROR/.test(l));
   console.log(`${name.padEnd(14)} ${bad.length ? 'ERRORS' : 'ok'}  ${url}`);
-  for (const l of bad.slice(0, 6)) console.log('   ' + l);
+  for (const l of bad) console.log('   ' + l);
   if (bad.length) failed++;
   await page.close();
 }
+// A small pool: each worker takes the next station until the queue is empty, so a slow page does
+// not hold the others, and the order of the report is the order of finishing.
+await Promise.all(Array.from({ length: Math.min(concurrency, queue.length) }, async () => {
+  while (queue.length) await visit(queue.shift());
+}));
 await browser.close();
 server.close();
 if (failed) { console.error(`${failed} station(s) with errors`); process.exit(1); }

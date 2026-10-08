@@ -289,6 +289,10 @@
 
 - [x] T014bu The take-out's first card, closing the float plan, asks when the call goes in: from the float, after the boat is packed, or on the ferry (`FloatPlanClose`, pure and tested). The last take-out card says what came of it — a Coast Guard boat out of Friday Harbor looking for two paddlers on the car deck, a late call with the phone already in someone's hand, or nothing, which is the point. The record keeps it, the debrief and the seamanship calls say so. `?close=now|later|forgot`; `takeout-close` joins the sweep.
 
+## Slice 58 — the sweep runs three abreast
+
+- [x] T014bv `tests/smoke/godot-stations.mjs` opens its stations through a small worker pool (`CONCURRENCY`, three by default) instead of one after another: each station is a twelve-second wait, not a load, so the sweep of twenty-eight stations takes a third of the time and CI's Godot job comes back under twenty minutes. The report is in finishing order, with each station's errors under its line.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

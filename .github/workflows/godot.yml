@@ -88,7 +88,7 @@ jobs:
       - name: Smoke — on the water
         run: PORT=4183 OUT=tests/smoke/out/godot-trip.png node tests/smoke/godot-desktop-shot.mjs build/web '?scene=trip'
       - name: Smoke — every station from its check URL
-        run: PORT=4190 WAIT=12000 node tests/smoke/godot-stations.mjs build/web
+        run: PORT=4190 WAIT=12000 CONCURRENCY=3 node tests/smoke/godot-stations.mjs build/web
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: godot-web, path: "build/web\ntests/smoke/out/godot*.png\ntests/smoke/out/station-*.png", retention-days: 7 }

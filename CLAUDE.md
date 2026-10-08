@@ -89,6 +89,7 @@ with `npx vite preview --port 4173` running, for a single screenshot.
 - `?perf=1` on any screen shows the go/no-go numbers (fps, worst fps, frame time, time to first frame,
   memory, device) at the foot of the screen and prints them once at ten seconds.
 - `tests/smoke/godot-stations.mjs` opens every station from its check URL in a fresh page and fails on any
-  script error; CI runs it after the export, so a new station belongs in its list with its check URL.
+  script error; CI runs it after the export, so a new station belongs in its list with its check URL. It
+  opens `CONCURRENCY` pages at once (three); `ONLY=a,b` narrows it.
 - `run/main_scene` must be `title.tscn`. Smoke scripts that pass `?scene=` never exercise the main
   scene; `tests/smoke/godot-desktop-shot.mjs` loads the bare page and is the check for that.
