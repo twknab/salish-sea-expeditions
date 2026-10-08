@@ -37,12 +37,14 @@ func build() -> void:
 	for c in get_children():
 		c.queue_free()
 	var suit_color: Color = [Color("8a98a8"), Color("1c2f4a"), Color("1f6f78"), Color("1f6f78"), Color("1f6f78")][clampi(dress, 0, 4)]
+	var who := _who()
 	var palette := {
-		"skin": Color("c9a07a"), "suit": suit_color, "pfd": Color("f2d016"), "gasket": Color("151718"),
-		"glove": Color("1a1d20"), "boot": Color("1a1d20"), "cap": Color("1a1d20"), "hair": Color("4a3626"),
+		"skin": who.skin, "suit": suit_color, "pfd": who.pfd, "gasket": Color("151718"),
+		"glove": Color("1a1d20"), "boot": Color("1a1d20"), "cap": Color("1a1d20"), "hair": who.hair, "style": who.style,
 	}
 	_rig = Node3D.new()
-	_rig.position = Vector3(0, 0.9 if standing else 0.0, 0)
+	_rig.position = Vector3(0, 0.9 * who.scale if standing else 0.0, 0)
+	_rig.scale = Vector3.ONE * who.scale
 	add_child(_rig)
 	_body = BodyMesh.new()
 	_body.build(_rig, palette, dress, standing)
@@ -64,6 +66,15 @@ func build() -> void:
 		pm.material_override = _mat(Color("b98a52"), 0.5)
 		_paddle.add_child(pm)
 	advance(0.0, 0.0)
+
+## Who this is, from the App autoload when there is one; the headless tests build a paddler with no
+## App, and get the default look.
+static func _who() -> Dictionary:
+	var ml := Engine.get_main_loop()
+	var app: Node = ml.root.get_node_or_null("App") if ml is SceneTree else null
+	if app and app.has_method("paddler"):
+		return app.paddler()
+	return { "skin": Color("c9a07a"), "hair": Color("4a3626"), "style": "short", "scale": 1.0, "pfd": Color("f2d016") }
 
 ## A Greenland paddle lofted along x: round loom, shoulders, long lens-section blades to thin tips.
 static func greenland_paddle() -> ArrayMesh:
