@@ -217,6 +217,10 @@
 
 - [x] T014bc The ferry encounter is judged as the card taught: a boat that holds from the horn to the wake "held for the ferry"; a boat that paddled on as it came "paddled on as the ferry came", said at the wake and kept in the day's record for the debrief
 
+## Slice 40 — a fresh expedition is fresh
+
+- [x] T014bd "Begin at Anacortes" clears the swims and the ferries met with the rest of the record, and the take-out's tally counts this expedition's swims from the days' record rather than a lifetime total; the field guide and the drills stay yours for good
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
