@@ -48,6 +48,16 @@ variable "deployer_service_account" {
   default     = ""
 }
 
+variable "expedition_image" {
+  type        = string
+  description = "Image for the Godot build (Dockerfile.godot), as an immutable digest. Empty until that service is turned on; see infra/README.md."
+  default     = ""
+  validation {
+    condition     = var.expedition_image == "" || can(regex("@sha256:[a-f0-9]{64}$", var.expedition_image))
+    error_message = "Provide an immutable image URL ending in @sha256:<64 hex characters>, or leave empty."
+  }
+}
+
 variable "domain" {
   type        = string
   description = "Optional custom domain, e.g. salish.timknab.dev (must be verified in Search Console first)."
@@ -128,6 +138,64 @@ resource "google_cloud_run_domain_mapping" "game" {
   spec {
     route_name = google_cloud_run_v2_service.game.name
   }
+}
+
+# The Godot rewrite ships as a second service beside the first game, so both can be played and
+# compared until one replaces the other. It is framed here and created only once an image exists
+# (`expedition_image`); until then `terraform plan` shows nothing for it and the deploy workflow's
+# `expedition` job skips. Same runtime account, same limits, same hands-off rollout contract.
+resource "google_cloud_run_v2_service" "expedition" {
+  count                = var.expedition_image != "" ? 1 : 0
+  name                 = "salish-sea-expedition"
+  location             = var.region
+  deletion_protection  = false
+  ingress              = "INGRESS_TRAFFIC_ALL"
+  invoker_iam_disabled = true
+
+  template {
+    service_account                  = google_service_account.game.email
+    max_instance_request_concurrency = 80
+    timeout                          = "60s"
+
+    scaling {
+      min_instance_count = 0
+      max_instance_count = var.max_instances
+    }
+
+    containers {
+      image = var.expedition_image
+      ports {
+        container_port = 8080
+      }
+      resources {
+        limits = {
+          cpu    = "1"
+          memory = "256Mi"
+        }
+        cpu_idle          = true
+        startup_cpu_boost = false
+      }
+      startup_probe {
+        initial_delay_seconds = 0
+        timeout_seconds       = 1
+        period_seconds        = 3
+        failure_threshold     = 10
+        http_get {
+          path = "/health"
+          port = 8080
+        }
+      }
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [template[0].containers[0].image, client, client_version, traffic]
+  }
+}
+
+output "expedition_url" {
+  description = "The Godot build's URL, once that service exists."
+  value       = var.expedition_image != "" ? google_cloud_run_v2_service.expedition[0].uri : ""
 }
 
 output "public_url" {

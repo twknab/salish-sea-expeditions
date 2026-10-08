@@ -12,5 +12,8 @@ page.on('pageerror', (e) => logs.push('pageerror: ' + e.message));
 await page.goto(`http://localhost:${process.env.PORT || 4178}/` + (process.argv[3] || ''));
 await page.waitForTimeout(25000);
 await page.screenshot({ path: process.env.OUT || 'tests/smoke/out/godot-desktop.png', timeout: 90000 });
-console.log(logs.filter((l) => /error|ERROR|warn/i.test(l)).slice(0, 20).join('\n'));
+console.log((process.env.LOGS === 'all' ? logs : logs.filter((l) => /error|ERROR|warn/i.test(l)).slice(0, 20)).join('\n'));
 await browser.close(); server.close();
+// A page error or a GDScript error is a failed build, not a note in a log nobody reads.
+const bad = logs.filter((l) => /^pageerror:|SCRIPT ERROR|USER ERROR|SHADER ERROR/.test(l));
+if (bad.length) { console.error(`${bad.length} error(s) in the page:\n` + bad.slice(0, 10).join('\n')); process.exit(1); }

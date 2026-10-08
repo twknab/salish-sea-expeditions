@@ -121,14 +121,14 @@ func advance(delta: float, edge: float) -> void:
 	if standing:
 		yaw = 0.0; lean = 0.0; roll = 0.0
 	var tb := Basis.from_euler(Vector3(lean, yaw, roll))
-	var J := BodyMesh.JOINTS
-	var hips: Vector3 = J.hips
+	var jt := BodyMesh.JOINTS
+	var hips: Vector3 = jt.hips
 	var joints := {}
 	for k in ["hips", "spine", "chest", "neck", "head", "shoulder_l", "shoulder_r"]:
-		joints[k] = hips + tb * (J[k] - hips)
+		joints[k] = hips + tb * (jt[k] - hips)
 	# The head counters the torso, eyes forward.
 	var hb := Basis.from_euler(Vector3(lean * 0.5, yaw * 0.4, roll * 0.5))
-	joints["head_top"] = joints.head + hb * (J.head_top - J.head)
+	joints["head_top"] = joints.head + hb * (jt.head_top - jt.head)
 	# The paddle: the stroke-side blade dips and travels from the feet back to the hip.
 	var dip := _side * 0.62 * swing
 	var travel := (0.6 - 1.2 * p) if fwd_kind else (-0.6 + 1.2 * p)
@@ -156,13 +156,13 @@ func advance(delta: float, edge: float) -> void:
 		joints["hand_" + s] = elbow + dir * (FORE + HANDLEN)
 	if standing:
 		for k in ["hip_l", "knee_l", "ankle_l", "toe_l", "hip_r", "knee_r", "ankle_r", "toe_r"]:
-			joints[k] = J[k]
+			joints[k] = jt[k]
 	_body.pose(joints)
 	# Named points for Kayak School's camera, in the paddler's space.
 	var pl := _paddle.position
 	anchors = {
-		"feet": Vector3(0, 0.08, -0.9) if not standing else _rig.position + J.toe_l,
-		"knees": Vector3(0.12, 0.25, -0.55) if not standing else _rig.position + J.knee_r,
+		"feet": Vector3(0, 0.08, -0.9) if not standing else _rig.position + jt.toe_l,
+		"knees": Vector3(0.12, 0.25, -0.55) if not standing else _rig.position + jt.knee_r,
 		"hips": _rig.position + joints.hips + Vector3(0, 0.1, 0),
 		"back": _rig.position + joints.spine + Vector3(0, 0.1, -0.16),
 		"head": _rig.position + joints.head + Vector3(0, 0.12, 0),
