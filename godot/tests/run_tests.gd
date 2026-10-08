@@ -110,10 +110,16 @@ func _init() -> void:
 	check(Tides.judge(july, 15.5, 2.0).verdict == "poor", "a 15:30 launch into wind against the ebb is poor, got %s" % Tides.judge(july, 15.5, 2.0))
 	check(Tides.sea_state(july, 16.0) > Tides.sea_state(july, 9.5), "the chop is worse in the afternoon")
 	check(Tides.verdict_line(july, 9.5, 2.0).begins_with("Good"), "the verdict reads as a sentence")
+	check(Tides.judge(july, 9.5, 2.0, "ebb").cur < 0.0, "a leg that rides the ebb reads the morning flood as against it")
+	check(Tides.judge(july, 13.0, 2.0, "ebb").cur > 0.0, "and the afternoon ebb as with it")
+	if Leg.all().size() >= 3:
+		var home: Dictionary = Leg.all()[2]
+		var day3 := Tides.shifted({ "tides": [], "current": [{ "t": 90, "kn": 0.0 }, { "t": 270, "kn": -1.6 }, { "t": 460, "kn": 0.0 }, { "t": 610, "kn": 1.4 }, { "t": 790, "kn": 0.0 }], "floodSetDeg": 330, "wind": [{ "t": 360, "kn": 2, "fromDeg": 190 }] }, 100.0)
+		check(Tides.judge(day3, float(home.suggestedLaunch), 3.0, "ebb").verdict == "good", "the suggested first-light launch home rides the night's ebb")
 	check(absf(Leg.launch_hour() - Leg.LAUNCH_HOUR) < 1e-6, "with no App the launch is the default")
 	# The legs: two days over the real water, chained, read without an App.
 	var legs := Leg.all()
-	check(legs.size() >= 2, "two legs load from content/legs.json, got %d" % legs.size())
+	check(legs.size() >= 3, "three legs load from content/legs.json, got %d" % legs.size())
 	if legs.size() >= 2:
 		check(Leg.start(legs[1]).distance_to(Leg.cove(legs[0])) < 1.0, "day two starts in the cove day one landed in")
 		check(Leg.length_m(legs[0]) > 9000.0 and Leg.length_m(legs[1]) > 8000.0, "both legs are a day's paddle")

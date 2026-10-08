@@ -19,7 +19,7 @@ LEGS = [
         # side of Jones and round into the north cove, which opens to the north.
         'vias': [(420, -700), (900, -1900), (300, -3200), (-500, -5200), (-1500, -7200), (-1300, -8400), (-1500, -9700), (-2200, -9420)],
         'cove': (-2200, -9420), 'coveName': 'Jones Island north cove', 'headingDeg': 32,
-        'channel': 'San Juan Channel', 'floodSetDeg': 330,
+        'channel': 'San Juan Channel', 'floodSetDeg': 330, 'favours': 'flood', 'suggestedLaunch': 9.5,
         # Where the stream runs harder than the channel's figure: the narrows off Point Caution.
         'rips': [{'at': (840, -2320), 'radius': 900, 'factor': 1.35, 'name': 'off Point Caution'}],
         # What the shore shows at the evening low tide, from the field guide, in the order you meet it walking down.
@@ -32,10 +32,22 @@ LEGS = [
         # under Spieden's grass face, round Davison Head and into the lee of Posey Island.
         'vias': [(-2200, -9420), (-2200, -10050), (-5500, -10450), (-8500, -10400), (-10610, -9830)],
         'cove': (-10610, -9830), 'coveName': 'Posey Island', 'headingDeg': 0,
-        'channel': 'Spieden Channel', 'floodSetDeg': 285,  # the flood sets west through the channel toward Haro Strait
+        'channel': 'Spieden Channel', 'floodSetDeg': 285, 'favours': 'flood', 'suggestedLaunch': 9.5,  # the flood sets west through the channel toward Haro Strait
         'rips': [{'at': (-8500, -10400), 'radius': 1700, 'factor': 1.8, 'name': 'in the narrows of Spieden Channel'}, {'at': (-10000, -10300), 'radius': 800, 'factor': 1.4, 'name': 'off Davison Head'}],
         'shore': ['madrona', 'seaStar', 'nudibranch', 'sugarKelp'],
         'labels': ['jones', 'spieden', 'spiedenChannel', 'davisonHead', 'posey', 'rocheHarbor', 'yellow'],
+    },
+    {
+        'id': 'leg3', 'from': 'posey', 'to': 'fridayHarbor',
+        # Home on the ebb: back east through Spieden Channel as it empties toward San Juan Channel,
+        # then south down the channel past Jones, Yellow and the Labs to the float at Friday Harbor.
+        'vias': [(-10610, -9830), (-8500, -10400), (-5500, -10450), (-1500, -7200), (300, -3200), (900, -1900), (420, -700)],
+        'cove': (420, -700), 'coveName': 'Friday Harbor', 'headingDeg': 90,
+        'channel': 'Spieden Channel', 'floodSetDeg': 330, 'favours': 'ebb', 'suggestedLaunch': 6.0,  # first light, on the last of the night's ebb
+        'rips': [{'at': (-8500, -10400), 'radius': 1700, 'factor': 1.8, 'name': 'in the narrows of Spieden Channel'}, {'at': (840, -2320), 'radius': 900, 'factor': 1.35, 'name': 'off Point Caution'}],
+        # Under the town float at the end of the day: what lives in the harbour's calm water.
+        'shore': ['moonJelly', 'waterJelly', 'eelgrass'],
+        'labels': ['posey', 'spieden', 'jones', 'yellow', 'labs', 'fridayHarbor', 'shaw'],
     },
 ]
 
@@ -51,7 +63,7 @@ def main():
         legs.append({
             'id': leg['id'], 'from': leg['from'], 'to': leg['to'], 'coveName': leg['coveName'],
             'headingDeg': leg['headingDeg'], 'length_m': round(length(track)),
-            'channel': leg['channel'], 'floodSetDeg': leg['floodSetDeg'],
+            'channel': leg['channel'], 'floodSetDeg': leg['floodSetDeg'], 'favours': leg['favours'], 'suggestedLaunch': leg['suggestedLaunch'],
             'shore': leg['shore'],
             'rips': [{'at': list(r['at']), 'radius': r['radius'], 'factor': r['factor'], 'name': r['name']} for r in leg['rips']],
             'waypoints': [[x, z] for x, z in track], 'cove': list(leg['cove']), 'labels': leg['labels'],

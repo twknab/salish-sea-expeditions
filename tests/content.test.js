@@ -19,6 +19,7 @@ test('every shore walk names species the field guide has', () => {
   const ids = new Set(SPECIES.map((s) => s.id));
   for (const l of legs) {
     assert.ok(l.shore?.length >= 3, `${l.id} has a shore walk`);
+    assert.ok(['flood', 'ebb'].includes(l.favours), `${l.id} says which stream it rides`);
     for (const id of l.shore) assert.ok(ids.has(id), `${l.id} shore → unknown species ${id}`);
   }
 });

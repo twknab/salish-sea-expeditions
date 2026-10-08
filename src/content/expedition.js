@@ -50,6 +50,28 @@ export const LEGS = [
       ],
     },
   },
+  {
+    id: 'leg3',
+    from: 'posey', to: 'fridayHarbor',
+    title: 'Posey Island home to Friday Harbor',
+    steps: [
+      { id: 'route', title: 'The route', text: 'The long way home: east through Spieden Channel as it empties, then south down San Juan Channel past Jones Island, Yellow Island and the Labs to the town float at Friday Harbor. About eighteen kilometres, the longest day of the three, and the ebb does the work if you let it.', sourceIds: ['noaa-chart', 'noaa-tides'] },
+      { id: 'tide', title: 'Tide and current', text: 'This leg is the mirror of the first two. Leave Posey at first light, on the last of the night’s ebb: it runs east through Spieden Channel and south down San Juan Channel, the way you are going, before the southerly gets up. Leave mid-morning and you fight the flood; leave on the afternoon ebb and the wind stands it up against you.', sourceIds: ['noaa-tides'] },
+      { id: 'traffic', title: 'Traffic', text: 'The whale-watching fleet works Spieden Channel in the afternoon and the ferries own the harbour entrance. Come into Friday Harbor along the Brown Island side, out of the ferry lane, and cross it only when the dock is clear.', sourceIds: ['colregs', 'wsf', 'bewhalewise'] },
+      { id: 'bailout', title: 'Bail-outs', text: 'Jones Island’s south cove, the lee of Yellow Island, the Friday Harbor Labs shore: the same landings as the way out, in the other order. Nobody has to make it home in one push.', sourceIds: ['uscg', 'wa-parks-jones'] },
+      { id: 'file', title: 'Close the plan', text: 'The float plan ends when you tell the person ashore you have landed. Call before you unpack the boat, not after — a plan that is never closed is a search that starts without you.', sourceIds: ['uscg', 'cgaux-paddlers'] },
+    ],
+    landing: { title: 'The town float', text: 'Friday Harbor. Come alongside the float, out of the ferry’s way, and lift the boat out onto the planks. Three days and two islands behind you.', sourceIds: ['wsf', 'noaa-chart'] },
+    camp: {
+      place: 'fridayHarbor', name: 'Friday Harbor', kind: 'takeout',
+      steps: [
+        { id: 'close', title: 'Close the float plan', text: 'First, before the boat is even out of the water: the call ashore. You are landed, and nobody needs to come looking.', sourceIds: ['uscg', 'cgaux-paddlers'] },
+        { id: 'rinse', title: 'Rinse and fold', text: 'Fresh water through the boat and over the frame, then the skin off and the frame folded back into its bag. A folding kayak that goes away wet comes out of the bag next spring with a smell you will not forget.', sourceIds: ['trak'] },
+        { id: 'look', title: 'What you learned', text: 'You read a tide table and let a channel carry you. You crossed a ferry lane the right way, braced a wave you did not see coming, and left two islands as you found them. That is the whole of sea kayaking; everything after this is practice.', sourceIds: ['aca'] },
+        { id: 'ferry', title: 'The ferry home', text: 'The boat walks on in its bag, the way it came. Watch the islands go by from the rail and name them: you have paddled under most of them now.', sourceIds: ['wsf'] },
+      ],
+    },
+  },
 ];
 
 // The first leg, as the Phaser scenes and tests knew it.

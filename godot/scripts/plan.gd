@@ -38,7 +38,7 @@ func _ready() -> void:
 		hi = Vector3(maxf(hi.x, w.x), 0.0, maxf(hi.z, w.z))
 	var mid := (lo + hi) * 0.5
 	var extent := maxf(hi.x - lo.x, hi.z - lo.z)
-	var alt := clampf(extent * 0.72, 3600.0, 7600.0)
+	var alt := clampf(extent * 0.8, 3600.0, 10500.0)
 	_terrain.focus = mid
 	_sea.follow = _terrain  # the water sits still under the chart; the terrain node is at the origin
 	_cam = Camera3D.new()
@@ -124,7 +124,7 @@ func _on_launch(h: float) -> void:
 	_sea.apply_hour(h - 0.5)
 	_refresh_head()
 	if _verdict:
-		_verdict.text = Tides.verdict_line(_day, h, Leg.hours_at_touring_pace(_leg))
+		_verdict.text = Tides.verdict_line(_day, h, Leg.hours_at_touring_pace(_leg), str(_leg.get("favours", "flood")))
 
 func _refresh_head() -> void:
 	var h := Leg.launch_hour()
