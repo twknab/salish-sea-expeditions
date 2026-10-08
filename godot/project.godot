@@ -1,0 +1,50 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Salish Sea Expeditions"
+config/description="A realistic sea-kayaking game in the San Juan and Gulf Islands. Godot rewrite experiment."
+run/main_scene="res://scenes/title.tscn"
+config/features=PackedStringArray("4.5", "GL Compatibility")
+
+[autoload]
+
+App="*res://scripts/app.gd"
+Sound="*res://scripts/sound.gd"
+
+[display]
+
+window/size/viewport_width=390
+window/size/viewport_height=844
+window/size/mode=0
+window/stretch/mode="disabled"
+window/stretch/aspect="expand"
+
+[gui]
+
+theme/custom_font="res://fonts/DejaVuSans.ttf"
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=false
+pointing/emulate_mouse_from_touch=true
+
+[physics]
+
+common/physics_ticks_per_second=60
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
+anti_aliasing/quality/msaa_3d=0
+environment/defaults/default_clear_color=Color(0.055, 0.17, 0.2, 1)

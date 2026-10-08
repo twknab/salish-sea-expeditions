@@ -1,0 +1,12 @@
+# The Godot web export, served by the same zero-dependency Node server as the Phaser build.
+# The export itself is produced by CI (.github/workflows/godot.yml: Godot headless → build/web),
+# so this image only needs the exported files: build it after `--export-release Web`.
+#   docker build -f Dockerfile.godot -t sse-expedition .
+FROM node:22-alpine
+WORKDIR /app
+ENV NODE_ENV=production PORT=8080 STATIC_DIR=/app/web
+COPY server ./server
+COPY build/web ./web
+USER node
+EXPOSE 8080
+CMD ["node", "server/server.mjs"]

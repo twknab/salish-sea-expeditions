@@ -18,6 +18,7 @@ concurrency:
 env:
   REGION: us-west1
   SERVICE: salish-sea-expeditions
+  EXPEDITION_SERVICE: salish-sea-expedition
 jobs:
   deploy:
     if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
@@ -72,6 +73,68 @@ jobs:
           url="$(gcloud run services describe "$SERVICE" --project "${{ secrets.GCP_PROJECT }}" --region "$REGION" --format='value(status.url)')"
           for i in 1 2 3 4 5 6; do
             if curl -fsS "$url/health" >/dev/null; then echo "Deployed ${GITHUB_SHA::7} to $url" | tee -a "$GITHUB_STEP_SUMMARY"; exit 0; fi
+            sleep 10
+          done
+          echo "smoke test failed" >&2; exit 1
+
+  # The Godot build, to its own Cloud Run service (infra/service: `expedition_image`). Framed now,
+  # live later: it runs only once the repository variable EXPEDITION_DEPLOY is "true" and the same
+  # deploy secrets exist, and it ships the export the Godot workflow would have made, built here
+  # from the same commit so the image is traceable to it.
+  expedition:
+    if: vars.EXPEDITION_DEPLOY == 'true' && (github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'))
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 40
+    env:
+      GODOT_VERSION: 4.5-stable
+    steps:
+      - name: Skip until deploys are configured
+        id: cfg
+        run: |
+          if [ -z "${{ secrets.GCP_WIF_PROVIDER }}" ]; then
+            echo "Deploy secrets not set yet; see infra/README.md." | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.cfg.outputs.skip != 'true'
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - name: Install Godot and the web export templates
+        if: steps.cfg.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p ~/godot ~/.local/share/godot/export_templates/${GODOT_VERSION/-/.}
+          V=$GODOT_VERSION
+          curl -sSL -o /tmp/godot.zip "https://github.com/godotengine/godot/releases/download/$V/Godot_v${V}_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d ~/godot && mv ~/godot/Godot_v${V}_linux.x86_64 ~/godot/godot && chmod +x ~/godot/godot
+          curl -sSL -o /tmp/templates.tpz "https://github.com/godotengine/godot/releases/download/$V/Godot_v${V}_export_templates.tpz"
+          (cd ~/.local/share/godot/export_templates/${GODOT_VERSION/-/.} && unzip -o -q -j /tmp/templates.tpz 'templates/web_*' 'templates/version.txt')
+      - name: Export web
+        if: steps.cfg.outputs.skip != 'true'
+        run: |
+          ~/godot/godot --headless --path godot --import || true
+          mkdir -p build/web && ~/godot/godot --headless --path godot --export-release Web ../build/web/index.html
+      - uses: google-github-actions/auth@v2
+        if: steps.cfg.outputs.skip != 'true'
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_DEPLOY_SA }}
+      - uses: google-github-actions/setup-gcloud@v2
+        if: steps.cfg.outputs.skip != 'true'
+      - name: Build, push and roll out
+        if: steps.cfg.outputs.skip != 'true'
+        run: |
+          repo="$REGION-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/salish-sea-expeditions/expedition"
+          gcloud auth configure-docker "$REGION-docker.pkg.dev" --quiet
+          docker build --platform linux/amd64 -f Dockerfile.godot -t "$repo:${GITHUB_SHA::12}" .
+          docker push "$repo:${GITHUB_SHA::12}"
+          ref="$(docker inspect --format='{{index .RepoDigests 0}}' "$repo:${GITHUB_SHA::12}")"
+          gcloud run deploy "$EXPEDITION_SERVICE" --project "${{ secrets.GCP_PROJECT }}" --region "$REGION" --image "$ref" --quiet
+          gcloud run services update-traffic "$EXPEDITION_SERVICE" --project "${{ secrets.GCP_PROJECT }}" --region "$REGION" --to-latest --quiet
+          url="$(gcloud run services describe "$EXPEDITION_SERVICE" --project "${{ secrets.GCP_PROJECT }}" --region "$REGION" --format='value(status.url)')"
+          for i in 1 2 3 4 5 6; do
+            if curl -fsS "$url/health" >/dev/null; then echo "Deployed the Godot build ${GITHUB_SHA::7} to $url" | tee -a "$GITHUB_STEP_SUMMARY"; exit 0; fi
             sleep 10
           done
           echo "smoke test failed" >&2; exit 1

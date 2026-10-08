@@ -42,6 +42,8 @@ Terraform roots avoid the first-deploy trap: Cloud Run cannot start before an im
 | Pre-merge | `Checks` (`ci.yml`) | every pull request, and `main` | tests, build, every scene in headless Chromium (screenshots kept 7 days), server check, audit, Terraform fmt/validate |
 | Pre-merge | `Preview` (`preview.yml`) | pull requests from this repo | builds the PR, deploys a **no-traffic** revision tagged `pr-<n>`, posts its private URL on the PR; removes the tag when the PR closes |
 | Post-merge | `Deploy (post-merge)` (`deploy.yml`) | `Checks` passed on `main` | builds, pushes, rolls out to production (all traffic), checks `/health`; skips if a newer commit is already on `main` |
+| Pre-merge | `Godot` (`godot.yml`) | pull requests and `main` touching `godot/**` | GDScript lint, content tests, headless unit tests, every scene instantiated headless, the web export, the bare page in headless Chromium on a desktop window and on a phone (screenshots kept 7 days), and a build of `Dockerfile.godot` answering `/health` |
+| Post-merge | `Deploy (post-merge)` → `expedition` job | as above, **and** the repository variable `EXPEDITION_DEPLOY` is `true` | exports the Godot build, builds `Dockerfile.godot`, pushes it to the `expedition` image and rolls it out to the `salish-sea-expedition` service, checks `/health` |
 
 Previews and deploys need the three secrets (`GCP_PROJECT`, `GCP_DEPLOY_SA`, `GCP_WIF_PROVIDER`)
 and do nothing until they exist. No keys are stored anywhere: GitHub's OIDC token is exchanged for
@@ -52,6 +54,23 @@ environment in GitHub to gate deploys by hand.
 
 Terraform ignores the service's image and traffic after the first apply (CI owns rollouts and
 preview tags), so a later `terraform apply` never rolls the game back or removes a preview.
+
+## The Godot build: a second service, framed and off
+
+The rewrite on `experiment/godot-rewrite` ships as its own Cloud Run service, `salish-sea-expedition`,
+beside the first game, so both can be played and compared until one replaces the other. Everything
+is in place and nothing is created until it is switched on:
+
+1. `infra/service` has the service behind `expedition_image` (empty by default, so `terraform plan`
+   shows nothing for it). Turn it on with the first image's digest:
+   `terraform apply -var="expedition_image=us-west1-docker.pkg.dev/<project>/salish-sea-expeditions/expedition@sha256:…"`.
+   The image is built with `docker build -f Dockerfile.godot .` after a web export into `build/web`
+   (the `Godot` workflow's artifact is exactly that).
+2. Set the repository variable `EXPEDITION_DEPLOY=true`. From then on every merge to `main` that
+   passes `Checks` exports, builds, pushes and rolls out the Godot build too.
+
+The deploy job needs the same three secrets as the first game and nothing else; the deployer can
+already push to the registry and deploy revisions, and the service uses the same runtime account.
 
 ## Custom domain (optional)
 

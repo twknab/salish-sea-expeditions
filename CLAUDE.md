@@ -38,3 +38,31 @@ with `npx vite preview --port 4173` running, for a single screenshot.
 - Screens never pan or clip: content fits, or it is split into zoomed sub-screens (Kayak School).
 - Smoke helper: `INIT='{"sse.save.v1":{...}}'` seeds the save before `tests/smoke/shot.mjs` loads.
 - Spec Kit: non-trivial features go specify → plan → tasks → implement; commit the artifacts.
+
+## Godot rewrite (branch `experiment/godot-rewrite`)
+
+- `godot/` is a Godot 4.5 project (Compatibility renderer, web export without threads). Pure
+  logic lives in `class_name` scripts with static functions (`waves.gd`, `hull.gd`,
+  `stroke_math.gd`) so `tests/run_tests.gd` can run them headless; scene scripts stay thin.
+- GDScript gotchas paid for: a value pulled out of a Dictionary is a Variant, so `var x := d.key`
+  fails to infer — write `var x: float = d.key`. Run `--import` once before tests or export so
+  the global class cache knows the `class_name`s.
+- The sea shader and `waves.gd` must stay the same formula; the kayak floats on what is drawn.
+- Export size is the risk: 38 MB wasm. Measure on a phone before porting anything else
+  (`specs/007-godot-rewrite/spec.md`, go/no-go table).
+- Content, sounds and the soundtrack are generated: `node tools/export-content.mjs`,
+  `node tools/synth-audio.mjs`, `node tools/synth-soundtrack.mjs`; outputs are committed under
+  `godot/content` and `godot/audio`. `App` (autoload) owns the scene order; `Sound` owns loops,
+  one-shots and the stem moods. `?scene=ferry` jumps to a screen in the web build.
+- `tests/debug_scenes.gd` instantiates every scene headless; run it before an export.
+- The figure is `BodyMesh`: arrays built by hand with analytic normals. SurfaceTool will not merge
+  vertices that carry bone weights, so its generated normals come out faceted — do not go back to it
+  for skinned geometry.
+- The islands are data: `tools/geo/build_terrain.py` → `godot/terrain/{height.i16,cover.u8,terrain.json}`,
+  read by `terrain.gd` (`class_name Terrain`). Never put an image in `godot/terrain/`: Godot imports it
+  as a texture and packs it. The DEM flattens harbours to +1…2 m, so water is decided by cover **and**
+  height; the harbour bottom is synthesized by distance from shore until real soundings land.
+- `gdlint` runs in CI with `godot/.gdlintrc`; run it from `godot/` (it finds the config from the
+  working directory, not from the files).
+- `run/main_scene` must be `title.tscn`. Smoke scripts that pass `?scene=` never exercise the main
+  scene; `tests/smoke/godot-desktop-shot.mjs` loads the bare page and is the check for that.

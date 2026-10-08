@@ -1,22 +1,25 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 → 1.1.0 (MINOR: new principles added, education materially expanded;
-  nothing removed)
+- Version change: 1.1.0 → 1.2.0 (MINOR: guidance materially expanded after the first playable
+  pass and the move to Godot; no principle removed)
 - Principles:
   I. Teach Real Sea Kayaking (unchanged)
-  II. Real Place, Told With Respect → II. Teach the Whole Place (expanded: natural history,
-      island communities, paddling history)
-  NEW III. A Place of First Peoples
-  III. Honest About Safety → IV (renumbered)
-  NEW V. Beauty and Elegance (NON-NEGOTIABLE) — absorbs the visual half of old V
-  IV. Simulation With a Game Layer → VI (renumbered)
-  V. Beautiful and Mobile-First → VII. Mobile-First and Smooth (visual half moved to V)
-  VI. Real Imagery, Legally Sourced → VIII (renumbered; adds cultural-content sourcing)
-  VII. Simple, Testable, Deployable → IX (renumbered)
-- Added sections: none (principles only)
+  II. Teach the Whole Place → expanded: the world is built from real geographic data
+  III. A Place of First Peoples (unchanged)
+  IV. Honest About Safety (unchanged)
+  V. Beauty and Elegance → expanded: sound is a co-star; good paddling is near-silent; the
+     soundtrack is full pieces, not loops
+  VI. Simulation With a Game Layer → expanded: the game mirrors a real expedition's day rhythm
+  VII. Mobile-First and Smooth → VII. Desktop and Phone, Both Smooth
+  VIII. Real Imagery, Legally Sourced → expanded: the boat is an uncredited-by-name homage; the
+     maker's name and marks never appear
+  IX. Simple, Testable, Deployable → expanded: Godot 4 on the rewrite; mainstream libraries and
+     real datasets are preferred over hand-rolled approximations when they raise quality
+- Added sections: none
 - Templates: ✅ plan/spec/tasks templates derive gates from this file; no edit needed
 - Follow-up TODOs:
-  TRAK_PERMISSION — confirm with TRAK Kayaks whether the name and likeness may be used.
+  TRAK_PERMISSION — share the game with TRAK Kayaks as a love letter; names and marks stay out
+  until they say otherwise.
   CULTURAL_REVIEW — contact Coast Salish Tribes and First Nations cultural offices before any
   cultural content ships (see III).
 -->
@@ -58,6 +61,11 @@ paddler actually makes. Education extends beyond kayaking to three further subje
 - **History.** Including the history of paddling itself (see III).
 - Leave No Trace and Be Whale Wise approach distances are game rules with consequences, not
   flavour text.
+- **The world is the real one.** Coastlines, depths, elevation, land cover, towns, docks,
+  campsites and the ferry routes come from real datasets (hydrographic charts, elevation models,
+  land-cover maps, OpenStreetMap) turned into game terrain by a build script. Islands have their
+  real shapes at real scale; a tree stands only where the land cover says forest. Nothing is
+  invented where data exists.
 
 ### III. A Place of First Peoples
 
@@ -101,6 +109,14 @@ feature is judged against.
   moon jelly drifting beneath the hull, a kelp forest swaying in current.
 - **Elegance in the interface.** Calm, uncluttered, typographically refined; the interface
   recedes so the place can be seen. Somewhat realistic and colourful, never cartoonish.
+- **Sound is a co-star, not a bed.** Good paddling is nearly silent: a clean stroke is a soft
+  plant and a drip. The sea layer never drops out. The soundtrack is full pieces of music, three
+  to five minutes each, melodic and EDM-inspired, with arrangements that travel, one per mood,
+  rendered in stereo at full sample rate. Play talks to the music: cadence lands on the beat.
+- **Stunning, not merely correct.** Lit water with reflections, foam and depth colour; a boat
+  drawn with love down to its deck rigging; a human figure that moves like a paddler; a dome
+  compass that swings and settles. Where a mainstream library or a real dataset raises the
+  quality beyond what we can hand-roll, we bring it in (IX).
 - A feature that works but looks or sounds ordinary is not finished.
 
 ### VI. Simulation With a Game Layer
@@ -112,18 +128,28 @@ The feel is a somewhat-realistic simulator with game rewards on top.
   distance, field-guide entries, and clean camps.
 - A trip MUST mix activity types (planning, packing, paddling, navigating, rescuing, camping,
   exploring tide pools, observing wildlife) so the game is never only paddling.
-- The boat is a TRAK folding sea kayak — the only boat in the game — and its real characteristics
-  (assembly, packability, adjustable hull) are part of play.
+- The boat is a skin-on-frame folding sea kayak — the only boat in the game — and its real
+  characteristics (assembly, packability, adjustable hull, float bags) are part of play.
+- **The game mirrors a real expedition's rhythm.** Paddling is the spine; each paddle leads to a
+  short hands-on station and back: float plan, pack and trim, launch, paddle the leg, land, make
+  camp, explore, night out, next morning's float plan. Each station teaches one or two real
+  practices in two to five minutes. This is how the skills of sea kayaking are actually learned.
+- The first stroke comes within two minutes of the title. Everything else arrives when the trip
+  needs it.
 
-### VII. Mobile-First and Smooth
+### VII. Desktop and Phone, Both Smooth
 
-iPhone Safari is the primary target.
+The game is built and tested on desktop first, because that is where it is developed, and it
+MUST be equally at home on a phone, because that is where it will be played.
 
-- Render at native device resolution; WebGL shaders and post-effects carry the beauty in V.
-- Touch-first controls usable one-handed where possible; respect safe areas; installable as a PWA.
-- Sustain 60 fps on a recent iPhone; any effect that cannot is scaled down gracefully, never
-  shipped janky.
-- Camera perspective (top-down, cockpit POV, or a mix) is decided by prototype, not by assumption.
+- Controls are intent-based, not gesture-per-stroke: hold to paddle at a cadence, lean the hold
+  to steer, accent a stroke to practise technique, reverse, brace, edge. Desktop has keys and
+  mouse; the phone has touch and tilt. Each gets first-time callouts and a Controls page.
+- Every screen is checked in both a wide desktop window and a phone-portrait window, loading the
+  bare page (no debug parameters), before it ships.
+- Sustain 60 fps on a recent laptop and a recent iPhone; any effect that cannot is scaled down
+  gracefully, never shipped janky.
+- Camera perspective (chase, cockpit, high) is decided by prototype, not by assumption.
 
 ### VIII. Real Imagery, Legally and Respectfully Sourced
 
@@ -135,20 +161,29 @@ supplied by the owner.
 - Every external source is recorded in a credits data file and shown on an in-game Credits screen.
 - Cultural material follows III: sourced from the Nations' own publications, credited, and never
   used where permission is unclear.
-- Third-party trademarks (including TRAK) are used only with the owner's permission; until then
-  the boat is described generically.
+- The boat is a homage to a real folding kayak. Its colourways, rigging and internals are
+  studied and modelled; the maker's name and marks never appear in art, text or interface, and
+  the credits name the inspiration plainly. The game will be shared with the maker as a gift.
+- Species, plants and places are each their own real asset, modelled on references, credited.
 
 ### IX. Simple, Testable, Deployable
 
-- Plain JavaScript ES modules; no framework beyond Phaser 3 without an explicit decision.
+- The shipped game on `main` is Phaser 4 + three.js; the rewrite on `experiment/godot-rewrite`
+  is Godot 4 with the Compatibility renderer and a web export without threads. Each stays honest
+  about what it is until the go/no-go in spec 007 is decided.
 - Simulation logic (tides, currents, wind, energy, cold-water timer, skill progression, scoring)
-  lives in pure functions with `node:test` unit tests, separate from Phaser scenes.
+  lives in pure functions with unit tests (`node:test` in JavaScript, headless `run_tests.gd` in
+  GDScript), separate from scenes.
+- **Mainstream libraries and real datasets over hand-rolled approximations** whenever they raise
+  quality: terrain from elevation tiles, land cover from satellite maps, audio rendered through
+  a real Web Audio engine, models from CC0 libraries where they fit. Each is recorded in an ADR
+  with its licence, and in the credits.
 - Infrastructure is Terraform; nothing is clicked into existence. No secrets in source.
 
 ## Platform & Deployment Constraints
 
-- Stack: Phaser 3 + Vite, built into a container served by a small dependency-free Node server,
-  deployed to Google Cloud Run. Firestore backs any shared state (leaderboard). Terraform follows
+- Stack: Phaser 4 + Vite on `main`, Godot 4 on the rewrite branch; either is built into a
+  container served by a small dependency-free Node server, deployed to Google Cloud Run. Firestore backs any shared state (leaderboard). Terraform follows
   the `infra/bootstrap` + `infra/service` pattern proven in Plumber Wars.
 - Progress saves locally in the browser; no account is required to play.
 - The game MUST work offline once loaded, except for leaderboard features.
@@ -157,8 +192,9 @@ supplied by the owner.
 
 - Non-trivial features go through Spec Kit: specify → clarify → plan → tasks → analyze → implement.
 - Every spec MUST list which principles it serves and how its lessons are verified as accurate.
-- Before merge: `npm test` passes, `npm run build` succeeds, and the change is checked on a
-  phone-sized viewport — looking and listening, not only functioning (V).
+- Before merge: `npm test` passes, `npm run build` succeeds (and the Godot tests, export and
+  bare-page screenshots on the rewrite), and the change is checked in a desktop window and a
+  phone-sized viewport — looking and listening, not only functioning (V, VII).
 - Any change that adds cultural content lists its sources and review status in the PR (III).
 - Small, focused commits; one branch per feature.
 
@@ -170,4 +206,4 @@ principle, MINOR for adding a principle or materially expanding guidance, PATCH 
 and reviews MUST check compliance; any deviation is justified in the plan's Complexity Tracking
 table.
 
-**Version**: 1.1.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-09-30
+**Version**: 1.2.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-08

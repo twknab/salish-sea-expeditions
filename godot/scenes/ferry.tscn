@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://sse_ferry_scene"]
+
+[ext_resource type="Script" path="res://scripts/ferry.gd" id="1"]
+
+[node name="Ferry" type="Node3D"]
+script = ExtResource("1")

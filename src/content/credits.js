@@ -3,6 +3,10 @@
 // the build environment could not reach most of these sites.
 
 export const CREDITS = [
+  { id: 'godot', title: 'Godot Engine 4.5', author: 'Godot Engine contributors', licence: 'MIT', url: 'https://godotengine.org', usedFor: 'The 3D rewrite on the experiment branch' },
+  { id: 'terrain-tiles', title: 'AWS Terrain Tiles (Mapzen / Tilezen)', author: 'USGS 3DEP, SRTM and ETOPO1 via Mapzen', licence: 'Public-domain sources; tiles CC0', url: 'https://registry.opendata.aws/terrain-tiles/', usedFor: 'The real heights of the islands and the seabed in the Godot version (tools/geo/build_terrain.py)' },
+  { id: 'worldcover', title: 'ESA WorldCover 2021 v200', author: 'European Space Agency', licence: 'CC BY 4.0', url: 'https://esa-worldcover.org/', usedFor: 'What grows where: forest, meadow, rock and towns on the real islands in the Godot version' },
+  { id: 'dejavu', title: 'DejaVu Sans', author: 'DejaVu Fonts', licence: 'Bitstream Vera licence (free, with attribution)', url: 'https://dejavu-fonts.github.io/', usedFor: 'The Godot version’s interface font, for its coverage of Coast Salish orthographies' },
   { id: 'trak', title: 'TRAK 2.0 specifications and FAQ', author: 'TRAK Kayaks', licence: 'Facts cited; no marks or images used', url: 'https://www.trakkayaks.com/pages/faq', usedFor: 'The folding kayak: dimensions, hull jacks, flotation bags, assembly time' },
   { id: 'paddlingmag', title: 'Folding kayak review: TRAK 2.0', author: 'Paddling Magazine', licence: 'Facts cited', url: 'https://paddlingmag.com/boats/kayaks/folding-kayak-review-trak-2-0-touring-kayak/', usedFor: 'Hull jacks and rocker adjustment while paddling' },
   { id: 'aca', title: 'Coastal Kayaking skills curriculum', author: 'American Canoe Association', licence: 'Technique cited', url: 'https://americancanoe.org', usedFor: 'Strokes, edging, bracing, rescues, rolling', verify: true },

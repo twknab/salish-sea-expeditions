@@ -1,0 +1,9 @@
+# gdlint (gdtoolkit 4) — the gate .github/workflows/godot.yml runs over godot/scripts and godot/tests.
+# Structural checks stay on. Two are relaxed on purpose:
+#  - max-line-length: the scenes carry their teaching copy as string literals, and a sentence is
+#    not improved by a line break in the middle of it; the limit is set where it still catches
+#    code (not prose) that has grown too wide.
+#  - class-definitions-order: the scripts group members by what they are for, not by kind.
+max-line-length: 400
+disable:
+  - class-definitions-order

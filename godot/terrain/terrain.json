@@ -1,0 +1,187 @@
+{
+ "origin": {
+  "lat": 48.5343,
+  "lon": -123.017,
+  "name": "Friday Harbor"
+ },
+ "bbox": {
+  "lon_min": -123.2,
+  "lat_min": 48.45,
+  "lon_max": -122.64,
+  "lat_max": 48.72
+ },
+ "width": 860,
+ "height": 622,
+ "metres_per_pixel": 48.0,
+ "top_left": {
+  "x": -13489.5,
+  "z": -20533.6
+ },
+ "height_encoding": {
+  "file": "height.i16",
+  "formula": "metres = value / 10",
+  "type": "int16 little-endian, row-major from the top-left",
+  "cover": "cover.u8"
+ },
+ "cover_classes": {
+  "10": "tree cover",
+  "20": "shrubland",
+  "30": "grassland",
+  "40": "cropland",
+  "50": "built-up",
+  "60": "bare",
+  "80": "water",
+  "90": "wetland",
+  "95": "mangrove",
+  "100": "moss"
+ },
+ "sources": [
+  {
+   "id": "terrain-tiles",
+   "title": "AWS Terrain Tiles (Mapzen/Tilezen; USGS 3DEP, SRTM, ETOPO1)",
+   "licence": "public domain sources; tiles CC0 by Mapzen",
+   "url": "https://registry.opendata.aws/terrain-tiles/"
+  },
+  {
+   "id": "worldcover",
+   "title": "ESA WorldCover 2021 v200",
+   "licence": "CC BY 4.0",
+   "url": "https://esa-worldcover.org/"
+  }
+ ],
+ "places": [
+  {
+   "id": "anacortes",
+   "name": "Anacortes ferry terminal",
+   "lat": 48.5069,
+   "lon": -122.6796,
+   "x": 24870.7,
+   "z": 3029.7
+  },
+  {
+   "id": "thatcher",
+   "name": "Thatcher Pass",
+   "lat": 48.53,
+   "lon": -122.805,
+   "x": 15627.1,
+   "z": 475.5
+  },
+  {
+   "id": "harney",
+   "name": "Harney Channel",
+   "lat": 48.584,
+   "lon": -122.915,
+   "x": 7518.7,
+   "z": -5495.5
+  },
+  {
+   "id": "wasp",
+   "name": "Wasp Passage",
+   "lat": 48.59,
+   "lon": -122.99,
+   "x": 1990.2,
+   "z": -6159.0
+  },
+  {
+   "id": "fridayHarbor",
+   "name": "Friday Harbor",
+   "lat": 48.5343,
+   "lon": -123.017,
+   "x": 0.0,
+   "z": -0.0
+  },
+  {
+   "id": "labs",
+   "name": "Friday Harbor Laboratories",
+   "lat": 48.5455,
+   "lon": -123.015,
+   "x": 147.4,
+   "z": -1238.4
+  },
+  {
+   "id": "brown",
+   "name": "Brown Island",
+   "lat": 48.5378,
+   "lon": -123.0045,
+   "x": 921.4,
+   "z": -387.0
+  },
+  {
+   "id": "turn",
+   "name": "Turn Island",
+   "lat": 48.5322,
+   "lon": -122.971,
+   "x": 3390.8,
+   "z": 232.2
+  },
+  {
+   "id": "shaw",
+   "name": "Shaw Island landing",
+   "lat": 48.584,
+   "lon": -122.928,
+   "x": 6560.5,
+   "z": -5495.5
+  },
+  {
+   "id": "yellow",
+   "name": "Yellow Island",
+   "lat": 48.589,
+   "lon": -123.033,
+   "x": -1179.4,
+   "z": -6048.4
+  },
+  {
+   "id": "jones",
+   "name": "Jones Island north cove",
+   "lat": 48.616,
+   "lon": -123.046,
+   "x": -2137.7,
+   "z": -9033.9
+  },
+  {
+   "id": "jonesSouth",
+   "name": "Jones Island south cove",
+   "lat": 48.609,
+   "lon": -123.045,
+   "x": -2064.0,
+   "z": -8259.9
+  },
+  {
+   "id": "spieden",
+   "name": "Spieden Island",
+   "lat": 48.65,
+   "lon": -123.12,
+   "x": -7592.4,
+   "z": -12793.4
+  },
+  {
+   "id": "orcas",
+   "name": "Orcas Island landing",
+   "lat": 48.598,
+   "lon": -122.944,
+   "x": 5381.0,
+   "z": -7043.6
+  },
+  {
+   "id": "lopez",
+   "name": "Lopez Island landing",
+   "lat": 48.57,
+   "lon": -122.883,
+   "x": 9877.5,
+   "z": -3947.5
+  },
+  {
+   "id": "sanJuanChannel",
+   "name": "San Juan Channel",
+   "lat": 48.56,
+   "lon": -122.97,
+   "x": 3464.5,
+   "z": -2841.8
+  }
+ ],
+ "stats": {
+  "land_pixels": 217228,
+  "max_height_m": 726.9828491210938,
+  "min_height_m": -200.0
+ }
+}

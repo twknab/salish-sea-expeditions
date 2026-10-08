@@ -1,0 +1,123 @@
+## Autoload: the sea's voice. Loops for water and wind that follow the sea state, splashes and
+## drips for every stroke, a hull slap for a wave on the beam, the ferry's horn, a gull now and
+## then. Every file is synthesized by tools/synth-audio.mjs — nothing sampled, nothing to licence.
+extends Node
+
+var _water: AudioStreamPlayer
+var _wind: AudioStreamPlayer
+var _one: Array[AudioStreamPlayer] = []
+var _streams := {}
+var _sea := 0.2
+var _gull_t := 12.0
+var _enabled := true
+
+## The soundtrack: six stems rendered by tools/synth-soundtrack.mjs, all 16 bars at 122 bpm, started
+## together so they stay locked; a mood is a set of stem levels, crossfaded over a few seconds.
+const STEMS := ["music_kick", "music_bass", "music_hats", "music_arp", "music_pad", "music_tex"]
+const MOODS := {
+	"off":     { "music_kick": -80, "music_bass": -80, "music_hats": -80, "music_arp": -80, "music_pad": -80, "music_tex": -80 },
+	"title":   { "music_kick": -80, "music_bass": -80, "music_hats": -80, "music_arp": -22, "music_pad": -14, "music_tex": -20 },
+	"calm":    { "music_kick": -80, "music_bass": -26, "music_hats": -30, "music_arp": -20, "music_pad": -14, "music_tex": -22 },
+	"ferry":   { "music_kick": -16, "music_bass": -16, "music_hats": -20, "music_arp": -18, "music_pad": -16, "music_tex": -20 },
+	"drive":   { "music_kick": -13, "music_bass": -14, "music_hats": -18, "music_arp": -15, "music_pad": -18, "music_tex": -18 },
+}
+var _music := {}
+var _music_target := {}
+var _music_on := true
+
+func _ready() -> void:
+	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull"] + STEMS:
+		var s := _load("res://audio/%s.wav" % n)
+		if s:
+			_streams[n] = s
+	_water = _loop("water_loop", -14.0)
+	_wind = _loop("wind_loop", -26.0)
+	for i in range(6):
+		var p := AudioStreamPlayer.new()
+		add_child(p)
+		_one.append(p)
+	for n in STEMS:
+		_music[n] = _loop(n, -80.0)
+		_music_target[n] = -80.0
+	mood("title")
+
+func _load(path: String) -> AudioStreamWAV:
+	var s: AudioStreamWAV = null
+	if FileAccess.file_exists(path):
+		s = AudioStreamWAV.load_from_file(path)
+	if s == null:
+		var r = load(path)
+		if r is AudioStreamWAV:
+			s = r
+	return s
+
+func _loop(name: String, db: float) -> AudioStreamPlayer:
+	var p := AudioStreamPlayer.new()
+	var s: AudioStreamWAV = _streams.get(name)
+	if s:
+		s.loop_mode = AudioStreamWAV.LOOP_FORWARD
+		s.loop_begin = 0
+		s.loop_end = s.data.size() / 2
+		p.stream = s
+	p.volume_db = db
+	p.autoplay = true
+	add_child(p)
+	if s:
+		p.play()
+	return p
+
+func set_sea(sea_state: float) -> void:
+	_sea = clampf(sea_state, 0.0, 1.0)
+	_water.volume_db = lerpf(-18.0, -8.0, _sea)
+	_wind.volume_db = lerpf(-30.0, -12.0, _sea)
+
+func set_enabled(on: bool) -> void:
+	_enabled = on
+	AudioServer.set_bus_mute(0, not on)
+
+func _play(name: String, db: float, pitch := 1.0) -> void:
+	if not _streams.has(name):
+		return
+	for p in _one:
+		if not p.playing:
+			p.stream = _streams[name]
+			p.volume_db = db
+			p.pitch_scale = pitch
+			p.play()
+			return
+
+## A paddle plant: soft and sweet for a clean stroke, a little louder and lower for a hard one.
+func splash(strength := 0.6) -> void:
+	_play("splash_%d" % (randi() % 3 + 1), lerpf(-20.0, -10.0, clampf(strength, 0.0, 1.0)), randf_range(0.92, 1.08))
+	get_tree().create_timer(randf_range(0.35, 0.6)).timeout.connect(func() -> void: _play("drip_%d" % (randi() % 2 + 1), -22.0, randf_range(0.9, 1.1)))
+
+func hull_slap(strength := 0.6) -> void:
+	_play("hull_slap", lerpf(-22.0, -10.0, strength), randf_range(0.9, 1.1))
+
+func horn() -> void:
+	_play("ferry_horn", -6.0)
+
+func gull() -> void:
+	_play("gull", -20.0, randf_range(0.9, 1.15))
+
+## Pick the soundtrack's mood; stems glide to their new levels.
+func mood(name: String) -> void:
+	var m: Dictionary = MOODS.get(name, MOODS.off)
+	for n in STEMS:
+		_music_target[n] = float(m[n]) if _music_on else -80.0
+
+func set_music(on: bool) -> void:
+	_music_on = on
+	if not on:
+		for n in STEMS:
+			_music_target[n] = -80.0
+
+func _process(delta: float) -> void:
+	for n in STEMS:
+		var p: AudioStreamPlayer = _music[n]
+		var want: float = _music_target[n]
+		p.volume_db = move_toward(p.volume_db, want, delta * (40.0 if want < p.volume_db else 18.0))
+	_gull_t -= delta
+	if _gull_t <= 0.0:
+		_gull_t = randf_range(14.0, 36.0)
+		gull()

@@ -1,0 +1,14 @@
+import { chromium } from 'playwright';
+import { createServer } from '../../server/server.mjs';
+const server = createServer(process.argv[2]);
+await new Promise((r) => server.listen(4176, r));
+const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
+const logs = [];
+page.on('console', (m) => logs.push(m.type() + ': ' + m.text()));
+page.on('pageerror', (e) => logs.push('pageerror: ' + e.message));
+await page.goto('http://localhost:4176/salish-sea-godot-demo.html');
+await page.waitForTimeout(30000);
+await page.screenshot({ path: 'tests/smoke/out/godot-demo.png' });
+console.log(logs.slice(0, 40).join('\n'));
+await browser.close(); server.close();
