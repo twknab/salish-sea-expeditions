@@ -126,5 +126,9 @@ func _place() -> void:
 	if d.length() > 0.5:
 		look_at(global_position + d, Vector3.UP)
 
+## Alongside at a landing: no warning, no horn, no wake.
+func docked() -> bool:
+	return _dwell > 0.0 and (_s <= 0.0 or _s >= _length)
+
 func distance_to_boat(pos: Vector3) -> float:
 	return Vector2(pos.x - global_position.x, pos.z - global_position.z).length()

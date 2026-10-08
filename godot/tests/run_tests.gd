@@ -155,6 +155,13 @@ func _init() -> void:
 	check(Traffic.point_at(tr, cum, 0.0).is_equal_approx(Vector3.ZERO) and Traffic.point_at(tr, cum, 2000.0).is_equal_approx(Vector3(1000, 0, 1000)), "the ends are the ends")
 	check(Traffic.point_at(tr, cum, 1500.0).is_equal_approx(Vector3(1000, 0, 500)), "halfway up the second leg")
 	check(absf(Traffic.nearest_s(tr, cum, Vector3(500.0, 0.0, 300.0)) - 500.0) < 1e-3, "the nearest point on the track to a boat beside it")
+	# The partner's station is off the starboard quarter however the player is pointed; the preset is never the player's.
+	var st := Partner.station_for(Vector3.ZERO, Basis.IDENTITY)
+	check(st.x > 0.0 and st.z < 0.0 and absf(st.y) < 1e-6, "station is starboard and a little ahead of a boat facing north")
+	var turned := Partner.station_for(Vector3.ZERO, Basis(Vector3.UP, PI / 2.0))
+	check(absf(turned.length() - st.length()) < 1e-3 and not turned.is_equal_approx(st), "the station turns with the boat")
+	var presets := [{ "id": "a", "skin": "tan", "hair": "dark", "style": "short" }, { "id": "b", "skin": "deep", "hair": "black", "style": "crop" }]
+	check(Partner.pick_preset(presets, { "skin": "tan", "hair": "dark", "style": "short" }).id == "b", "the partner is not dressed as the player")
 	var paddle := Paddler.greenland_paddle()
 	check(paddle.get_aabb().size.x > 2.1 and paddle.get_aabb().size.z < 0.1, "Greenland paddle is long and narrow")
 	print("tests: %d passed, %d failed" % [_n - _fails, _fails])

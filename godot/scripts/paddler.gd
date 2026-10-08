@@ -7,6 +7,7 @@ extends Node3D
 
 @export var dress := 4
 @export var standing := false
+var who_override: Dictionary = {}   # a look other than the player's (the partner wears one)
 
 const PADDLE_LEN := 2.2
 const HAND := 0.33
@@ -37,7 +38,7 @@ func build() -> void:
 	for c in get_children():
 		c.queue_free()
 	var suit_color: Color = [Color("8a98a8"), Color("1c2f4a"), Color("1f6f78"), Color("1f6f78"), Color("1f6f78")][clampi(dress, 0, 4)]
-	var who := _who()
+	var who := who_override if not who_override.is_empty() else _who()
 	var palette := {
 		"skin": who.skin, "suit": suit_color, "pfd": who.pfd, "gasket": Color("151718"),
 		"glove": Color("1a1d20"), "boot": Color("1a1d20"), "cap": Color("1a1d20"), "hair": who.hair, "style": who.style,

@@ -164,8 +164,11 @@ func _load() -> void:
 
 ## The paddler's look, resolved from the save against the parts in content: colours and scale.
 func paddler() -> Dictionary:
+	return look_for(save.get("paddler", {}))
+
+## A look resolved from a pick of parts (a preset's, or the save's): colours and scale.
+func look_for(pick: Dictionary) -> Dictionary:
 	var parts: Dictionary = content.get("paddlerParts", {})
-	var pick: Dictionary = save.get("paddler", {})
 	var out := { "skin": Color("c9a07a"), "hair": Color("4a3626"), "style": "short", "scale": 1.0, "pfd": Color("f2d016") }
 	for p in parts.get("skin", []):
 		if p.id == pick.get("skin", ""):

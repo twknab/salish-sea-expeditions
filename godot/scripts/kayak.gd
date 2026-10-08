@@ -28,6 +28,7 @@ var _over_t := 0.0
 const SETTLE := 0.1
 var _probes: Array[Vector3] = []
 var _paddler: Paddler
+var paddler_look: Dictionary = {}   # set before the kayak enters the tree to dress someone other than the player
 var _hull_mesh: MeshInstance3D
 var _mark: MeshInstance3D
 
@@ -53,6 +54,7 @@ func _ready() -> void:
 	for side in [-1.0, 1.0]:
 		_probes.append(Vector3(side * Hull.half_beam(0.45) * 0.8, hc.chine, -Hull.x_at(0.45)))
 	_paddler = Paddler.new()
+	_paddler.who_override = paddler_look
 	_paddler.position = Vector3(0.0, 0.16, 0.0)
 	add_child(_paddler)
 
@@ -196,6 +198,11 @@ func right() -> void:
 	over = false
 	_over_t = 0.0
 	_wobble_t = 0.0
+
+## The figure takes a stroke without the boat being driven: a partner's boat is moved by its station, not by physics.
+func stroke_anim(side: int) -> void:
+	if _paddler:
+		_paddler.begin_stroke(side, "forward")
 
 ## A forward stroke on one side. q is rotation quality 0..1.
 func stroke(side: int, q: float) -> void:
