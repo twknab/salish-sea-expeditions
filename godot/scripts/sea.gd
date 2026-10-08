@@ -623,7 +623,7 @@ func _finish_school() -> void:
 	controls.visible = false
 	_drill_bar.visible = false
 	_clear_card()
-	_card = UIKit.card("Kayak School complete", "Power from the torso, control from the hips, head down in a brace. Everything from here builds on this.", App.sources_line(["aca"]), [["Onto the water", func() -> void: App.next(), true]], "Kayak School")
+	_card = UIKit.card("Kayak School complete", "Power from the torso, control from the hips, head down in a brace. Everything from here builds on this.", App.sources_line(["aca"]), [["Pack the boat", func() -> void: App.next(), true]], "Kayak School")
 	_ui.add_child(UIKit.spacer())
 	_ui.add_child(_card)
 

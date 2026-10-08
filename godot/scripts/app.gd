@@ -29,6 +29,11 @@ var school_from := 0        # school phase to resume at
 var _home: CanvasLayer
 var _title_btn: Button
 var _pause_btn: Button
+var _perf: Label            # `?perf=1`: the go/no-go numbers on screen, for a phone in the hand
+var _perf_t := 0.0
+var _perf_min_fps := 1000.0
+var _first_frame_ms := -1.0
+var _perf_said := false
 var _pause_layer: CanvasLayer   # the pause card, over everything, alive while the tree is paused
 
 func _ready() -> void:
@@ -85,6 +90,16 @@ func _ready() -> void:
 	var launch_param := _url_param("launch")  # `?launch=15` chooses the launch hour, for checks
 	if launch_param != "":
 		save.launchHour = float(launch_param)
+	if _url_param("perf") == "1":
+		_perf = UIKit.label("", 11, UIKit.SUN, false)
+		_perf.position = Vector2(12, 0)
+		_perf.size = Vector2(380, 18)
+		_perf.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+		_perf.offset_top = -22
+		_perf.offset_bottom = -4
+		_perf.offset_left = 12
+		_perf.offset_right = 392
+		_home.add_child(_perf)
 	var want := _url_param("scene")
 	if want != "" and SCENES.has(want):
 		call_deferred("go", want)
@@ -176,6 +191,37 @@ func set_paused(on: bool) -> void:
 	elif _pause_layer:
 		_pause_layer.queue_free()
 		_pause_layer = null
+
+## The go/no-go rows of specs/007-godot-rewrite/spec.md, measured where they matter: on the phone in
+## the hand. Frames per second now and the worst of the last ten seconds, the frame time, the time
+## from the page starting to load to the first frame drawn, the engine's memory, and the device.
+## Printed once to the console at ten seconds, so a smoke run can read it too.
+func _process(delta: float) -> void:
+	if _perf == null:
+		return
+	if _first_frame_ms < 0.0:
+		_first_frame_ms = float(JavaScriptBridge.eval("performance.now()")) if OS.has_feature("web") else float(Time.get_ticks_msec())
+	_perf_t += delta
+	var fps := Engine.get_frames_per_second()
+	if _perf_t > 2.0:
+		_perf_min_fps = minf(_perf_min_fps, fps)
+	if fmod(_perf_t, 0.5) < delta:
+		var mb := int(Performance.get_monitor(Performance.MEMORY_STATIC) / 1048576.0)  # the web build reports none; Chrome's heap stands in
+		if mb == 0 and OS.has_feature("web"):
+			mb = int(float(JavaScriptBridge.eval("(performance.memory && performance.memory.usedJSHeapSize) || 0")) / 1048576.0)
+		_perf.text = "%d fps · worst %d · %.1f ms · first frame %.1f s%s · %s" % [fps, int(_perf_min_fps) if _perf_min_fps < 1000.0 else fps, Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, _first_frame_ms / 1000.0, (" · %d MB" % mb) if mb > 0 else "", _device()]
+	if _perf_t > 10.0 and not _perf_said:
+		_perf_said = true
+		print("PERF ", _perf.text)
+
+func _device() -> String:
+	if not OS.has_feature("web"):
+		return OS.get_name()
+	var ua := str(JavaScriptBridge.eval("navigator.userAgent"))
+	for k in ["iPhone", "iPad", "Android", "Macintosh", "Windows", "Linux"]:
+		if ua.contains(k):
+			return k
+	return "web"
 
 func _unhandled_input(ev: InputEvent) -> void:
 	if ev is InputEventKey and ev.pressed and not ev.echo and (ev.keycode == KEY_ESCAPE or ev.keycode == KEY_P) and _pause_btn.visible:

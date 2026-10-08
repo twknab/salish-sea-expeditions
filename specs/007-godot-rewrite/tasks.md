@@ -201,6 +201,10 @@
 
 - [x] T014ay `tests/smoke/godot-stations.mjs`: every station of the export opened from its check URL in a fresh page, a page error or a GDScript error anywhere failing the run, the screenshots kept as artifacts. CI runs it after the export, so the sweep that was done by hand after each slice is done by the machine on every push
 
+## Slice 36 — the numbers on the phone
+
+- [x] T014az `?perf=1` shows the go/no-go rows where they matter, on the phone in the hand: frames per second now and the worst of the last ten seconds, the frame time, the time from the page starting to load to the first frame, the engine's memory, and the device; printed once to the console at ten seconds for a smoke run. Kayak School's last card now says "Pack the boat", which is where it goes
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
