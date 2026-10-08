@@ -281,6 +281,10 @@
 
 - [x] T014bs README's Godot paragraph describes the expedition as it is after fifty-four slices (the two days, the fog, the fleet, the camp's choices, the ferry home, the seamanship calls) and the check URLs that open each of them; CLAUDE.md gains the gotchas paid for this run (autoload-reading classes hang the headless tests, `signal` after `extends`, the spawn-before-near order).
 
+## Slice 56 — a bearing held on the compass
+
+- [x] T014bt Kayak School teaches the compass before the fog needs it: a seventh drill, before the rescue, puts a mark on the dome seventy degrees round from the bow and asks for the bearing held within ten degrees for twelve seconds under way (`compass` in `src/content/anatomy.js`; the mark is the trip's own destination mark, cleared when the drill ends). The tour says seven drills; the debrief counts them. `?scene=school&drill=compass`; `school-compass` joins the sweep.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

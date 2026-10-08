@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-06
 
-**Status**: Experiment — fifty-five slices merged (see "What exists today" below and
+**Status**: Experiment — fifty-six slices merged (see "What exists today" below and
 tasks.md); go/no-go pending the mobile Safari measurement from the Cloud Run URL (see research.md
 and the table at the end)
 
@@ -22,8 +22,8 @@ The Godot build on `main` is a complete three-day expedition, not a tech demo:
 - **The opening**: title, land acknowledgment and safety note, outfitting (six paddler presets or
   a custom look, kit, skins), the ferry from Anacortes as a chart flyover over the real route with
   a rail view, the boat assembled on the beach (the frame into the skin, the jacks tensioned by
-  hand, and the hull only as good as its tension), Kayak School (boat, body and paddle, then six
-  drills, the last of them the solo rescue), and packing the boat on the
+  hand, and the hull only as good as its tension), Kayak School (boat, body and paddle, then seven
+  drills, a bearing held on the compass among them and the last of them the solo rescue), and packing the boat on the
   float: heavy low and central, the essentials or you go without, and the trim you chose is the
   boat you paddle.
 - **Three days on real water**: Friday Harbor to Jones Island, Jones through Spieden Channel to

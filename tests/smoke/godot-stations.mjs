@@ -16,6 +16,7 @@ const STATIONS = [
   ['ferry-home', '?scene=ferry&home=1&at=0.3&view=rail'],
   ['assemble', '?scene=assemble&step=3'],
   ['school-drill', '?scene=school&drill=rescue'],
+  ['school-compass', '?scene=school&drill=compass'],
   ['pack', '?scene=pack&pack=ideal'],
   ['plan', '?scene=plan&step=1'],
   ['trip', '?scene=trip'],
