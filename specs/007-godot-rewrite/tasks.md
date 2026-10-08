@@ -213,6 +213,10 @@
 
 - [x] T014bb The ferry's wake is taken as the card taught: a boat turned across the ferry's track, bow into the waves, takes a few pitches; a boat left parallel takes the full roll on the beam, and the line says to turn the bow into it next time. `Traffic.wake_beam` and `wake_kick` tested headless; the ferry start joins the stations sweep
 
+## Slice 39 — the crossing rule, kept or not
+
+- [x] T014bc The ferry encounter is judged as the card taught: a boat that holds from the horn to the wake "held for the ferry"; a boat that paddled on as it came "paddled on as the ferry came", said at the wake and kept in the day's record for the debrief
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
