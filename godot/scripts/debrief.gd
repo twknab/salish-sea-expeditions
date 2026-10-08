@@ -96,6 +96,8 @@ func _days(col: VBoxContainer, legs: Array, save: Dictionary) -> void:
 				line += " · raccoons took the breakfast"
 			"worked":
 				line += " · raccoons worked the hatch"
+		if bool(d.get("dark", false)):
+			line += " · landed in the dark"
 		if bool(d.get("fog", false)):
 			var off := float(d.get("fogOffM", -1.0))
 			line += " · in fog from %s%s" % [Leg.clock(float(d.get("fogInHour", d.get("launchHour", 9.0)))), (", came out on the line" if off < 150.0 else ", came out %d m off the line" % int(off)) if off >= 0.0 else " to the landing"]

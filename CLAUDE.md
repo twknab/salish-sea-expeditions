@@ -75,7 +75,7 @@ with `npx vite preview --port 4173` running, for a single screenshot.
   `?scene=assemble|pack|plan|camp|debrief` open the stations (`&step=N` for the assembly, `&demo=1`
   fills the debrief); `?scene=school&drill=rescue` opens Kayak School on a drill;
   `?scene=trip&near=jones` starts 900 m off the cove (`&leg=1&near=orcas` meets the pod); `?about=1` opens About on the title; `?scene=trip&leg=2&launch=6` is the first-light launch in fog (`&fog=1` forces fog on any leg, `&fog=lift` lifts it after a second to see the fix); `?scene=camp&step=4&glow=1` is the night in the cove (`&boat=edge|wrack|grass` is where the boat was left; the tide finds the edge; `&food=tent|hatch|hung` is where the food was left, and `&step=2` is the raccoons card) (`&pack=none` shows what an empty boat costs);
-  `?launch=15` chooses the launch hour (the afternoon southerly on an ebb puts the bail-outs card up); `?day=september` paddles any screen on the September day (the title offers the days; `save.dayId` keeps the choice);
+  `?launch=15` chooses the launch hour (the afternoon southerly on an ebb puts the bail-outs card up); `?day=september` paddles any screen on the September day (the title offers the days; `save.dayId` keeps the choice); `?scene=trip&hour=20` sets the trip's clock (night on the water, on the September day);
   `?pack=bow|ideal` packs the boat for a check (everything in the bow, or the suggested layout). The
   expedition is `godot/content/legs.json` (geometry, from `tools/geo/leg_routes.py`) merged with the
   legs in `src/content/expedition.js` (teaching) by `Leg`; `?leg=1` opens day two, `?leg=2` day three.

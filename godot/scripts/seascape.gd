@@ -4,6 +4,8 @@ class_name Seascape
 extends Node3D
 
 @export var hour := 8.5
+@export var sunrise := 5.5    # hours; the chosen day's, read from App when there is one
+@export var sunset := 21.17
 @export var sea_state := 0.22
 @export var fog_density := 0.00022  # at sea level Orcas, 12 km off, is a shape in the haze; a chart from altitude wants far less
 @export var follow: Node3D
@@ -24,7 +26,15 @@ var _star_mat: StandardMaterial3D
 var night := 0.0   # 0 by day, 1 at full dark; scenes read it (the camp's bioluminescence waits for it)
 var fog := 0.0     # 0 a clear day, 1 socked in; set_fog() — the leg's morning fog, if it has one
 
+## Take the day's sunrise and sunset from the chosen day, when the app is running.
+func set_day(day: Dictionary) -> void:
+	sunrise = float(day.get("sunrise", 330)) / 60.0
+	sunset = float(day.get("sunset", 1270)) / 60.0
+
 func _ready() -> void:
+	var app := get_tree().root.get_node_or_null("App")
+	if app and app.has_method("chosen_day"):
+		set_day(app.chosen_day())
 	_water = MeshInstance3D.new()
 	var pm := PlaneMesh.new()
 	pm.size = Vector2(700, 700)
@@ -164,13 +174,13 @@ func _build_stars() -> void:
 ## Put the sun and the sky where the clock says. Called at start and whenever `hour` moves.
 func apply_hour(h: float) -> void:
 	hour = h
-	var dusk := clampf(absf(hour - 13.0) / 7.0, 0.0, 1.0)
-	night = clampf((absf(hour - 13.0) - 7.5) / 2.0, 0.0, 1.0)  # 20:30 → 22:30 fades to night
+	var dusk := Daylight.dusk_at(hour, sunrise, sunset)
+	night = Daylight.night_at(hour, sunrise, sunset)  # a July night falls 20:55 → 22:40; a September one 18:45 → 20:30
 	if _star_mat:
 		_star_mat.albedo_color = Color(1, 1, 1, night)
 		_stars.visible = night > 0.01
-	var elev := deg_to_rad(-10.0 - 48.0 * sin(clampf((hour - 6.0) / 14.0, 0.0, 1.0) * PI))
-	sun.rotation = Vector3(elev, deg_to_rad(-55.0 + (hour - 6.0) * 12.0), 0.0)
+	var elev := Daylight.sun_elevation(hour, sunrise, sunset)
+	sun.rotation = Vector3(elev, deg_to_rad(-55.0 + (hour - sunrise - 0.5) * 12.0), 0.0)
 	sun.light_color = Color("fff1d6").lerp(Color("ffb070"), dusk * dusk)
 	sun.light_energy = lerpf(1.1, 0.05, night)
 	if _sky_mat:

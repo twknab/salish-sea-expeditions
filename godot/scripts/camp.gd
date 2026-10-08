@@ -276,7 +276,7 @@ func _has_step(id: String) -> bool:
 
 ## The last card is the night: late enough for full dark, whatever hour the boat came in.
 func _night_hour() -> float:
-	return maxf(_hour0 + 1.1 * (_steps.size() - 1), 22.8)
+	return maxf(_hour0 + 1.1 * (_steps.size() - 1), _sea.sunset + 1.6)
 
 ## A hand, a paddle or a tap in the cove at night: the dinoflagellates light where the water moves.
 func _glow(at: Vector3) -> void:

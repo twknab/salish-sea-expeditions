@@ -98,6 +98,13 @@ func _init() -> void:
 	check(HaulOut.forecast_line(tide_day, 17.5).begins_with("Tonight’s high water is 2.5 m at 23:"), "the first card reads the table aloud")
 	check(FoodStore.verdict("tent") == "taken" and FoodStore.verdict("hatch") == "worked" and FoodStore.verdict("hung") == "safe" and FoodStore.verdict("") == "safe", "the raccoons get the tent, work the hatch, and leave the hung box")
 	check(FoodStore.record_words("hung") == "" and FoodStore.record_words("tent") != "" and FoodStore.night_line("hatch").contains("claw"), "only trouble with the food is written down")
+	# The day's own light: a July night falls after nine, a September one before.
+	check(Daylight.night_at(13.0, 5.5, 21.17) == 0.0 and Daylight.night_at(20.0, 5.5, 21.17) == 0.0 and Daylight.night_at(23.0, 5.5, 21.17) == 1.0, "a July evening is light until nine")
+	check(Daylight.night_at(20.0, 6.83, 19.0) > 0.5 and Daylight.night_at(21.0, 6.83, 19.0) == 1.0 and Daylight.night_at(18.0, 6.83, 19.0) == 0.0, "a September one is dark by half past eight")
+	check(Daylight.dusk_at(13.0, 5.5, 21.17) < 0.05 and Daylight.dusk_at(21.0, 5.5, 21.17) > 0.95 and Daylight.sun_elevation(13.3, 5.5, 21.17) < Daylight.sun_elevation(8.0, 5.5, 21.17), "the sun is highest at the day's noon")
+	var short_day := {"sunset": 1140, "tides": [], "current": [], "wind": []}
+	check(Tides.lands_in_the_dark(short_day, 16.0, 3.0) and not Tides.lands_in_the_dark(short_day, 12.0, 3.0), "a late launch on a short day lands in the dark")
+	check(String(Tides.judge(short_day, 16.0, 3.0).verdict) == "poor" and Tides.verdict_line(short_day, 16.0, 3.0).contains("in the dark"), "and the float plan says so")
 	var line_leg := {"waypoints": [[0, 0], [1000, 0], [1000, 1000]]}
 	check(absf(Leg.off_track_m(line_leg, Vector3(500, 0, 300)) - 300.0) < 1e-3 and absf(Leg.off_track_m(line_leg, Vector3(1200, 0, 500)) - 200.0) < 1e-3 and Leg.off_track_m(line_leg, Vector3(1000, 0, 1000)) == 0.0, "the distance off the line is to its nearest leg")
 	check(Traffic.bearing_words(Vector3.ZERO, Vector3(0, 0, -100)) == "to the north" and Traffic.bearing_words(Vector3.ZERO, Vector3(100, 0, 0)) == "to the east", "a blast is heard from a direction")
