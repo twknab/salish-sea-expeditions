@@ -269,6 +269,10 @@
 
 - [x] T014bp The partner speaks at the moments that matter, a few words in front of the note or the card — the ferry ("Hold here. Let it go by."), the sea standing up, fog closing in and lifting, the pod, the seals' rock, a capsize, the dark, the kelp, the wake, the landing (`PartnerVoice`, pure and tested: every line under seventy characters, silent when there is nothing to say). Never on a drill, where you are alone.
 
+## Slice 53 — the whale-watch fleet
+
+- [x] T014bq Every pod in the channel has a whale-watch boat on it, holding off abeam at the field guide's distance for the species, parallel to the animals, engine at idle (`WhaleWatch`, its station pure and tested). Coming within reach of it says so once: the fleet keeps the distance you are asked to keep, and it is watching where you are too. It is there on both passes of the pod; `?leg=1&near=fleet` starts beside it, and `trip-fleet` joins the sweep.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
