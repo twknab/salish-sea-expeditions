@@ -253,6 +253,10 @@
 
 - [x] T014bl The expedition ends the way it began: from the take-out the last boat runs the ferry's real track back to Anacortes in the evening light, the islands coming abeam in the reverse order, each one you paddled under saying so (`Leg.places_paddled`), then the slip at Anacortes and the debrief. `App.advance_leg` sends the last leg to the ferry with `save.ferryHome`; `?scene=ferry&home=1` for checks; `ferry-home` joins the sweep.
 
+## Slice 49 — the seamanship calls
+
+- [x] T014bm The debrief reads the judgement calls back from the days' record (`Seamanship`, pure and tested): the launch windows, the boat above the tide, the food out of reach, daylight for the landing, the ferry held for, the line held in fog, room given to wildlife, the boat kept upright — each listed only when it came up, kept or not, with a note in plain words. The share line counts them.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
