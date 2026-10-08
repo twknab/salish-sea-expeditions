@@ -70,7 +70,9 @@ as specs 001–006, reading the same content modules.
 
 ## Go / no-go for the rewrite
 
-Measured on the owner's iPhone from the Cloud Run URL of the experiment build:
+Measured on the owner's iPhone from the Cloud Run URL of the experiment build. The image serves the
+export precompressed (brotli: engine 6.5 MB, pack 5.9 MB, about 13 MB in all against 45 MB raw) with
+ETags, so the first-frame row is measured on that, and a second visit revalidates rather than downloads.
 
 | Measure                          | Go                    | No-go                       |
 | -------------------------------- | --------------------- | --------------------------- |

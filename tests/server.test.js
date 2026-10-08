@@ -4,6 +4,7 @@ import { mkdtempSync, writeFileSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { createServer } from '../server/server.mjs';
+import { precompress } from '../server/precompress.mjs';
 
 let server, base;
 before(async () => {
@@ -12,6 +13,8 @@ before(async () => {
   writeFileSync(path.join(dir, 'index.html'), `<!doctype html><title>t</title>${'x'.repeat(2000)}`);
   writeFileSync(path.join(dir, 'assets', 'app-abc.js'), `console.log(1);${' '.repeat(3000)}`);
   writeFileSync(path.join(dir, 'sw.js'), 'self');
+  writeFileSync(path.join(dir, 'game.wasm'), Buffer.alloc(50000, 7));
+  precompress(dir);
   server = createServer(dir).listen(0);
   base = `http://localhost:${server.address().port}`;
 });
@@ -40,6 +43,28 @@ test('unknown paths fall back to the game; traversal is refused', async () => {
   assert.match(await r.text(), /<title>t<\/title>/);
   const t = await fetch(`${base}/..%2f..%2fetc%2fpasswd`);
   assert.equal(t.status, 403);
+});
+
+test('a precompressed sibling is served with its encoding; without one, gzip on the fly', async () => {
+  const br = await fetch(`${base}/game.wasm`, { headers: { 'accept-encoding': 'br, gzip' } });
+  assert.equal(br.headers.get('content-encoding'), 'br');
+  assert.equal(br.headers.get('content-type'), 'application/wasm');
+  assert.ok(+br.headers.get('content-length') < 50000, 'the brotli file is what went over the wire');
+  assert.equal((await br.arrayBuffer()).byteLength, 50000, 'and it decodes to the original');
+  const gz = await fetch(`${base}/game.wasm`, { headers: { 'accept-encoding': 'gzip' } });
+  assert.equal(gz.headers.get('content-encoding'), 'gzip');
+  assert.ok(gz.headers.get('content-length'), 'the gzip sibling has a known length');
+  const raw = await fetch(`${base}/game.wasm`, { headers: { 'accept-encoding': 'identity' } });
+  assert.equal(raw.headers.get('content-encoding'), null);
+  assert.equal(raw.headers.get('content-length'), '50000');
+});
+
+test('every file carries an ETag and revalidates to a 304', async () => {
+  const first = await fetch(`${base}/game.wasm`);
+  const etag = first.headers.get('etag');
+  assert.ok(etag, 'ETag present');
+  const again = await fetch(`${base}/game.wasm`, { headers: { 'if-none-match': etag } });
+  assert.equal(again.status, 304);
 });
 
 test('only GET and HEAD', async () => {
