@@ -155,8 +155,7 @@ func _show() -> void:
 		body += "\n\n" + _tally()
 	if _step == _steps.size() - 1 and str(_leg.get("camp", {}).get("kind", "camp")) != "takeout":
 		body += "\n\nThe cove is full of bioluminescence on a warm night: tap the water to stir it."
-	if _step == 1 and not Packing.assess(App.save.get("packing", Packing.empty()), App.content.get("gear", [])).get("enables", []).has("light"):
-		body += "\n\nNo headlamp: the evening chores take twice as long in the dark."
+	body += _left_behind(str(s.get("id", "")), _step == 1)
 	_card = UIKit.card(s.get("title", ""), body, App.sources_line(s.get("sourceIds", [])), actions, "%s · %s · %d of %d" % [_leg.get("camp", {}).get("name", "Camp"), Leg.clock(_hour), _step + 1, _steps.size()])
 	_ui.add_child(_card)
 
@@ -166,6 +165,34 @@ func _leave() -> void:
 		App.save.nights = int(App.save.get("nights", 0)) + 1
 		App.save.cleanCamps = int(App.save.get("cleanCamps", 0)) + 1
 	App.advance_leg()
+
+## What was left on the beach at Friday Harbor is felt here, on the card where it would have been
+## used: the packing screen said so, and the camp keeps its word.
+func _left_behind(step_id: String, first_evening: bool) -> String:
+	# A save with no packing (older, or a day paddled again from the title) is the suggested layout, as on the water.
+	var gear: Array = App.content.get("gear", [])
+	var layout: Dictionary = Packing.empty() if App._url_param("pack") == "none" else App.save.get("packing", Packing.suggested(gear))  # `?pack=none`: nothing came, for checks
+	var enables: Array = Packing.assess(layout, gear).get("enables", [])
+	var lines: Array[String] = []
+	if first_evening and not enables.has("light"):
+		lines.append("No headlamp: the evening chores take twice as long in the dark.")
+	match step_id:
+		"pitch", "land":
+			if not enables.has("shelter"):
+				lines.append("No tent came in the boat: the tarp goes over the paddles and the night is a long one.")
+		"food":
+			if not enables.has("dinner"):
+				lines.append("No food or stove came in the boat: a cold supper from the day bag, and a hungry morning.")
+		"water":
+			if not enables.has("hydration"):
+				lines.append("No water came in the boat, and this island has none: tomorrow starts with the crossing to Roche Harbor to fill up.")
+		"dry":
+			if not enables.has("warmth"):
+				lines.append("No warm layers: you sit in the wet ones, and the cold has the evening.")
+		"night":
+			if not enables.has("sleep"):
+				lines.append("No sleeping bag: a night in every layer you own, awake for most of it.")
+	return "" if lines.is_empty() else "\n\n" + "\n".join(lines)
 
 ## The last card is the night: late enough for full dark, whatever hour the boat came in.
 func _night_hour() -> float:

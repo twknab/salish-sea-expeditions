@@ -193,6 +193,10 @@
 
 - [x] T014aw The hauled-out seals keep the hundred yards the field guide now gives them: inside it every head comes up and turns to the water, inside fifty metres they flush off the rock and are gone, with a line saying what that is — the disturbance the distance prevents. The approach counts as given room or too close in the day's record like the whales. Kayak School's tour now says six drills. `?scene=trip&near=yellow&close=1`
 
+## Slice 34 — the camp keeps the packing's word
+
+- [x] T014ax What was left on the beach at Friday Harbor is felt at camp, on the card where it would have been used: no tent at the pitch, no food at the raccoons, no water on Posey, no warm layers at drying out, no sleeping bag at night, and the headlamp as before — one plain line each
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
