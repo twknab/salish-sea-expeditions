@@ -111,6 +111,23 @@ static func launch_hour() -> float:
 	var suggested := float(current().get("suggestedLaunch", LAUNCH_HOUR))  # the leg's own good hour, until you choose
 	return clampf(float(app.save.get("launchHour", suggested)), EARLIEST_LAUNCH, LATEST_LAUNCH)
 
+## Every place the expedition launched from, landed at, or named as a bail-out on a day it landed.
+static func places_paddled() -> Array:
+	var app := _app()
+	var out: Array = []
+	if app == null:
+		return out
+	var legs := all()
+	for d in app.save.get("days", []):
+		var i := int(d.get("leg", -1))
+		if i < 0 or i >= legs.size():
+			continue
+		var leg: Dictionary = legs[i]
+		for id in [leg.get("from", ""), leg.get("to", "")] + Array(leg.get("bailouts", [])):
+			if str(id) != "" and not out.has(str(id)):
+				out.append(str(id))
+	return out
+
 ## How far a position is off the leg's line: metres to the nearest point of the track.
 static func off_track_m(leg: Dictionary, pos: Vector3) -> float:
 	var w := waypoints(leg)

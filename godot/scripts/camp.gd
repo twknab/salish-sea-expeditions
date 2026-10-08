@@ -203,7 +203,7 @@ func _show() -> void:
 	if _step < _steps.size() - 1:
 		actions.append(["Next", func() -> void: _step += 1; _hour_target = _night_hour() if _step == _steps.size() - 1 else _hour0 + 1.1 * _step; _show(), true])
 	else:
-		actions.append(["The expedition ends · the debrief" if Leg.is_last() else "Tomorrow’s float plan", func() -> void: _leave(), true])
+		actions.append(["The ferry home" if Leg.is_last() else "Tomorrow’s float plan", func() -> void: _leave(), true])
 	var s: Dictionary = _steps[_step] if _step < _steps.size() else { "title": "Camp", "text": "", "sourceIds": [] }
 	var body: String = s.get("text", "")
 	if Leg.is_last() and _step == _steps.size() - 1:
@@ -276,7 +276,7 @@ func _has_step(id: String) -> bool:
 
 ## The last card is the night: late enough for full dark, whatever hour the boat came in.
 func _night_hour() -> float:
-	return maxf(_hour0 + 1.1 * (_steps.size() - 1), 22.8)
+	return maxf(_hour0 + 1.1 * (_steps.size() - 1), _sea.sunset + 1.6)
 
 ## A hand, a paddle or a tap in the cove at night: the dinoflagellates light where the water moves.
 func _glow(at: Vector3) -> void:

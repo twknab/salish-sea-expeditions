@@ -169,8 +169,9 @@ func day() -> Dictionary:
 func advance_leg() -> void:
 	if Leg.is_last():
 		save.stage = "camp_done"
+		save.ferryHome = true  # the ferry scene runs home, then the debrief
 		persist()
-		go("debrief")
+		go("ferry")
 		return
 	save.legIndex = Leg.index() + 1
 	save.erase("launchHour")

@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-06
 
-**Status**: Experiment — forty-six slices merged (see "What exists today" below and
+**Status**: Experiment — forty-eight slices merged (see "What exists today" below and
 tasks.md); go/no-go pending the mobile Safari measurement from the Cloud Run URL (see research.md
 and the table at the end)
 
@@ -41,14 +41,14 @@ The Godot build on `main` is a complete three-day expedition, not a tech demo:
   the rescue taught in the water.
 - **Ashore**: camp on Jones and Posey with the shore walk at low tide, the boat carried above the night's high water or found by it, the stars and the
   bioluminescence of the cove at night, the take-out at Friday
-  Harbor with the tally, then the debrief: each day as it went, the score by the Phaser rules,
+  Harbor with the tally, the ferry home to Anacortes in the evening light, then the debrief: each day as it went, the score by the Phaser rules,
   the drills and the species; the field guide and every source a button away from the title.
 - **Pause**: Escape, P, a chip, or the page going into a pocket holds the boat and the clock
   under a card; About carries the acknowledgment and the safety note at all times.
 - **Sound**: four full-length pieces fetched beside the page after the first frame, the sea and
   the strokes synthesized; sound and music switches on every screen.
 - **Again, harder**: the title offers a second authored day, a September spring tide with the first
-  autumn southerly, and every reading of the water follows the choice.
+  autumn southerly, and every reading of the water — and the light — follows the choice.
 - **Delivery**: the export is served precompressed with ETags (about 13 MB on the wire for the
   first frame against 45 MB raw), the Docker image and Terraform are framed behind a repository
   variable, and a private demo page tracks `main`.

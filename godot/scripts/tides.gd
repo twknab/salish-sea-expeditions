@@ -78,6 +78,14 @@ static func wind_against_tide(day: Dictionary, hour: float) -> bool:
 ## Judging a launch hour for a leg that runs north with the flood: the mean current over the leg's
 ## hours (positive helps), the worst chop, and whether wind opposes the tide at any point.
 ## Returns {cur, worst, against, verdict: "good" | "fair" | "poor"}.
+## When the sun sets on the day, in hours.
+static func sunset_h(day: Dictionary) -> float:
+	return float(day.get("sunset", 1270)) / 60.0
+
+## True when a leg launched then, taking that long, lands after the light has gone.
+static func lands_in_the_dark(day: Dictionary, launch_hour: float, hours: float) -> bool:
+	return launch_hour + hours > sunset_h(day) - 0.5
+
 static func judge(day: Dictionary, launch_hour: float, hours: float, favours := "flood") -> Dictionary:
 	var cur := 0.0
 	var worst := 0.0
@@ -93,9 +101,10 @@ static func judge(day: Dictionary, launch_hour: float, hours: float, favours := 
 	cur /= float(maxi(n, 1))
 	if favours == "ebb":
 		cur = -cur  # positive means the stream runs the way the leg goes
-	var good := cur >= 0.2 and worst < 0.3 and not against
-	var poor := against or worst > 0.45 or cur < -0.8
-	return { "cur": cur, "worst": worst, "against": against, "verdict": "good" if good else ("poor" if poor else "fair") }
+	var dark := lands_in_the_dark(day, launch_hour, hours)
+	var good := cur >= 0.2 and worst < 0.3 and not against and not dark
+	var poor := against or worst > 0.45 or cur < -0.8 or dark
+	return { "cur": cur, "worst": worst, "against": against, "dark": dark, "verdict": "good" if good else ("poor" if poor else "fair") }
 
 ## The verdict in a sentence, for the plan.
 static func verdict_line(day: Dictionary, launch_hour: float, hours: float, favours := "flood") -> String:
@@ -107,6 +116,8 @@ static func verdict_line(day: Dictionary, launch_hour: float, hours: float, favo
 		"good":
 			return "Good: %s, light wind, and no chop to speak of." % carry
 		"poor":
+			if bool(j.dark):
+				return "Poor: the sun sets at %s and you would land in the dark." % Leg.clock(sunset_h(day))
 			if bool(j.against):
 				return "Poor: wind against the stream, and the channel stands up in short, steep chop."
 			return "Poor: %s for the whole leg." % carry

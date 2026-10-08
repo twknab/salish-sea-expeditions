@@ -40,6 +40,8 @@ var _fog_said := false          # the fog note goes up once a leg
 var _fog_signal_t := 0.0        # seconds to the ferry's next blast in the fog
 var _fogged := false            # launched or paddled in fog today, for the record
 var _fog_in_hour := -1.0        # when the fog closed in, for the record
+var _dark_said := false         # the night-on-the-water note goes up once
+var _dark := false              # the light went before the landing, for the record
 var _fog_off_m := -1.0          # how far off the planned line the boat was when it lifted
 var _kelp_said := false         # the kelp's one line, the first time the boat is in it
 var _ferry_moved := false       # paddled on while the ferry closed from the horn to the wake
@@ -172,6 +174,8 @@ func _ready() -> void:
 			_dest = Leg.cove(_route)
 			_day = App.day()
 			_hour = Leg.launch_hour()  # the launch the float plan chose
+			if App._url_param("hour") != "":  # `?scene=trip&hour=20`: the clock set, for checks
+				_hour = clampf(float(App._url_param("hour")), 0.0, 26.0)
 			sea.apply_hour(_hour)
 			_set_label = UIKit.label("", 12, UIKit.MIST, controls.touch())  # wraps on a phone
 			_set_label.position = Vector2(20, 172)
@@ -335,6 +339,10 @@ func _leg(delta: float) -> void:
 	else:
 		_hour += delta / 3600.0 * 12.0  # out of the groove the day still passes, twelve times real
 	sea.apply_hour(_hour)
+	if sea.night > 0.3 and not _dark_said:
+		_dark_said = true
+		_dark = true
+		note_label.text = "Night on the water. The white light goes on, the shore is a shape, and the landing is by compass and the sound of the beach. Keep your partner close." if not controls.touch() else "Night on the water: light on, partner close, land by compass."
 	# The current carries the boat over the ground, in the groove and out of it (the groove's hours
 	# pass faster, so its drift is scaled with them).
 	_flow = Leg.flow_at(_route, here)
@@ -436,7 +444,7 @@ func _record_day() -> void:
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
 		"swims": _swims_today, "waits": _waits_today, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
-		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m,
+		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark,
 	}
 	var days: Array = App.save.get("days", [])
 	var kept: Array = []
