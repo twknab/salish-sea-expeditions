@@ -19,8 +19,8 @@ func _ready() -> void:
 	_target = get_node(target_path)
 	_cam = Camera3D.new()
 	_cam.fov = 58.0
-	_cam.near = 0.1
 	_cam.far = 30000.0  # Mount Constitution is 15 km from the harbour
+	_cam.near = 0.2  # not the 0.05 default: depth precision at the far shore scales with it
 	add_child(_cam)
 	_fwd = _flat_forward()
 	global_position = _target.global_position - _fwd * 7.5 + Vector3.UP * 4.0

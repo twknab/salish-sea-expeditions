@@ -56,6 +56,17 @@ different kind of data), charted rocks and kelp (ENC S-57), and a bathymetry set
 (NOAA NCEI CUDEM at 1/9 arc-second covers the San Juans). Each is a follow-up with its own source
 line in the credits.
 
+## What the chart view taught about rendering
+
+Looking at the islands from 2.6 km up found four things sea level had hidden:
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Islands drawn as slivers of shoreline; flat land missing | Terrain triangles wound clockwise seen from +y, so every near-horizontal face was back-face culled; at sea level the slopes facing the camera had carried the picture | Wind `a → b → c` (x east, z south) |
+| Water painted over low land at distance | The sea shader wrote `ALPHA`, which put it in the transparent pass, and the seabed mesh under the opaque water z-fought it along every shallow | The sea is opaque; sea cells of the land mesh drop straight to −40 m; camera near planes raised (0.05 → 0.2 chase, 60 at the chart) |
+| Everything white from altitude | Fog tuned for 12 km at sea level | `Seascape.fog_density` per scene; the chart uses 0.00003 |
+| Headless screenshots never got past the start | Godot caps a frame's delta at 8 physics ticks, so at SwiftShader's frame rate game time runs about 8× slow | `?at=0.3` opens the run part way; smoke shots use it |
+
 ## Alternatives considered
 
 - **Stay on Phaser + three.js, render the world live in three.js.** Lowest risk, keeps 2.5 MB,

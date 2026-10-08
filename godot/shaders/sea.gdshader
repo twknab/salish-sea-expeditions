@@ -3,7 +3,7 @@
 // adds wind ripple, Fresnel blends deep green-blue water with the sky, foam whitens the steep crests,
 // and the shallows warm toward sand where the real seabed (Terrain.height_texture) comes up.
 shader_type spatial;
-render_mode cull_disabled, depth_draw_always;
+render_mode cull_disabled;  // opaque on purpose: writing ALPHA would put the water in the transparent pass, where it was drawn over low land from a chart's height
 
 uniform vec4 waves[4];          // dir.x, dir.z, steepness, wavelength — mirrored in waves.gd
 uniform float sea_state : hint_range(0.0, 1.0) = 0.3;
@@ -66,13 +66,15 @@ void fragment() {
 	NORMAL_MAP = normalize(vec3(detail.xy * wind, 1.0));
 	NORMAL_MAP_DEPTH = 1.0;
 	float bed = seabed(w);
-	float depth_t = clamp(-bed / 28.0, 0.0, 1.0);
-	vec3 water = mix(sand_color, mix(shallow_color, deep_color, depth_t), smoothstep(0.0, 0.09, depth_t));
+	// Under land the plane is hidden; where depth precision lets it through at distance it must not
+	// show as foam, so land counts as deep water.
+	float depth_t = bed > 0.6 ? 1.0 : clamp(-bed / 28.0, 0.0, 1.0);
+	vec3 water = mix(sand_color, mix(shallow_color, deep_color, depth_t), smoothstep(0.0, 0.06, depth_t));
 	// A lace of foam where the water meets the shore.
-	float lace = (1.0 - smoothstep(0.0, 0.05, depth_t)) * (0.55 + 0.45 * sin(t * 1.3 + w.x * 0.21 + w.y * 0.17));
+	float lace = (1.0 - smoothstep(0.0, 0.035, depth_t)) * (0.55 + 0.45 * sin(t * 1.3 + w.x * 0.21 + w.y * 0.17));
 	float fresnel = pow(1.0 - clamp(dot(normalize(NORMAL), VIEW), 0.0, 1.0), 4.0);
 	vec3 col = mix(water, sky_color, 0.12 + 0.6 * fresnel);
-	col = mix(col, vec3(0.92, 0.95, 0.96), clamp(crest * 0.8 + lace * 0.5, 0.0, 1.0));
+	col = mix(col, vec3(0.92, 0.95, 0.96), clamp(crest * 0.8 + lace * 0.35, 0.0, 1.0));
 	if (debug_view == 1) {
 		col = vec3(depth_t, 1.0 - depth_t, step(bed, -39.9));
 	}
@@ -80,5 +82,4 @@ void fragment() {
 	ROUGHNESS = mix(0.14, 0.3, crest);
 	SPECULAR = 0.4;
 	METALLIC = 0.0;
-	ALPHA = 1.0;
 }
