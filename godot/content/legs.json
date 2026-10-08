@@ -10,6 +10,13 @@
    "length_m": 11183,
    "channel": "San Juan Channel",
    "floodSetDeg": 330,
+   "shore": [
+    "douglasFir",
+    "turkishTowel",
+    "seaStar",
+    "anemone",
+    "seaLettuce"
+   ],
    "rips": [
     {
      "at": [
@@ -138,6 +145,12 @@
    "length_m": 9611,
    "channel": "Spieden Channel",
    "floodSetDeg": 285,
+   "shore": [
+    "madrona",
+    "seaStar",
+    "nudibranch",
+    "sugarKelp"
+   ],
    "rips": [
     {
      "at": [

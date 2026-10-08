@@ -1,4 +1,5 @@
 import { test } from 'node:test';
+import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { CREDITS, creditById } from '../src/content/credits.js';
 import { LESSONS } from '../src/content/lessons.js';
@@ -12,6 +13,15 @@ import { LAYERS, KIT, KIT_GROUPS, LEGAL } from '../src/content/kit.js';
 import { gearById } from '../src/content/gear.js';
 
 const sourced = [...LESSONS, ...SPECIES, ...KAYAK_PARTS, ...BODY_POINTS, ...PADDLE_PARTS, ...PLACES_INFO, ACKNOWLEDGMENT, ...LAYERS, ...KIT, ...LEGAL, ...LEGS.flatMap((l) => [...l.steps, l.landing, ...l.camp.steps])];
+
+test('every shore walk names species the field guide has', () => {
+  const legs = JSON.parse(readFileSync(new URL('../godot/content/legs.json', import.meta.url), 'utf8')).legs;
+  const ids = new Set(SPECIES.map((s) => s.id));
+  for (const l of legs) {
+    assert.ok(l.shore?.length >= 3, `${l.id} has a shore walk`);
+    for (const id of l.shore) assert.ok(ids.has(id), `${l.id} shore → unknown species ${id}`);
+  }
+});
 
 test('the legs chain: each leg starts where the one before it landed', () => {
   for (let i = 1; i < LEGS.length; i++) assert.equal(LEGS[i].from, LEGS[i - 1].to);

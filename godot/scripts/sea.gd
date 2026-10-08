@@ -127,9 +127,9 @@ func _ready() -> void:
 			_day = App.day()
 			_hour = Leg.launch_hour()  # the launch the float plan chose
 			sea.apply_hour(_hour)
-			_set_label = UIKit.label("", 12, UIKit.MIST, false)
+			_set_label = UIKit.label("", 12, UIKit.MIST, controls.touch())  # wraps on a phone
 			_set_label.position = Vector2(20, 172)
-			_set_label.size = Vector2(520, 20)
+			_set_label.size = Vector2(350, 40) if controls.touch() else Vector2(520, 20)
 			hud.add_child(_set_label)
 			_dest_label = UIKit.label("", 13, UIKit.FOAM, false, true)
 			_dest_label.position = Vector2(20, 150)
@@ -141,7 +141,7 @@ func _ready() -> void:
 			_chart.terrain = terrain
 			_chart.route = Leg.waypoints(_route)
 			_chart.dest = _dest
-			_chart.position = Vector2(20, 200)
+			_chart.position = Vector2(20, 224 if controls.touch() else 200)
 			_chart.folded = controls.touch() or bool(App.save.get("chartFolded", false))
 			hud.add_child(_chart)
 			match App._url_param("near"):  # starts for checks
