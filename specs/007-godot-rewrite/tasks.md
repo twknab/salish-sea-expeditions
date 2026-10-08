@@ -173,6 +173,10 @@
 
 - [x] T014ar `Windage`: the day's wind, already on the HUD line, now acts on the boat — a drift downwind at three per cent of the wind's speed against the keel's grip, and with way on the bow comes up into a beam wind, a stern-heavy boat more so (the packing's stern-heavy wander is this now, not a sine). Rules tested headless
 
+## Slice 29 — pause, and About
+
+- [x] T014as Pause on the water and in Kayak School: a chip, Escape or P, and the page going into a pocket (focus lost) all stop the physics and the clock under a card that says so and saves the place; Continue or Title from it. About on the title grows up: the game and its independence, the land acknowledgment and the safety note always reachable, the maker's link, and the way to the field guide and sources. `?about=1`
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

@@ -70,12 +70,49 @@ func _ready() -> void:
 	var about := UIKit.button("About", false)
 	about.pressed.connect(_about)
 	v.add_child(about)
+	if App._url_param("about") == "1":  # `?about=1` opens About, for checks
+		call_deferred("_about")
 	v.add_child(UIKit.label("Not a substitute for instruction and practice on the water.", 11, UIKit.MIST))
 
 func _about() -> void:
 	var ui := CanvasLayer.new()
 	ui.layer = 20
 	add_child(ui)
-	var v := UIKit.page(ui, 72, 28)
-	v.add_child(UIKit.spacer())
-	v.add_child(UIKit.card("About", "A game that teaches real sea kayaking in a real place, with sources for every fact. The boat is a folding sea kayak, a nod to the one its maker paddles. Built with Godot. The field guide and every source are a button away on the title screen.", "", [["Close", func() -> void: ui.queue_free(), true]], "Salish Sea Expeditions"))
+	var bg := ColorRect.new()
+	bg.color = Color(0.02, 0.07, 0.09, 0.94)  # the title stays faintly behind, not legibly
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	ui.add_child(bg)
+	var v := UIKit.page(ui, 52, 16)
+	var head := HBoxContainer.new()
+	var title := UIKit.label("About", 22, UIKit.FOAM, true, true)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(title)
+	var close := UIKit.button("Close", false)
+	close.pressed.connect(func() -> void: ui.queue_free())
+	head.add_child(close)
+	v.add_child(head)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	v.add_child(scroll)
+	var col := VBoxContainer.new()
+	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	col.add_theme_constant_override("separation", 10)
+	scroll.add_child(col)
+	var game := "A love letter to sea kayaking in the San Juan and Gulf Islands, and to the folding touring kayak that makes a walk-on ferry trip possible. "
+	game += "It teaches real sea kayaking in a real place, with a source for every fact; the boat is an uncredited homage to the one its maker paddles, "
+	game += "and it is an independent project, not made, sponsored or endorsed by the kayak's maker. Built with Godot."
+	col.add_child(UIKit.card("The game", game, "", [], "Salish Sea Expeditions"))
+	var ack: Dictionary = App.content.get("acknowledgment", {})
+	var ack_text: String = "\n\n".join(PackedStringArray(ack.get("paragraphs", [])))
+	if str(ack.get("note", "")) != "":
+		ack_text += "\n\n" + str(ack.note)
+	col.add_child(UIKit.card(str(ack.get("title", "Land acknowledgment")), ack_text, App.sources_line(ack.get("sourceIds", [])), [], "Always here"))
+	var safety: Dictionary = App.content.get("safetyNote", {})
+	col.add_child(UIKit.card(str(safety.get("title", "Safety")), "\n\n".join(PackedStringArray(safety.get("paragraphs", []))), "", [], "Not a substitute for instruction and practice on the water"))
+	var maker := UIKit.button("Made by Tim Knab · timknab.dev", false)
+	maker.pressed.connect(func() -> void: OS.shell_open("https://timknab.dev/"))
+	col.add_child(maker)
+	var guide := UIKit.button("Field guide, credits and sources", false)
+	guide.pressed.connect(func() -> void: App.go("guide"))
+	col.add_child(guide)
