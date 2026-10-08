@@ -138,6 +138,8 @@ func _show() -> void:
 	var body: String = s.get("text", "")
 	if Leg.is_last() and _step == _steps.size() - 1:
 		body += "\n\n" + _tally()
+	if _step == 1 and not Packing.assess(App.save.get("packing", Packing.empty()), App.content.get("gear", [])).get("enables", []).has("light"):
+		body += "\n\nNo headlamp: the evening chores take twice as long in the dark."
 	_card = UIKit.card(s.get("title", ""), body, App.sources_line(s.get("sourceIds", [])), actions, "%s · %s · %d of %d" % [_leg.get("camp", {}).get("name", "Camp"), Leg.clock(_hour), _step + 1, _steps.size()])
 	_ui.add_child(_card)
 
