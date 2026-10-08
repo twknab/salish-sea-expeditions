@@ -25,6 +25,7 @@ var _glows := 0            # bioluminescence sparked tonight, for the night card
 var _day: Dictionary = {}  # the authored day, for the night's high water
 var _spot := "edge"        # where the boat sleeps: HaulOut.SPOTS
 var _food := "hung"        # where the food sleeps: FoodStore.SPOTS
+var _water := "ration"     # the water on Posey: WaterPlan.SPOTS
 var _spot_row: BoxContainer
 
 func _ready() -> void:
@@ -68,6 +69,8 @@ func _ready() -> void:
 	_spot = boat_param if boat_param != "" else str(App.save.get("haulout", "edge"))
 	var food_param := App._url_param("food")  # `?scene=camp&food=tent&step=4`: the raccoons' night, for checks
 	_food = food_param if food_param != "" else str(App.save.get("foodStore", "hung"))
+	var water_param := App._url_param("water")  # `?scene=camp&leg=1&step=1&water=fill`, for checks
+	_water = water_param if water_param != "" else str(App.save.get("waterPlan", "ration"))
 	_place_boat()
 	var pivot := Node3D.new()
 	pivot.position = shore
@@ -136,6 +139,9 @@ func _spot_choices() -> void:
 	var step_id := str(_steps[_step].get("id", "")) if _step < _steps.size() else ""
 	if step_id == "food":
 		_choice_row(FoodStore.SPOTS, _food, func(id: String) -> void: _food = id; App.save.foodStore = id; App.persist())
+		return
+	if step_id == "water":
+		_choice_row(WaterPlan.SPOTS, _water, func(id: String) -> void: _water = id; App.save.waterPlan = id; App.persist())
 		return
 	if _step != 0:
 		return
@@ -213,10 +219,14 @@ func _show() -> void:
 		body += "\n\n" + HaulOut.forecast_line(_day, _hour0) + " Where does the boat sleep?"
 	if str(s.get("id", "")) == "food":
 		body += "\n\nWhere does the food sleep?"
+	if str(s.get("id", "")) == "water":
+		body += "\n\nEight litres came in the boat for two of you, and tomorrow is the long day. What happens to it?"
 	if _step == _steps.size() - 1 and is_camp:
 		body += "\n\n" + HaulOut.night_line(_spot, _day, _hour0)
 		if _has_step("food"):
 			body += " " + FoodStore.night_line(_food)
+		if _has_step("water"):
+			body += " " + WaterPlan.night_line(_water)
 		body += "\n\nThe cove is full of bioluminescence on a warm night: tap the water to stir it."
 	_place_boat()
 	body += _left_behind(str(s.get("id", "")), _step == 1)
@@ -237,6 +247,11 @@ func _leave() -> void:
 				d.boatVerdict = HaulOut.verdict(_spot, HaulOut.rise_m(_day, _hour0))
 				if _has_step("food"):
 					d.foodVerdict = FoodStore.verdict(_food)
+				if _has_step("water"):
+					d.waterVerdict = WaterPlan.verdict(_water)
+					# Tomorrow feels it: the launch can be no earlier than the tap allows, and the stroke is what the water left.
+					App.save.lateStart = WaterPlan.late_hours(_water)
+					App.save.effort = WaterPlan.effort(_water)
 		App.save.days = days
 	App.advance_leg()
 

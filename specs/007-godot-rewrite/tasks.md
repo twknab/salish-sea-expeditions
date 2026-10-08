@@ -257,6 +257,10 @@
 
 - [x] T014bm The debrief reads the judgement calls back from the days' record (`Seamanship`, pure and tested): the launch windows, the boat above the tide, the food out of reach, daylight for the landing, the ferry held for, the line held in fog, room given to wildlife, the boat kept upright — each listed only when it came up, kept or not, with a note in plain words. The share line counts them.
 
+## Slice 50 — the water on Posey
+
+- [x] T014bn Posey has no water, and the card now asks what happens to the eight litres that came in the boat: drink your fill, ration it, or cross to Roche Harbor for the tap in the morning (`WaterPlan`, pure and tested). Drink it and the long day home is paddled thirsty — the stroke is 85 % of itself (`Kayak.effort`) and a note says so at the first stroke; the tap costs an hour, so the float plan's earliest launch moves to 07:00 (`Leg.earliest_launch`) and the plan says why, which on the ebb is the whole lesson. The record keeps it, the debrief and the seamanship calls say so. `?water=fill|ration|roche`; `camp-water` joins the sweep.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

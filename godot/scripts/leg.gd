@@ -109,7 +109,12 @@ static func launch_hour() -> float:
 	if app == null:
 		return LAUNCH_HOUR
 	var suggested := float(current().get("suggestedLaunch", LAUNCH_HOUR))  # the leg's own good hour, until you choose
-	return clampf(float(app.save.get("launchHour", suggested)), EARLIEST_LAUNCH, LATEST_LAUNCH)
+	return clampf(float(app.save.get("launchHour", suggested)), earliest_launch(), LATEST_LAUNCH)
+
+## The earliest the day can launch: first light, or later when the morning starts with a water run.
+static func earliest_launch() -> float:
+	var app := _app()
+	return EARLIEST_LAUNCH + (float(app.save.get("lateStart", 0.0)) if app else 0.0)
 
 ## Every place the expedition launched from, landed at, or named as a bail-out on a day it landed.
 static func places_paddled() -> Array:

@@ -105,6 +105,11 @@ func _init() -> void:
 	var short_day := {"sunset": 1140, "tides": [], "current": [], "wind": []}
 	check(Tides.lands_in_the_dark(short_day, 16.0, 3.0) and not Tides.lands_in_the_dark(short_day, 12.0, 3.0), "a late launch on a short day lands in the dark")
 	check(String(Tides.judge(short_day, 16.0, 3.0).verdict) == "poor" and Tides.verdict_line(short_day, 16.0, 3.0).contains("in the dark"), "and the float plan says so")
+	# The water on Posey: drink it and tomorrow is thirsty; the tap costs an hour; rationed is fine.
+	check(WaterPlan.verdict("fill") == "thirsty" and WaterPlan.verdict("ration") == "fine" and WaterPlan.verdict("roche") == "late" and WaterPlan.verdict("") == "fine", "the water has three ends")
+	check(WaterPlan.effort("fill") < 0.9 and WaterPlan.effort("ration") == 1.0 and WaterPlan.late_hours("roche") == 1.0 and WaterPlan.late_hours("fill") == 0.0, "thirst shortens the stroke, the tap delays the launch")
+	check(WaterPlan.record_words("ration") == "" and WaterPlan.night_line("roche").contains("Roche Harbor"), "only trouble with the water is written down")
+	check(Seamanship.calls([{"verdict": "good", "waterVerdict": "thirsty"}]).size() == 4 and Seamanship.kept(Seamanship.calls([{"verdict": "good", "waterVerdict": "thirsty"}])) == 3, "the water is a call when it came up")
 	# Seamanship: the calls are read back from the days, and only the ones that came up.
 	check(Seamanship.calls([]).is_empty(), "no days, no calls")
 	var quiet := Seamanship.calls([{"verdict": "good"}])

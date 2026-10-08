@@ -41,6 +41,8 @@ var _fog_signal_t := 0.0        # seconds to the ferry's next blast in the fog
 var _fogged := false            # launched or paddled in fog today, for the record
 var _fog_in_hour := -1.0        # when the fog closed in, for the record
 var _dark_said := false         # the night-on-the-water note goes up once
+var _thirsty := false           # last night's water was drunk: the strokes are shorter today
+var _thirsty_said := false
 var _dark := false              # the light went before the landing, for the record
 var _fog_off_m := -1.0          # how far off the planned line the boat was when it lifted
 var _kelp_said := false         # the kelp's one line, the first time the boat is in it
@@ -174,6 +176,8 @@ func _ready() -> void:
 			_dest = Leg.cove(_route)
 			_day = App.day()
 			_hour = Leg.launch_hour()  # the launch the float plan chose
+			kayak.effort = clampf(float(App.save.get("effort", 1.0)), 0.5, 1.0)
+			_thirsty = kayak.effort < 0.99
 			if App._url_param("hour") != "":  # `?scene=trip&hour=20`: the clock set, for checks
 				_hour = clampf(float(App._url_param("hour")), 0.0, 26.0)
 			sea.apply_hour(_hour)
@@ -444,8 +448,11 @@ func _record_day() -> void:
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
 		"swims": _swims_today, "waits": _waits_today, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
-		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark,
+		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty,
+		"lateStart": float(App.save.get("lateStart", 0.0)),
 	}
+	App.save.erase("lateStart")  # the water run and the thirst are this day's; tomorrow starts fresh
+	App.save.erase("effort")
 	var days: Array = App.save.get("days", [])
 	var kept: Array = []
 	for d in days:
@@ -702,6 +709,9 @@ func _on_stroke(side: int, q: float, kind: String) -> void:
 	match kind:
 		"forward":
 			kayak.stroke(side, q)
+			if _thirsty and not _thirsty_said and mode == "trip":
+				_thirsty_said = true
+				note_label.text = "Thirsty from last night: the strokes are shorter and the day is longer than the chart says. A mouthful every half hour, and the tap at the town float."
 			if q >= StrokeMath.GOOD_STROKE:
 				Sound.dip(0.5)  # good paddling is nearly silent
 			else:

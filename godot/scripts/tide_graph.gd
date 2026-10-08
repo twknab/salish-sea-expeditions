@@ -28,7 +28,7 @@ func _ready() -> void:
 	focus_exited.connect(queue_redraw)
 
 func set_launch(h: float) -> void:
-	var snapped_h := snappedf(clampf(h, Leg.EARLIEST_LAUNCH, Leg.LATEST_LAUNCH), Leg.LAUNCH_STEP)
+	var snapped_h := snappedf(clampf(h, Leg.earliest_launch(), Leg.LATEST_LAUNCH), Leg.LAUNCH_STEP)
 	if absf(snapped_h - launch) < 1e-6:
 		return
 	launch = snapped_h
