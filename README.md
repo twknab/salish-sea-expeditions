@@ -82,7 +82,7 @@ capsize and the rescue — and camp ashore with the shore walk and the night, or
 debrief. Pause anywhere; About carries the acknowledgment. Content is exported from `src/content`
 by `tools/export-content.mjs`, the legs are laid over the water by `tools/geo/leg_routes.py`,
 sounds come from `tools/synth-audio.mjs` and four full-length pieces from `tools/synth-pieces.mjs`.
-`?scene=assemble|pack|plan|trip|camp|guide|debrief`, `?leg=0|1|2`, `?pack=bow|ideal` and `?near=jones|spieden|posey|ferry|orcas` open a station (`&fog=1` socks it in)
+`?scene=assemble|pack|plan|trip|camp|guide|debrief`, `?leg=0|1|2`, `?pack=bow|ideal` and `?near=jones|spieden|posey|ferry|orcas` open a station (`&fog=1` socks it in; `&day=september` is the harder day)
 or a spot for checks; `specs/007-godot-rewrite/tasks.md` lists every slice.
 
 Needs Godot 4.5 and its web export templates (`.github/workflows/godot.yml` shows the install).

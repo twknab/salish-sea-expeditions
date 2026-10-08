@@ -6,6 +6,7 @@ import { LESSONS } from '../src/content/lessons.js';
 import { SPECIES } from '../src/content/species.js';
 import { KAYAK_PARTS, BODY_POINTS, PADDLE_PARTS } from '../src/content/anatomy.js';
 import { PLACES_INFO } from '../src/content/places.js';
+import { TRIP_DAYS } from '../src/content/tripDay.js';
 import { LEGS } from '../src/content/expedition.js';
 import { ACKNOWLEDGMENT } from '../src/content/acknowledgment.js';
 import { SKILLS } from '../src/sim/skills.js';
@@ -40,6 +41,26 @@ test('a leg that starts in fog says when it burns off, and teaches it', () => {
     assert.ok(l.fog.burn > 0, `${l.id} fog burns off over some time`);
     assert.ok(l.steps.some((s) => s.id === 'fog'), `${l.id} has a fog step in its float plan`);
   }
+});
+
+test('every day the title offers has the same shape, and September is the harder one', () => {
+  assert.ok(TRIP_DAYS.length >= 2, 'there is a day to paddle it again on');
+  const ids = new Set();
+  for (const d of TRIP_DAYS) {
+    assert.ok(d.id && d.label && d.blurb, `${d.id} is named`);
+    assert.ok(!ids.has(d.id), `${d.id} is unique`);
+    ids.add(d.id);
+    for (const key of ['tides', 'current', 'wind']) {
+      const t = d[key].map((r) => r.t);
+      assert.deepEqual(t, [...t].sort((a, b) => a - b), `${d.id} ${key} is in time order`);
+    }
+    assert.ok(d.sunrise < d.sunset, `${d.id} has a day in it`);
+  }
+  const peak = (d) => Math.max(...d.wind.map((w) => w.kn));
+  const range = (d) => Math.max(...d.tides.map((r) => r.h)) - Math.min(...d.tides.map((r) => r.h));
+  const july = TRIP_DAYS.find((d) => d.id === 'july');
+  const sept = TRIP_DAYS.find((d) => d.id === 'september');
+  assert.ok(peak(sept) > peak(july) && range(sept) > range(july), 'September blows harder and runs bigger');
 });
 
 test('the legs chain: each leg starts where the one before it landed', () => {

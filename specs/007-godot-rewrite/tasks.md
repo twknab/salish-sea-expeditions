@@ -233,6 +233,18 @@
 
 - [x] T014bg When the fog burns off, the note says where the compass put you: on the line you planned, or how many metres off it (`Leg.off_track_m`), with the cove's bearing to carry on by. The day's record keeps when the fog closed in and how far off the line it lifted, and the debrief's day line says so ("in fog from 06:00, came out 260 m off the line"). `?fog=lift` lifts it after a second for a check; `trip-fog-lifts` joins the sweep.
 
+## Slice 44 — where the boat sleeps
+
+- [x] T014bh The first camp card reads the tide table aloud — tonight’s high water, when, and how far above the afternoon’s — and asks where the boat sleeps: the water’s edge, the wrack line, or the grass (`HaulOut`). The boat moves to the spot; the night card says what the water did (found it and you hauled it up wet in the dark; came within a hand; slept dry), and a boat the tide found is back in the shallows on the night card. The day's record keeps the spot and the verdict and the debrief's day line says so. `?boat=edge|wrack|grass` for checks; `camp-floated` joins the sweep.
+
+## Slice 45 — where the food sleeps
+
+- [x] T014bi The raccoons card on Jones asks where the food sleeps — the tent, the boat’s hatch, or the hard box hung — and the night card says what came of it (the breakfast gone and a torn mesh door; claw marks in the skin a hand from the seam; the box swinging untouched). The choice row is shared with the boat’s (`_choice_row`), the day's record keeps `foodVerdict`, and the debrief says so. `?food=tent|hatch|hung`; `camp-raccoons` joins the sweep.
+
+## Slice 46 — a September day to paddle it again on
+
+- [x] T014bj The title offers the day to paddle on: the settled July day, or a September spring tide with the first autumn southerly behind it (bigger tides, a 2.8-knot ebb, twenty-one knots by early afternoon, the light gone by seven). `TRIP_DAYS` in `src/content/tripDay.js` is the list, `App.chosen_day()` the choice (`save.dayId`, `?day=` for checks); the float plan's head and the debrief's kicker name the day. Everything that read the one day reads the chosen one: the tide graph, the verdicts, the sea state, the bail-outs, the stream, the night's high water. `trip-september` joins the sweep.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

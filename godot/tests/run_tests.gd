@@ -88,6 +88,16 @@ func _init() -> void:
 	check(Fog.blind(1.0) and not Fog.blind(0.2) and Fog.visibility_m(1.0) < 300.0 and Fog.visibility_m(0.0) > 10000.0, "in fog the chart has no fix and the view is short")
 	check(Fog.density(1.0, 0.00022) > Fog.density(0.5, 0.00022) and Fog.density(0.0, 0.00022) == 0.00022, "the haze thickens with the fog and clears to the day's")
 	check(Fog.plan_line(foggy, 6.0).begins_with("Fog at launch") and Fog.plan_line(foggy, 9.0) == "", "the float plan says so at a launch in fog")
+	# Where the boat sleeps: the authored day's night high is 2.5 m at 23:50, above a 17:30 landing's water.
+	var tide_day := {"tides": [{"t": -40, "h": 1.3}, {"t": 50, "h": 2.4}, {"t": 430, "h": -0.2}, {"t": 820, "h": 1.9}, {"t": 1110, "h": 1.2}, {"t": 1430, "h": 2.5}, {"t": 1850, "h": 0.1}]}
+	check(absf(HaulOut.night_high_m(tide_day, 17.5) - 2.5) < 0.02 and absf(HaulOut.night_high_hour(tide_day, 17.5) - 23.83) < 0.2, "the night's high water is read off the table")
+	var rise := HaulOut.rise_m(tide_day, 17.5)
+	check(rise > 1.0 and rise < 1.4, "it rises more than a metre on the afternoon's water")
+	check(HaulOut.verdict("edge", rise) == "floated" and HaulOut.verdict("wrack", rise) == "close" and HaulOut.verdict("grass", rise) == "dry", "the edge floats, the wrack line is a near thing, the grass is dry")
+	check(HaulOut.verdict("grass", 0.0) == "dry" and HaulOut.record_words("grass", rise) == "" and HaulOut.record_words("edge", rise) != "", "only trouble is written down")
+	check(HaulOut.forecast_line(tide_day, 17.5).begins_with("Tonight’s high water is 2.5 m at 23:"), "the first card reads the table aloud")
+	check(FoodStore.verdict("tent") == "taken" and FoodStore.verdict("hatch") == "worked" and FoodStore.verdict("hung") == "safe" and FoodStore.verdict("") == "safe", "the raccoons get the tent, work the hatch, and leave the hung box")
+	check(FoodStore.record_words("hung") == "" and FoodStore.record_words("tent") != "" and FoodStore.night_line("hatch").contains("claw"), "only trouble with the food is written down")
 	var line_leg := {"waypoints": [[0, 0], [1000, 0], [1000, 1000]]}
 	check(absf(Leg.off_track_m(line_leg, Vector3(500, 0, 300)) - 300.0) < 1e-3 and absf(Leg.off_track_m(line_leg, Vector3(1200, 0, 500)) - 200.0) < 1e-3 and Leg.off_track_m(line_leg, Vector3(1000, 0, 1000)) == 0.0, "the distance off the line is to its nearest leg")
 	check(Traffic.bearing_words(Vector3.ZERO, Vector3(0, 0, -100)) == "to the north" and Traffic.bearing_words(Vector3.ZERO, Vector3(100, 0, 0)) == "to the east", "a blast is heard from a direction")

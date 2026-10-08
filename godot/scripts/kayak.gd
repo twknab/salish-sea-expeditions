@@ -126,6 +126,11 @@ func _aft_mark() -> void:
 	add_child(mi)
 	_mark = mi
 
+## An empty boat: on a beach, or alongside a float, nobody is in it.
+func set_paddler_visible(on: bool) -> void:
+	if _paddler:
+		_paddler.visible = on
+
 ## Where a named point of the paddler or paddle is, in the kayak's local space.
 func paddler_anchor(id: String) -> Vector3:
 	if _paddler and _paddler.anchors.has(id):

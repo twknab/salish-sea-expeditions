@@ -129,7 +129,7 @@ func _on_launch(h: float) -> void:
 
 func _refresh_head() -> void:
 	var h := Leg.launch_hour()
-	_head.text = "Day %d · %s · %.1f km · about %.0f h at %.0f kn · launch %s on the %s" % [Leg.index() + 1, _leg.get("title", "The leg"), Leg.length_m(_leg) / 1000.0, Leg.hours_at_touring_pace(_leg), Leg.TOURING_KNOTS, Leg.clock(h), Tides.describe(_day, h)]
+	_head.text = "Day %d · %s · %.1f km · about %.0f h at %.0f kn · launch %s on the %s · %s" % [Leg.index() + 1, _leg.get("title", "The leg"), Leg.length_m(_leg) / 1000.0, Leg.hours_at_touring_pace(_leg), Leg.TOURING_KNOTS, Leg.clock(h), Tides.describe(_day, h), str(App.chosen_day().get("label", "")).to_lower()]
 
 func _process(_d: float) -> void:
 	_labels.update(_cam)
