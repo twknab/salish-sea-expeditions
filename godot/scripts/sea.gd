@@ -14,6 +14,14 @@ extends Node3D
 
 var _compass: Compass
 var _places: PlaceLabels
+var _dest := Vector3.ZERO      # the cove, on a trip
+var _hour := Leg.LAUNCH_HOUR   # the day's clock, on a trip
+var _groove := 0.0             # 0..1: a steady cadence has settled and the miles pass
+var _arrived := false
+var _dest_label: Label
+const GROOVE_AFTER := 6.0       # seconds of steady holding before the day starts to pass
+const GROOVE_SPEED := 28.0      # extra metres per second over the ground, in the groove
+const GROOVE_HOURS_PER_SEC := 1.0 / 50.0  # the clock in the groove: an hour in fifty seconds
 
 ## Where the game puts you in on the water: the harbour at Friday Harbor, off the town float with
 ## Brown Island to starboard, pointed up San Juan Channel. Metres from the town, and degrees true.
@@ -60,7 +68,7 @@ func _ready() -> void:
 	_compass.offset_left = -112; _compass.offset_right = -14; _compass.offset_top = top; _compass.offset_bottom = top + 118
 	hud.add_child(_compass)
 	_places = PlaceLabels.new()
-	_places.reach = 12000.0  # the far landings show as you come up the channel; the near ones are behind you at the start
+	_places.reach = 8000.0  # the landings ahead show as you come up the channel without crowding the horizon
 	$UI.add_child(_places)
 	$UI.move_child(_places, 0)
 	for p in terrain.meta.get("places", []):
@@ -81,7 +89,44 @@ func _ready() -> void:
 			_show_phase()
 		_:
 			_tilt_chip()
+			_dest = Leg.COVE
+			_dest_label = UIKit.label("", 13, UIKit.FOAM, false, true)
+			_dest_label.position = Vector2(20, 142)
+			_dest_label.size = Vector2(360, 24)
+			hud.add_child(_dest_label)
+			if App._url_param("near") == "jones":
+				kayak.global_position = _dest + Vector3(0.0, 0.1, -900.0)  # 900 m north of the cove, for checks
+				kayak.rotation.y = PI  # heading south, into the cove
 			note_label.text = "Friday Harbor · San Juan Channel opens ahead\n%s" % ("Hold the water to paddle · slide to lean · slide up to back off" if controls.touch() else "Hold W to paddle · A/D lean to steer · S backs off · Q/E edge · J brace")
+
+## The leg: where the cove is, how the day passes, and landing.
+func _leg(delta: float) -> void:
+	var here := kayak.global_position
+	var dist := Vector2(_dest.x - here.x, _dest.z - here.z).length()
+	var brg := Leg.bearing_deg(here, _dest)
+	_compass.target = deg_to_rad(brg)
+	# A steady hold settles into the groove: the boat makes ground over the chart and the clock runs.
+	var steady := controls.holding_for() > GROOVE_AFTER and absf(controls.steer) < 0.3 and kayak.speed > 0.4
+	_groove = move_toward(_groove, 1.0 if steady else 0.0, delta * (0.5 if steady else 1.5))
+	if _groove > 0.01:
+		var fwd := -kayak.global_basis.z
+		var ahead := here + fwd * 60.0
+		if terrain.height_at(ahead.x, ahead.z) < -0.5:
+			kayak.global_position += fwd * GROOVE_SPEED * _groove * delta
+		_hour += GROOVE_HOURS_PER_SEC * _groove * delta
+	else:
+		_hour += delta / 3600.0 * 12.0  # out of the groove the day still passes, twelve times real
+	sea.apply_hour(_hour)
+	_dest_label.text = "%s · %.1f km · %03d° · %s%s" % ["Jones Island north cove", dist / 1000.0, int(round(brg)), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
+	if dist < 220.0:
+		_arrived = true
+		_groove = 0.0
+		controls.visible = false
+		Sound.gull()
+		_clear_card()
+		_card = UIKit.card("The north cove", "Jones Island. Nose the boat onto the gravel, step out into the shallows and carry it up above the wrack line. The day is done at %s." % Leg.clock(_hour), App.sources_line(["wa-parks-jones", "wwta"]), [["Land and make camp", func() -> void: App.next(), true]], "Landing")
+		_ui.add_child(UIKit.spacer())
+		_ui.add_child(_card)
 
 ## On a phone, the option to edge by tilting the handset (off by default; it stays as set).
 func _tilt_chip() -> void:
@@ -99,6 +144,8 @@ func _process(delta: float) -> void:
 	kayak.sea_time = sea.time
 	speed_label.text = "%.1f kn" % absf(kayak.speed_knots())
 	_compass.heading = kayak.heading
+	if mode == "trip" and not _arrived:
+		_leg(delta)
 	_places.visible = hud.visible
 	if _places.visible:
 		_places.update(rig.camera())

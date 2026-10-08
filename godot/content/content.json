@@ -1103,6 +1103,222 @@
    ]
   }
  ],
+ "floatPlan": {
+  "id": "leg1",
+  "from": "fridayHarbor",
+  "to": "jones",
+  "title": "Friday Harbor to Jones Island",
+  "steps": [
+   {
+    "id": "route",
+    "title": "The route",
+    "text": "Out of the harbour, north up San Juan Channel past Friday Harbor Laboratories and Yellow Island, then across to the north cove on Jones Island. About ten kilometres: two hours at a touring pace, three with a stop on Yellow Island’s lee.",
+    "sourceIds": [
+     "noaa-chart",
+     "wwta"
+    ]
+   },
+   {
+    "id": "tide",
+    "title": "Tide and current",
+    "text": "San Juan Channel floods north-northwest and ebbs south-southeast at up to two knots. Leave on the morning flood and the channel carries you; leave late and you fight the ebb with the afternoon southerly behind it.",
+    "sourceIds": [
+     "noaa-tides"
+    ]
+   },
+   {
+    "id": "traffic",
+    "title": "Traffic",
+    "text": "The ferries use the harbour entrance and the channel. Cross their lane at right angles, together, and never in front of one: a ferry cannot stop for you.",
+    "sourceIds": [
+     "colregs",
+     "wsf"
+    ]
+   },
+   {
+    "id": "bailout",
+    "title": "Bail-outs",
+    "text": "If the wind comes up early: the Friday Harbor Labs shore, then the lee of Yellow Island. Both are landings you can make in a hurry.",
+    "sourceIds": [
+     "uscg"
+    ]
+   },
+   {
+    "id": "file",
+    "title": "File it",
+    "text": "A float plan is only a plan if someone ashore has it: where you are going, when you expect to land, what the boat looks like, and when to call for help if they have not heard from you.",
+    "sourceIds": [
+     "uscg",
+     "cgaux-paddlers"
+    ]
+   }
+  ]
+ },
+ "camp": {
+  "place": "jones",
+  "steps": [
+   {
+    "id": "land",
+    "title": "Land above the tide",
+    "text": "Carry the boat up past the wrack line of drift logs and seaweed, and tie it off. Tonight’s high water is higher than this afternoon’s.",
+    "sourceIds": [
+     "noaa-tides",
+     "lnt"
+    ]
+   },
+   {
+    "id": "pitch",
+    "title": "Pitch on the pad",
+    "text": "Jones is a marine state park with paddle-in sites on the Cascadia Marine Trail. Use the tent pads and the trail, not the meadow, and leave the firewood on the beach.",
+    "sourceIds": [
+     "wa-parks-jones",
+     "wwta",
+     "lnt"
+    ]
+   },
+   {
+    "id": "food",
+    "title": "The raccoons",
+    "text": "Island raccoons open zips and untie knots. Everything that smells goes in the hard box or a hung bag, never in the tent and never in the boat.",
+    "sourceIds": [
+     "wa-parks-jones"
+    ]
+   },
+   {
+    "id": "dry",
+    "title": "Dry out, warm up",
+    "text": "Out of the drysuit, into dry layers, hot drink before the sun goes. The water is nine degrees and the evening air not much more; the cold catches up with you sitting still.",
+    "sourceIds": [
+     "coldwater"
+    ]
+   },
+   {
+    "id": "night",
+    "title": "Night in the cove",
+    "text": "The harbour seals haul out on the point; the Milky Way comes up over Spieden. Tomorrow’s float plan is written tonight, while the tide table is in your head.",
+    "sourceIds": [
+     "lnt"
+    ]
+   }
+  ]
+ },
+ "tripDay": {
+  "label": "A July day",
+  "real": false,
+  "tides": [
+   {
+    "t": -40,
+    "h": 1.3
+   },
+   {
+    "t": 50,
+    "h": 2.4
+   },
+   {
+    "t": 430,
+    "h": -0.2
+   },
+   {
+    "t": 820,
+    "h": 1.9
+   },
+   {
+    "t": 1110,
+    "h": 1.2
+   },
+   {
+    "t": 1430,
+    "h": 2.5
+   },
+   {
+    "t": 1850,
+    "h": 0.1
+   }
+  ],
+  "current": [
+   {
+    "t": 90,
+    "kn": 0
+   },
+   {
+    "t": 270,
+    "kn": -1.6
+   },
+   {
+    "t": 460,
+    "kn": 0
+   },
+   {
+    "t": 610,
+    "kn": 1.4
+   },
+   {
+    "t": 790,
+    "kn": 0
+   },
+   {
+    "t": 980,
+    "kn": -2
+   },
+   {
+    "t": 1170,
+    "kn": 0
+   },
+   {
+    "t": 1320,
+    "kn": 1.2
+   },
+   {
+    "t": 1490,
+    "kn": 0
+   }
+  ],
+  "floodSetDeg": 330,
+  "wind": [
+   {
+    "t": 0,
+    "kn": 3,
+    "fromDeg": 200
+   },
+   {
+    "t": 360,
+    "kn": 2,
+    "fromDeg": 190
+   },
+   {
+    "t": 600,
+    "kn": 5,
+    "fromDeg": 185
+   },
+   {
+    "t": 780,
+    "kn": 10,
+    "fromDeg": 180
+   },
+   {
+    "t": 900,
+    "kn": 14,
+    "fromDeg": 180
+   },
+   {
+    "t": 1080,
+    "kn": 12,
+    "fromDeg": 185
+   },
+   {
+    "t": 1260,
+    "kn": 5,
+    "fromDeg": 200
+   },
+   {
+    "t": 1440,
+    "kn": 3,
+    "fromDeg": 200
+   }
+  ],
+  "sunrise": 330,
+  "sunset": 1270
+ },
  "credits": [
   {
    "id": "godot",

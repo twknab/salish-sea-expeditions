@@ -5,6 +5,8 @@ import { ACKNOWLEDGMENT, SAFETY_NOTE } from '../src/content/acknowledgment.js';
 import { LAYERS, KIT_GROUPS, KIT, LEGAL, SEA_TEMP } from '../src/content/kit.js';
 import { KAYAK_PARTS, BODY_POINTS, PADDLE_PARTS, DRILLS } from '../src/content/anatomy.js';
 import { PLACES_INFO } from '../src/content/places.js';
+import { FLOAT_PLAN, CAMP } from '../src/content/expedition.js';
+import { TRIP_DAY } from '../src/content/tripDay.js';
 import { LESSONS } from '../src/content/lessons.js';
 import { CREDITS } from '../src/content/credits.js';
 import { GEAR } from '../src/content/gear.js';
@@ -14,7 +16,7 @@ const out = {
   acknowledgment: ACKNOWLEDGMENT, safetyNote: SAFETY_NOTE, seaTemp: SEA_TEMP,
   layers: LAYERS, kitGroups: KIT_GROUPS, kit: KIT, legal: LEGAL, gear: GEAR,
   kayakParts: KAYAK_PARTS, bodyPoints: BODY_POINTS, paddleParts: PADDLE_PARTS, drills: DRILLS,
-  places: PLACES_INFO, lessons: LESSONS,
+  places: PLACES_INFO, lessons: LESSONS, floatPlan: FLOAT_PLAN, camp: CAMP, tripDay: TRIP_DAY,
   credits: CREDITS.map(({ id, title, author, url, licence }) => ({ id, title, author, url, licence })),
   skins: SKINS.map((s) => ({ id: s.id, name: s.name, deck: s.deck, deckHi: s.deckHi, panel: s.panel, hull: s.hull ?? '#f0f1ee' })),
 };
