@@ -27,6 +27,9 @@ func _ready() -> void:
 	_cam.global_position = global_position
 	_cam.look_at(_target.global_position + _fwd * 3.0 + Vector3.UP * 0.6, Vector3.UP)
 
+func camera() -> Camera3D:
+	return _cam
+
 func camera_position() -> Vector3:
 	return _cam.global_position
 

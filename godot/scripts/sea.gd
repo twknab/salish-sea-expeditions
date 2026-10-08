@@ -12,6 +12,9 @@ extends Node3D
 @onready var rig: CameraRig = $CameraRig
 @onready var terrain: Terrain = $Terrain
 
+var _compass: Compass
+var _places: PlaceLabels
+
 ## Where the game puts you in on the water: the harbour at Friday Harbor, off the town float with
 ## Brown Island to starboard, pointed up San Juan Channel. Metres from the town, and degrees true.
 const HARBOUR_SPAWN := Vector3(420.0, 0.1, -700.0)
@@ -50,6 +53,21 @@ func _ready() -> void:
 	controls.edge_changed.connect(func(v: float) -> void: kayak.edge = v)
 	controls.steer_changed.connect(func(v: float) -> void: kayak.steer = v)
 	_ui = UIKit.page($UI, 48, 24)
+	heading_label.visible = false
+	_compass = Compass.new()
+	_compass.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	var top := 150.0 if controls.touch() else 40.0  # under the note on a phone, beside it on a desktop
+	_compass.offset_left = -112; _compass.offset_right = -14; _compass.offset_top = top; _compass.offset_bottom = top + 118
+	hud.add_child(_compass)
+	_places = PlaceLabels.new()
+	_places.reach = 12000.0  # the far landings show as you come up the channel; the near ones are behind you at the start
+	$UI.add_child(_places)
+	$UI.move_child(_places, 0)
+	for p in terrain.meta.get("places", []):
+		if p.id in ["anacortes", "thatcher", "harney", "wasp", "sanJuanChannel", "fridayHarbor"]:
+			continue
+		var w := terrain.place(p.id)
+		_places.add_place(p.id, p.name, Vector3(w.x, maxf(terrain.height_at(w.x, w.z), 0.0) + 12.0, w.z), 12)
 	match mode:
 		"ambient":
 			controls.visible = false
@@ -80,7 +98,10 @@ func _tilt_chip() -> void:
 func _process(delta: float) -> void:
 	kayak.sea_time = sea.time
 	speed_label.text = "%.1f kn" % absf(kayak.speed_knots())
-	heading_label.text = "%03d°" % int(round(fposmod(rad_to_deg(kayak.heading), 360.0)))
+	_compass.heading = kayak.heading
+	_places.visible = hud.visible
+	if _places.visible:
+		_places.update(rig.camera())
 	if _drill >= 0:
 		_drill_progress(delta)
 
