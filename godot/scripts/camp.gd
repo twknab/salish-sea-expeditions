@@ -22,6 +22,9 @@ var _walk := -1            # index into the shore walk, -1 when not walking
 var _walked := false
 var _cam: Camera3D
 var _glows := 0            # bioluminescence sparked tonight, for the night card's own line
+var _day: Dictionary = {}  # the authored day, for the night's high water
+var _spot := "edge"        # where the boat sleeps: HaulOut.SPOTS
+var _spot_row: BoxContainer
 
 func _ready() -> void:
 	_hour0 = clampf(float(App.save.get("arrivedHour", 17.5)), 15.5, 19.0)
@@ -30,6 +33,7 @@ func _ready() -> void:
 	_terrain = Terrain.new()
 	add_child(_terrain)
 	_leg = Leg.current()
+	_day = App.day()
 	var cove := Leg.cove(_leg)
 	_terrain.focus = cove
 	_sea = Seascape.new()
@@ -58,6 +62,10 @@ func _ready() -> void:
 	_kayak.position = Vector3(boat_at.x, maxf(_terrain.height_at(boat_at.x, boat_at.z), 0.3) + 0.25, boat_at.z)
 	_kayak.rotation = Vector3(0.0, atan2(-along.x, -along.z) + deg_to_rad(20.0), deg_to_rad(8.0))
 	add_child(_kayak)
+	_kayak.set_paddler_visible(false)  # the boat is empty on the beach; its paddler is making camp
+	var boat_param := App._url_param("boat")  # `?scene=camp&boat=grass` leaves the boat there, for checks
+	_spot = boat_param if boat_param != "" else str(App.save.get("haulout", "edge"))
+	_place_boat()
 	var pivot := Node3D.new()
 	pivot.position = shore
 	add_child(pivot)
@@ -98,6 +106,40 @@ func _ready() -> void:
 		_show_walk()
 		return
 	_show()
+
+## The boat goes where it was carried: the water's edge, the wrack line, or the grass. On the night
+## card a boat the tide found is back in the shallows, as it was found.
+func _place_boat() -> void:
+	var is_camp := str(_leg.get("camp", {}).get("kind", "camp")) != "takeout"
+	var up := 1.6
+	match _spot:
+		"wrack":
+			up = 5.0
+		"grass":
+			up = 9.5
+	var floated := is_camp and _step == _steps.size() - 1 and HaulOut.verdict(_spot, HaulOut.rise_m(_day, _hour0)) == "floated"
+	var at := _shore + _inland * (-3.0 if floated else up) + _along * (3.5 if _spot == "grass" else 2.0)
+	_kayak.position = Vector3(at.x, 0.1 if floated else maxf(_terrain.height_at(at.x, at.z), 0.3) + 0.25, at.z)
+	_kayak.rotation = Vector3(0.0, atan2(-_along.x, -_along.z) + deg_to_rad(55.0 if floated else 20.0), deg_to_rad(0.0 if floated else 8.0))
+
+## The row under the first card: three places to leave the boat, the chosen one lit.
+func _spot_choices() -> void:
+	if _spot_row:
+		_spot_row.queue_free()
+		_spot_row = null
+	if _step != 0 or str(_leg.get("camp", {}).get("kind", "camp")) == "takeout":
+		return
+	# Three across on a desktop; stacked on a phone, where three would push the card off the screen.
+	_spot_row = VBoxContainer.new() if get_viewport().get_visible_rect().size.x < 600.0 else HBoxContainer.new()
+	_spot_row.add_theme_constant_override("separation", 8)
+	_spot_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	for s in HaulOut.SPOTS:
+		var b := UIKit.button(str(s.name), str(s.id) == _spot)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var id := str(s.id)
+		b.pressed.connect(func() -> void: _spot = id; App.save.haulout = id; App.persist(); _place_boat(); _spot_choices())
+		_spot_row.add_child(b)
+	_ui.add_child(_spot_row)
 
 ## From the cove's point, the nearest place the land comes up out of the water, and the direction
 ## inland there: {point, dir}.
@@ -153,17 +195,30 @@ func _show() -> void:
 	var body: String = s.get("text", "")
 	if Leg.is_last() and _step == _steps.size() - 1:
 		body += "\n\n" + _tally()
-	if _step == _steps.size() - 1 and str(_leg.get("camp", {}).get("kind", "camp")) != "takeout":
+	var is_camp := str(_leg.get("camp", {}).get("kind", "camp")) != "takeout"
+	if _step == 0 and is_camp:
+		body += "\n\n" + HaulOut.forecast_line(_day, _hour0) + " Where does the boat sleep?"
+	if _step == _steps.size() - 1 and is_camp:
+		body += "\n\n" + HaulOut.night_line(_spot, _day, _hour0)
 		body += "\n\nThe cove is full of bioluminescence on a warm night: tap the water to stir it."
+	_place_boat()
 	body += _left_behind(str(s.get("id", "")), _step == 1)
 	_card = UIKit.card(s.get("title", ""), body, App.sources_line(s.get("sourceIds", [])), actions, "%s · %s · %d of %d" % [_leg.get("camp", {}).get("name", "Camp"), Leg.clock(_hour), _step + 1, _steps.size()])
 	_ui.add_child(_card)
+	_spot_choices()
 
 ## Leaving camp: a night out, and a camp left as found, for the record; the take-out is neither.
 func _leave() -> void:
 	if str(_leg.get("camp", {}).get("kind", "camp")) != "takeout":
 		App.save.nights = int(App.save.get("nights", 0)) + 1
 		App.save.cleanCamps = int(App.save.get("cleanCamps", 0)) + 1
+		# The day's record learns where the boat slept and what the tide did about it.
+		var days: Array = App.save.get("days", [])
+		for d in days:
+			if int(d.get("leg", -1)) == Leg.index():
+				d.boatSpot = _spot
+				d.boatVerdict = HaulOut.verdict(_spot, HaulOut.rise_m(_day, _hour0))
+		App.save.days = days
 	App.advance_leg()
 
 ## What was left on the beach at Friday Harbor is felt here, on the card where it would have been

@@ -25,6 +25,7 @@ const STATIONS = [
   ['trip-fog', '?scene=trip&leg=2&launch=6&near=ferry&fog=1'],
   ['trip-fog-lifts', '?scene=trip&leg=2&launch=6&fog=lift'],
   ['camp-night', '?scene=camp&step=4&glow=1'],
+  ['camp-floated', '?scene=camp&step=4&boat=edge'],
   ['takeout', '?scene=camp&leg=2&step=1'],
   ['debrief', '?scene=debrief&demo=1'],
   ['guide', '?scene=guide&at=credits'],

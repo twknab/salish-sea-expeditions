@@ -74,7 +74,7 @@ with `npx vite preview --port 4173` running, for a single screenshot.
 - The flow is `App.FLOW`: title → acknowledgment → outfit → ferry → assemble → school → pack → plan → trip → camp.
   `?scene=assemble|pack|plan|camp|debrief` open the stations (`&step=N` for the assembly, `&demo=1`
   fills the debrief); `?scene=school&drill=rescue` opens Kayak School on a drill;
-  `?scene=trip&near=jones` starts 900 m off the cove (`&leg=1&near=orcas` meets the pod); `?about=1` opens About on the title; `?scene=trip&leg=2&launch=6` is the first-light launch in fog (`&fog=1` forces fog on any leg, `&fog=lift` lifts it after a second to see the fix); `?scene=camp&step=4&glow=1` is the night in the cove (`&pack=none` shows what an empty boat costs);
+  `?scene=trip&near=jones` starts 900 m off the cove (`&leg=1&near=orcas` meets the pod); `?about=1` opens About on the title; `?scene=trip&leg=2&launch=6` is the first-light launch in fog (`&fog=1` forces fog on any leg, `&fog=lift` lifts it after a second to see the fix); `?scene=camp&step=4&glow=1` is the night in the cove (`&boat=edge|wrack|grass` is where the boat was left; the tide finds the edge) (`&pack=none` shows what an empty boat costs);
   `?launch=15` chooses the launch hour (the afternoon southerly on an ebb puts the bail-outs card up);
   `?pack=bow|ideal` packs the boat for a check (everything in the bow, or the suggested layout). The
   expedition is `godot/content/legs.json` (geometry, from `tools/geo/leg_routes.py`) merged with the

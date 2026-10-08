@@ -233,6 +233,10 @@
 
 - [x] T014bg When the fog burns off, the note says where the compass put you: on the line you planned, or how many metres off it (`Leg.off_track_m`), with the cove's bearing to carry on by. The day's record keeps when the fog closed in and how far off the line it lifted, and the debrief's day line says so ("in fog from 06:00, came out 260 m off the line"). `?fog=lift` lifts it after a second for a check; `trip-fog-lifts` joins the sweep.
 
+## Slice 44 — where the boat sleeps
+
+- [x] T014bh The first camp card reads the tide table aloud — tonight’s high water, when, and how far above the afternoon’s — and asks where the boat sleeps: the water’s edge, the wrack line, or the grass (`HaulOut`). The boat moves to the spot; the night card says what the water did (found it and you hauled it up wet in the dark; came within a hand; slept dry), and a boat the tide found is back in the shallows on the night card. The day's record keeps the spot and the verdict and the debrief's day line says so. `?boat=edge|wrack|grass` for checks; `camp-floated` joins the sweep.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
