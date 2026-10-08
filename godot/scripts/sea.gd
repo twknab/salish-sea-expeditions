@@ -241,7 +241,7 @@ func _leg(delta: float) -> void:
 		_kick_t -= delta * (factor - 1.0) / 0.8
 		if _kick_t <= 0.0:
 			_kick_t = RIP_KICK_EVERY
-			kayak.kick(0.25 + 0.5 * state)
+			kayak.kick(0.7 + 0.8 * state)  # up to a wave that will put an unbraced boat over
 			Sound.hull_slap(0.4 + 0.4 * state)
 	var drift := cur * delta * (1.0 + _groove * (GROOVE_HOURS_PER_SEC * 3600.0 - 1.0) * 0.25)
 	var landing := here + drift * 4.0
@@ -415,7 +415,7 @@ func _drill_progress(delta: float) -> void:
 			_wobble -= delta
 			if _wobble <= 0.0:
 				_wobble = 3.2
-				kayak.kick(1.4)
+				kayak.kick(1.3)  # rolls the boat to about 35°: a brace settles it, an unbraced boat survives it
 				Sound.hull_slap(0.7)
 			if kayak.wobbling() and controls.braced and not s.get("braced_now", false):
 				s.braced_now = true
