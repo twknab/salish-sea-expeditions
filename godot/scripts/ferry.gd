@@ -36,9 +36,15 @@ var _rate_buttons: Array[Button] = []
 var _view_button: Button
 var _labels: PlaceLabels
 var _label_points: Dictionary = {}  # place id -> Vector3
+var _ribbon: Node3D                 # the track drawn on the chart; it is not there from the rail
+var _home := false                  # the run back to Anacortes at the end of the expedition
+var _paddled: Array = []            # place ids the expedition landed at or passed, named at the rail
 
 func _ready() -> void:
+	_home = App._url_param("home") == "1" or bool(App.save.get("ferryHome", false))
 	_load_route()
+	if _home:
+		_paddled = Leg.places_paddled()
 	_terrain = Terrain.new()
 	_terrain.trees_enabled = false
 	_terrain.near = 2000.0
@@ -47,7 +53,7 @@ func _ready() -> void:
 	add_child(_ferry)
 	_sea = Seascape.new()
 	_sea.sea_state = 0.18
-	_sea.hour = 7.5
+	_sea.hour = (_sea.sunset - 1.4) if _home else 7.5  # the morning boat out; the last boat home in the evening light
 	_sea.fog_density = 0.00003  # a clear morning, seen from a chart's height
 	_sea.follow = _ferry
 	_sea.terrain = _terrain
@@ -79,6 +85,9 @@ func _ready() -> void:
 	_build_ui()
 	_set_view(App._url_param("view") == "rail")
 	Sound.horn()
+	if _home:
+		_show_card("The ferry home", "The boat walks on in its bag, the way it came. Watch the islands go by from the rail and name them: you have paddled under most of them now. San Juan Channel, Wasp Passage, Harney Channel, Thatcher Pass, and the slip at Anacortes.", App.sources_line(["wsf"]), "On the ferry · the expedition behind you")
+		return
 	var intro := "You are on the 7:30 out of Anacortes with your kayak packed in its bag below. Nothing to paddle yet — that comes after Kayak School in Friday Harbor. "
 	intro += "This is the run the ferry really makes: Thatcher Pass, north of Lopez, Harney Channel, Wasp Passage, then down San Juan Channel. Each island is named as it comes abeam."
 	_show_card("Walk-on with a folding kayak", intro, App.sources_line(["wsf", "trak"]), "On the ferry · no paddling yet")
@@ -96,6 +105,18 @@ func _load_route() -> void:
 	_length = _cum[_cum.size() - 1]
 	for e in doc.get("events", []):
 		_events.append({ "place": e.place, "at": _cum[int(e.index)] })
+	if _home:
+		# The same track run the other way: the islands come abeam in the reverse order.
+		_track.reverse()
+		_cum = PackedFloat32Array()
+		_cum.append(0.0)
+		for i in range(1, _track.size()):
+			_cum.append(_cum[i - 1] + _track[i].distance_to(_track[i - 1]))
+		var back: Array = []
+		for e in _events:
+			back.append({ "place": e.place, "at": _length - float(e.at) })
+		back.reverse()
+		_events = back
 
 ## Position on the track at distance s.
 func _point_at(s: float) -> Vector3:
@@ -130,7 +151,8 @@ func _draw_track() -> void:
 	var pts := PackedVector3Array()
 	for p in _track:
 		pts.append(Vector3(p.x, 0.0, p.y))
-	add_child(ChartRibbon.build(pts, Color(UIKit.SUN, 0.85)))
+	_ribbon = ChartRibbon.build(pts, Color(UIKit.SUN, 0.85))
+	add_child(_ribbon)
 
 ## Where the island names float. Taken from the terrain's gazetteer where it has the place.
 func _place_marks() -> void:
@@ -155,6 +177,8 @@ func _set_view(rail: bool) -> void:
 	_terrain.near = 4200.0 if rail else 2000.0
 	_rail_cam.current = rail
 	_chart_cam.current = not rail
+	if _ribbon:
+		_ribbon.visible = not rail  # a chart symbol, not a thing on the water
 	if _view_button:
 		_view_button.text = "Chart view" if rail else "Rail view"
 
@@ -177,7 +201,7 @@ func _build_ui() -> void:
 	top.add_theme_constant_override("separation", 8)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
-	var title := UIKit.label("Anacortes → Friday Harbor · %.0f km" % (_length / 1000.0), 13, UIKit.FOAM, false, true)
+	var title := UIKit.label("%s · %.0f km" % ["Friday Harbor → Anacortes" if _home else "Anacortes → Friday Harbor", _length / 1000.0], 13, UIKit.FOAM, false, true)
 	top.add_child(title)
 	var fill := Control.new()
 	fill.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -215,7 +239,9 @@ func _show_card(title: String, text: String, source: String, kicker: String) -> 
 	if _card:
 		_card.queue_free()
 	var actions: Array = []
-	if _arrived:
+	if _arrived and _home:
+		actions.append(["The debrief · how it went", func() -> void: App.save.erase("ferryHome"); App.save.stage = "camp_done"; App.persist(); App.go("debrief"), true])
+	elif _arrived:
 		actions.append(["Walk off in Friday Harbor", func() -> void: App.next(), true])
 	_card = UIKit.card(title, text, source, actions, kicker)
 	_ui.add_child(_card)
@@ -245,15 +271,21 @@ func _process(delta: float) -> void:
 	while _next_event < _events.size() and _s >= _events[_next_event].at - 1.0:
 		var e: Dictionary = _events[_next_event]
 		_next_event += 1
-		if e.place == "fridayHarbor":
+		if e.place == ("anacortes" if _home else "fridayHarbor"):
 			continue  # the arrival card says this
 		var p := _place_info(e.place)
-		_show_card(p.get("name", e.place), p.get("text", ""), App.sources_line(p.get("sourceIds", [])), "Abeam · %d of %d" % [_next_event, _events.size() - 1])
+		var text: String = p.get("text", "")
+		if _home and e.place in _paddled:
+			text += " You paddled under this one."
+		_show_card(p.get("name", e.place), text, App.sources_line(p.get("sourceIds", [])), "Abeam · %d of %d" % [_next_event, _events.size() - 1])
 	_bar.value = _s / _length * 100.0
-	_counter.text = "%.1f km to Friday Harbor · %s" % [(_length - _s) / 1000.0, "at the rail" if _rail else "chart view"]
+	_counter.text = "%.1f km to %s · %s" % [(_length - _s) / 1000.0, "Anacortes" if _home else "Friday Harbor", "at the rail" if _rail else "chart view"]
 	_labels.update(_rail_cam if _rail else _chart_cam)
 	if not _arrived and _s >= _length:
 		_arrived = true
 		Sound.horn()
+		if _home:
+			_show_card("Anacortes", "The ferry noses into the slip at Anacortes and the bag comes off on its wheels. Three days, two islands, and the whole of the channel under your own paddle. The debrief is next: how it went, day by day.", App.sources_line(["wsf"]), "Home")
+			return
 		var p := _place_info("fridayHarbor")
 		_show_card("Friday Harbor", "The ferry backs into the slip. Wheel your kayak bag down the ramp: the beach where you will build it is a short walk along the waterfront.", App.sources_line(p.get("sourceIds", ["wsf"])), "Arrival")

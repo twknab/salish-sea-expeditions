@@ -249,6 +249,10 @@
 
 - [x] T014bk The sky, the sun and the night follow the chosen day's sunrise and sunset rather than a fixed July (`Daylight.dusk_at / night_at / sun_elevation`, pure and tested; `Seascape` reads the day from `App` when it has one, so every scene follows). A September evening is dark by half past eight. The float plan's verdict is poor when the launch would land after the light (`Tides.lands_in_the_dark`), with the sunset in the line; night on the water puts up a note once, the day's record keeps `dark`, and the debrief says "landed in the dark". The camp's night card waits for the day's own dark. `?hour=20` sets the trip's clock for checks; `trip-dark` joins the sweep.
 
+## Slice 48 — the ferry home
+
+- [x] T014bl The expedition ends the way it began: from the take-out the last boat runs the ferry's real track back to Anacortes in the evening light, the islands coming abeam in the reverse order, each one you paddled under saying so (`Leg.places_paddled`), then the slip at Anacortes and the debrief. `App.advance_leg` sends the last leg to the ferry with `save.ferryHome`; `?scene=ferry&home=1` for checks; `ferry-home` joins the sweep.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

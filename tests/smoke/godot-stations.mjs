@@ -13,6 +13,7 @@ const STATIONS = [
   ['acknowledgment', '?scene=acknowledgment'],
   ['outfit', '?scene=outfit'],
   ['ferry', '?scene=ferry&at=0.3'],
+  ['ferry-home', '?scene=ferry&home=1&at=0.3&view=rail'],
   ['assemble', '?scene=assemble&step=3'],
   ['school-drill', '?scene=school&drill=rescue'],
   ['pack', '?scene=pack&pack=ideal'],
