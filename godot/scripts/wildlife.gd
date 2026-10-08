@@ -8,6 +8,8 @@ var kind := "seal"
 var _t := randf() * 10.0
 var _parts: Array[Node3D] = []
 var _blows: Array[Node3D] = []   # the orcas' blow, one puff per animal, shown as it breathes
+var alarm := 0                   # seals: 0 resting, 1 heads up, 2 flushed into the water
+var _flush_t := 0.0
 var _origin := Vector3.ZERO
 var _heading := Vector3.FORWARD
 
@@ -181,9 +183,21 @@ func _process(delta: float) -> void:
 					if up <= 0.0:
 						_breathed = false
 		"seals":
+			# Resting, a head lifts now and then; alert, every head is up and turned to the water; flushed,
+			# they are off the rock and gone — the disturbance the hundred yards is there to prevent.
+			if alarm >= 2:
+				_flush_t = minf(1.0, _flush_t + delta * 0.6)
 			for i in range(_parts.size()):
 				var s := _parts[i]
-				s.rotation.x = -0.06 + 0.05 * sin(_t * 0.7 + i * 2.1)  # a head lifts now and then
+				if alarm >= 2:
+					var k := clampf(_flush_t * 1.4 - i * 0.15, 0.0, 1.0)
+					s.position = Vector3(-1.1 + i * 1.1, 0.55 - 1.4 * k, -0.6 + 0.5 * (i % 2) + 2.6 * k)
+					s.rotation.x = 0.5 * k
+					s.visible = k < 0.95
+				elif alarm == 1:
+					s.rotation.x = lerpf(s.rotation.x, -0.35, delta * 2.0)
+				else:
+					s.rotation.x = -0.06 + 0.05 * sin(_t * 0.7 + i * 2.1)  # a head lifts now and then
 		"kelp":
 			for i in range(_parts.size()):
 				var b := _parts[i]

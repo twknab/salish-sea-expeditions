@@ -220,8 +220,12 @@ func _ready() -> void:
 					kayak.global_position = Vector3(-7000.0, 0.1, -10450.0)
 					kayak.rotation.y = -deg_to_rad(270.0)  # west down Spieden Channel, the porpoise ahead
 				"yellow":
-					kayak.global_position = Vector3(-860.0, 0.1, -6225.0)
-					kayak.rotation.y = -deg_to_rad(300.0)  # the kelp 50 m ahead, the seals' rock beyond
+					if App._url_param("close") == "1":  # `&close=1`: seventy metres off the seals' rock, inside the hundred yards
+						kayak.global_position = Vector3(-1040.0, 0.1, -6270.0)
+						kayak.rotation.y = -deg_to_rad(315.0)  # the rock is north-west
+					else:
+						kayak.global_position = Vector3(-860.0, 0.1, -6225.0)
+						kayak.rotation.y = -deg_to_rad(300.0)  # the kelp 50 m ahead, the seals' rock beyond
 				"labs":
 					kayak.global_position = Vector3(590.0, 0.1, -1312.0)
 					kayak.rotation.y = -deg_to_rad(250.0)  # the heron 30 m off in the shallows
@@ -249,9 +253,18 @@ func _watch_sightings() -> void:
 		if s.seen:
 			# Be Whale Wise: inside the field guide's approach distance is too close, and the debrief counts it.
 			var keep := int(_species(s.conf.species).get("approachMetres", 0))
-			if keep > 0 and not s.close and kayak.global_position.distance_to(s.node.global_position) < float(keep):
+			var d := kayak.global_position.distance_to(s.node.global_position)
+			if s.conf.kind == "seals":
+				# Hauled-out seals: heads come up inside a hundred yards, and inside fifty they flush.
+				var level := 2 if d < 50.0 else (1 if d < float(keep) else 0)
+				if level > s.node.alarm:
+					s.node.alarm = level
+					if level == 2:
+						note_label.text = "The seals have flushed off the rock. That is the disturbance the hundred yards prevents: a seal in the water is a seal not resting."
+			if keep > 0 and not s.close and d < float(keep):
 				s.close = true
-				note_label.text = "Too close: %d m is the distance. Let it come to you, or not." % keep
+				if s.conf.kind != "seals" or s.node.alarm < 2:
+					note_label.text = "Too close: %d m is the distance. Let it come to you, or not." % keep
 			continue
 		var conf: Dictionary = s.conf
 		if kayak.global_position.distance_to(s.node.global_position) > float(conf.radius):
@@ -496,7 +509,7 @@ func _build_tour() -> void:
 	for pp in c.get("paddleParts", []):
 		var v: Array = paddle_views.get(pp.id, [1.6, 1.0, 0.5])
 		_tour.append({ "kind": "paddle", "kicker": "The paddle", "title": pp.name, "text": pp.text, "source": App.sources_line(pp.sourceIds), "anchor": kayak.paddler_anchor(pp.id), "dist": v[0], "az": v[1], "el": v[2] })
-	_tour.append({ "kind": "drills", "kicker": "Calm water", "title": "Now paddle it", "text": "Five short drills: the forward stroke, the reverse stroke, edging, the sweep turn and the low brace. Everything later builds on these.", "source": "", "anchor": Vector3(0, 0.3, 0), "dist": 6.0, "az": 0.2, "el": 0.5 })
+	_tour.append({ "kind": "drills", "kicker": "Calm water", "title": "Now paddle it", "text": "Six short drills: the forward stroke, the reverse stroke, edging, the sweep turn, the low brace, and the rescue. Everything later builds on these.", "source": "", "anchor": Vector3(0, 0.3, 0), "dist": 6.0, "az": 0.2, "el": 0.5 })
 
 func _show_phase() -> void:
 	App.school_from = _phase

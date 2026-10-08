@@ -189,6 +189,10 @@
 
 - [x] T014av A pod of Bigg's killer whales works Spieden Channel on day two: a bull with the tall fin and two smaller animals, black with the eye patch and the saddle, each surfacing on its own beat with the bull's blow, travelling the channel and coming back round. The pod is a sighting like the rest — the field guide's card at 1.4 km, Be Whale Wise's thousand yards as the line, given room or too close in the day's record — and the sightings' distance now follows an animal that moves, not the water it started in. `?scene=trip&leg=1&near=orcas`
 
+## Slice 33 — let seals rest
+
+- [x] T014aw The hauled-out seals keep the hundred yards the field guide now gives them: inside it every head comes up and turns to the water, inside fifty metres they flush off the rock and are gone, with a line saying what that is — the disturbance the distance prevents. The approach counts as given room or too close in the day's record like the whales. Kayak School's tour now says six drills. `?scene=trip&near=yellow&close=1`
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

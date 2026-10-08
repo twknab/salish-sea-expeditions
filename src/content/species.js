@@ -14,7 +14,7 @@ export const SPECIES = [
     blurb: 'Once hunted out of the Salish Sea, humpbacks have come back in recent decades.',
     facts: ['They feed on krill and small schooling fish.', 'The pattern under each tail fluke is unique and used to identify individuals.'],
     where: 'Open channels and straits, summer and autumn', approachMetres: 91, sourceIds: ['noaa-species', 'bewhalewise'] },
-  { id: 'harbourSeal', common: 'Harbour seal', scientific: 'Phoca vitulina', group: 'Marine mammals', colour: 0x7a746a,
+  { id: 'harbourSeal', common: 'Harbour seal', scientific: 'Phoca vitulina', group: 'Marine mammals', approachMetres: 91, colour: 0x7a746a,
     blurb: 'The most common marine mammal in the Salish Sea.',
     facts: ['They haul out on rocks and beaches to rest, especially at low tide.', 'Pups born in summer are often left alone on shore while the mother feeds — leave them be.'],
     where: 'Rocky reefs and islets everywhere', approachMetres: 91, sourceIds: ['noaa-species', 'noaa-mm'] },
