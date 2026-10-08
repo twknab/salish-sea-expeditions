@@ -30,7 +30,11 @@ static func calls(days: Array) -> Array:
 	var sightings := 0
 	var close := 0
 	var waters: Array = []
+	var plans: Array = []
 	for d in days:
+		var fp := str(d.get("floatPlan", ""))
+		if fp != "":
+			plans.append(fp)
 		var wv := str(d.get("waterVerdict", ""))
 		if wv != "":
 			waters.append(wv)
@@ -72,6 +76,8 @@ static func calls(days: Array) -> Array:
 		out.append({ "label": "Held the line in fog", "ok": fogs_held == fogs, "note": "came out on the line" if fogs_held == fogs else "came out off the line — the stream had the boat while the islands were gone" })
 	if sightings > 0:
 		out.append({ "label": "Gave wildlife its room", "ok": close == 0, "note": "every time" if close == 0 else ("too close %s" % ("once" if close == 1 else "%d times" % close)) })
+	if not plans.is_empty():
+		out.append({ "label": "Closed the float plan", "ok": not plans.has("forgot") and not plans.has("late"), "note": "never closed — a boat went out looking for you" if plans.has("forgot") else ("closed late, with the phone already in someone's hand" if plans.has("late") else "from the float, before the boat was out") })
 	out.append({ "label": "Stayed upright", "ok": swims == 0, "note": "no swims" if swims == 0 else ("in the water %s, and back in the boat" % ("once" if swims == 1 else "%d times" % swims)) })
 	return out
 

@@ -115,6 +115,10 @@ func _init() -> void:
 	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")
 	for ev in PartnerVoice.LINES.keys():
 		check(PartnerVoice.line(ev).length() < 70, "%s: a few words, not a lecture" % ev)
+	# The call ashore: closed from the float, late, or never — and the record only remembers trouble.
+	check(FloatPlanClose.verdict("now") == "closed" and FloatPlanClose.verdict("later") == "late" and FloatPlanClose.verdict("forgot") == "forgot" and FloatPlanClose.verdict("") == "closed", "the float plan is closed, late or forgotten")
+	check(FloatPlanClose.record_words("now") == "" and FloatPlanClose.closing_line("forgot").contains("Coast Guard"), "forgetting it brings the Coast Guard")
+	check(Seamanship.calls([{"verdict": "good", "floatPlan": "forgot"}]).size() == 4 and Seamanship.kept(Seamanship.calls([{"verdict": "good", "floatPlan": "now"}])) == 4, "closing the plan is a call when it came up")
 	# The water on Posey: drink it and tomorrow is thirsty; the tap costs an hour; rationed is fine.
 	check(WaterPlan.verdict("fill") == "thirsty" and WaterPlan.verdict("ration") == "fine" and WaterPlan.verdict("roche") == "late" and WaterPlan.verdict("") == "fine", "the water has three ends")
 	check(WaterPlan.effort("fill") < 0.9 and WaterPlan.effort("ration") == 1.0 and WaterPlan.late_hours("roche") == 1.0 and WaterPlan.late_hours("fill") == 0.0, "thirst shortens the stroke, the tap delays the launch")

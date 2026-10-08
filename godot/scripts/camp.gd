@@ -26,6 +26,7 @@ var _day: Dictionary = {}  # the authored day, for the night's high water
 var _spot := "edge"        # where the boat sleeps: HaulOut.SPOTS
 var _food := "hung"        # where the food sleeps: FoodStore.SPOTS
 var _water := "ration"     # the water on Posey: WaterPlan.SPOTS
+var _close := "now"        # the call ashore at the take-out: FloatPlanClose.SPOTS
 var _spot_row: BoxContainer
 
 func _ready() -> void:
@@ -71,6 +72,8 @@ func _ready() -> void:
 	_food = food_param if food_param != "" else str(App.save.get("foodStore", "hung"))
 	var water_param := App._url_param("water")  # `?scene=camp&leg=1&step=1&water=fill`, for checks
 	_water = water_param if water_param != "" else str(App.save.get("waterPlan", "ration"))
+	var close_param := App._url_param("close")  # `?scene=camp&leg=2&step=3&close=forgot`, for checks
+	_close = close_param if close_param != "" else str(App.save.get("floatPlanClose", "now"))
 	_place_boat()
 	var pivot := Node3D.new()
 	pivot.position = shore
@@ -134,9 +137,12 @@ func _spot_choices() -> void:
 	if _spot_row:
 		_spot_row.queue_free()
 		_spot_row = null
+	var step_id := str(_steps[_step].get("id", "")) if _step < _steps.size() else ""
+	if step_id == "close":
+		_choice_row(FloatPlanClose.SPOTS, _close, func(id: String) -> void: _close = id; App.save.floatPlanClose = id; App.persist())
+		return
 	if str(_leg.get("camp", {}).get("kind", "camp")) == "takeout":
 		return
-	var step_id := str(_steps[_step].get("id", "")) if _step < _steps.size() else ""
 	if step_id == "food":
 		_choice_row(FoodStore.SPOTS, _food, func(id: String) -> void: _food = id; App.save.foodStore = id; App.persist())
 		return
@@ -219,6 +225,10 @@ func _show() -> void:
 		body += "\n\n" + HaulOut.forecast_line(_day, _hour0) + " Where does the boat sleep?"
 	if str(s.get("id", "")) == "food":
 		body += "\n\nWhere does the food sleep?"
+	if str(s.get("id", "")) == "close":
+		body += "\n\nThe plan said you would be off the water by six. When does the call go in?"
+	if _step == _steps.size() - 1 and not is_camp and _has_step("close"):
+		body += "\n\n" + FloatPlanClose.closing_line(_close)
 	if str(s.get("id", "")) == "water":
 		body += "\n\nEight litres came in the boat for two of you, and tomorrow is the long day. What happens to it?"
 	if _step == _steps.size() - 1 and is_camp:
@@ -254,6 +264,13 @@ func _leave() -> void:
 					# Tomorrow feels it: the launch can be no earlier than the tap allows, and the stroke is what the water left.
 					App.save.lateStart = WaterPlan.late_hours(_water)
 					App.save.effort = WaterPlan.effort(_water)
+		App.save.days = days
+	if _has_step("close"):
+		# The take-out's one call: the day's record keeps whether the plan was closed, and when.
+		var days: Array = App.save.get("days", [])
+		for d in days:
+			if int(d.get("leg", -1)) == Leg.index():
+				d.floatPlan = FloatPlanClose.verdict(_close)
 		App.save.days = days
 	App.advance_leg()
 
@@ -293,6 +310,8 @@ func _has_step(id: String) -> bool:
 
 ## The last card is the night: late enough for full dark, whatever hour the boat came in.
 func _night_hour() -> float:
+	if str(_leg.get("camp", {}).get("kind", "camp")) == "takeout":
+		return _hour0 + 1.1 * (_steps.size() - 1)  # the take-out is an afternoon, not a night
 	return maxf(_hour0 + 1.1 * (_steps.size() - 1), _sea.sunset + 1.6)
 
 ## A hand, a paddle or a tap in the cove at night: the dinoflagellates light where the water moves.

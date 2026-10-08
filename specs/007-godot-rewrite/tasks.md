@@ -285,6 +285,10 @@
 
 - [x] T014bt Kayak School teaches the compass before the fog needs it: a seventh drill, before the rescue, puts a mark on the dome seventy degrees round from the bow and asks for the bearing held within ten degrees for twelve seconds under way (`compass` in `src/content/anatomy.js`; the mark is the trip's own destination mark, cleared when the drill ends). The tour says seven drills; the debrief counts them. `?scene=school&drill=compass`; `school-compass` joins the sweep.
 
+## Slice 57 — the call ashore
+
+- [x] T014bu The take-out's first card, closing the float plan, asks when the call goes in: from the float, after the boat is packed, or on the ferry (`FloatPlanClose`, pure and tested). The last take-out card says what came of it — a Coast Guard boat out of Friday Harbor looking for two paddlers on the car deck, a late call with the phone already in someone's hand, or nothing, which is the point. The record keeps it, the debrief and the seamanship calls say so. `?close=now|later|forgot`; `takeout-close` joins the sweep.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
