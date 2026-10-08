@@ -35,6 +35,29 @@ func _ready() -> void:
 			App.save.erase(k)
 		App.go("acknowledgment"))
 	v.add_child(begin)
+	# Which day to paddle it on: the settled July day, or September's spring tide and southerly.
+	var day_row := HBoxContainer.new()
+	day_row.add_theme_constant_override("separation", 8)
+	var day_blurb := UIKit.label("", 12, UIKit.MIST)
+	var day_buttons: Array = []
+	var refresh := func() -> void:
+		var chosen: Dictionary = App.chosen_day()
+		for pair in day_buttons:
+			var sb: StyleBoxFlat = pair[1].get_theme_stylebox("normal").duplicate()
+			sb.bg_color = UIKit.SEA if str(pair[0]) == str(chosen.get("id", "")) else Color(1, 1, 1, 0.08)
+			pair[1].add_theme_stylebox_override("normal", sb)
+		day_blurb.text = str(chosen.get("blurb", ""))
+	for d in App.days():
+		var id := str(d.get("id", ""))
+		var b := UIKit.button(str(d.get("label", id)), id == str(App.chosen_day().get("id", "")))
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b.pressed.connect(func() -> void: App.save.dayId = id; App.persist(); refresh.call())
+		day_buttons.append([id, b])
+		day_row.add_child(b)
+	if day_buttons.size() > 1:
+		v.add_child(day_row)
+		v.add_child(day_blurb)
+		refresh.call()
 	var stage: String = App.save.get("stage", "title")
 	if stage != "title" and App.SCENES.has(stage):
 		var day := "day %d · " % (int(App.save.get("legIndex", 0)) + 1) if stage in ["plan", "trip", "camp"] else ""

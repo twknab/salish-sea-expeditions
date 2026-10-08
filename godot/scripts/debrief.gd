@@ -9,7 +9,7 @@ func _ready() -> void:
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 	var v := UIKit.page(self, 52, 16)
-	v.add_child(UIKit.kicker("The expedition"))
+	v.add_child(UIKit.kicker("The expedition · %s" % str(App.chosen_day().get("label", ""))))
 	v.add_child(UIKit.label("Friday Harbor · Jones · Posey · home", 22, UIKit.FOAM, true, true))
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL

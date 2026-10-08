@@ -241,6 +241,10 @@
 
 - [x] T014bi The raccoons card on Jones asks where the food sleeps — the tent, the boat’s hatch, or the hard box hung — and the night card says what came of it (the breakfast gone and a torn mesh door; claw marks in the skin a hand from the seam; the box swinging untouched). The choice row is shared with the boat’s (`_choice_row`), the day's record keeps `foodVerdict`, and the debrief says so. `?food=tent|hatch|hung`; `camp-raccoons` joins the sweep.
 
+## Slice 46 — a September day to paddle it again on
+
+- [x] T014bj The title offers the day to paddle on: the settled July day, or a September spring tide with the first autumn southerly behind it (bigger tides, a 2.8-knot ebb, twenty-one knots by early afternoon, the light gone by seven). `TRIP_DAYS` in `src/content/tripDay.js` is the list, `App.chosen_day()` the choice (`save.dayId`, `?day=` for checks); the float plan's head and the debrief's kicker name the day. Everything that read the one day reads the chosen one: the tide graph, the verdicts, the sea state, the bail-outs, the stream, the night's high water. `trip-september` joins the sweep.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

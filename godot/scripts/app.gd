@@ -145,9 +145,23 @@ func go(name: String) -> void:
 	_pause_btn.visible = name in ["trip", "school"]
 	get_tree().change_scene_to_file(SCENES[name])
 
-## The water of the current leg's day: the authored day, run later for each day out.
+## The days the title offers, and the one this expedition is paddled on (`?day=september` for checks).
+func days() -> Array:
+	var all: Array = content.get("tripDays", [])
+	return all if not all.is_empty() else [content.get("tripDay", {})]
+
+func chosen_day() -> Dictionary:
+	var want := _url_param("day")
+	if want == "":
+		want = str(save.get("dayId", "july"))
+	for d in days():
+		if str(d.get("id", "")) == want:
+			return d
+	return days()[0]
+
+## The water of the current leg's day: the chosen day, run later for each day out.
 func day() -> Dictionary:
-	var d := Tides.shifted(content.get("tripDay", {}), Leg.TIDE_LAG_MINUTES_PER_DAY * Leg.index())
+	var d := Tides.shifted(chosen_day(), Leg.TIDE_LAG_MINUTES_PER_DAY * Leg.index())
 	d.floodSetDeg = Leg.current().get("floodSetDeg", d.get("floodSetDeg", 330))  # which way this leg's channel floods
 	return d
 
