@@ -105,6 +105,23 @@ func _init() -> void:
 	var short_day := {"sunset": 1140, "tides": [], "current": [], "wind": []}
 	check(Tides.lands_in_the_dark(short_day, 16.0, 3.0) and not Tides.lands_in_the_dark(short_day, 12.0, 3.0), "a late launch on a short day lands in the dark")
 	check(String(Tides.judge(short_day, 16.0, 3.0).verdict) == "poor" and Tides.verdict_line(short_day, 16.0, 3.0).contains("in the dark"), "and the float plan says so")
+	# The partner speaks at the moments that matter, in a few words, and not when there is nothing to say.
+	check(PartnerVoice.line("ferry") != "" and PartnerVoice.line("nothing") == "" and PartnerVoice.said("Mina", "nothing") == "", "silent when there is nothing to say")
+	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")
+	for ev in PartnerVoice.LINES.keys():
+		check(PartnerVoice.line(ev).length() < 70, "%s: a few words, not a lecture" % ev)
+	# The water on Posey: drink it and tomorrow is thirsty; the tap costs an hour; rationed is fine.
+	check(WaterPlan.verdict("fill") == "thirsty" and WaterPlan.verdict("ration") == "fine" and WaterPlan.verdict("roche") == "late" and WaterPlan.verdict("") == "fine", "the water has three ends")
+	check(WaterPlan.effort("fill") < 0.9 and WaterPlan.effort("ration") == 1.0 and WaterPlan.late_hours("roche") == 1.0 and WaterPlan.late_hours("fill") == 0.0, "thirst shortens the stroke, the tap delays the launch")
+	check(WaterPlan.record_words("ration") == "" and WaterPlan.night_line("roche").contains("Roche Harbor"), "only trouble with the water is written down")
+	check(Seamanship.calls([{"verdict": "good", "waterVerdict": "thirsty"}]).size() == 4 and Seamanship.kept(Seamanship.calls([{"verdict": "good", "waterVerdict": "thirsty"}])) == 3, "the water is a call when it came up")
+	# Seamanship: the calls are read back from the days, and only the ones that came up.
+	check(Seamanship.calls([]).is_empty(), "no days, no calls")
+	var quiet := Seamanship.calls([{"verdict": "good"}])
+	check(quiet.size() == 3 and Seamanship.kept(quiet) == 3, "a clean day with nothing met keeps the launch, the daylight and the boat")
+	var busy := Seamanship.calls([{"verdict": "good", "boatVerdict": "floated", "foodVerdict": "hung", "ferryHeld": 1, "fog": true, "fogOffM": 60.0, "respectful": 2, "violations": 1, "swims": 1, "dark": true}])
+	check(busy.size() == 8 and Seamanship.kept(busy) == 4, "every call that came up is listed, kept or not")
+	check(Seamanship.lines(busy)[1].begins_with("○  Carried the boat") and Seamanship.lines(busy)[4].begins_with("●  Held for the ferry"), "a kept call is a filled mark")
 	var line_leg := {"waypoints": [[0, 0], [1000, 0], [1000, 1000]]}
 	check(absf(Leg.off_track_m(line_leg, Vector3(500, 0, 300)) - 300.0) < 1e-3 and absf(Leg.off_track_m(line_leg, Vector3(1200, 0, 500)) - 200.0) < 1e-3 and Leg.off_track_m(line_leg, Vector3(1000, 0, 1000)) == 0.0, "the distance off the line is to its nearest leg")
 	check(Traffic.bearing_words(Vector3.ZERO, Vector3(0, 0, -100)) == "to the north" and Traffic.bearing_words(Vector3.ZERO, Vector3(100, 0, 0)) == "to the east", "a blast is heard from a direction")

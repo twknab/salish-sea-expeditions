@@ -125,6 +125,8 @@ func _on_launch(h: float) -> void:
 	_refresh_head()
 	if _verdict:
 		var fog_line := Fog.plan_line(_leg, h)
+		if Leg.earliest_launch() > Leg.EARLIEST_LAUNCH + 0.01:
+			fog_line = ("The first hour is the water run to Roche Harbor: nothing launches before %s." % Leg.clock(Leg.earliest_launch())) + ("\n" + fog_line if fog_line != "" else "")
 		_verdict.text = Tides.verdict_line(_day, h, Leg.hours_at_touring_pace(_leg), str(_leg.get("favours", "flood"))) + ("\n" + fog_line if fog_line != "" else "")
 
 func _refresh_head() -> void:

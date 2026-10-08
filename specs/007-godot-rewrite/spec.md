@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-06
 
-**Status**: Experiment — forty-eight slices merged (see "What exists today" below and
+**Status**: Experiment — fifty-two slices merged (see "What exists today" below and
 tasks.md); go/no-go pending the mobile Safari measurement from the Cloud Run URL (see research.md
 and the table at the end)
 
@@ -36,19 +36,19 @@ The Godot build on `main` is a complete three-day expedition, not a tech demo:
   light follow the hour.
 - **On the water**: hold-to-paddle with lean, reverse, brace and edge; the dome compass; a chart
   tile of the real islands; the tide carrying the boat and the wind pushing it; rips off the points; kelp beds that drag on the hull and lie the swell down; the bail-outs offered when the wind is up; fog on the first-light launch, with the chart's fix gone, the compass to steer by and the ferry's blast every two minutes; the sea state of the
-  hour; a partner holding station; the ferry working the channel with a card, a horn and a wake that is a few pitches bow-on and the full roll on the beam;
+  hour; a partner holding station, with a few words at the moments that matter; the ferry working the channel with a card, a horn and a wake that is a few pitches bow-on and the full roll on the beam;
   wildlife as its own models with field-guide sightings, a pod of killer whales in Spieden Channel among them, and seals that flush if you come too close; a capsize with secondary stability and
   the rescue taught in the water.
-- **Ashore**: camp on Jones and Posey with the shore walk at low tide, the boat carried above the night's high water or found by it, the stars and the
+- **Ashore**: camp on Jones and Posey with the shore walk at low tide, the boat carried above the night's high water or found by it, the food hung or lost to the raccoons, Posey's water drunk, rationed or fetched at the cost of the ebb, the stars and the
   bioluminescence of the cove at night, the take-out at Friday
-  Harbor with the tally, the ferry home to Anacortes in the evening light, then the debrief: each day as it went, the score by the Phaser rules,
+  Harbor with the tally, the ferry home to Anacortes in the evening light, then the debrief: each day as it went, the score by the Phaser rules, the seamanship calls kept and missed,
   the drills and the species; the field guide and every source a button away from the title.
 - **Pause**: Escape, P, a chip, or the page going into a pocket holds the boat and the clock
   under a card; About carries the acknowledgment and the safety note at all times.
 - **Sound**: four full-length pieces fetched beside the page after the first frame, the sea and
   the strokes synthesized; sound and music switches on every screen.
 - **Again, harder**: the title offers a second authored day, a September spring tide with the first
-  autumn southerly, and every reading of the water — and the light — follows the choice.
+  autumn southerly, and every reading of the water — and the light — follows the choice; the debrief offers the other day, and the title remembers the last expedition.
 - **Delivery**: the export is served precompressed with ETags (about 13 MB on the wire for the
   first frame against 45 MB raw), the Docker image and Terraform are framed behind a repository
   variable, and a private demo page tracks `main`.

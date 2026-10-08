@@ -28,6 +28,7 @@ var _over_t := 0.0
 const SETTLE := 0.1
 var _probes: Array[Vector3] = []
 var _paddler: Paddler
+var effort := 1.0                   # the paddler's stroke as a share of a rested, watered one's
 var paddler_look: Dictionary = {}   # set before the kayak enters the tree to dress someone other than the player
 var _hull_mesh: MeshInstance3D
 var trim: Dictionary = { "pitch": 0.0, "ends": 0.0, "top": 0.0 }   # from the packing (Packing.assess); zero for an empty boat
@@ -237,6 +238,7 @@ func stroke(side: int, q: float) -> void:
 	if speed > StrokeMath.MAX_SPEED:
 		gain = 0.0
 	gain *= 1.0 - 0.25 * minf(1.0, absf(trim.pitch))  # the trim penalty of the Phaser sim
+	gain *= effort  # what last night's water left in the paddler
 	apply_central_impulse(fwd * gain * mass * (1.0 - 0.3 * clampf(speed / StrokeMath.MAX_SPEED, 0.0, 1.0)))
 	apply_torque_impulse(Vector3.UP * -side * StrokeMath.stroke_yaw(q, rocker) * 200.0)
 	if q >= StrokeMath.GOOD_STROKE:
