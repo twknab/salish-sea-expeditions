@@ -4,8 +4,9 @@
 
 **Created**: 2026-10-06
 
-**Status**: Experiment — first slice built; go/no-go pending the mobile Safari measurement (see
-research.md)
+**Status**: Experiment — twenty-three slices merged (see "What exists today" below and
+tasks.md); go/no-go pending the mobile Safari measurement from the Cloud Run URL (see research.md
+and the table at the end)
 
 **Input**: "Let's rethink the game entirely. Swap to Godot and make this as realistic as possible."
 
@@ -13,6 +14,34 @@ research.md)
 that sits on it), VII (mobile-first and smooth — the whole point of the measurement), I and VI
 (the stroke and edging rules carry over unchanged). II, III, IV, VIII are untouched by the engine
 change and will port their content data as-is.
+
+## What exists today
+
+The Godot build on `main` is a complete three-day expedition, not a tech demo:
+
+- **The opening**: title, land acknowledgment and safety note, outfitting (six paddler presets or
+  a custom look, kit, skins), the ferry from Anacortes as a chart flyover over the real route with
+  a rail view, Kayak School (boat, body and paddle, then five drills).
+- **Three days on real water**: Friday Harbor to Jones Island, Jones through Spieden Channel to
+  Posey Island, and home on the ebb to the town float. The islands are real elevation and land
+  cover (`tools/geo/build_terrain.py`), the legs are laid over the water by the same router as the
+  ferry's track (`tools/geo/leg_routes.py` → `godot/content/legs.json`), and the teaching per leg
+  lives in `src/content/expedition.js`.
+- **Before each launch**, a float plan on the chart with the day's water as a graph: choose the
+  launch, read the verdict (mean stream over the leg, chop, wind against tide), see the chart's
+  light follow the hour.
+- **On the water**: hold-to-paddle with lean, reverse, brace and edge; the dome compass; a chart
+  tile of the real islands; the tide carrying the boat; rips off the points; the sea state of the
+  hour; a partner holding station; the ferry working the channel with a card, a horn and a wake;
+  wildlife as its own models with field-guide sightings; a capsize with secondary stability and
+  the rescue taught in the water.
+- **Ashore**: camp on Jones and Posey with the shore walk at low tide, the take-out at Friday
+  Harbor with the tally, the field guide and every source a button away from the title.
+- **Sound**: four full-length pieces fetched beside the page after the first frame, the sea and
+  the strokes synthesized; sound and music switches on every screen.
+- **Delivery**: the export is served precompressed with ETags (about 13 MB on the wire for the
+  first frame against 45 MB raw), the Docker image and Terraform are framed behind a repository
+  variable, and a private demo page tracks `main`.
 
 ## What changes, and what does not
 
