@@ -185,6 +185,10 @@
 
 - [x] T014au The night is a night: the last camp card waits for full dark, the seascape carries a star dome (points on a sphere, brighter along one band, fading in with the dark and following the viewer), and the cove is bioluminescent — a tap on the water at night stirs a burst of light, the way a hand or a paddle does in a warm Salish Sea August. `?scene=camp&step=4&glow=1`
 
+## Slice 32 — the whales
+
+- [x] T014av A pod of Bigg's killer whales works Spieden Channel on day two: a bull with the tall fin and two smaller animals, black with the eye patch and the saddle, each surfacing on its own beat with the bull's blow, travelling the channel and coming back round. The pod is a sighting like the rest — the field guide's card at 1.4 km, Be Whale Wise's thousand yards as the line, given room or too close in the day's record — and the sightings' distance now follows an animal that moves, not the water it started in. `?scene=trip&leg=1&near=orcas`
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
