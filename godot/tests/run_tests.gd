@@ -137,6 +137,11 @@ func _init() -> void:
 		check(absf(float(Leg.flow_at(legs[1], at + Vector3(float(rip.radius) + 1.0, 0.0, 0.0)).factor) - 1.0) < 1e-6, "outside the rip the stream is the channel's")
 		check(String(Leg.flow_at(legs[1], at).name) != "", "a rip names where it is")
 	check(Tides.sea_state(july, 16.0, 1.8) > Tides.sea_state(july, 16.0, 1.0), "a stronger stream against the wind stands the sea up more")
+	# Secondary stability: righting grows, peaks, dies at the point of no return, and turns against the boat.
+	check(StrokeMath.righting(0.3) > 0.0 and StrokeMath.righting(0.6) > StrokeMath.righting(0.3), "righting grows with the roll")
+	check(absf(StrokeMath.righting(StrokeMath.NO_RETURN_ROLL)) < 1e-6, "no righting at the point of no return")
+	check(StrokeMath.righting(2.0) < 0.0 and StrokeMath.righting(-2.0) > 0.0, "past it the boat goes over, either side")
+	check(not StrokeMath.capsized(1.0) and StrokeMath.capsized(1.6), "capsized is past the point of no return by a margin")
 	var paddle := Paddler.greenland_paddle()
 	check(paddle.get_aabb().size.x > 2.1 and paddle.get_aabb().size.z < 0.1, "Greenland paddle is long and narrow")
 	print("tests: %d passed, %d failed" % [_n - _fails, _fails])

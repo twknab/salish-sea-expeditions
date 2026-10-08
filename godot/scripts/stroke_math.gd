@@ -27,3 +27,23 @@ static func buoyancy(depth: float, share_weight: float, settle: float) -> float:
 	if depth <= 0.0:
 		return 0.0
 	return minf(depth / settle, 4.0) * share_weight
+
+## Secondary stability. The righting torque grows with the roll until the chine is well buried, then
+## falls away to nothing at the point of no return and turns against the boat beyond it, so a boat
+## that is not braced in time goes over and stays over. Returns a torque coefficient in the units
+## kayak.gd applies about the keel line.
+const STABLE_ROLL := 0.85       # radians: where the righting moment peaks
+const NO_RETURN_ROLL := 1.25    # radians: past this the boat goes over
+const RIGHTING_GAIN := 90.0
+
+static func righting(roll: float) -> float:
+	var a := absf(roll)
+	var s := signf(roll)
+	if a <= STABLE_ROLL:
+		return RIGHTING_GAIN * roll
+	var peak := RIGHTING_GAIN * STABLE_ROLL
+	return s * peak * clampf(1.0 - (a - STABLE_ROLL) / (NO_RETURN_ROLL - STABLE_ROLL), -1.0, 1.0)
+
+## Over, and staying over: past the point of no return by a margin.
+static func capsized(roll: float) -> bool:
+	return absf(roll) > NO_RETURN_ROLL + 0.1

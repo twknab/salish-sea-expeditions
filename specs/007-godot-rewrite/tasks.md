@@ -113,6 +113,11 @@
 - [x] T014y Place labels declutter: the nearer place keeps its name and a label that would land on it waits until it clears (Posey Island and Davison Head sat on one another from the channel)
 - [x] T014z The title's Continue names the day as well as the station
 
+## Slice 15 — over, and back in
+
+- [x] T014aa Secondary stability in `StrokeMath.righting`: the righting torque peaks with the chine buried, dies at the point of no return and turns against the boat beyond it, so a boat not braced in time goes over and stays over (the roll is now read full-range); tested
+- [x] T014ab On the trip a capsize is taught where it happens: 1-10-1, the wet exit, the paddle-float re-entry and pumping out as cards from the field lessons, then back in the boat fifteen minutes later with the warning to make the next landing the bail-out; swims are counted in the save. In Kayak School the boat comes back up with a word about bracing earlier. `?scene=trip&capsize=1` opens in the water for checks
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
