@@ -148,6 +148,13 @@ func _init() -> void:
 	check(absf(StrokeMath.righting(StrokeMath.NO_RETURN_ROLL)) < 1e-6, "no righting at the point of no return")
 	check(StrokeMath.righting(2.0) < 0.0 and StrokeMath.righting(-2.0) > 0.0, "past it the boat goes over, either side")
 	check(not StrokeMath.capsized(1.0) and StrokeMath.capsized(1.6), "capsized is past the point of no return by a margin")
+	# The ferry's stretch: distances accumulate, the ends are the ends, and the nearest point is on the line.
+	var tr := Traffic.stretch([[0, 0], [1000, 0], [1000, 1000]], 0)
+	var cum := Traffic.cumulative(tr)
+	check(absf(cum[2] - 2000.0) < 1e-3, "the stretch is two kilometres")
+	check(Traffic.point_at(tr, cum, 0.0).is_equal_approx(Vector3.ZERO) and Traffic.point_at(tr, cum, 2000.0).is_equal_approx(Vector3(1000, 0, 1000)), "the ends are the ends")
+	check(Traffic.point_at(tr, cum, 1500.0).is_equal_approx(Vector3(1000, 0, 500)), "halfway up the second leg")
+	check(absf(Traffic.nearest_s(tr, cum, Vector3(500.0, 0.0, 300.0)) - 500.0) < 1e-3, "the nearest point on the track to a boat beside it")
 	var paddle := Paddler.greenland_paddle()
 	check(paddle.get_aabb().size.x > 2.1 and paddle.get_aabb().size.z < 0.1, "Greenland paddle is long and narrow")
 	print("tests: %d passed, %d failed" % [_n - _fails, _fails])

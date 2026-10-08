@@ -21,6 +21,7 @@ var _arrived := false
 var _dest_label: Label
 var _route: Dictionary = {}
 var _chart: ChartTile
+var _traffic: Traffic
 var _flow: Dictionary = { "factor": 1.0, "name": "" }   # the local stream, from the leg's rips
 var _kick_t := 0.0
 var _swimming := false       # capsized on the trip: the rescue cards are up
@@ -140,6 +141,14 @@ func _ready() -> void:
 			_dest_label.size = Vector2(360, 24)
 			hud.add_child(_dest_label)
 			_spawn_sightings()
+			# The ferry works the channel whatever day it is: leaving the landing behind you on day one,
+			# coming in to meet you on the way home.
+			_traffic = Traffic.new()
+			add_child(_traffic)
+			if Leg.index() == 0:
+				_traffic.depart_landing_in(90.0)
+			else:
+				_traffic.inbound_in(420.0)
 			# The chart in the deck bag, under the HUD's lines on the left; folded by default on a phone.
 			_chart = ChartTile.new()
 			_chart.terrain = terrain
@@ -152,6 +161,10 @@ func _ready() -> void:
 				"jones", "posey", "home":
 					kayak.global_position = _dest + Vector3(0.0, 0.1, -900.0)  # 900 m north of the cove
 					kayak.rotation.y = PI  # heading south, into the cove
+				"ferry":  # `?scene=trip&near=ferry`: the ferry 600 m ahead, coming up the channel
+					kayak.global_position = Vector3(500.0, 0.1, -2900.0)
+					kayak.rotation.y = -deg_to_rad(340.0)
+					_traffic.place_near(kayak.global_position, 600.0)
 				"spieden":
 					kayak.global_position = Vector3(-7000.0, 0.1, -10450.0)
 					kayak.rotation.y = -deg_to_rad(270.0)  # west down Spieden Channel, the porpoise ahead
@@ -290,6 +303,7 @@ func _process(delta: float) -> void:
 		_on_capsized()
 	if mode == "trip" and not _arrived and not _swimming:
 		_leg(delta)
+		_watch_traffic(delta)
 		if _chart:
 			_chart.boat = kayak.global_position
 			_chart.heading = kayak.heading
@@ -536,3 +550,27 @@ func _righted() -> void:
 	_swimming = false
 	controls.visible = true
 	note_label.text = "Fifteen minutes in the water. Paddle to warm up, and make the next landing the bail-out if the shivering does not stop."
+
+## The ferry: a card as it comes within reach, a long blast as it closes, and its wake on the beam.
+func _watch_traffic(delta: float) -> void:
+	if _traffic == null:
+		return
+	_traffic.advance(delta)
+	var d := _traffic.distance_to_boat(kayak.global_position)
+	if d < Traffic.WARN_M and not _traffic.warned:
+		_traffic.warned = true
+		_clear_card()
+		_card = UIKit.card("Ferry in the channel", "Hold your position and let it pass well ahead — it cannot stop or turn for you, and it is faster than it looks. When it has gone by, cross its wake at right angles, bow into the waves.", App.sources_line(["colregs", "wsf"]), [["Holding", _clear_card, true]], "Traffic")
+		_ui.add_child(UIKit.spacer())
+		_ui.add_child(_card)
+		var met := int(App.save.get("ferriesMet", 0))
+		App.save.ferriesMet = met + 1
+		App.persist()
+	if d < Traffic.HORN_M and not _traffic.honked:
+		_traffic.honked = true
+		Sound.horn()
+	if d < Traffic.WAKE_M and not _traffic.waked:
+		_traffic.waked = true
+		kayak.kick(1.2)
+		Sound.hull_slap(0.8)
+		note_label.text = "The ferry's wake: bow into it, and brace."
