@@ -33,6 +33,8 @@ var _sightings: Array = []   # [{conf, node, seen}]
 const GROOVE_AFTER := 6.0       # seconds of steady holding before the day starts to pass
 const GROOVE_SPEED := 28.0      # extra metres per second over the ground, in the groove
 const GROOVE_HOURS_PER_SEC := 1.0 / 50.0  # the clock in the groove: an hour in fifty seconds
+var _day: Dictionary = {}       # the authored day: tides, current, wind
+var _set_label: Label
 
 ## Where the game puts you in on the water: the harbour at Friday Harbor, off the town float with
 ## Brown Island to starboard, pointed up San Juan Channel. Metres from the town, and degrees true.
@@ -101,6 +103,11 @@ func _ready() -> void:
 		_:
 			_tilt_chip()
 			_dest = Leg.COVE
+			_day = App.content.get("tripDay", {})
+			_set_label = UIKit.label("", 12, UIKit.MIST, false)
+			_set_label.position = Vector2(20, 172)
+			_set_label.size = Vector2(360, 20)
+			hud.add_child(_set_label)
 			_dest_label = UIKit.label("", 13, UIKit.FOAM, false, true)
 			_dest_label.position = Vector2(20, 150)
 			_dest_label.size = Vector2(360, 24)
@@ -183,6 +190,14 @@ func _leg(delta: float) -> void:
 	else:
 		_hour += delta / 3600.0 * 12.0  # out of the groove the day still passes, twelve times real
 	sea.apply_hour(_hour)
+	# The current carries the boat over the ground, in the groove and out of it (the groove's hours
+	# pass faster, so its drift is scaled with them).
+	var cur := Tides.current_vector(_day, _hour)
+	var drift := cur * delta * (1.0 + _groove * (GROOVE_HOURS_PER_SEC * 3600.0 - 1.0) * 0.25)
+	var landing := here + drift * 4.0
+	if terrain.height_at(landing.x, landing.z) < -0.5:
+		kayak.global_position += drift
+	_set_label.text = "San Juan Channel: %s · wind %d kn from %03d°" % [Tides.describe(_day, _hour), int(round(Tides.wind(_day, _hour).kn)), int(round(Tides.wind(_day, _hour).fromDeg))]
 	_dest_label.text = "%s · %.1f km · %03d° · %s%s" % ["Jones Island north cove", dist / 1000.0, int(round(brg)), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
 	if dist < 220.0:
 		_arrived = true

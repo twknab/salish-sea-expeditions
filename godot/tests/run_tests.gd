@@ -92,6 +92,17 @@ func _init() -> void:
 	check(not before.is_equal_approx(after), "posing changes the forearm's local pose")
 	var g := body.skeleton.get_bone_global_pose(body.bone("hand_r")).origin
 	check(g.distance_to(Vector3(0.5, 0.7, 0.3)) < 0.05, "hand bone sits at the wrist it was given, got %s" % g)
+	# Tides: the authored day's table reads back, interpolates, and the current points along the set.
+	var day := { "tides": [{ "t": 0, "h": 1.0 }, { "t": 60, "h": 3.0 }], "current": [{ "t": 0, "kn": 0.0 }, { "t": 120, "kn": 2.0 }, { "t": 240, "kn": 0.0 }, { "t": 360, "kn": -1.0 }], "floodSetDeg": 0, "wind": [{ "t": 0, "kn": 4, "fromDeg": 180 }] }
+	check(absf(Tides.height_m(day, 0.5) - 2.0) < 1e-6, "tide height interpolates")
+	check(absf(Tides.height_m(day, 5.0) - 3.0) < 1e-6, "tide height holds beyond the table")
+	check(absf(Tides.current_kn(day, 1.0) - 1.0) < 1e-6, "current interpolates to the flood")
+	var cv := Tides.current_vector(day, 2.0)
+	check(cv.z < -0.9 and absf(cv.x) < 1e-6, "a flood setting 000° runs north (−z), got %s" % cv)
+	check(Tides.describe(day, 2.0).begins_with("flood 2.0 kn"), "describe names the flood")
+	check(Tides.describe(day, 6.0).begins_with("ebb 1.0 kn setting 180"), "describe turns the ebb round")
+	check(Tides.describe(day, 4.0) == "slack water", "slack near zero")
+	check(int(Tides.wind(day, 1.0).fromDeg) == 180, "wind reads back")
 	var paddle := Paddler.greenland_paddle()
 	check(paddle.get_aabb().size.x > 2.1 and paddle.get_aabb().size.z < 0.1, "Greenland paddle is long and narrow")
 	print("tests: %d passed, %d failed" % [_n - _fails, _fails])
