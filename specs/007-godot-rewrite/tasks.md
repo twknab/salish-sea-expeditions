@@ -132,6 +132,11 @@
 - [x] T014af Leg 3 in `leg_routes.py` and the content: Posey Island east through Spieden Channel as it empties and south down San Juan Channel to the town float at Friday Harbor, sixteen kilometres; float plan, landing, and a take-out in place of a camp (close the plan, rinse and fold, what you learned, the ferry home) with no tent and "Look under the float" for the harbour's jellies and eelgrass
 - [x] T014ag Each leg says which stream it rides (`favours`): `Tides.judge` and the verdict read the ebb as helping on the way home, tested; the last card of the expedition carries the tally — days, kilometres, species met, swims
 
+## Slice 19 — the switches
+
+- [x] T014ah Sound and music chips beside the Title button on every screen, kept in the save and applied at start: the autoload had the switches and nothing reached them, and a web game must be muteable
+- [x] T014ai Once the expedition is done the title offers each day again, from its float plan
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
