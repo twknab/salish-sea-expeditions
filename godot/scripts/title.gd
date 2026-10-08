@@ -31,7 +31,7 @@ func _ready() -> void:
 	var begin := UIKit.button("Begin at Anacortes")
 	begin.pressed.connect(func() -> void:
 		App.save.legIndex = 0
-		for k in ["days", "nights", "cleanCamps", "launchHour", "arrivedHour", "assembly"]:  # a fresh record; the field guide and the drills are yours for good
+		for k in ["days", "nights", "cleanCamps", "launchHour", "arrivedHour", "assembly", "swims", "ferriesMet"]:  # a fresh record; the field guide and the drills are yours for good
 			App.save.erase(k)
 		App.go("acknowledgment"))
 	v.add_child(begin)

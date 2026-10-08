@@ -296,6 +296,8 @@ func _tally() -> String:
 	for l in Leg.all():
 		km += Leg.length_m(l)
 	var seen: Array = App.save.get("seen", [])
-	var swims := int(App.save.get("swims", 0))
+	var swims := 0
+	for d in App.save.get("days", []):  # this expedition's swims, from its record, not a lifetime count
+		swims += int(d.get("swims", 0))
 	var swim_line := "and never went in" if swims == 0 else ("and went in once" if swims == 1 else "and went in %d times" % swims)
 	return "%d days, %.0f km by paddle, %d of the field guide met along the way, %s." % [Leg.all().size(), km / 1000.0, seen.size(), swim_line]
