@@ -14,6 +14,7 @@ var _steps: Array = []
 var _head: Label
 var _day: Dictionary = {}
 var _graph: TideGraph
+var _leg: Dictionary = {}
 var _verdict: Label
 
 func _ready() -> void:
@@ -28,9 +29,16 @@ func _ready() -> void:
 	_sea.terrain = _terrain
 	add_child(_sea)
 	move_child(_sea, 0)
-	var a := Leg.WAYPOINTS[0]
-	var b := Leg.WAYPOINTS[Leg.WAYPOINTS.size() - 1]
-	var mid := (a + b) * 0.5
+	_leg = Leg.current()
+	var wps := Leg.waypoints(_leg)
+	var lo := wps[0]
+	var hi := wps[0]
+	for w in wps:
+		lo = Vector3(minf(lo.x, w.x), 0.0, minf(lo.z, w.z))
+		hi = Vector3(maxf(hi.x, w.x), 0.0, maxf(hi.z, w.z))
+	var mid := (lo + hi) * 0.5
+	var extent := maxf(hi.x - lo.x, hi.z - lo.z)
+	var alt := clampf(extent * 0.72, 3600.0, 7600.0)
 	_terrain.focus = mid
 	_sea.follow = _terrain  # the water sits still under the chart; the terrain node is at the origin
 	_cam = Camera3D.new()
@@ -39,11 +47,11 @@ func _ready() -> void:
 	_cam.far = 40000.0
 	add_child(_cam)
 	# From the south-east, high enough to hold the whole leg with the camp at the top of the frame.
-	_cam.global_position = mid + Vector3(2600.0, 5200.0, 4200.0)
+	_cam.global_position = mid + Vector3(0.5, 1.0, 0.81) * alt
 	_cam.look_at(mid + Vector3(0, 0, -600.0), Vector3.UP)
 	_cam.current = true
 	var pts := PackedVector3Array()
-	for w in Leg.WAYPOINTS:
+	for w in wps:
 		pts.append(w)
 	add_child(ChartRibbon.build(pts, Color(UIKit.SUN, 0.9)))
 	var ui := CanvasLayer.new()
@@ -51,7 +59,7 @@ func _ready() -> void:
 	_labels = PlaceLabels.new()
 	_labels.reach = 30000.0
 	ui.add_child(_labels)
-	for id in ["fridayHarbor", "labs", "yellow", "jones", "shaw", "spieden", "orcas"]:
+	for id in _leg.get("labels", []):
 		var w := _terrain.place(id)
 		var nm: String = id
 		for p in _terrain.meta.get("places", []):
@@ -59,9 +67,8 @@ func _ready() -> void:
 				nm = p.name
 		_labels.add_place(id, nm, Vector3(w.x, maxf(_terrain.height_at(w.x, w.z), 0.0) + 30.0, w.z))
 	_ui = UIKit.page(ui, 48, 24)
-	var plan: Dictionary = App.content.get("floatPlan", {})
-	_steps = plan.get("steps", [])
-	_day = App.content.get("tripDay", {})
+	_steps = _leg.get("steps", [])
+	_day = App.day()
 	_head = UIKit.label("", 13, UIKit.FOAM, true, true)
 	_refresh_head()
 	var frame := PanelContainer.new()
@@ -85,7 +92,7 @@ func _show() -> void:
 	else:
 		actions.append(["Launch", func() -> void: App.next(), true])
 	var s: Dictionary = _steps[_step] if _step < _steps.size() else { "title": "The plan", "text": "", "sourceIds": [] }
-	_card = UIKit.card(s.get("title", ""), s.get("text", ""), App.sources_line(s.get("sourceIds", [])), actions, "Float plan · %d of %d" % [_step + 1, _steps.size()])
+	_card = UIKit.card(s.get("title", ""), s.get("text", ""), App.sources_line(s.get("sourceIds", [])), actions, "Float plan · day %d · %d of %d" % [Leg.index() + 1, _step + 1, _steps.size()])
 	if s.get("id", "") == "tide":
 		_add_graph()
 	_ui.add_child(_card)
@@ -98,7 +105,7 @@ func _add_graph() -> void:
 	_graph = TideGraph.new()
 	_graph.day = _day
 	_graph.launch = Leg.launch_hour()
-	_graph.leg_hours = Leg.hours_at_touring_pace()
+	_graph.leg_hours = Leg.hours_at_touring_pace(_leg)
 	_graph.launch_changed.connect(_on_launch)
 	v.add_child(_graph)
 	v.move_child(_graph, at)
@@ -117,12 +124,11 @@ func _on_launch(h: float) -> void:
 	_sea.apply_hour(h - 0.5)
 	_refresh_head()
 	if _verdict:
-		_verdict.text = Tides.verdict_line(_day, h, Leg.hours_at_touring_pace())
+		_verdict.text = Tides.verdict_line(_day, h, Leg.hours_at_touring_pace(_leg))
 
 func _refresh_head() -> void:
-	var plan: Dictionary = App.content.get("floatPlan", {})
 	var h := Leg.launch_hour()
-	_head.text = "%s · %.1f km · about %.0f h at %.0f kn · launch %s on the %s" % [plan.get("title", "The leg"), Leg.length_m() / 1000.0, Leg.hours_at_touring_pace(), Leg.TOURING_KNOTS, Leg.clock(h), Tides.describe(_day, h)]
+	_head.text = "Day %d · %s · %.1f km · about %.0f h at %.0f kn · launch %s on the %s" % [Leg.index() + 1, _leg.get("title", "The leg"), Leg.length_m(_leg) / 1000.0, Leg.hours_at_touring_pace(_leg), Leg.TOURING_KNOTS, Leg.clock(h), Tides.describe(_day, h)]
 
 func _process(_d: float) -> void:
 	_labels.update(_cam)

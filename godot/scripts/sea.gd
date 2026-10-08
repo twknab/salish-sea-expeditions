@@ -19,15 +19,22 @@ var _hour := Leg.LAUNCH_HOUR   # the day's clock, on a trip
 var _groove := 0.0             # 0..1: a steady cadence has settled and the miles pass
 var _arrived := false
 var _dest_label: Label
+var _route: Dictionary = {}
 ## Sightings on the leg: what, which species of the field guide it is, where, and how close you
 ## must come to notice it. Positions checked against the terrain: seals and kelp on the islet by
 ## Yellow Island, the heron in the Labs' shallows, the eagle on Point Caution, the porpoise mid-channel.
 const SIGHTINGS := [
-	{ "kind": "heron", "species": "heron", "at": Vector3(560.0, 0.0, -1300.0), "face": Vector3(-1, 0, 0), "radius": 220.0 },
-	{ "kind": "eagle", "species": "baldEagle", "at": Vector3(260.0, 0.0, -2600.0), "face": Vector3(1, 0, 0), "radius": 320.0 },
-	{ "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-300.0, 0.0, -4200.0), "face": Vector3(0, 0, -1), "radius": 420.0 },
-	{ "kind": "kelp", "species": "bullKelp", "at": Vector3(-900.0, 0.0, -6250.0), "face": Vector3(0, 0, -1), "radius": 200.0 },
-	{ "kind": "seals", "species": "harbourSeal", "at": Vector3(-1100.0, 0.0, -6330.0), "face": Vector3(0, 0, 1), "radius": 260.0 },
+	{ "leg": 0, "kind": "heron", "species": "heron", "at": Vector3(560.0, 0.0, -1300.0), "face": Vector3(-1, 0, 0), "radius": 220.0 },
+	{ "leg": 0, "kind": "eagle", "species": "baldEagle", "at": Vector3(260.0, 0.0, -2600.0), "face": Vector3(1, 0, 0), "radius": 320.0 },
+	{ "leg": 0, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-300.0, 0.0, -4200.0), "face": Vector3(0, 0, -1), "radius": 420.0 },
+	{ "leg": 0, "kind": "kelp", "species": "bullKelp", "at": Vector3(-900.0, 0.0, -6250.0), "face": Vector3(0, 0, -1), "radius": 200.0 },
+	{ "leg": 0, "kind": "seals", "species": "harbourSeal", "at": Vector3(-1100.0, 0.0, -6330.0), "face": Vector3(0, 0, 1), "radius": 260.0 },
+	# Day two: seals on the rocks at Spieden's south-east tip, a porpoise working Spieden Channel, kelp
+	# off Davison Head and the eagle on the head itself.
+	{ "leg": 1, "kind": "seals", "species": "harbourSeal", "at": Vector3(-6760.0, 0.0, -10920.0), "face": Vector3(0, 0, 1), "radius": 300.0 },
+	{ "leg": 1, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-7600.0, 0.0, -10450.0), "face": Vector3(-1, 0, 0), "radius": 420.0 },
+	{ "leg": 1, "kind": "kelp", "species": "bullKelp", "at": Vector3(-9300.0, 0.0, -10080.0), "face": Vector3(-1, 0, 0), "radius": 200.0 },
+	{ "leg": 1, "kind": "eagle", "species": "baldEagle", "at": Vector3(-9600.0, 0.0, -9930.0), "face": Vector3(0, 0, -1), "radius": 320.0 },
 ]
 var _sightings: Array = []   # [{conf, node, seen}]
 const GROOVE_AFTER := 6.0       # seconds of steady holding before the day starts to pass
@@ -61,8 +68,13 @@ func _ready() -> void:
 	sea.terrain = terrain
 	add_child(sea)
 	move_child(sea, 0)
-	kayak.global_position = terrain.place("fridayHarbor") + HARBOUR_SPAWN
-	kayak.rotation.y = -deg_to_rad(HARBOUR_HEADING)  # heading = -yaw (see Kayak.heading)
+	_route = Leg.current()
+	if mode == "trip":
+		kayak.global_position = Leg.start(_route) + Vector3(0.0, 0.1, 0.0)
+		kayak.rotation.y = -deg_to_rad(Leg.heading_deg(_route))  # heading = -yaw (see Kayak.heading)
+	else:
+		kayak.global_position = terrain.place("fridayHarbor") + HARBOUR_SPAWN
+		kayak.rotation.y = -deg_to_rad(HARBOUR_HEADING)
 	terrain.focus = kayak.global_position
 	var sk := App.skin()
 	kayak.deck_color = Color(sk.deck)
@@ -102,8 +114,8 @@ func _ready() -> void:
 			_show_phase()
 		_:
 			_tilt_chip()
-			_dest = Leg.COVE
-			_day = App.content.get("tripDay", {})
+			_dest = Leg.cove(_route)
+			_day = App.day()
 			_hour = Leg.launch_hour()  # the launch the float plan chose
 			sea.apply_hour(_hour)
 			_set_label = UIKit.label("", 12, UIKit.MIST, false)
@@ -116,20 +128,26 @@ func _ready() -> void:
 			hud.add_child(_dest_label)
 			_spawn_sightings()
 			match App._url_param("near"):  # starts for checks
-				"jones":
+				"jones", "posey":
 					kayak.global_position = _dest + Vector3(0.0, 0.1, -900.0)  # 900 m north of the cove
 					kayak.rotation.y = PI  # heading south, into the cove
+				"spieden":
+					kayak.global_position = Vector3(-7000.0, 0.1, -10450.0)
+					kayak.rotation.y = -deg_to_rad(270.0)  # west down Spieden Channel, the porpoise ahead
 				"yellow":
 					kayak.global_position = Vector3(-860.0, 0.1, -6225.0)
 					kayak.rotation.y = -deg_to_rad(300.0)  # the kelp 50 m ahead, the seals' rock beyond
 				"labs":
 					kayak.global_position = Vector3(590.0, 0.1, -1312.0)
 					kayak.rotation.y = -deg_to_rad(250.0)  # the heron 30 m off in the shallows
-			note_label.text = "Friday Harbor · San Juan Channel opens ahead\n%s" % ("Hold the water to paddle · slide to lean · slide up to back off" if controls.touch() else "Hold W to paddle · A/D lean · S back · Q/E edge · J brace")
+			var opening := "Friday Harbor · San Juan Channel opens ahead" if Leg.index() == 0 else "Day %d · %s" % [Leg.index() + 1, str(_route.get("title", ""))]
+			note_label.text = "%s\n%s" % [opening, ("Hold the water to paddle · slide to lean · slide up to back off" if controls.touch() else "Hold W to paddle · A/D lean · S back · Q/E edge · J brace")]
 
 ## Put the animals and the kelp where they live, on the shore or the water the terrain says is there.
 func _spawn_sightings() -> void:
 	for conf in SIGHTINGS:
+		if int(conf.get("leg", 0)) != Leg.index():
+			continue
 		var at: Vector3 = conf.at
 		var y := 0.0
 		if conf.kind == "eagle" or conf.kind == "seals":
@@ -199,8 +217,8 @@ func _leg(delta: float) -> void:
 	var landing := here + drift * 4.0
 	if terrain.height_at(landing.x, landing.z) < -0.5:
 		kayak.global_position += drift
-	_set_label.text = "San Juan Channel: %s · wind %d kn from %03d°" % [Tides.describe(_day, _hour), int(round(Tides.wind(_day, _hour).kn)), int(round(Tides.wind(_day, _hour).fromDeg))]
-	_dest_label.text = "%s · %.1f km · %03d° · %s%s" % ["Jones Island north cove", dist / 1000.0, int(round(brg)), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
+	_set_label.text = "%s: %s · wind %d kn from %03d°" % [str(_route.get("channel", "San Juan Channel")), Tides.describe(_day, _hour), int(round(Tides.wind(_day, _hour).kn)), int(round(Tides.wind(_day, _hour).fromDeg))]
+	_dest_label.text = "%s · %.1f km · %03d° · %s%s" % [Leg.cove_name(_route), dist / 1000.0, int(round(brg)), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
 	if dist < 220.0:
 		_arrived = true
 		_groove = 0.0
@@ -209,7 +227,8 @@ func _leg(delta: float) -> void:
 		controls.visible = false
 		Sound.gull()
 		_clear_card()
-		_card = UIKit.card("The north cove", "Jones Island. Nose the boat onto the gravel, step out into the shallows and carry it up above the wrack line. The day is done at %s." % Leg.clock(_hour), App.sources_line(["wa-parks-jones", "wwta"]), [["Land and make camp", func() -> void: App.next(), true]], "Landing")
+		var land_card: Dictionary = _route.get("landing", {})
+		_card = UIKit.card(land_card.get("title", "Landing"), "%s The day is done at %s." % [land_card.get("text", ""), Leg.clock(_hour)], App.sources_line(land_card.get("sourceIds", [])), [["Land and make camp", func() -> void: App.next(), true]], "Landing · day %d" % (Leg.index() + 1))
 		_ui.add_child(UIKit.spacer())
 		_ui.add_child(_card)
 

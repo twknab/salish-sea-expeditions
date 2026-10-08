@@ -47,6 +47,9 @@ func _ready() -> void:
 	_home.add_child(b)
 	_home.visible = false
 	# `?scene=ferry` jumps straight to a screen (smoke tests and the editor's play button).
+	var leg_param := _url_param("leg")  # `?leg=1` opens the second day, for checks
+	if leg_param != "":
+		save.legIndex = int(leg_param)
 	var want := _url_param("scene")
 	if want != "" and SCENES.has(want):
 		call_deferred("go", want)
@@ -89,6 +92,25 @@ func go(name: String) -> void:
 	Sound.mood({ "title": "title", "acknowledgment": "title", "outfit": "calm", "ferry": "ferry", "school": "dawn", "plan": "calm", "trip": "drive", "camp": "night" }.get(name, "calm"))
 	_home.visible = name != "title"
 	get_tree().change_scene_to_file(SCENES[name])
+
+## The water of the current leg's day: the authored day, run later for each day out.
+func day() -> Dictionary:
+	var d := Tides.shifted(content.get("tripDay", {}), Leg.TIDE_LAG_MINUTES_PER_DAY * Leg.index())
+	d.floodSetDeg = Leg.current().get("floodSetDeg", d.get("floodSetDeg", 330))  # which way this leg's channel floods
+	return d
+
+## From camp to the next day's float plan, or home when the last leg is done.
+func advance_leg() -> void:
+	if Leg.is_last():
+		save.stage = "camp_done"
+		persist()
+		go("title")
+		return
+	save.legIndex = Leg.index() + 1
+	save.erase("launchHour")
+	save.erase("arrivedHour")
+	persist()
+	go("plan")
 
 func next() -> void:
 	var i := FLOW.find(current)

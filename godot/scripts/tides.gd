@@ -99,7 +99,7 @@ static func judge(day: Dictionary, launch_hour: float, hours: float) -> Dictiona
 static func verdict_line(day: Dictionary, launch_hour: float, hours: float) -> String:
 	var j := judge(day, launch_hour, hours)
 	var cur := float(j.cur)
-	var carry := "the channel carries you north" if cur >= 0.2 else ("you paddle against the ebb" if cur <= -0.2 else "the water is near slack")
+	var carry := "the channel carries you" if cur >= 0.2 else ("you paddle against the ebb" if cur <= -0.2 else "the water is near slack")
 	match String(j.verdict):
 		"good":
 			return "Good: %s, light wind, and no chop to speak of." % carry
@@ -108,3 +108,12 @@ static func verdict_line(day: Dictionary, launch_hour: float, hours: float) -> S
 				return "Poor: the afternoon southerly runs against the ebb and the channel stands up in short, steep chop."
 			return "Poor: %s for the whole leg." % carry
 	return "Fair: %s, but there is chop on the way — keep the bail-outs in mind." % carry
+
+## The same day's tables run `minutes` later: tomorrow's water, roughly, is today's fifty minutes on.
+static func shifted(day: Dictionary, minutes: float) -> Dictionary:
+	var out := day.duplicate(true)
+	for key in ["tides", "current", "wind"]:
+		var table: Array = out.get(key, [])
+		for row in table:
+			row.t = float(row.t) + minutes
+	return out

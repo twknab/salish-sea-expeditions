@@ -93,6 +93,12 @@
 - [x] T014q `Tides.judge` and `verdict_line`: the old Phaser verdict ported and tested — mean current over the leg, worst chop, wind against tide — read out under the graph in a sentence
 - [x] T014r The chosen launch is the save's `launchHour`: the chart's light follows it as you drag, the leg starts its clock from it, and the camp's evening starts from the hour you landed (`arrivedHour`, held to the evening)
 
+## Slice 11 — day two
+
+- [x] T014s `tools/geo/water_route.py` (shared with the ferry's track) and `tools/geo/leg_routes.py` → `godot/content/legs.json`: each leg's waypoints found over the real water between chart-read vias, its cove, its labels; the ferry's track regenerates byte-for-byte
+- [x] T014t `src/content/expedition.js` is a list of legs — teaching per leg (float plan steps, landing, camp steps) under the same ids — with day two from Jones Island through Spieden Channel to Posey Island, a one-acre marine state park at the mouth of Roche Harbor; places and a Washington State Parks credit for Posey; the content test checks the legs chain
+- [x] T014u `Leg` reads the legs (geometry merged with teaching) and the save's `legIndex`; the plan frames whichever leg is current, the trip launches from where the last one landed with that leg's sightings, the landing card and the camp are the leg's own, and camp's last card goes on to tomorrow's float plan with the tide fifty minutes later (`App.day()`), or home after the last leg. `?leg=1&scene=plan|trip|camp`, `?near=spieden|posey` for checks
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

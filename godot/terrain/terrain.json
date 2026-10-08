@@ -177,6 +177,46 @@
    "lon": -122.97,
    "x": 3464.5,
    "z": -2841.8
+  },
+  {
+   "id": "spiedenChannel",
+   "name": "Spieden Channel",
+   "lat": 48.638,
+   "lon": -123.115,
+   "x": -7223.9,
+   "z": -11466.5
+  },
+  {
+   "id": "davisonHead",
+   "name": "Davison Head",
+   "lat": 48.625,
+   "lon": -123.145,
+   "x": -9435.3,
+   "z": -10029.1
+  },
+  {
+   "id": "posey",
+   "name": "Posey Island",
+   "lat": 48.6228,
+   "lon": -123.158,
+   "x": -10393.5,
+   "z": -9785.8
+  },
+  {
+   "id": "rocheHarbor",
+   "name": "Roche Harbor",
+   "lat": 48.61,
+   "lon": -123.155,
+   "x": -10172.4,
+   "z": -8370.5
+  },
+  {
+   "id": "pearl",
+   "name": "Pearl Island",
+   "lat": 48.618,
+   "lon": -123.148,
+   "x": -9656.4,
+   "z": -9255.0
   }
  ],
  "stats": {

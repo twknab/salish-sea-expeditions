@@ -111,6 +111,17 @@ func _init() -> void:
 	check(Tides.sea_state(july, 16.0) > Tides.sea_state(july, 9.5), "the chop is worse in the afternoon")
 	check(Tides.verdict_line(july, 9.5, 2.0).begins_with("Good"), "the verdict reads as a sentence")
 	check(absf(Leg.launch_hour() - Leg.LAUNCH_HOUR) < 1e-6, "with no App the launch is the default")
+	# The legs: two days over the real water, chained, read without an App.
+	var legs := Leg.all()
+	check(legs.size() >= 2, "two legs load from content/legs.json, got %d" % legs.size())
+	if legs.size() >= 2:
+		check(Leg.start(legs[1]).distance_to(Leg.cove(legs[0])) < 1.0, "day two starts in the cove day one landed in")
+		check(Leg.length_m(legs[0]) > 9000.0 and Leg.length_m(legs[1]) > 8000.0, "both legs are a day's paddle")
+		check(Leg.waypoints(legs[1]).size() >= 6, "the second leg follows the channel, not a straight line")
+	check(Leg.index() == 0 and Leg.current().get("id", "") == "leg1", "with no App the first leg is current")
+	var later := Tides.shifted(day, 60.0)
+	check(absf(Tides.height_m(later, 1.5) - Tides.height_m(day, 0.5)) < 1e-6, "a shifted day runs the same water later")
+	check(absf(Tides.height_m(day, 0.5) - 2.0) < 1e-6, "shifting copies; the original is untouched")
 	var paddle := Paddler.greenland_paddle()
 	check(paddle.get_aabb().size.x > 2.1 and paddle.get_aabb().size.z < 0.1, "Greenland paddle is long and narrow")
 	print("tests: %d passed, %d failed" % [_n - _fails, _fails])
