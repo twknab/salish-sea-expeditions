@@ -157,6 +157,10 @@
 
 - [x] T014an `Packing` (the rules of `src/sim/packing.js`: arms per bag, pitch, mass at the ends, deck mass, the essentials) and a packing screen between Kayak School and the float plan: the real planform from above with the five places a dry bag can go, tap an item then a place, a trim line in words, "Pack it for me" for the suggested layout, and the essentials still on the beach named before you go. The trim is physics: the centre of mass moves with the pitch (a bow-heavy boat sits 3° bow-down, measured headless, and pushes water), mass at the ends slows the turn, deck mass softens the righting, and every stroke pays the Phaser sim's trim penalty. What is left behind is gone: no pump and the rescue bails with a sponge, no headlamp and the camp chores run in the dark. Sim tested headless; `?scene=pack`, `?pack=bow|ideal`
 
+## Slice 25 — the debrief
+
+- [x] T014ao `Score` (the rules of `src/sim/score.js`) and the record it counts: each leg landed keeps its launch and the tide's verdict on it, the landing hour, the swims, and the wildlife given room or approached inside the field guide's distance (a "too close" line on the water as it happens); each camp left is a night out and a clean camp; each drill finished in Kayak School is kept. The take-out ends in the debrief: miles, nights, score, each day as it went, how the points came, the drills, the species, and a share button (Web Share, else the clipboard). "Begin at Anacortes" starts a fresh record; the field guide and the drills are kept for good. Score and record tested headless; `?scene=debrief&demo=1`
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

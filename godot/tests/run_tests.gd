@@ -67,6 +67,13 @@ func _init() -> void:
 	check(Packing.zone_of(Packing.suggested(gear), "pump") == "deck", "deck gear rides on deck")
 	check(Packing.trim_words(bow).begins_with("bow heavy") and Packing.trim_words(ideal) == "level", "trim in words")
 	check(Packing.assess(Packing.empty(), gear).pitch == 0.0, "an empty boat is level")
+	# Score: the Phaser rules; going in costs nothing, too close to wildlife does.
+	var legs_stub: Array = [{}, {}, {}]
+	var rec := Score.record({ "days": [{ "leg": 0, "metres": 11200.0, "verdict": "good", "swims": 1, "respectful": 2 }, { "leg": 1, "metres": 9600.0, "verdict": "fair", "violations": 1 }], "nights": 2, "cleanCamps": 2, "seen": ["seal", "eagle"], "drills": ["forward", "brace"] }, legs_stub)
+	check(absf(rec.nm - 20800.0 / 1852.0) < 1e-6 and rec.rescues == 1 and rec.goodWindows == 1 and rec.respectful == 2 and rec.violations == 1, "the record sums the days")
+	var parts := Score.parts(rec)
+	check(parts.size() == 9 and Score.total(rec) == 1123 + 600 + 100 + 300 - 200 + 500 + 80 + 100 + 200, "the parts and the total follow the rules, got %d" % Score.total(rec))
+	check(Score.parts({}).is_empty() and Score.total({ "violations": 5 }) == 0, "zero rows are left out and the total never goes below nought")
 	# Content: every source id a card cites resolves to a credit, and the opening is in order.
 	var f := FileAccess.open("res://content/content.json", FileAccess.READ)
 	check(f != null, "content.json present")
