@@ -24,6 +24,14 @@ test('every shore walk names species the field guide has', () => {
   }
 });
 
+test('every bail-out a leg names is a place on the chart', () => {
+  const places = new Set(JSON.parse(readFileSync(new URL('../godot/terrain/terrain.json', import.meta.url), 'utf8')).places.map((p) => p.id));
+  for (const l of LEGS) {
+    assert.ok(l.bailouts?.length >= 2, `${l.id} names its bail-outs`);
+    for (const id of l.bailouts) assert.ok(places.has(id), `${l.id} bail-out → unknown place ${id}`);
+  }
+});
+
 test('the legs chain: each leg starts where the one before it landed', () => {
   for (let i = 1; i < LEGS.length; i++) assert.equal(LEGS[i].from, LEGS[i - 1].to);
   for (const l of LEGS) assert.equal(l.camp.place, l.to);

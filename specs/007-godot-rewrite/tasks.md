@@ -177,6 +177,10 @@
 
 - [x] T014as Pause on the water and in Kayak School: a chip, Escape or P, and the page going into a pocket (focus lost) all stop the physics and the clock under a card that says so and saves the place; Continue or Title from it. About on the title grows up: the game and its independence, the land acknowledgment and the safety note always reachable, the maker's link, and the way to the field guide and sources. `?about=1`
 
+## Slice 30 — the wind is up
+
+- [x] T014at The float plan's bail-outs are real on the water: each leg names its landings of refuge (`bailouts` in `src/content/expedition.js`, checked against the chart's places), and when the sea state the hour makes crosses rough a card names them with their distances and offers the choice — push on, or wait it out in the nearest lee for an hour and a half, after which the water is read again. The wait is kept in the day's record and the debrief says so. `?launch=15` on day one meets the afternoon southerly against the ebb
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

@@ -34,6 +34,9 @@ var _capsize_in := -1.0      # the rescue drill rolls the boat on its own after 
 var _since_start := 0.0
 var _pack: Dictionary = {}       # Packing.assess of the boat as packed, on a trip
 var _swims_today := 0           # capsizes on this leg, for the day's record
+var _weather_asked := false     # the wind-is-up card goes up once a leg
+var _waits_today := 0           # times the wind was waited out in a lee
+const ROUGH := 0.5              # sea state at which the bail-outs are offered
 const RIP_KICK_EVERY := 3.2    # seconds between beam waves in a rip at full strength
 ## Sightings on the leg: what, which species of the field guide it is, where, and how close you
 ## must come to notice it. Positions checked against the terrain: seals and kelp on the islet by
@@ -298,6 +301,8 @@ func _leg(delta: float) -> void:
 	# The water of the hour: wind builds the sea, wind against the stream stands it up, and a rip
 	# throws the odd wave on the beam that the paddler must brace for.
 	var state := Tides.sea_state(_day, _hour, factor)
+	if state >= ROUGH and not _weather_asked and _card == null:
+		_offer_bailouts(state)
 	var w := Tides.wind(_day, _hour)
 	kayak.wind = Windage.vector(float(w.kn), float(w.fromDeg))
 	sea.set_sea_state(lerpf(sea.sea_state, lerpf(0.10, 0.70, state), minf(1.0, delta * 0.3)))
@@ -348,7 +353,7 @@ func _record_day() -> void:
 	var entry := {
 		"leg": Leg.index(), "metres": Leg.length_m(_route), "launchHour": launch, "arrivedHour": _hour,
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
-		"swims": _swims_today, "respectful": respectful, "violations": violations,
+		"swims": _swims_today, "waits": _waits_today, "respectful": respectful, "violations": violations,
 	}
 	var days: Array = App.save.get("days", [])
 	var kept: Array = []
@@ -357,6 +362,49 @@ func _record_day() -> void:
 			kept.append(d)
 	kept.append(entry)
 	App.save.days = kept
+
+## The wind is up: the float plan's bail-outs, with their distances, and the choice — push on, or
+## tuck into the nearest lee and let the afternoon blow through. Nobody has to make it in one push.
+func _offer_bailouts(state: float) -> void:
+	_weather_asked = true
+	var here := kayak.global_position
+	var w := Tides.wind(_day, _hour)
+	var nearest := ""
+	var nearest_d := INF
+	var lines: Array[String] = []
+	for id in Leg.bailouts(_route):
+		var at := terrain.place(str(id))
+		var d := Vector2(at.x - here.x, at.z - here.z).length()
+		var nm: String = str(id)
+		for p in terrain.meta.get("places", []):
+			if p.id == id:
+				nm = p.name
+		lines.append("%s · %.1f km" % [nm, d / 1000.0])
+		if d < nearest_d:
+			nearest_d = d
+			nearest = nm
+	var body := "%s: %d knots from %03d° and the sea is standing up%s. The float plan's bail-outs:\n%s\n\nNobody has to make it in one push. In a lee the afternoon wind blows through in an hour or two." % [str(_route.get("channel", "San Juan Channel")), int(round(float(w.kn))), int(round(float(w.fromDeg))), " against the stream" if Tides.wind_against_tide(_day, _hour) else "", "\n".join(lines)]
+	var l := _lesson("bailouts")
+	_clear_card()
+	_card = UIKit.card("The wind is up", body, App.sources_line(["uscg", "aca"]) if l.get("text", "") == "" else App.sources_line(l.get("sourceIds", [])), [
+		["Push on", _clear_card, false],
+		["Wait it out · %s" % nearest, func() -> void: _wait_in_lee(nearest), true],
+	], "Sea state %d%% · %s" % [int(round(state * 100.0)), Leg.clock(_hour)])
+	_ui.add_child(UIKit.spacer())
+	_ui.add_child(_card)
+
+## An hour and a half in the lee: the clock moves, the water is read again, and the day's record
+## keeps the judgment.
+func _wait_in_lee(where: String) -> void:
+	_clear_card()
+	_hour += 1.5
+	_waits_today += 1
+	_groove = 0.0
+	sea.apply_hour(_hour)
+	var after := Tides.sea_state(_day, _hour, _flow.factor)
+	note_label.text = "An hour and a half in the lee of %s, out of the wind, warm drink in hand. %s" % [where, "The sea has eased. Go on when you are ready." if after < ROUGH else "It is still rough. The next landing is the day's end if it does not ease."]
+	if after < ROUGH:
+		_weather_asked = false  # it can come up again later in the day
 
 ## On a phone, the option to edge by tilting the handset (off by default; it stays as set).
 func _tilt_chip() -> void:

@@ -82,6 +82,9 @@ func _ready() -> void:
 	var leg_param := _url_param("leg")  # `?leg=1` opens the second day, for checks
 	if leg_param != "":
 		save.legIndex = int(leg_param)
+	var launch_param := _url_param("launch")  # `?launch=15` chooses the launch hour, for checks
+	if launch_param != "":
+		save.launchHour = float(launch_param)
 	var want := _url_param("scene")
 	if want != "" and SCENES.has(want):
 		call_deferred("go", want)

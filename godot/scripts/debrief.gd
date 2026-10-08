@@ -81,6 +81,9 @@ func _days(col: VBoxContainer, legs: Array, save: Dictionary) -> void:
 		var line := "Day %d · %s · launched %s on a %s window · landed %s" % [i + 1, str(legs[i].get("title", "")), Leg.clock(float(d.get("launchHour", 9.0))), verdict, Leg.clock(float(d.get("arrivedHour", 17.0)))]
 		if swims > 0:
 			line += " · in the water %s" % ("once" if swims == 1 else "%d times" % swims)
+		var waits := int(d.get("waits", 0))
+		if waits > 0:
+			line += " · waited out the wind %s" % ("once" if waits == 1 else "%d times" % waits)
 		var room := int(d.get("respectful", 0))
 		var close := int(d.get("violations", 0))
 		if room > 0 or close > 0:

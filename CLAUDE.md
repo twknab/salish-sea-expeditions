@@ -75,6 +75,7 @@ with `npx vite preview --port 4173` running, for a single screenshot.
   `?scene=assemble|pack|plan|camp|debrief` open the stations (`&step=N` for the assembly, `&demo=1`
   fills the debrief); `?scene=school&drill=rescue` opens Kayak School on a drill;
   `?scene=trip&near=jones` starts 900 m off the cove; `?about=1` opens About on the title;
+  `?launch=15` chooses the launch hour (the afternoon southerly on an ebb puts the bail-outs card up);
   `?pack=bow|ideal` packs the boat for a check (everything in the bow, or the suggested layout). The
   expedition is `godot/content/legs.json` (geometry, from `tools/geo/leg_routes.py`) merged with the
   legs in `src/content/expedition.js` (teaching) by `Leg`; `?leg=1` opens day two, `?leg=2` day three.

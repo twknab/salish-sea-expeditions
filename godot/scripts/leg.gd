@@ -77,6 +77,10 @@ static func cove(leg: Dictionary) -> Vector3:
 	var c: Array = leg.get("cove", [0, 0])
 	return Vector3(float(c[0]), 0.0, float(c[1]))
 
+## The landings a leg can be cut short at when the wind comes up: place ids on the chart.
+static func bailouts(leg: Dictionary) -> Array:
+	return leg.get("bailouts", [])
+
 static func cove_name(leg: Dictionary) -> String:
 	return str(leg.get("coveName", "the cove"))
 

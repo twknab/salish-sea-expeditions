@@ -8,6 +8,7 @@ export const LEGS = [
     id: 'leg1',
     from: 'fridayHarbor', to: 'jones',
     title: 'Friday Harbor to Jones Island',
+    bailouts: ['labs', 'yellow'],
     steps: [
       { id: 'route', title: 'The route', text: 'Out of the harbour, north up San Juan Channel past Friday Harbor Laboratories and Yellow Island, then across to the north cove on Jones Island. About ten kilometres: two hours at a touring pace, three with a stop on Yellow Island’s lee.', sourceIds: ['noaa-chart', 'wwta'] },
       { id: 'tide', title: 'Tide and current', text: 'San Juan Channel floods north-northwest and ebbs south-southeast at up to two knots. Leave on the morning flood and the channel carries you; leave late and you fight the ebb with the afternoon southerly behind it.', sourceIds: ['noaa-tides'] },
@@ -31,6 +32,7 @@ export const LEGS = [
     id: 'leg2',
     from: 'jones', to: 'posey',
     title: 'Jones Island to Posey Island',
+    bailouts: ['jones', 'davisonHead'],
     steps: [
       { id: 'route', title: 'The route', text: 'Out of the north cove and west across the top of San Juan Channel, then through Spieden Channel with Spieden Island’s long grass face to starboard and San Juan Island to port. Round Davison Head into the lee of Posey Island, a one-acre park at the mouth of Roche Harbor. About ten kilometres.', sourceIds: ['noaa-chart', 'wa-parks-posey', 'worldcover'] },
       { id: 'tide', title: 'Tide and current', text: 'Spieden Channel runs harder than San Juan Channel: the flood sets west through it toward Haro Strait and the ebb east, and off the points it boils. Time the channel for the last of the flood, or for slack, and paddle it in one push — there is nowhere to stop along Spieden.', sourceIds: ['noaa-tides', 'noaa-chart'] },
@@ -54,6 +56,7 @@ export const LEGS = [
     id: 'leg3',
     from: 'posey', to: 'fridayHarbor',
     title: 'Posey Island home to Friday Harbor',
+    bailouts: ['jonesSouth', 'yellow', 'labs'],
     steps: [
       { id: 'route', title: 'The route', text: 'The long way home: east through Spieden Channel as it empties, then south down San Juan Channel past Jones Island, Yellow Island and the Labs to the town float at Friday Harbor. About eighteen kilometres, the longest day of the three, and the ebb does the work if you let it.', sourceIds: ['noaa-chart', 'noaa-tides'] },
       { id: 'tide', title: 'Tide and current', text: 'This leg is the mirror of the first two. Leave Posey at first light, on the last of the night’s ebb: it runs east through Spieden Channel and south down San Juan Channel, the way you are going, before the southerly gets up. Leave mid-morning and you fight the flood; leave on the afternoon ebb and the wind stands it up against you.', sourceIds: ['noaa-tides'] },
