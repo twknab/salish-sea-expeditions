@@ -103,6 +103,14 @@ func _init() -> void:
 	check(Tides.describe(day, 6.0).begins_with("ebb 1.0 kn setting 180"), "describe turns the ebb round")
 	check(Tides.describe(day, 4.0) == "slack water", "slack near zero")
 	check(int(Tides.wind(day, 1.0).fromDeg) == 180, "wind reads back")
+	# Judging a launch: a morning flood with light wind is good; wind against the ebb is poor.
+	var july := { "tides": [{ "t": 430, "h": -0.2 }, { "t": 820, "h": 1.9 }], "current": [{ "t": 460, "kn": 0.0 }, { "t": 610, "kn": 1.4 }, { "t": 790, "kn": 0.0 }, { "t": 980, "kn": -2.0 }, { "t": 1170, "kn": 0.0 }], "floodSetDeg": 330, "wind": [{ "t": 600, "kn": 5, "fromDeg": 185 }, { "t": 900, "kn": 14, "fromDeg": 180 }, { "t": 1260, "kn": 5, "fromDeg": 200 }] }
+	check(Tides.judge(july, 9.5, 2.0).verdict == "good", "a 09:30 launch on the flood is good, got %s" % Tides.judge(july, 9.5, 2.0))
+	check(Tides.wind_against_tide(july, 16.0), "a southerly against the afternoon ebb is wind against tide")
+	check(Tides.judge(july, 15.5, 2.0).verdict == "poor", "a 15:30 launch into wind against the ebb is poor, got %s" % Tides.judge(july, 15.5, 2.0))
+	check(Tides.sea_state(july, 16.0) > Tides.sea_state(july, 9.5), "the chop is worse in the afternoon")
+	check(Tides.verdict_line(july, 9.5, 2.0).begins_with("Good"), "the verdict reads as a sentence")
+	check(absf(Leg.launch_hour() - Leg.LAUNCH_HOUR) < 1e-6, "with no App the launch is the default")
 	var paddle := Paddler.greenland_paddle()
 	check(paddle.get_aabb().size.x > 2.1 and paddle.get_aabb().size.z < 0.1, "Greenland paddle is long and narrow")
 	print("tests: %d passed, %d failed" % [_n - _fails, _fails])

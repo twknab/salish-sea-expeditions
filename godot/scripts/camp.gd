@@ -10,6 +10,7 @@ var _card: PanelContainer
 var _kayak: Kayak
 var _step := 0
 var _steps: Array = []
+var _hour0 := 17.5         # when the boat came up the beach: the leg's arrival, held to the evening
 var _hour := 17.5
 var _hour_target := 17.5
 var _shore := Vector3.ZERO
@@ -18,6 +19,9 @@ var _along := Vector3.RIGHT
 var _tent: MeshInstance3D
 
 func _ready() -> void:
+	_hour0 = clampf(float(App.save.get("arrivedHour", 17.5)), 15.5, 19.0)
+	_hour = _hour0
+	_hour_target = _hour0
 	_terrain = Terrain.new()
 	add_child(_terrain)
 	var cove := Leg.COVE
@@ -113,9 +117,9 @@ func _show() -> void:
 		_pitch()
 	var actions: Array = []
 	if _step > 0:
-		actions.append(["Back", func() -> void: _step -= 1; _hour_target = 17.5 + 1.1 * _step; _show(), false])
+		actions.append(["Back", func() -> void: _step -= 1; _hour_target = _hour0 + 1.1 * _step; _show(), false])
 	if _step < _steps.size() - 1:
-		actions.append(["Next", func() -> void: _step += 1; _hour_target = 17.5 + 1.1 * _step; _show(), true])
+		actions.append(["Next", func() -> void: _step += 1; _hour_target = _hour0 + 1.1 * _step; _show(), true])
 	else:
 		actions.append(["Tomorrow’s float plan", func() -> void:
 			App.save.stage = "camp_done"

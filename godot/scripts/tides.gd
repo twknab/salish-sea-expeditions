@@ -49,3 +49,62 @@ static func describe(day: Dictionary, hour: float) -> String:
 	if kn < 0.0:
 		set_deg = fposmod(set_deg + 180.0, 360.0)
 	return "%s %.1f kn setting %03d°" % ["flood" if kn > 0.0 else "ebb", absf(kn), int(round(set_deg))]
+
+## Sea state 0..1 at an hour: wind builds waves, and wind blowing against the current shortens and
+## steepens them — the channel's classic chop. Wind with the current flattens them.
+static func sea_state(day: Dictionary, hour: float) -> float:
+	var w := wind(day, hour)
+	var wind_kn := float(w.kn)
+	var from_deg := float(w.fromDeg)
+	var air := Vector3(-sin(deg_to_rad(from_deg)), 0.0, cos(deg_to_rad(from_deg)))  # the way the air moves
+	var cur := current_vector(day, hour)
+	var wind_wave := clampf(wind_kn / 25.0, 0.0, 1.0)
+	var opposing := 0.0
+	var c_speed := cur.length()
+	if wind_kn > 0.01 and c_speed > 0.01:
+		var dot := air.dot(cur) / c_speed
+		opposing = clampf(-dot, 0.0, 1.0) * clampf(c_speed / 1.0, 0.0, 1.5)
+	return clampf(wind_wave * (0.55 + 1.1 * opposing), 0.0, 1.0)
+
+## True when the wind and the current are opposed strongly enough to matter.
+static func wind_against_tide(day: Dictionary, hour: float) -> bool:
+	var w := wind(day, hour)
+	if float(w.kn) < 6.0 or absf(current_kn(day, hour)) < 0.7:
+		return false
+	var from_deg := float(w.fromDeg)
+	var air := Vector3(-sin(deg_to_rad(from_deg)), 0.0, cos(deg_to_rad(from_deg)))
+	return air.dot(current_vector(day, hour)) < 0.0
+
+## Judging a launch hour for a leg that runs north with the flood: the mean current over the leg's
+## hours (positive helps), the worst chop, and whether wind opposes the tide at any point.
+## Returns {cur, worst, against, verdict: "good" | "fair" | "poor"}.
+static func judge(day: Dictionary, launch_hour: float, hours: float) -> Dictionary:
+	var cur := 0.0
+	var worst := 0.0
+	var against := false
+	var n := 0
+	var h := launch_hour
+	while h <= launch_hour + hours + 1e-6:
+		cur += current_kn(day, h)
+		worst = maxf(worst, sea_state(day, h))
+		against = against or wind_against_tide(day, h)
+		n += 1
+		h += 1.0 / 6.0
+	cur /= float(maxi(n, 1))
+	var good := cur >= 0.2 and worst < 0.3 and not against
+	var poor := against or worst > 0.45 or cur < -0.8
+	return { "cur": cur, "worst": worst, "against": against, "verdict": "good" if good else ("poor" if poor else "fair") }
+
+## The verdict in a sentence, for the plan.
+static func verdict_line(day: Dictionary, launch_hour: float, hours: float) -> String:
+	var j := judge(day, launch_hour, hours)
+	var cur := float(j.cur)
+	var carry := "the channel carries you north" if cur >= 0.2 else ("you paddle against the ebb" if cur <= -0.2 else "the water is near slack")
+	match String(j.verdict):
+		"good":
+			return "Good: %s, light wind, and no chop to speak of." % carry
+		"poor":
+			if bool(j.against):
+				return "Poor: the afternoon southerly runs against the ebb and the channel stands up in short, steep chop."
+			return "Poor: %s for the whole leg." % carry
+	return "Fair: %s, but there is chop on the way — keep the bail-outs in mind." % carry

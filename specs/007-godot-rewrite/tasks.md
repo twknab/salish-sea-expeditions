@@ -83,6 +83,16 @@
 - [x] T014m The Chamberlin filter is clamped to a sane cutoff: the bass's wobble used to swing below zero and run away to infinity within a second — the old stems' bass had been doing the same
 - [ ] T014n Listen on real speakers and tune the mixes; the renders were judged by their numbers
 
+## Slice 9 — the water of the day
+
+- [x] T014o `tides.gd`: the authored July day by the minute — height, current along the flood set, wind — pure and tested; the current carries the boat over the ground on the leg, in the groove and out; the HUD names the set and the wind; the plan's header says what the launch rides
+
+## Slice 10 — choose your launch
+
+- [x] T014p `TideGraph`: the day's water as a graph in the float plan's tide step — current filled above and below slack, wind, tide height, the night shaded — with the launch as a cursor you drag, tap, or move with ← → when the graph has focus; the leg's hours shaded from it
+- [x] T014q `Tides.judge` and `verdict_line`: the old Phaser verdict ported and tested — mean current over the leg, worst chop, wind against tide — read out under the graph in a sentence
+- [x] T014r The chosen launch is the save's `launchHour`: the chart's light follows it as you drag, the leg starts its clock from it, and the camp's evening starts from the hour you landed (`arrivedHour`, held to the evening)
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

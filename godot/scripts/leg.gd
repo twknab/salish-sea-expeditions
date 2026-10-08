@@ -40,3 +40,16 @@ static func clock(hour: float) -> String:
 	var h := int(floor(hour)) % 24
 	var m := int(floor((hour - floor(hour)) * 60.0))
 	return "%02d:%02d" % [h, m]
+
+## Launch hours the float plan lets you choose from, and the step between them.
+const EARLIEST_LAUNCH := 6.0
+const LATEST_LAUNCH := 16.0
+const LAUNCH_STEP := 0.25
+
+## The chosen launch hour from the App autoload when there is one; the headless tests get the default.
+static func launch_hour() -> float:
+	var ml := Engine.get_main_loop()
+	var app: Node = ml.root.get_node_or_null("App") if ml is SceneTree else null
+	if app == null:
+		return LAUNCH_HOUR
+	return clampf(float(app.save.get("launchHour", LAUNCH_HOUR)), EARLIEST_LAUNCH, LATEST_LAUNCH)

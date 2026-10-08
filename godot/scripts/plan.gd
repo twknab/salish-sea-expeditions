@@ -11,6 +11,10 @@ var _labels: PlaceLabels
 var _cam: Camera3D
 var _step := 0
 var _steps: Array = []
+var _head: Label
+var _day: Dictionary = {}
+var _graph: TideGraph
+var _verdict: Label
 
 func _ready() -> void:
 	_terrain = Terrain.new()
@@ -19,7 +23,7 @@ func _ready() -> void:
 	add_child(_terrain)
 	_sea = Seascape.new()
 	_sea.sea_state = 0.12
-	_sea.hour = Leg.LAUNCH_HOUR - 0.5
+	_sea.hour = Leg.launch_hour() - 0.5
 	_sea.fog_density = 0.00003
 	_sea.terrain = _terrain
 	add_child(_sea)
@@ -57,13 +61,17 @@ func _ready() -> void:
 	_ui = UIKit.page(ui, 48, 24)
 	var plan: Dictionary = App.content.get("floatPlan", {})
 	_steps = plan.get("steps", [])
-	var day: Dictionary = App.content.get("tripDay", {})
-	var head := UIKit.label("%s · %.1f km · about %.0f h at %.0f kn · launch %s on the %s" % [plan.get("title", "The leg"), Leg.length_m() / 1000.0, Leg.hours_at_touring_pace(), Leg.TOURING_KNOTS, Leg.clock(Leg.LAUNCH_HOUR), Tides.describe(day, Leg.LAUNCH_HOUR)], 13, UIKit.FOAM, true, true)
+	_day = App.content.get("tripDay", {})
+	_head = UIKit.label("", 13, UIKit.FOAM, true, true)
+	_refresh_head()
 	var frame := PanelContainer.new()
 	frame.add_theme_stylebox_override("panel", UIKit.panel_style(0.45, 16))
-	frame.add_child(head)
+	frame.add_child(_head)
 	_ui.add_child(frame)
 	_ui.add_child(UIKit.spacer())
+	var at := App._url_param("step")  # `?scene=plan&step=1` opens on a step, for checks
+	if at != "":
+		_step = clampi(int(at), 0, maxi(_steps.size() - 1, 0))
 	_show()
 
 func _show() -> void:
@@ -78,7 +86,43 @@ func _show() -> void:
 		actions.append(["Launch", func() -> void: App.next(), true])
 	var s: Dictionary = _steps[_step] if _step < _steps.size() else { "title": "The plan", "text": "", "sourceIds": [] }
 	_card = UIKit.card(s.get("title", ""), s.get("text", ""), App.sources_line(s.get("sourceIds", [])), actions, "Float plan · %d of %d" % [_step + 1, _steps.size()])
+	if s.get("id", "") == "tide":
+		_add_graph()
 	_ui.add_child(_card)
+
+## The tide step carries the day's water as a graph: choose the launch on it, and the plan, the
+## chart's light and the leg itself follow the hour.
+func _add_graph() -> void:
+	var v: VBoxContainer = _card.get_child(0)
+	var at := v.get_child_count() - 1  # above the actions row
+	_graph = TideGraph.new()
+	_graph.day = _day
+	_graph.launch = Leg.launch_hour()
+	_graph.leg_hours = Leg.hours_at_touring_pace()
+	_graph.launch_changed.connect(_on_launch)
+	v.add_child(_graph)
+	v.move_child(_graph, at)
+	_verdict = UIKit.label("", 13, UIKit.SUN, true, true)
+	v.add_child(_verdict)
+	v.move_child(_verdict, at + 1)
+	var hint := UIKit.label("Drag the graph to choose when to launch · or Tab to it and use ← →", 11, UIKit.MIST)
+	v.add_child(hint)
+	v.move_child(hint, at + 2)
+	_on_launch(_graph.launch)
+	_graph.call_deferred("grab_focus")
+
+func _on_launch(h: float) -> void:
+	App.save.launchHour = h
+	App.persist()
+	_sea.apply_hour(h - 0.5)
+	_refresh_head()
+	if _verdict:
+		_verdict.text = Tides.verdict_line(_day, h, Leg.hours_at_touring_pace())
+
+func _refresh_head() -> void:
+	var plan: Dictionary = App.content.get("floatPlan", {})
+	var h := Leg.launch_hour()
+	_head.text = "%s · %.1f km · about %.0f h at %.0f kn · launch %s on the %s" % [plan.get("title", "The leg"), Leg.length_m() / 1000.0, Leg.hours_at_touring_pace(), Leg.TOURING_KNOTS, Leg.clock(h), Tides.describe(_day, h)]
 
 func _process(_d: float) -> void:
 	_labels.update(_cam)
