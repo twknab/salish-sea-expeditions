@@ -15,6 +15,7 @@ const SCENES := {
 	"trip": "res://scenes/sea.tscn",
 	"plan": "res://scenes/plan.tscn",
 	"camp": "res://scenes/camp.tscn",
+	"guide": "res://scenes/guide.tscn",
 }
 
 var content: Dictionary = {}
@@ -86,7 +87,7 @@ func go(name: String) -> void:
 		sea_mode = name
 	elif name == "title":
 		sea_mode = "ambient"
-	if name != "title":
+	if name != "title" and name != "guide":
 		save.stage = name
 		persist()
 	Sound.mood({ "title": "title", "acknowledgment": "title", "outfit": "calm", "ferry": "ferry", "school": "dawn", "plan": "calm", "trip": "drive", "camp": "night" }.get(name, "calm"))

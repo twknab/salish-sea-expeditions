@@ -118,6 +118,10 @@
 - [x] T014aa Secondary stability in `StrokeMath.righting`: the righting torque peaks with the chine buried, dies at the point of no return and turns against the boat beyond it, so a boat not braced in time goes over and stays over (the roll is now read full-range); tested
 - [x] T014ab On the trip a capsize is taught where it happens: 1-10-1, the wet exit, the paddle-float re-entry and pumping out as cards from the field lessons, then back in the boat fifteen minutes later with the warning to make the next landing the bail-out; swims are counted in the save. In Kayak School the boat comes back up with a word about bracing earlier. `?scene=trip&capsize=1` opens in the water for checks
 
+## Slice 16 — the field guide and the credits
+
+- [x] T014ac `guide.tscn` from the title: every species in the content by group, the ones met on the water marked from the save, then every source the game cites with its licence and a button to open it (the WorldCover attribution the data's licence asks for lives here). `?scene=guide&at=credits` scrolls to the sources
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
