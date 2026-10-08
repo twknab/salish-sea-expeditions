@@ -20,6 +20,7 @@ const MOODS := {
 	"off": "", "title": "dawn", "calm": "harbor", "ferry": "crossing", "drive": "crossing", "night": "night", "dawn": "dawn",
 }
 var _players: Array[AudioStreamPlayer] = []  # two, so one piece can fade out under the next
+var _engine: AudioStreamPlayer
 var _live := 0
 var _piece := ""   # what is playing
 var _wanted := ""  # what the scene asked for, kept across the music being switched off and on
@@ -31,12 +32,13 @@ var _http: HTTPRequest
 var _fetching := ""
 
 func _ready() -> void:
-	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull"]:
+	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull", "blow", "eagle", "engine_idle", "raccoons"]:
 		var s := _load("res://audio/%s.wav" % n)
 		if s:
 			_streams[n] = s
 	_water = _loop("water_loop", -14.0)
 	_wind = _loop("wind_loop", -26.0)
+	_engine = _loop("engine_idle", -80.0)  # a diesel at idle, brought up when a boat is near
 	for i in range(6):
 		var p := AudioStreamPlayer.new()
 		add_child(p)
@@ -115,6 +117,25 @@ func horn(far := false) -> void:
 
 func gull() -> void:
 	_play("gull", -20.0, randf_range(0.9, 1.15))
+
+## An orca's blow, `near` 1 alongside to 0 at the edge of hearing.
+func blow(near: float) -> void:
+	if near <= 0.02:
+		return
+	_play("blow", lerpf(-34.0, -10.0, clampf(near, 0.0, 1.0)), randf_range(0.92, 1.08))
+
+func eagle() -> void:
+	_play("eagle", -16.0, randf_range(0.95, 1.05))
+
+func raccoons() -> void:
+	_play("raccoons", -14.0)
+
+## The idle of the nearest boat, `near` 1 alongside to 0 out of hearing; glides, so it never pops.
+func set_engine(near: float) -> void:
+	if _engine == null:
+		return
+	var want := lerpf(-80.0, -16.0, clampf(near, 0.0, 1.0)) if near > 0.01 else -80.0
+	_engine.volume_db = lerpf(_engine.volume_db, want, 0.15)
 
 ## Pick the soundtrack's mood; stems glide to their new levels.
 func mood(name: String) -> void:

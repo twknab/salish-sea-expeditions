@@ -42,6 +42,7 @@ var _fogged := false            # launched or paddled in fog today, for the reco
 var _fog_in_hour := -1.0        # when the fog closed in, for the record
 var _dark_said := false         # the night-on-the-water note goes up once
 var _thirsty := false           # last night's water was drunk: the strokes are shorter today
+var _watchers: Array = []       # [{boat: WhaleWatch, pod: Wildlife, heading, seen}] — the fleet on the pod
 var _thirsty_said := false
 var _dark := false              # the light went before the landing, for the record
 var _fog_off_m := -1.0          # how far off the planned line the boat was when it lifted
@@ -243,6 +244,13 @@ func _ready() -> void:
 					else:
 						kayak.global_position = Vector3(-7200.0, 0.1, -10700.0)
 						kayak.rotation.y = -deg_to_rad(270.0)
+				"fleet":  # `?scene=trip&leg=1&near=fleet`: astern of the whale-watch boat, looking along the pod's line
+					if not _watchers.is_empty():
+						var w: Dictionary = _watchers[0]
+						var b: Vector3 = w.boat.global_position
+						var h: Vector3 = Vector3(w.heading).normalized()
+						kayak.global_position = Vector3(b.x, 0.1, b.z) - h * 60.0  # the boat walks with the pod, away from here
+						kayak.rotation = Vector3(0.0, atan2(-h.x, -h.z), 0.0)  # the bow (-z) along the pod's heading, the boat on it
 				"spieden":
 					kayak.global_position = Vector3(-7000.0, 0.1, -10450.0)
 					kayak.rotation.y = -deg_to_rad(270.0)  # west down Spieden Channel, the porpoise ahead
@@ -273,6 +281,33 @@ func _spawn_sightings() -> void:
 		var node := Wildlife.make(conf.kind, Vector3(at.x, y, at.z), conf.face)
 		add_child(node)
 		_sightings.append({ "conf": conf, "node": node, "seen": false })
+		if conf.kind == "orcas":
+			# The blow carries: loud alongside, a breath on the wind at a kilometre, nothing beyond.
+			node.breathed.connect(func() -> void: Sound.blow(1.0 - clampf(kayak.global_position.distance_to(node.global_position) / 1200.0, 0.0, 1.0)))
+		if conf.kind == "orcas" and mode == "trip":
+			# The whale-watch fleet is on every pod in the channel, holding off abeam at the distance.
+			var boat := WhaleWatch.new()
+			add_child(boat)
+			var heading: Vector3 = conf.face
+			var keep := float(_species(conf.species).get("approachMetres", WhaleWatch.STANDOFF))  # the field guide's distance, the fleet's too
+			# Abeam on whichever side is water along the pod's whole pass; nearer if neither is.
+			var side := 1.0
+			var at_keep := keep
+			if not _water_along(node.global_position, heading, 1.0, keep):
+				side = -1.0
+				if not _water_along(node.global_position, heading, -1.0, keep):
+					side = 1.0
+					at_keep = WhaleWatch.STANDOFF
+			# The pod's walk starts 600 m back along its heading (Wildlife._process), so the boat starts there too.
+			boat.global_position = WhaleWatch.station_for(node.global_position - heading.normalized() * 600.0, heading, side, at_keep)
+			_watchers.append({ "boat": boat, "pod": node, "heading": heading, "keep": at_keep, "side": side, "seen": false })
+## True when the station abeam of the pod's line, over its whole walk, is on the water.
+func _water_along(origin: Vector3, heading: Vector3, side: float, keep: float) -> bool:
+	for along in [-600.0, -300.0, 0.0, 300.0, 600.0]:
+		var p := WhaleWatch.station_for(origin + heading.normalized() * along, heading, side, keep)
+		if terrain.height_at(p.x, p.z) > -0.5:
+			return false
+	return true
 
 ## Coming within reach of a sighting names it once, from the field guide, and keeps it in the save.
 func _watch_sightings() -> void:
@@ -308,6 +343,8 @@ func _watch_sightings() -> void:
 			seen.append(conf.species)
 			App.save.seen = seen
 			App.persist()
+		if conf.kind == "eagle":
+			Sound.eagle()
 		var text: String = (_said("orcas") if conf.kind == "orcas" else "") + str(sp.get("blurb", ""))
 		var facts: Array = sp.get("facts", [])
 		if not facts.is_empty():
@@ -537,6 +574,14 @@ func _process(delta: float) -> void:
 	if mode == "trip" and not _arrived and not _swimming:
 		_leg(delta)
 		_watch_traffic(delta)
+	var engine := 0.0
+	for w in _watchers:
+		w.boat.follow(w.pod, w.heading, delta, float(w.keep), float(w.side))
+		engine = maxf(engine, 1.0 - clampf(kayak.global_position.distance_to(w.boat.global_position) / 500.0, 0.0, 1.0))
+		if not w.seen and kayak.global_position.distance_to(w.boat.global_position) < 700.0:
+			w.seen = true
+			note_label.text = "A whale-watch boat holds off the pod abeam at %d m, engine at idle. The fleet keeps the distance you are asked to keep, and it is watching where you are, too." % int(w.keep)
+	Sound.set_engine(engine)
 	if _partner and mode == "trip" and not _arrived:
 		_partner.follow(kayak, sea, delta)
 		if _chart and not _chart.blind:  # in fog the chart keeps the last fix
@@ -866,3 +911,6 @@ func _watch_traffic(delta: float) -> void:
 		var wake_line := "The ferry's wake, bow-on: a few pitches and it is past." if beam < 0.4 else "The ferry's wake on the beam: brace, and next time turn the bow into it."
 		_ferry_verdicts.append("crossed" if _ferry_moved else "held")
 		note_label.text = _said("wake") + wake_line + (" You paddled on as it came: a ferry cannot stop for you, and the lane is its." if _ferry_moved else " You held and let it pass: that is the crossing rule.")
+
+func _exit_tree() -> void:
+	Sound.set_engine(0.0)  # the idle belongs to the water; the next screen starts quiet

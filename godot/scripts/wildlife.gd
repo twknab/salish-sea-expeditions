@@ -4,6 +4,8 @@
 class_name Wildlife
 extends Node3D
 
+signal breathed  # the bull's blow broke the surface: the scene decides how loud it is from here
+
 var kind := "seal"
 var _t := randf() * 10.0
 var _parts: Array[Node3D] = []
@@ -179,7 +181,7 @@ func _process(delta: float) -> void:
 				if i == 0:
 					if up > 0.95 and not _breathed:
 						_breathed = true
-						Sound.splash(0.5)
+						breathed.emit()
 					if up <= 0.0:
 						_breathed = false
 		"seals":

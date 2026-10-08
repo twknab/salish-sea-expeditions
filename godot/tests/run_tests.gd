@@ -105,6 +105,11 @@ func _init() -> void:
 	var short_day := {"sunset": 1140, "tides": [], "current": [], "wind": []}
 	check(Tides.lands_in_the_dark(short_day, 16.0, 3.0) and not Tides.lands_in_the_dark(short_day, 12.0, 3.0), "a late launch on a short day lands in the dark")
 	check(String(Tides.judge(short_day, 16.0, 3.0).verdict) == "poor" and Tides.verdict_line(short_day, 16.0, 3.0).contains("in the dark"), "and the float plan says so")
+	# The whale-watch boat holds off the pod abeam at four hundred yards, whichever way the pod goes.
+	var ww := WhaleWatch.station_for(Vector3(100, 0, 200), Vector3(1, 0, 0))
+	check(absf(ww.x - 100.0) < 1e-3 and absf(ww.z - 200.0 - WhaleWatch.STANDOFF) < 1e-3 and ww.y == 0.0, "abeam of an eastbound pod is south of it")
+	check(absf(WhaleWatch.station_for(Vector3.ZERO, Vector3(1, 0, 0), 1.0, 914.0).z - 914.0) < 1e-3, "at the field guide's distance when it names one")
+	check(WhaleWatch.station_for(Vector3.ZERO, Vector3(0, 0, -1)).x > 0.0 and absf(WhaleWatch.station_for(Vector3.ZERO, Vector3(0, 0.5, -1), -1.0).x + WhaleWatch.STANDOFF) < 1e-3, "and east of a northbound one, or west on the other side")
 	# The partner speaks at the moments that matter, in a few words, and not when there is nothing to say.
 	check(PartnerVoice.line("ferry") != "" and PartnerVoice.line("nothing") == "" and PartnerVoice.said("Mina", "nothing") == "", "silent when there is nothing to say")
 	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")
