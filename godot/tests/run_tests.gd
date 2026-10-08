@@ -122,6 +122,13 @@ func _init() -> void:
 	var later := Tides.shifted(day, 60.0)
 	check(absf(Tides.height_m(later, 1.5) - Tides.height_m(day, 0.5)) < 1e-6, "a shifted day runs the same water later")
 	check(absf(Tides.height_m(day, 0.5) - 2.0) < 1e-6, "shifting copies; the original is untouched")
+	# The chart tile's window: the boat sits at the centre, north up, a kilometre is a fixed width.
+	var tile := Vector2(168, 168)
+	var view := ChartTile.view_for(Vector3(100.0, 0.0, -500.0), tile)
+	check(ChartTile.to_tile(Vector3(100.0, 0.0, -500.0), view, tile).is_equal_approx(tile * 0.5), "the boat is at the centre of the chart")
+	var north := ChartTile.to_tile(Vector3(100.0, 0.0, -1500.0), view, tile)
+	check(north.y < tile.y * 0.5 and absf(north.x - tile.x * 0.5) < 1e-3, "north is up on the chart")
+	check(absf(ChartTile.to_tile(Vector3(1100.0, 0.0, -500.0), view, tile).x - tile.x * 0.5 - 1000.0 / ChartTile.SPAN_M * tile.x) < 1e-3, "a kilometre east is a kilometre's width")
 	var paddle := Paddler.greenland_paddle()
 	check(paddle.get_aabb().size.x > 2.1 and paddle.get_aabb().size.z < 0.1, "Greenland paddle is long and narrow")
 	print("tests: %d passed, %d failed" % [_n - _fails, _fails])
