@@ -71,6 +71,19 @@ func _ready() -> void:
 	guide.pressed.connect(func() -> void: App.go("guide"))
 	row.add_child(guide)
 	v.add_child(row)
+	# The loop closes: the same water on the other day, from the first float plan, with the boat built
+	# and Kayak School behind you.
+	var other: Dictionary = {}
+	for d in App.days():
+		if str(d.get("id", "")) != str(App.chosen_day().get("id", "")):
+			other = d
+			break
+	if not other.is_empty() and App._url_param("demo") != "1":
+		var again := UIKit.button("Paddle it again · %s" % str(other.get("label", "another day")).to_lower(), false)
+		again.pressed.connect(func() -> void: App.paddle_again(str(other.get("id", ""))))
+		v.add_child(again)
+	elif App._url_param("demo") == "1":
+		v.add_child(UIKit.button("Paddle it again · a september day", false))
 
 ## Each day as it went: the launch the plan chose and its verdict, the landing, the swims.
 func _days(col: VBoxContainer, legs: Array, save: Dictionary) -> void:

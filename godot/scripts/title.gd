@@ -30,9 +30,7 @@ func _ready() -> void:
 	v.add_child(UIKit.spacer())
 	var begin := UIKit.button("Begin at Anacortes")
 	begin.pressed.connect(func() -> void:
-		App.save.legIndex = 0
-		for k in ["days", "nights", "cleanCamps", "launchHour", "arrivedHour", "assembly", "swims", "ferriesMet"]:  # a fresh record; the field guide and the drills are yours for good
-			App.save.erase(k)
+		App.fresh_record()
 		App.go("acknowledgment"))
 	v.add_child(begin)
 	# Which day to paddle it on: the settled July day, or September's spring tide and southerly.
@@ -81,6 +79,11 @@ func _ready() -> void:
 			row.add_child(again)
 		v.add_child(row)
 	if stage == "camp_done" or not App.save.get("days", []).is_empty():
+		# The last expedition in a line, so the title remembers it.
+		var r := Score.record(App.save, Leg.all())
+		var calls := Seamanship.calls(App.save.get("days", []))
+		var day_label := str(App.chosen_day().get("label", "")).to_lower()
+		v.add_child(UIKit.label("Last expedition · %s · %.1f nm · %d of %d seamanship calls kept · score %d" % [day_label, float(r.nm), Seamanship.kept(calls), calls.size(), Score.total(r)], 12, UIKit.SUN))
 		var debrief := UIKit.button("The debrief · how it went", false)
 		debrief.pressed.connect(func() -> void: App.go("debrief"))
 		v.add_child(debrief)

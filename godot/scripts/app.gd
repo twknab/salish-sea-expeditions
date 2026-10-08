@@ -145,6 +145,23 @@ func go(name: String) -> void:
 	_pause_btn.visible = name in ["trip", "school"]
 	get_tree().change_scene_to_file(SCENES[name])
 
+## A fresh record for a new expedition: the field guide and the drills are yours for good, the
+## days and the camps are not. The boat, the packing and the choices at camp are kept too.
+const RECORD_KEYS: Array[String] = ["days", "nights", "cleanCamps", "launchHour", "arrivedHour", "assembly", "swims", "ferriesMet", "lateStart", "effort", "ferryHome"]
+
+func fresh_record() -> void:
+	save.legIndex = 0
+	for k in RECORD_KEYS:
+		save.erase(k)
+
+## Paddle the whole expedition again from the first float plan, on a chosen day: the boat is
+## built, Kayak School is done and the packing stands.
+func paddle_again(day_id: String) -> void:
+	fresh_record()
+	save.dayId = day_id
+	persist()
+	go("plan")
+
 ## The days the title offers, and the one this expedition is paddled on (`?day=september` for checks).
 func days() -> Array:
 	var all: Array = content.get("tripDays", [])
