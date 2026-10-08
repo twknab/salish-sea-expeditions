@@ -67,6 +67,14 @@ func _init() -> void:
 	check(Packing.zone_of(Packing.suggested(gear), "pump") == "deck", "deck gear rides on deck")
 	check(Packing.trim_words(bow).begins_with("bow heavy") and Packing.trim_words(ideal) == "level", "trim in words")
 	check(Packing.assess(Packing.empty(), gear).pitch == 0.0, "an empty boat is level")
+	# Assembly: the Phaser rules; a rushed jack costs the whole boat, a hold has a right length.
+	var asm_steps: Array = [{ "id": "unroll", "gesture": "swipeOut" }, { "id": "jackSides", "gesture": "hold" }, { "id": "jackKeel", "gesture": "hold" }, { "id": "check", "gesture": "tapRhythm" }]
+	check(absf(Assembly.quality({ "unroll": 1.0, "jackSides": 1.0, "jackKeel": 1.0, "check": 1.0 }, asm_steps) - 1.0) < 1e-6, "a clean assembly is 1")
+	check(absf(Assembly.quality({}, asm_steps) - 0.4) < 1e-6, "steps never done count as 0.4")
+	var rushed := Assembly.quality({ "unroll": 1.0, "jackSides": 0.25, "jackKeel": 0.25, "check": 1.0 }, asm_steps)
+	check(rushed < 0.5 and rushed >= 0.3, "rushed jacks cost most of the boat, got %f" % rushed)
+	check(Assembly.hold_quality(Assembly.NEEDED_HOLD) == 1.0 and Assembly.hold_quality(0.0) == 0.0 and Assembly.hold_quality(Assembly.NEEDED_HOLD * 2.0) == 0.0, "a hold is right at its length and wrong either side")
+	check(Assembly.is_hold(asm_steps[1]) and not Assembly.is_hold(asm_steps[0]), "the jacks are holds")
 	# Score: the Phaser rules; going in costs nothing, too close to wildlife does.
 	var legs_stub: Array = [{}, {}, {}]
 	var rec := Score.record({ "days": [{ "leg": 0, "metres": 11200.0, "verdict": "good", "swims": 1, "respectful": 2 }, { "leg": 1, "metres": 9600.0, "verdict": "fair", "violations": 1 }], "nights": 2, "cleanCamps": 2, "seen": ["seal", "eagle"], "drills": ["forward", "brace"] }, legs_stub)

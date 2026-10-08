@@ -5,12 +5,13 @@ extends Node
 const SAVE_PATH := "user://save.json"
 ## The opening, in the order the player meets it. The ferry is not optional: a folding kayak walks
 ## on at Anacortes, and the crossing is where the islands are first learned.
-const FLOW: Array[String] = ["title", "acknowledgment", "outfit", "ferry", "school", "pack", "plan", "trip", "camp"]
+const FLOW: Array[String] = ["title", "acknowledgment", "outfit", "ferry", "assemble", "school", "pack", "plan", "trip", "camp"]
 const SCENES := {
 	"title": "res://scenes/title.tscn",
 	"acknowledgment": "res://scenes/acknowledgment.tscn",
 	"outfit": "res://scenes/outfit.tscn",
 	"ferry": "res://scenes/ferry.tscn",
+	"assemble": "res://scenes/assemble.tscn",
 	"school": "res://scenes/sea.tscn",
 	"trip": "res://scenes/sea.tscn",
 	"pack": "res://scenes/pack.tscn",
@@ -113,7 +114,7 @@ func go(name: String) -> void:
 	if name != "title" and name != "guide" and name != "debrief":
 		save.stage = name
 		persist()
-	Sound.mood({ "title": "title", "acknowledgment": "title", "outfit": "calm", "ferry": "ferry", "school": "dawn", "pack": "calm", "plan": "calm", "trip": "drive", "camp": "night", "debrief": "drive" }.get(name, "calm"))
+	Sound.mood({ "title": "title", "acknowledgment": "title", "outfit": "calm", "ferry": "ferry", "assemble": "calm", "school": "dawn", "pack": "calm", "plan": "calm", "trip": "drive", "camp": "night", "debrief": "drive" }.get(name, "calm"))
 	_title_btn.visible = name != "title"
 	get_tree().change_scene_to_file(SCENES[name])
 

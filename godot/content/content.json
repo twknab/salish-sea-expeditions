@@ -2687,6 +2687,48 @@
    "licence": "Facts cited"
   }
  ],
+ "assemblySteps": [
+  {
+   "id": "unroll",
+   "label": "Unroll the skin on a clean, flat spot",
+   "gesture": "swipeOut"
+  },
+  {
+   "id": "frame",
+   "label": "Snap the frame sections together",
+   "gesture": "tapRhythm"
+  },
+  {
+   "id": "insert",
+   "label": "Slide the frame into the skin, bow first",
+   "gesture": "swipeUp"
+  },
+  {
+   "id": "coaming",
+   "label": "Seat the coaming and close the deck",
+   "gesture": "circle"
+  },
+  {
+   "id": "seat",
+   "label": "Fit the seat, backband and foot pegs",
+   "gesture": "tapRhythm"
+  },
+  {
+   "id": "jackSides",
+   "label": "Tension the two side jacks",
+   "gesture": "hold"
+  },
+  {
+   "id": "jackKeel",
+   "label": "Tension the keel jack — sets the rocker",
+   "gesture": "hold"
+  },
+  {
+   "id": "check",
+   "label": "Check: skin tight, frame seated, no wrinkles",
+   "gesture": "tapRhythm"
+  }
+ ],
  "skins": [
   {
    "id": "blackBlue",

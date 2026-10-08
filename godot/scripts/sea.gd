@@ -97,6 +97,7 @@ func _ready() -> void:
 	kayak.panel_color = Color(sk.panel) if sk.panel else Color(sk.deck)
 	kayak.hull_color = Color(sk.hull)
 	kayak.sea_state = sea.sea_state
+	kayak.assembly = clampf(float(App.save.get("assembly", 1.0)), 0.3, 1.0)  # the boat as it went together on the beach
 	kayak.build_hull()
 	controls.stroke.connect(_on_stroke)
 	kayak.capsized.connect(_on_capsized)
@@ -298,6 +299,8 @@ func _leg(delta: float) -> void:
 		kayak.global_position += drift
 	var rip := " · ×%.1f %s" % [factor, str(_flow.name)] if factor > 1.15 else ""
 	var trim_note := " · " + Packing.trim_words(_pack) if Packing.handling_penalty(_pack) > 0.2 else ""
+	if kayak.assembly < 0.7:
+		trim_note += " · slack hull"
 	_set_label.text = "%s: %s%s · wind %d kn from %03d°%s" % [str(_route.get("channel", "San Juan Channel")), Tides.describe(_day, _hour), rip, int(round(Tides.wind(_day, _hour).kn)), int(round(Tides.wind(_day, _hour).fromDeg)), trim_note]
 	_dest_label.text = "%s · %.1f km · %03d° · %s%s" % [Leg.cove_name(_route), dist / 1000.0, int(round(brg)), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
 	if dist < 220.0:

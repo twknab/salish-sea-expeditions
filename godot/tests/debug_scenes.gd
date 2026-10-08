@@ -1,7 +1,7 @@
 ## Runs every opening scene headless for two seconds each and reports script errors.
 ##   godot --headless --path godot -s res://tests/debug_scenes.gd
 extends SceneTree
-var _order := ["title", "acknowledgment", "outfit", "ferry", "school", "pack", "plan", "trip", "camp", "guide", "debrief"]
+var _order := ["title", "acknowledgment", "outfit", "ferry", "assemble", "school", "pack", "plan", "trip", "camp", "guide", "debrief"]
 var _i := -1
 var _f := 0
 var _node: Node

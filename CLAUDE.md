@@ -71,8 +71,8 @@ with `npx vite preview --port 4173` running, for a single screenshot.
 - The sea shader is opaque on purpose. Writing `ALPHA`, even `1.0`, moves it to the transparent pass.
 - Headless Chromium runs game time ~8× slow (Godot caps a frame's delta at 8 physics ticks); the
   ferry takes `?at=0.3` to open part way, and `WAIT=` on `godot-desktop-shot.mjs` sets the wait.
-- The flow is `App.FLOW`: title → acknowledgment → outfit → ferry → school → pack → plan → trip → camp.
-  `?scene=pack|plan|camp|debrief` open the stations (`&demo=1` fills the debrief); `?scene=trip&near=jones` starts 900 m off the cove;
+- The flow is `App.FLOW`: title → acknowledgment → outfit → ferry → assemble → school → pack → plan → trip → camp.
+  `?scene=assemble|pack|plan|camp|debrief` open the stations (`&step=N` for the assembly) (`&demo=1` fills the debrief); `?scene=trip&near=jones` starts 900 m off the cove;
   `?pack=bow|ideal` packs the boat for a check (everything in the bow, or the suggested layout). The
   expedition is `godot/content/legs.json` (geometry, from `tools/geo/leg_routes.py`) merged with the
   legs in `src/content/expedition.js` (teaching) by `Leg`; `?leg=1` opens day two, `?leg=2` day three.
