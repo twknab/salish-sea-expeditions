@@ -15,6 +15,7 @@ signal stroke_done(side: int, q: float, kind: String)
 var sea_time := 0.0
 var sea_state := 0.3
 var edge := 0.0          # -1 port .. 1 starboard, from the hips bar
+var steer := 0.0         # -1 left .. 1 right: the lean, which bends the course while the boat has way on
 var speed := 0.0         # m/s through the water, for the HUD
 var heading := 0.0       # radians, 0 = north (-z)
 var strokes_good := 0
@@ -114,6 +115,10 @@ func _physics_process(delta: float) -> void:
 	# Paddler and hull together are a self-righting pair: the roll angle itself pulls the boat back.
 	var roll := asin(clampf(global_basis.y.cross(Vector3.UP).dot(fwd), -1.0, 1.0))
 	apply_torque(fwd * edge * 38.0 - fwd * angular_velocity.dot(fwd) * 40.0 + fwd * roll * 90.0)
+	# Leaning: a steady pressure that bends the course in proportion to the way on, the way a
+	# paddler steers with stern draws and a touch of edge without breaking the rhythm.
+	if absf(steer) > 0.01:
+		apply_torque(Vector3.UP * -steer * 70.0 * clampf(absf(v_f) / 1.2, 0.15, 1.0) * signf(v_f if absf(v_f) > 0.05 else 1.0))
 	speed = v_f
 	heading = atan2(fwd.x, -fwd.z)
 	_wobble_t = maxf(0.0, _wobble_t - delta)
