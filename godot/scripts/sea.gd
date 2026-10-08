@@ -28,6 +28,9 @@ var _kick_t := 0.0
 var _swimming := false       # capsized on the trip: the rescue cards are up
 var _rescue_step := 0
 const RESCUE_STEPS := ["coldWater", "wetExit", "tRescue", "pumpOut"]   # with a partner alongside, the T-rescue; the paddle float is the solo drill in Kayak School
+const SOLO_STEPS := ["wetExit", "pfRescue", "pumpOut"]                 # Kayak School's rescue drill: alone, with the float
+var _rescue_steps: Array = RESCUE_STEPS
+var _capsize_in := -1.0      # the rescue drill rolls the boat on its own after a moment
 var _since_start := 0.0
 var _pack: Dictionary = {}       # Packing.assess of the boat as packed, on a trip
 var _swims_today := 0           # capsizes on this leg, for the day's record
@@ -131,6 +134,16 @@ func _ready() -> void:
 			hud.visible = false
 			_build_tour()
 			_phase = App.school_from
+			var drill_param := App._url_param("drill")  # `?scene=school&drill=rescue` opens on a drill, for checks
+			if drill_param != "":
+				var want := -1
+				for k in range(_drills().size()):
+					if _drills()[k].id == drill_param:
+						want = k
+				if want >= 0:
+					_start_drills()
+					_start_drill(want)
+					return
 			_show_phase()
 		_:
 			_tilt_chip()
@@ -285,6 +298,8 @@ func _leg(delta: float) -> void:
 	# The water of the hour: wind builds the sea, wind against the stream stands it up, and a rip
 	# throws the odd wave on the beam that the paddler must brace for.
 	var state := Tides.sea_state(_day, _hour, factor)
+	var w := Tides.wind(_day, _hour)
+	kayak.wind = Windage.vector(float(w.kn), float(w.fromDeg))
 	sea.set_sea_state(lerpf(sea.sea_state, lerpf(0.10, 0.70, state), minf(1.0, delta * 0.3)))
 	kayak.sea_state = sea.sea_state
 	if factor > 1.15 and kayak.speed > 0.3:
@@ -477,6 +492,8 @@ func _start_drill(i: int) -> void:
 	_drill_bar.value = 0
 	if d.id == "brace":
 		_wobble = 2.5
+	if d.id == "rescue":
+		_capsize_in = 2.5
 
 func _drill_progress(delta: float) -> void:
 	var d: Dictionary = _drills()[_drill]
@@ -494,6 +511,14 @@ func _drill_progress(delta: float) -> void:
 			if absf(kayak.edge) > 0.4 or absf(controls.steer) > 0.5:
 				s.turned += absf(dh)
 			p = s.turned / PI
+		"rescue":
+			if _capsize_in > 0.0:
+				_capsize_in -= delta
+				if _capsize_in <= 0.0 and not kayak.over and not _swimming:
+					kayak.over = true
+					kayak.global_basis = kayak.global_basis.rotated(-kayak.global_basis.z, PI)
+					_on_capsized()
+			p = float(s.count)
 		"brace":
 			_wobble -= delta
 			if _wobble <= 0.0:
@@ -577,6 +602,14 @@ func _unhandled_input(ev: InputEvent) -> void:
 ## later. In Kayak School the boat simply comes back up with a word about bracing earlier.
 func _on_capsized() -> void:
 	Sound.splash(1.0)
+	var rescue_drill: bool = mode == "school" and _drill >= 0 and _drills()[_drill].id == "rescue"
+	if rescue_drill:
+		_swimming = true
+		controls.visible = false
+		_rescue_steps = SOLO_STEPS
+		_rescue_step = 0
+		_show_rescue()
+		return
 	if mode != "trip":
 		kayak.right()
 		note_label.text = "That one went over. Set up earlier: blade flat on the water, hips snap the boat back under you."
@@ -587,6 +620,7 @@ func _on_capsized() -> void:
 	App.save.swims = int(App.save.get("swims", 0)) + 1
 	_swims_today += 1
 	App.persist()
+	_rescue_steps = RESCUE_STEPS
 	_rescue_step = 0
 	_show_rescue()
 
@@ -598,19 +632,22 @@ func _lesson(id: String) -> Dictionary:
 
 func _show_rescue() -> void:
 	_clear_card()
-	var l := _lesson(RESCUE_STEPS[_rescue_step])
-	var last := _rescue_step >= RESCUE_STEPS.size() - 1
+	var l := _lesson(_rescue_steps[_rescue_step])
+	var last := _rescue_step >= _rescue_steps.size() - 1
 	var actions: Array = [[("Back in the boat" if last else "Next"), func() -> void:
 		if last:
 			_righted()
 		else:
 			_rescue_step += 1
 			_show_rescue(), true]]
-	var kicker := "In the water · %s · %d of %d" % [Leg.clock(_hour), _rescue_step + 1, RESCUE_STEPS.size()]
+	var solo := _rescue_steps == SOLO_STEPS
+	var kicker := ("Kayak School · in the water · %d of %d" % [_rescue_step + 1, _rescue_steps.size()]) if solo else ("In the water · %s · %d of %d" % [Leg.clock(_hour), _rescue_step + 1, _rescue_steps.size()])
 	var text: String = l.get("text", "")
-	if _rescue_step == 0:
+	if _rescue_step == 0 and solo:
+		text = "Over you go, on purpose, in the harbour's flat water. " + text
+	if _rescue_step == 0 and not solo:
 		text = "You are in nine-degree water. %s is turning toward you. " % str(_partner.preset.get("name", "Your partner")) + text
-	if RESCUE_STEPS[_rescue_step] == "pumpOut" and not _pack.get("enables", []).has("pumpOut"):
+	if _rescue_steps[_rescue_step] == "pumpOut" and not solo and not _pack.get("enables", []).has("pumpOut"):
 		text = "The pump is on the beach at Friday Harbor. Bail with a sponge and a hat: twice as long with a boat full of nine-degree water. " + text
 	_card = UIKit.card(l.get("title", ""), text, App.sources_line(l.get("sourceIds", [])), actions, kicker)
 	_ui.add_child(UIKit.spacer())
@@ -619,9 +656,13 @@ func _show_rescue() -> void:
 func _righted() -> void:
 	_clear_card()
 	kayak.right()
-	_hour += 0.15
 	_swimming = false
 	controls.visible = true
+	if _rescue_steps == SOLO_STEPS:
+		_drill_state.count = 1  # the drill is done: back in and pumped dry
+		note_label.text = "Back in the boat and dry. Alone, that is the paddle float; with a partner it is the T-rescue, and faster."
+		return
+	_hour += 0.15
 	note_label.text = "Nine minutes in the water with a partner alongside. Paddle to warm up, and make the next landing the bail-out if the shivering does not stop."
 
 ## The ferry: a card as it comes within reach, a long blast as it closes, and its wake on the beam.

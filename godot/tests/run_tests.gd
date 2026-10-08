@@ -75,6 +75,12 @@ func _init() -> void:
 	check(rushed < 0.5 and rushed >= 0.3, "rushed jacks cost most of the boat, got %f" % rushed)
 	check(Assembly.hold_quality(Assembly.NEEDED_HOLD) == 1.0 and Assembly.hold_quality(0.0) == 0.0 and Assembly.hold_quality(Assembly.NEEDED_HOLD * 2.0) == 0.0, "a hold is right at its length and wrong either side")
 	check(Assembly.is_hold(asm_steps[1]) and not Assembly.is_hold(asm_steps[0]), "the jacks are holds")
+	# Windage: a southerly blows north, a westerly east; the bow comes up into a beam wind, more when stern heavy.
+	check(Windage.blows_to(180.0).distance_to(Vector3(0, 0, -1)) < 1e-6 and Windage.blows_to(270.0).distance_to(Vector3(1, 0, 0)) < 1e-6, "the wind blows where it blows")
+	check(absf(Windage.vector(10.0, 0.0).length() - 5.144) < 1e-3, "ten knots is five metres a second")
+	check(Windage.weathercock(1.0, 1.2) > 0.0 and Windage.weathercock(-1.0, 1.2) < 0.0 and Windage.weathercock(1.0, 0.0) == 0.0, "the bow turns into the wind, only with way on")
+	check(Windage.weathercock(1.0, 1.2, -0.5) > Windage.weathercock(1.0, 1.2, 0.0), "a stern-heavy boat weathercocks more")
+	check(Windage.drift_force(Vector3(5.0, 0, 0), 100.0, 2.2).x > 0.0, "the drift force is downwind")
 	# Score: the Phaser rules; going in costs nothing, too close to wildlife does.
 	var legs_stub: Array = [{}, {}, {}]
 	var rec := Score.record({ "days": [{ "leg": 0, "metres": 11200.0, "verdict": "good", "swims": 1, "respectful": 2 }, { "leg": 1, "metres": 9600.0, "verdict": "fair", "violations": 1 }], "nights": 2, "cleanCamps": 2, "seen": ["seal", "eagle"], "drills": ["forward", "brace"] }, legs_stub)
@@ -99,7 +105,7 @@ func _init() -> void:
 						missing += 1
 						printerr("unknown source ", sid, " in ", key)
 		check(missing == 0, "all sourceIds resolve")
-		check(c.drills.size() == 5 and c.drills[0].id == "forward", "five drills, forward first")
+		check(c.drills.size() == 6 and c.drills[0].id == "forward" and c.drills[5].id == "rescue", "six drills, forward first and the rescue last")
 	# IK: the elbow keeps both bone lengths and bends toward the pole.
 	var sh := Vector3(0.2, 1.4, 0)
 	var hand := Vector3(0.45, 1.1, 0.3)
