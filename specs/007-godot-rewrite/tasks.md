@@ -261,6 +261,14 @@
 
 - [x] T014bn Posey has no water, and the card now asks what happens to the eight litres that came in the boat: drink your fill, ration it, or cross to Roche Harbor for the tap in the morning (`WaterPlan`, pure and tested). Drink it and the long day home is paddled thirsty — the stroke is 85 % of itself (`Kayak.effort`) and a note says so at the first stroke; the tap costs an hour, so the float plan's earliest launch moves to 07:00 (`Leg.earliest_launch`) and the plan says why, which on the ebb is the whole lesson. The record keeps it, the debrief and the seamanship calls say so. `?water=fill|ration|roche`; `camp-water` joins the sweep.
 
+## Slice 51 — the loop closes
+
+- [x] T014bo The debrief ends with "Paddle it again · a september day" (or the July day, from September): a fresh record on the other day, from the first float plan, with the boat built, Kayak School behind you and the packing standing (`App.paddle_again`, `App.fresh_record` — Begin uses the same list, now with the water run and the ferry-home flag in it). The title remembers the last expedition in a line: the day, the miles, the seamanship calls kept, the score.
+
+## Slice 52 — the partner's voice
+
+- [x] T014bp The partner speaks at the moments that matter, a few words in front of the note or the card — the ferry ("Hold here. Let it go by."), the sea standing up, fog closing in and lifting, the pod, the seals' rock, a capsize, the dark, the kelp, the wake, the landing (`PartnerVoice`, pure and tested: every line under seventy characters, silent when there is nothing to say). Never on a drill, where you are alone.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

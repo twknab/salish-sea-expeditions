@@ -286,6 +286,8 @@ func _watch_sightings() -> void:
 				var level := 2 if d < 50.0 else (1 if d < float(keep) else 0)
 				if level > s.node.alarm:
 					s.node.alarm = level
+					if level == 1:
+						note_label.text = _said("seals") + "Heads up on the rock: you are inside the hundred yards. Ease off and they settle."
 					if level == 2:
 						note_label.text = "The seals have flushed off the rock. That is the disturbance the hundred yards prevents: a seal in the water is a seal not resting."
 			if keep > 0 and not s.close and d < float(keep):
@@ -306,7 +308,7 @@ func _watch_sightings() -> void:
 			seen.append(conf.species)
 			App.save.seen = seen
 			App.persist()
-		var text: String = sp.get("blurb", "")
+		var text: String = (_said("orcas") if conf.kind == "orcas" else "") + str(sp.get("blurb", ""))
 		var facts: Array = sp.get("facts", [])
 		if not facts.is_empty():
 			text += "\n\n" + str(facts[0])
@@ -324,6 +326,12 @@ func _species(id: String) -> Dictionary:
 		if sp.id == id:
 			return sp
 	return {}
+
+## The partner's words for a moment, to go in front of a note or a card; empty on a drill, alone.
+func _said(event: String) -> String:
+	if _partner == null or mode != "trip":
+		return ""
+	return PartnerVoice.said(str(_partner.preset.get("name", "Your partner")), event)
 
 ## The leg: where the cove is, how the day passes, and landing.
 func _leg(delta: float) -> void:
@@ -346,7 +354,7 @@ func _leg(delta: float) -> void:
 	if sea.night > 0.3 and not _dark_said:
 		_dark_said = true
 		_dark = true
-		note_label.text = "Night on the water. The white light goes on, the shore is a shape, and the landing is by compass and the sound of the beach. Keep your partner close." if not controls.touch() else "Night on the water: light on, partner close, land by compass."
+		note_label.text = _said("dark") + ("Night on the water. The white light goes on, the shore is a shape, and the landing is by compass and the sound of the beach." if not controls.touch() else "Night on the water: light on, land by compass.")
 	# The current carries the boat over the ground, in the groove and out of it (the groove's hours
 	# pass faster, so its drift is scaled with them).
 	_flow = Leg.flow_at(_route, here)
@@ -362,7 +370,7 @@ func _leg(delta: float) -> void:
 	kayak.kelp = kelp
 	if kelp > 0.3 and not _kelp_said:
 		_kelp_said = true
-		note_label.text = "In the kelp: the fronds grab the blade and the swell lies down. A kelp bed is a lee, and a slow one."
+		note_label.text = _said("kelp") + "In the kelp: the fronds grab the blade and the swell lies down. A kelp bed is a lee, and a slow one."
 	var state := Tides.sea_state(_day, _hour, factor) * (1.0 - 0.6 * kelp)
 	if state >= ROUGH and not _weather_asked and _card == null:
 		_offer_bailouts(state)
@@ -383,7 +391,7 @@ func _leg(delta: float) -> void:
 		# The fog lifts: the islands come back, and the compass work is judged by where you are.
 		_fog_off_m = Leg.off_track_m(_route, here)
 		var line := "The fog lifts. %s" % ("You are on the line you planned: %s is fine on the bow at %03d°." % [Leg.cove_name(_route), int(round(brg))] if _fog_off_m < 150.0 else "You came out %d m off the line you planned; %s bears %03d°. Dead reckoning drifts with the stream — that is why the fix matters." % [int(_fog_off_m), Leg.cove_name(_route), int(round(brg))])
-		note_label.text = line
+		note_label.text = _said("fog_lifts") + line
 	sea.set_fog(_fog)
 	if _chart:
 		_chart.blind = Fog.blind(_fog)
@@ -392,9 +400,9 @@ func _leg(delta: float) -> void:
 		if not _fog_said:
 			_fog_said = true
 			if controls.touch():  # three lines is the phone's room
-				note_label.text = "Fog. The chart has no fix; the compass does. Hold %03d°, keep your partner close, and stop for a long blast." % int(round(brg))
+				note_label.text = _said("fog") + "Fog. The chart has no fix; the compass does. Hold %03d°, and stop for a long blast." % int(round(brg))
 			else:
-				note_label.text = "Fog. The islands are gone and the chart has no fix; the compass does. Hold %03d°, count your strokes, keep your partner a paddle length off. A long blast is a vessel under way: stop and listen." % int(round(brg))
+				note_label.text = _said("fog") + "Fog. The islands are gone and the chart has no fix; the compass does. Hold %03d°, count your strokes, keep a paddle length off. A long blast is a vessel under way: stop and listen." % int(round(brg))
 	sea.set_sea_state(lerpf(sea.sea_state, lerpf(0.10, 0.70, state), minf(1.0, delta * 0.3)))
 	kayak.sea_state = sea.sea_state
 	if factor > 1.15 and kayak.speed > 0.3:
@@ -426,7 +434,7 @@ func _leg(delta: float) -> void:
 		Sound.gull()
 		_clear_card()
 		var land_card: Dictionary = _route.get("landing", {})
-		_card = UIKit.card(land_card.get("title", "Landing"), "%s The day is done at %s." % [land_card.get("text", ""), Leg.clock(_hour)], App.sources_line(land_card.get("sourceIds", [])), [["Land and make camp", func() -> void: App.next(), true]], "Landing · day %d" % (Leg.index() + 1))
+		_card = UIKit.card(land_card.get("title", "Landing"), "%s%s The day is done at %s." % [_said("landing"), land_card.get("text", ""), Leg.clock(_hour)], App.sources_line(land_card.get("sourceIds", [])), [["Land and make camp", func() -> void: App.next(), true]], "Landing · day %d" % (Leg.index() + 1))
 		_ui.add_child(UIKit.spacer())
 		_ui.add_child(_card)
 
@@ -481,7 +489,8 @@ func _offer_bailouts(state: float) -> void:
 		if d < nearest_d:
 			nearest_d = d
 			nearest = nm
-	var body := "%s: %d knots from %03d° and the sea is standing up%s. The float plan's bail-outs:\n%s\n\nNobody has to make it in one push. In a lee the afternoon wind blows through in an hour or two." % [str(_route.get("channel", "San Juan Channel")), int(round(float(w.kn))), int(round(float(w.fromDeg))), " against the stream" if Tides.wind_against_tide(_day, _hour) else "", "\n".join(lines)]
+	var opener := "%s: %d knots from %03d° and the sea is standing up%s. The float plan's bail-outs:\n%s"
+	var body := _said("rough") + (opener + "\n\nNobody has to make it in one push. In a lee the afternoon wind blows through in an hour or two.") % [str(_route.get("channel", "San Juan Channel")), int(round(float(w.kn))), int(round(float(w.fromDeg))), " against the stream" if Tides.wind_against_tide(_day, _hour) else "", "\n".join(lines)]
 	var l := _lesson("bailouts")
 	_clear_card()
 	_card = UIKit.card("The wind is up", body, App.sources_line(["uscg", "aca"]) if l.get("text", "") == "" else App.sources_line(l.get("sourceIds", [])), [
@@ -796,7 +805,7 @@ func _show_rescue() -> void:
 	if _rescue_step == 0 and solo:
 		text = "Over you go, on purpose, in the harbour's flat water. " + text
 	if _rescue_step == 0 and not solo:
-		text = "You are in nine-degree water. %s is turning toward you. " % str(_partner.preset.get("name", "Your partner")) + text
+		text = _said("capsize") + "You are in nine-degree water. %s is turning toward you. " % str(_partner.preset.get("name", "Your partner")) + text
 	if _rescue_steps[_rescue_step] == "pumpOut" and not solo and not _pack.get("enables", []).has("pumpOut"):
 		text = "The pump is on the beach at Friday Harbor. Bail with a sponge and a hat: twice as long with a boat full of nine-degree water. " + text
 	_card = UIKit.card(l.get("title", ""), text, App.sources_line(l.get("sourceIds", [])), actions, kicker)
@@ -836,7 +845,7 @@ func _watch_traffic(delta: float) -> void:
 	if d < Traffic.WARN_M and not _traffic.warned:
 		_traffic.warned = true
 		_clear_card()
-		_card = UIKit.card("Ferry in the channel", "Hold your position and let it pass well ahead — it cannot stop or turn for you, and it is faster than it looks. When it has gone by, cross its wake at right angles, bow into the waves.", App.sources_line(["colregs", "wsf"]), [["Holding", _clear_card, true]], "Traffic")
+		_card = UIKit.card("Ferry in the channel", _said("ferry") + "Hold your position and let it pass well ahead — it cannot stop or turn for you, and it is faster than it looks. When it has gone by, cross its wake at right angles, bow into the waves.", App.sources_line(["colregs", "wsf"]), [["Holding", _clear_card, true]], "Traffic")
 		_ui.add_child(UIKit.spacer())
 		_ui.add_child(_card)
 		var met := int(App.save.get("ferriesMet", 0))
@@ -856,4 +865,4 @@ func _watch_traffic(delta: float) -> void:
 		Sound.hull_slap(0.4 + 0.5 * beam)
 		var wake_line := "The ferry's wake, bow-on: a few pitches and it is past." if beam < 0.4 else "The ferry's wake on the beam: brace, and next time turn the bow into it."
 		_ferry_verdicts.append("crossed" if _ferry_moved else "held")
-		note_label.text = wake_line + (" You paddled on as it came: a ferry cannot stop for you, and the lane is its." if _ferry_moved else " You held and let it pass: that is the crossing rule.")
+		note_label.text = _said("wake") + wake_line + (" You paddled on as it came: a ferry cannot stop for you, and the lane is its." if _ferry_moved else " You held and let it pass: that is the crossing rule.")

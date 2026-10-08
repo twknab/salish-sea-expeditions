@@ -105,6 +105,11 @@ func _init() -> void:
 	var short_day := {"sunset": 1140, "tides": [], "current": [], "wind": []}
 	check(Tides.lands_in_the_dark(short_day, 16.0, 3.0) and not Tides.lands_in_the_dark(short_day, 12.0, 3.0), "a late launch on a short day lands in the dark")
 	check(String(Tides.judge(short_day, 16.0, 3.0).verdict) == "poor" and Tides.verdict_line(short_day, 16.0, 3.0).contains("in the dark"), "and the float plan says so")
+	# The partner speaks at the moments that matter, in a few words, and not when there is nothing to say.
+	check(PartnerVoice.line("ferry") != "" and PartnerVoice.line("nothing") == "" and PartnerVoice.said("Mina", "nothing") == "", "silent when there is nothing to say")
+	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")
+	for ev in PartnerVoice.LINES.keys():
+		check(PartnerVoice.line(ev).length() < 70, "%s: a few words, not a lecture" % ev)
 	# The water on Posey: drink it and tomorrow is thirsty; the tap costs an hour; rationed is fine.
 	check(WaterPlan.verdict("fill") == "thirsty" and WaterPlan.verdict("ration") == "fine" and WaterPlan.verdict("roche") == "late" and WaterPlan.verdict("") == "fine", "the water has three ends")
 	check(WaterPlan.effort("fill") < 0.9 and WaterPlan.effort("ration") == 1.0 and WaterPlan.late_hours("roche") == 1.0 and WaterPlan.late_hours("fill") == 0.0, "thirst shortens the stroke, the tap delays the launch")
