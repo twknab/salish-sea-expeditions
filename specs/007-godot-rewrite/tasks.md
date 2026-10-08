@@ -209,6 +209,10 @@
 
 - [x] T014ba A kelp bed is a thing the boat feels: inside seventy metres of a bull kelp sighting the hull drags on the fronds (a linear drag that makes every stroke a short one) and the swell lies down — a kelp bed is a lee, and a slow one — with a line saying so the first time. `?scene=trip&near=yellow` starts in it
 
+## Slice 38 — the wake, bow-on or on the beam
+
+- [x] T014bb The ferry's wake is taken as the card taught: a boat turned across the ferry's track, bow into the waves, takes a few pitches; a boat left parallel takes the full roll on the beam, and the line says to turn the bow into it next time. `Traffic.wake_beam` and `wake_kick` tested headless; the ferry start joins the stations sweep
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

@@ -81,6 +81,9 @@ func _init() -> void:
 	check(Windage.weathercock(1.0, 1.2) > 0.0 and Windage.weathercock(-1.0, 1.2) < 0.0 and Windage.weathercock(1.0, 0.0) == 0.0, "the bow turns into the wind, only with way on")
 	check(Windage.weathercock(1.0, 1.2, -0.5) > Windage.weathercock(1.0, 1.2, 0.0), "a stern-heavy boat weathercocks more")
 	check(Windage.drift_force(Vector3(5.0, 0, 0), 100.0, 2.2).x > 0.0, "the drift force is downwind")
+	# The ferry's wake: on the beam when the boat runs parallel to the ferry, bow-on when across it.
+	check(absf(Traffic.wake_beam(Vector3(0, 0, -1), Vector3(0, 0, 1)) - 1.0) < 1e-6 and Traffic.wake_beam(Vector3(1, 0, 0), Vector3(0, 0, 1)) < 1e-6, "the wake is on the beam of a parallel boat and bow-on across the track")
+	check(Traffic.wake_kick(1.0) > Traffic.wake_kick(0.0) and Traffic.wake_kick(0.0) > 0.3, "the beam takes the roll, the bow a few pitches")
 	# Score: the Phaser rules; going in costs nothing, too close to wildlife does.
 	var legs_stub: Array = [{}, {}, {}]
 	var rec := Score.record({ "days": [{ "leg": 0, "metres": 11200.0, "verdict": "good", "swims": 1, "respectful": 2 }, { "leg": 1, "metres": 9600.0, "verdict": "fair", "violations": 1 }], "nights": 2, "cleanCamps": 2, "seen": ["seal", "eagle"], "drills": ["forward", "brace"] }, legs_stub)

@@ -74,9 +74,12 @@ STATIC_DIR=build/web node server/server.mjs                      # serve it on :
 ```
 
 The game is a three-day sea-kayak expedition on the real islands: the opening (title,
-acknowledgment, outfitting, the ferry from Anacortes, Kayak School), then for each day a float plan
-on the chart with the day's water as a graph, the leg on the water with a partner, the ferry,
-wildlife, tide and rips, and camp or the take-out ashore. Content is exported from `src/content`
+acknowledgment, outfitting, the ferry from Anacortes, the boat assembled on the beach, Kayak School
+with its six drills, packing the boat), then for each day a float plan on the chart with the day's
+water as a graph, the leg on the water with a partner — the ferry and its wake, the tide, the wind,
+rips and kelp, the bail-outs when the wind is up, wildlife from seals to a pod of killer whales, a
+capsize and the rescue — and camp ashore with the shore walk and the night, or the take-out and the
+debrief. Pause anywhere; About carries the acknowledgment. Content is exported from `src/content`
 by `tools/export-content.mjs`, the legs are laid over the water by `tools/geo/leg_routes.py`,
 sounds come from `tools/synth-audio.mjs` and four full-length pieces from `tools/synth-pieces.mjs`.
 `?scene=assemble|pack|plan|trip|camp|guide|debrief`, `?leg=0|1|2`, `?pack=bow|ideal` and `?near=jones|spieden|posey|ferry|orcas` open a station

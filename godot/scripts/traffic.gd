@@ -24,6 +24,18 @@ var honked := false
 var waked := false
 
 ## The channel stretch of a track: from the point index `from` to the end.
+## How much of the wake the boat takes on the beam: the wake runs out at right angles to the
+## ferry's track, so a boat parallel to the ferry has it on the beam (1) and a boat turned across
+## the track, bow into the waves, takes it bow-on (0).
+static func wake_beam(kayak_fwd: Vector3, ferry_fwd: Vector3) -> float:
+	var k := Vector2(kayak_fwd.x, kayak_fwd.z).normalized()
+	var f := Vector2(ferry_fwd.x, ferry_fwd.z).normalized()
+	return absf(k.dot(f))
+
+## The roll the wake gives the boat: a few pitches bow-on, the full roll on the beam.
+static func wake_kick(beam: float) -> float:
+	return 0.35 + 0.95 * clampf(beam, 0.0, 1.0)
+
 static func stretch(track: Array, from: int) -> PackedVector2Array:
 	var out := PackedVector2Array()
 	for i in range(from, track.size()):
