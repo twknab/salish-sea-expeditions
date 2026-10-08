@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-06
 
-**Status**: Experiment — thirty slices merged (see "What exists today" below and
+**Status**: Experiment — thirty-one slices merged (see "What exists today" below and
 tasks.md); go/no-go pending the mobile Safari measurement from the Cloud Run URL (see research.md
 and the table at the end)
 
@@ -39,7 +39,8 @@ The Godot build on `main` is a complete three-day expedition, not a tech demo:
   hour; a partner holding station; the ferry working the channel with a card, a horn and a wake;
   wildlife as its own models with field-guide sightings; a capsize with secondary stability and
   the rescue taught in the water.
-- **Ashore**: camp on Jones and Posey with the shore walk at low tide, the take-out at Friday
+- **Ashore**: camp on Jones and Posey with the shore walk at low tide, the stars and the
+  bioluminescence of the cove at night, the take-out at Friday
   Harbor with the tally, then the debrief: each day as it went, the score by the Phaser rules,
   the drills and the species; the field guide and every source a button away from the title.
 - **Pause**: Escape, P, a chip, or the page going into a pocket holds the boat and the clock

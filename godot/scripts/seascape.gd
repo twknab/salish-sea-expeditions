@@ -19,6 +19,9 @@ var _mat: ShaderMaterial
 var sun: DirectionalLight3D
 var _sky_mat: ProceduralSkyMaterial
 var _env: Environment
+var _stars: MeshInstance3D
+var _star_mat: StandardMaterial3D
+var night := 0.0   # 0 by day, 1 at full dark; scenes read it (the camp's bioluminescence waits for it)
 
 func _ready() -> void:
 	_water = MeshInstance3D.new()
@@ -112,14 +115,59 @@ func _sky() -> void:
 	we.environment = env
 	add_child(we)
 	sun = DirectionalLight3D.new()
+	_build_stars()
 	apply_hour(hour)
 	add_child(sun)
+
+## The night sky: a few hundred points on a dome, brighter along one band for the Milky Way, that
+## follow the viewer and fade in with the dark. Points, not quads: the Compatibility renderer draws
+## a point size, and a star is a point.
+func _build_stars() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 48_123
+	var pts := PackedVector3Array()
+	var cols := PackedColorArray()
+	var band := Vector3(0.55, 0.3, 0.78).normalized()  # the galactic plane, tilted across the sky
+	for i in range(1400):
+		var d := Vector3(rng.randfn(), rng.randfn(), rng.randfn()).normalized()
+		if i % 5 != 0:
+			d = (d - band * d.dot(band) * rng.randf_range(0.6, 0.97)).normalized()  # pulled toward the band
+		if d.y < 0.03:
+			continue
+		pts.append(d * 9000.0)
+		var b := rng.randf_range(0.45, 1.0)
+		b = b * b
+		cols.append(Color(0.85 + 0.15 * rng.randf(), 0.9, 1.0, b))
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = pts
+	arrays[Mesh.ARRAY_COLOR] = cols
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_POINTS, arrays)
+	_stars = MeshInstance3D.new()
+	_stars.mesh = mesh
+	_star_mat = StandardMaterial3D.new()
+	_star_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_star_mat.vertex_color_use_as_albedo = true
+	_star_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_star_mat.use_point_size = true
+	_star_mat.point_size = 3.5
+	_star_mat.set_flag(BaseMaterial3D.FLAG_DISABLE_FOG, true)
+	_star_mat.set_flag(BaseMaterial3D.FLAG_DISABLE_DEPTH_TEST, false)
+	_star_mat.albedo_color = Color(1, 1, 1, 0.0)
+	_stars.material_override = _star_mat
+	_stars.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_stars.visible = false
+	add_child(_stars)
 
 ## Put the sun and the sky where the clock says. Called at start and whenever `hour` moves.
 func apply_hour(h: float) -> void:
 	hour = h
 	var dusk := clampf(absf(hour - 13.0) / 7.0, 0.0, 1.0)
-	var night := clampf((absf(hour - 13.0) - 7.5) / 2.0, 0.0, 1.0)  # 20:30 → 22:30 fades to night
+	night = clampf((absf(hour - 13.0) - 7.5) / 2.0, 0.0, 1.0)  # 20:30 → 22:30 fades to night
+	if _star_mat:
+		_star_mat.albedo_color = Color(1, 1, 1, night)
+		_stars.visible = night > 0.01
 	var elev := deg_to_rad(-10.0 - 48.0 * sin(clampf((hour - 6.0) / 14.0, 0.0, 1.0) * PI))
 	sun.rotation = Vector3(elev, deg_to_rad(-55.0 + (hour - 6.0) * 12.0), 0.0)
 	sun.light_color = Color("fff1d6").lerp(Color("ffb070"), dusk * dusk)
@@ -138,6 +186,8 @@ func _process(delta: float) -> void:
 	(_far.material_override as ShaderMaterial).set_shader_parameter("t", time)
 	if follow:
 		_water.global_position = Vector3(follow.global_position.x, 0.0, follow.global_position.z)
+		if _stars:
+			_stars.global_position = Vector3(follow.global_position.x, 0.0, follow.global_position.z)
 		_far.global_position = Vector3(follow.global_position.x, -0.6, follow.global_position.z)
 		if terrain:
 			terrain.focus = follow.global_position

@@ -181,6 +181,10 @@
 
 - [x] T014at The float plan's bail-outs are real on the water: each leg names its landings of refuge (`bailouts` in `src/content/expedition.js`, checked against the chart's places), and when the sea state the hour makes crosses rough a card names them with their distances and offers the choice — push on, or wait it out in the nearest lee for an hour and a half, after which the water is read again. The wait is kept in the day's record and the debrief says so. `?launch=15` on day one meets the afternoon southerly against the ebb
 
+## Slice 31 — the night in the cove
+
+- [x] T014au The night is a night: the last camp card waits for full dark, the seascape carries a star dome (points on a sphere, brighter along one band, fading in with the dark and following the viewer), and the cove is bioluminescent — a tap on the water at night stirs a burst of light, the way a hand or a paddle does in a warm Salish Sea August. `?scene=camp&step=4&glow=1`
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
