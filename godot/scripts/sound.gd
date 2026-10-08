@@ -24,6 +24,11 @@ var _live := 0
 var _piece := ""   # what is playing
 var _wanted := ""  # what the scene asked for, kept across the music being switched off and on
 var _music_on := true
+## On the web the pieces are not in the pack (export_presets.cfg excludes them, which took 4.9 MB off the
+## first download): they are fetched from audio/ beside the page after the first frame and kept here.
+var _cache: Dictionary = {}   # piece -> AudioStreamMP3
+var _http: HTTPRequest
+var _fetching := ""
 
 func _ready() -> void:
 	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull"]:
@@ -42,6 +47,9 @@ func _ready() -> void:
 		p.volume_db = -80.0
 		add_child(p)
 		_players.append(p)
+	_http = HTTPRequest.new()
+	_http.request_completed.connect(_on_piece_fetched)
+	add_child(_http)
 	mood("title")
 
 func _load(path: String) -> AudioStreamWAV:
@@ -120,16 +128,61 @@ func play_piece(name: String) -> void:
 	if name == _piece:
 		return
 	_piece = name
-	var nxt := 1 - _live
-	var p := _players[nxt]
-	if name != "" and name in PIECES:
+	if name == "" or not name in PIECES:
+		_live = 1 - _live  # nothing new starts; whatever plays fades out under silence
+		return
+	var stream := _stream_for(name)
+	if stream:
+		_start(stream)
+	elif OS.has_feature("web") and _fetching != name:
+		_fetch(name)
+
+## The piece's stream: from the cache, from the project when it is in the pack, else nothing yet.
+func _stream_for(name: String) -> AudioStreamMP3:
+	if _cache.has(name):
+		return _cache[name]
+	if not OS.has_feature("web"):
 		var stream := load("res://audio/piece_%s.mp3" % name) as AudioStreamMP3
 		if stream:
 			stream.loop = true
-			p.stream = stream
-			p.volume_db = -80.0
-			p.play()
+			_cache[name] = stream
+		return stream
+	return null
+
+func _start(stream: AudioStreamMP3) -> void:
+	var nxt := 1 - _live
+	var p := _players[nxt]
+	p.stream = stream
+	p.volume_db = -80.0
+	p.play()
 	_live = nxt
+
+func _fetch(name: String) -> void:
+	if _fetching != "":
+		_http.cancel_request()
+	_fetching = name
+	# HTTPRequest wants an absolute URL: resolve the file against the page the game is served from.
+	var url: String = str(JavaScriptBridge.eval("new URL('audio/piece_%s.mp3', location.href).href" % name))
+	var err := _http.request(url)
+	if err != OK:
+		push_warning("piece %s: request failed (%d)" % [name, err])
+		_fetching = ""
+
+func _on_piece_fetched(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+	var name := _fetching
+	_fetching = ""
+	if result != HTTPRequest.RESULT_SUCCESS or code != 200 or body.is_empty():
+		push_warning("piece %s: fetch failed (result %d, status %d)" % [name, result, code])
+		return
+	var stream := AudioStreamMP3.new()
+	stream.data = body
+	stream.loop = true
+	_cache[name] = stream
+	print("piece %s fetched (%d bytes)" % [name, body.size()])
+	if _piece == name:
+		_start(stream)
+	elif _piece != "" and not _cache.has(_piece):
+		_fetch(_piece)  # the scene moved on while this one was coming
 
 func set_music(on: bool) -> void:
 	_music_on = on
