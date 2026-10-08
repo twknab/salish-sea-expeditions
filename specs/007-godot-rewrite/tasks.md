@@ -201,6 +201,14 @@
 
 - [x] T014ay `tests/smoke/godot-stations.mjs`: every station of the export opened from its check URL in a fresh page, a page error or a GDScript error anywhere failing the run, the screenshots kept as artifacts. CI runs it after the export, so the sweep that was done by hand after each slice is done by the machine on every push
 
+## Slice 36 — the numbers on the phone
+
+- [x] T014az `?perf=1` shows the go/no-go rows where they matter, on the phone in the hand: frames per second now and the worst of the last ten seconds, the frame time, the time from the page starting to load to the first frame, the engine's memory, and the device; printed once to the console at ten seconds for a smoke run. Kayak School's last card now says "Pack the boat", which is where it goes
+
+## Slice 37 — the kelp
+
+- [x] T014ba A kelp bed is a thing the boat feels: inside seventy metres of a bull kelp sighting the hull drags on the fronds (a linear drag that makes every stroke a short one) and the swell lies down — a kelp bed is a lee, and a slow one — with a line saying so the first time. `?scene=trip&near=yellow` starts in it
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
