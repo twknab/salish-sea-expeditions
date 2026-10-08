@@ -5,6 +5,7 @@ class_name Compass
 extends Control
 
 var heading := 0.0
+var target := NAN   # bearing to the destination, radians; NAN for none
 var _shown := 0.0
 
 func _ready() -> void:
@@ -46,6 +47,10 @@ func _draw() -> void:
 			var a := rot + deg_to_rad(dg) - PI / 2.0
 			var p := c + Vector2.from_angle(a) * (r - 22.0)
 			draw_string(font, p + Vector2(-6.0, 3.0), str(dg / 10), HORIZONTAL_ALIGNMENT_CENTER, 12.0, 8, Color(1, 1, 1, 0.6))
+	if not is_nan(target):
+		var ta := rot + target - PI / 2.0
+		var tp := c + Vector2.from_angle(ta) * (r - 3.0)
+		draw_circle(tp, 4.5, Color(0.35, 0.85, 0.95))
 	# The lubber line, fixed to the boat, and the glass: a highlight across the upper left of the dome.
 	draw_line(c + Vector2(0, -r + 2.0), c + Vector2(0, -r + 16.0), Color(1.0, 0.82, 0.1), 2.5, true)
 	draw_polygon(PackedVector2Array([c + Vector2(-5, -r - 1), c + Vector2(5, -r - 1), c + Vector2(0, -r + 7)]), PackedColorArray([Color(1.0, 0.82, 0.1)]))

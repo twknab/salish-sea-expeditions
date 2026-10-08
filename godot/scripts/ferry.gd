@@ -127,31 +127,10 @@ func _chart_target() -> Vector3:
 
 ## The track as a dashed ribbon a little above the water, the way a chart draws a ferry route.
 func _draw_track() -> void:
-	var im := ImmediateMesh.new()
-	var mat := StandardMaterial3D.new()
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.albedo_color = Color(UIKit.SUN, 0.85)
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.no_depth_test = true
-	im.surface_begin(Mesh.PRIMITIVE_TRIANGLES, mat)
-	var half := 22.0
-	var dash := 160.0
-	var gap := 110.0
-	var s := 0.0
-	while s < _length:
-		var e := minf(s + dash, _length)
-		var a := _point_at(s); var b := _point_at(e)
-		var d := (b - a).normalized()
-		var n := Vector3(-d.z, 0.0, d.x) * half
-		var y := Vector3.UP * 2.5
-		var v0 := a - n + y; var v1 := a + n + y; var v2 := b + n + y; var v3 := b - n + y
-		im.surface_add_vertex(v0); im.surface_add_vertex(v1); im.surface_add_vertex(v2)
-		im.surface_add_vertex(v0); im.surface_add_vertex(v2); im.surface_add_vertex(v3)
-		s += dash + gap
-	im.surface_end()
-	var mi := MeshInstance3D.new()
-	mi.mesh = im
-	add_child(mi)
+	var pts := PackedVector3Array()
+	for p in _track:
+		pts.append(Vector3(p.x, 0.0, p.y))
+	add_child(ChartRibbon.build(pts, Color(UIKit.SUN, 0.85)))
 
 ## Where the island names float. Taken from the terrain's gazetteer where it has the place.
 func _place_marks() -> void:

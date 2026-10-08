@@ -55,6 +55,15 @@
 - [x] T013w `place_labels.gd`: names floated over their land, shared by the ferry's chart and the water scenes (the gazetteer's landings, coves and islands within 12 km)
 - [x] T013x The aft mark: an orca's fin rising through a wave on the aft deck, in the panel colour with a black fin — or the hull's white on a dark deck — never a logo
 
+## Slice 5 — the first leg, and camp
+
+- [x] T013y Content: `src/content/expedition.js` — the float plan (route, tide and current, traffic, bail-outs, file it) and the camp (above the tide, the pad, the raccoons, drying out, the night), every step sourced; `tripDay` exported with it
+- [x] T013z `leg.gd`: the leg Friday Harbor → Jones north cove as waypoints checked against the water (the gazetteer's Jones point is mid-island; `Leg.COVE` is the cove's water), length, bearing, the day's clock
+- [x] T014a `plan.gd` + `plan.tscn`: the float plan on a chart — the leg drawn with `ChartRibbon` over the real islands, names floated, the plan read card by card, then Launch; `ChartRibbon` shared with the ferry (and no longer back-face culled)
+- [x] T014b The leg on the water: destination line (name, distance, bearing, clock), the compass's destination mark, the groove — a steady hold settles and the miles and hours pass over the chart, the sun moving with `Seascape.apply_hour` — and landing in the cove at 220 m
+- [x] T014c `camp.gd` + `camp.tscn`: the boat at the tide line of the real cove, the camera out on the water, the tent going up on the pad at the second step, the evening coming on card by card; "Tomorrow's float plan" saves the day and returns to the title for now
+- [ ] T014d Tide and current on the leg from `tripDay` (set and drift; the flood carrying you north), and a real sounding set for the channels
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

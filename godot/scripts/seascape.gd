@@ -17,6 +17,8 @@ var _far: MeshInstance3D
 var _debug_no_water := false  # ?debug=nowater hides the sea, to look at the land alone
 var _mat: ShaderMaterial
 var sun: DirectionalLight3D
+var _sky_mat: ProceduralSkyMaterial
+var _env: Environment
 
 func _ready() -> void:
 	_water = MeshInstance3D.new()
@@ -87,6 +89,8 @@ func _sky() -> void:
 	pm.sun_angle_max = 18.0
 	pm.sun_curve = 0.12
 	sky.sky_material = pm
+	_sky_mat = pm
+	_env = env
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
@@ -101,13 +105,25 @@ func _sky() -> void:
 	we.environment = env
 	add_child(we)
 	sun = DirectionalLight3D.new()
+	apply_hour(hour)
+	add_child(sun)
+
+## Put the sun and the sky where the clock says. Called at start and whenever `hour` moves.
+func apply_hour(h: float) -> void:
+	hour = h
+	var dusk := clampf(absf(hour - 13.0) / 7.0, 0.0, 1.0)
+	var night := clampf((absf(hour - 13.0) - 7.5) / 2.0, 0.0, 1.0)  # 20:30 → 22:30 fades to night
 	var elev := deg_to_rad(-10.0 - 48.0 * sin(clampf((hour - 6.0) / 14.0, 0.0, 1.0) * PI))
 	sun.rotation = Vector3(elev, deg_to_rad(-55.0 + (hour - 6.0) * 12.0), 0.0)
 	sun.light_color = Color("fff1d6").lerp(Color("ffb070"), dusk * dusk)
-	sun.light_energy = 1.1
-	sun.shadow_enabled = true
-	sun.directional_shadow_max_distance = 60.0
-	add_child(sun)
+	sun.light_energy = lerpf(1.1, 0.05, night)
+	if _sky_mat:
+		_sky_mat.sky_top_color = Color("3f6f9a").lerp(Color("2a3f6a"), dusk * 0.6).lerp(Color("05070f"), night)
+		_sky_mat.sky_horizon_color = Color("a9bcc8").lerp(Color("e0a878"), dusk * dusk).lerp(Color("141a2a"), night)
+		_sky_mat.ground_horizon_color = Color("9fb3bc").lerp(Color("10161f"), night)
+	if _env:
+		_env.ambient_light_energy = lerpf(1.0, 0.25, night)
+		_env.fog_light_color = Color("c0d0d8").lerp(Color("0c1018"), night)
 
 func _process(delta: float) -> void:
 	time += delta

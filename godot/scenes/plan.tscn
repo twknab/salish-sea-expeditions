@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://sse_plan_scene"]
+
+[ext_resource type="Script" path="res://scripts/plan.gd" id="1"]
+
+[node name="Plan" type="Node3D"]
+script = ExtResource("1")

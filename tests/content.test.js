@@ -5,12 +5,13 @@ import { LESSONS } from '../src/content/lessons.js';
 import { SPECIES } from '../src/content/species.js';
 import { KAYAK_PARTS, BODY_POINTS, PADDLE_PARTS } from '../src/content/anatomy.js';
 import { PLACES_INFO } from '../src/content/places.js';
+import { FLOAT_PLAN, CAMP } from '../src/content/expedition.js';
 import { ACKNOWLEDGMENT } from '../src/content/acknowledgment.js';
 import { SKILLS } from '../src/sim/skills.js';
 import { LAYERS, KIT, KIT_GROUPS, LEGAL } from '../src/content/kit.js';
 import { gearById } from '../src/content/gear.js';
 
-const sourced = [...LESSONS, ...SPECIES, ...KAYAK_PARTS, ...BODY_POINTS, ...PADDLE_PARTS, ...PLACES_INFO, ACKNOWLEDGMENT, ...LAYERS, ...KIT, ...LEGAL];
+const sourced = [...LESSONS, ...SPECIES, ...KAYAK_PARTS, ...BODY_POINTS, ...PADDLE_PARTS, ...PLACES_INFO, ACKNOWLEDGMENT, ...LAYERS, ...KIT, ...LEGAL, ...FLOAT_PLAN.steps, ...CAMP.steps];
 
 test('every source reference resolves to a credit', () => {
   for (const item of sourced) {

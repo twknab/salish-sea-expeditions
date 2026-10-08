@@ -52,6 +52,10 @@ func _ready() -> void:
 	add_child(_label)
 	set_process(true)
 
+## Seconds the paddle hold has lasted; -1 when not holding.
+func holding_for() -> float:
+	return _hold_t
+
 func touch() -> bool:
 	return DisplayServer.is_touchscreen_available()
 
