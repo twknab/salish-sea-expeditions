@@ -19,6 +19,17 @@ var _hour := Leg.LAUNCH_HOUR   # the day's clock, on a trip
 var _groove := 0.0             # 0..1: a steady cadence has settled and the miles pass
 var _arrived := false
 var _dest_label: Label
+## Sightings on the leg: what, which species of the field guide it is, where, and how close you
+## must come to notice it. Positions checked against the terrain: seals and kelp on the islet by
+## Yellow Island, the heron in the Labs' shallows, the eagle on Point Caution, the porpoise mid-channel.
+const SIGHTINGS := [
+	{ "kind": "heron", "species": "heron", "at": Vector3(560.0, 0.0, -1300.0), "face": Vector3(-1, 0, 0), "radius": 220.0 },
+	{ "kind": "eagle", "species": "baldEagle", "at": Vector3(260.0, 0.0, -2600.0), "face": Vector3(1, 0, 0), "radius": 320.0 },
+	{ "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-300.0, 0.0, -4200.0), "face": Vector3(0, 0, -1), "radius": 420.0 },
+	{ "kind": "kelp", "species": "bullKelp", "at": Vector3(-900.0, 0.0, -6250.0), "face": Vector3(0, 0, -1), "radius": 200.0 },
+	{ "kind": "seals", "species": "harbourSeal", "at": Vector3(-1100.0, 0.0, -6330.0), "face": Vector3(0, 0, 1), "radius": 260.0 },
+]
+var _sightings: Array = []   # [{conf, node, seen}]
 const GROOVE_AFTER := 6.0       # seconds of steady holding before the day starts to pass
 const GROOVE_SPEED := 28.0      # extra metres per second over the ground, in the groove
 const GROOVE_HOURS_PER_SEC := 1.0 / 50.0  # the clock in the groove: an hour in fifty seconds
@@ -91,13 +102,68 @@ func _ready() -> void:
 			_tilt_chip()
 			_dest = Leg.COVE
 			_dest_label = UIKit.label("", 13, UIKit.FOAM, false, true)
-			_dest_label.position = Vector2(20, 142)
+			_dest_label.position = Vector2(20, 150)
 			_dest_label.size = Vector2(360, 24)
 			hud.add_child(_dest_label)
-			if App._url_param("near") == "jones":
-				kayak.global_position = _dest + Vector3(0.0, 0.1, -900.0)  # 900 m north of the cove, for checks
-				kayak.rotation.y = PI  # heading south, into the cove
-			note_label.text = "Friday Harbor · San Juan Channel opens ahead\n%s" % ("Hold the water to paddle · slide to lean · slide up to back off" if controls.touch() else "Hold W to paddle · A/D lean to steer · S backs off · Q/E edge · J brace")
+			_spawn_sightings()
+			match App._url_param("near"):  # starts for checks
+				"jones":
+					kayak.global_position = _dest + Vector3(0.0, 0.1, -900.0)  # 900 m north of the cove
+					kayak.rotation.y = PI  # heading south, into the cove
+				"yellow":
+					kayak.global_position = Vector3(-860.0, 0.1, -6225.0)
+					kayak.rotation.y = -deg_to_rad(300.0)  # the kelp 50 m ahead, the seals' rock beyond
+				"labs":
+					kayak.global_position = Vector3(590.0, 0.1, -1312.0)
+					kayak.rotation.y = -deg_to_rad(250.0)  # the heron 30 m off in the shallows
+			note_label.text = "Friday Harbor · San Juan Channel opens ahead\n%s" % ("Hold the water to paddle · slide to lean · slide up to back off" if controls.touch() else "Hold W to paddle · A/D lean · S back · Q/E edge · J brace")
+
+## Put the animals and the kelp where they live, on the shore or the water the terrain says is there.
+func _spawn_sightings() -> void:
+	for conf in SIGHTINGS:
+		var at: Vector3 = conf.at
+		var y := 0.0
+		if conf.kind == "eagle" or conf.kind == "seals":
+			y = maxf(terrain.height_at(at.x, at.z), 0.0) + (0.0 if conf.kind == "eagle" else 0.3)
+		var node := Wildlife.make(conf.kind, Vector3(at.x, y, at.z), conf.face)
+		add_child(node)
+		_sightings.append({ "conf": conf, "node": node, "seen": false })
+
+## Coming within reach of a sighting names it once, from the field guide, and keeps it in the save.
+func _watch_sightings() -> void:
+	for s in _sightings:
+		if s.seen:
+			continue
+		var conf: Dictionary = s.conf
+		if kayak.global_position.distance_to(conf.at) > float(conf.radius):
+			continue
+		s.seen = true
+		var sp := _species(conf.species)
+		if sp.is_empty():
+			continue
+		var seen: Array = App.save.get("seen", [])
+		if not seen.has(conf.species):
+			seen.append(conf.species)
+			App.save.seen = seen
+			App.persist()
+		var text: String = sp.get("blurb", "")
+		var facts: Array = sp.get("facts", [])
+		if not facts.is_empty():
+			text += "\n\n" + str(facts[0])
+		var approach := int(sp.get("approachMetres", 0))
+		if approach > 0:
+			text += "\n\nKeep %d m off: let it come to you, or not." % approach
+		_clear_card()
+		_card = UIKit.card(sp.get("common", conf.species), text, App.sources_line(sp.get("sourceIds", [])), [["Noted", _clear_card, true]], "Sighting · %s" % sp.get("group", ""))
+		_ui.add_child(UIKit.spacer())
+		_ui.add_child(_card)
+		Sound.gull()
+
+func _species(id: String) -> Dictionary:
+	for sp in App.content.get("species", []):
+		if sp.id == id:
+			return sp
+	return {}
 
 ## The leg: where the cove is, how the day passes, and landing.
 func _leg(delta: float) -> void:
@@ -146,6 +212,7 @@ func _process(delta: float) -> void:
 	_compass.heading = kayak.heading
 	if mode == "trip" and not _arrived:
 		_leg(delta)
+		_watch_sightings()
 	_places.visible = hud.visible
 	if _places.visible:
 		_places.update(rig.camera())

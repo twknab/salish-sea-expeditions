@@ -1319,6 +1319,638 @@
   "sunrise": 330,
   "sunset": 1270
  },
+ "species": [
+  {
+   "id": "biggsOrca",
+   "common": "Bigg’s orca",
+   "scientific": "Orcinus orca (Bigg’s, or transient, ecotype)",
+   "group": "Marine mammals",
+   "blurb": "Orcas that hunt marine mammals, travelling quietly in small family groups — and seen here more and more.",
+   "facts": [
+    "They eat seals, sea lions and porpoises, and hunt in near-silence so their prey cannot hear them coming.",
+    "Named for Michael Bigg, the scientist who first told orcas apart by their fins and saddle patches.",
+    "An adult male’s dorsal fin can stand as tall as a person."
+   ],
+   "where": "Anywhere in the islands, all year",
+   "approachMetres": 914,
+   "sourceIds": [
+    "noaa-species",
+    "bewhalewise",
+    "fhl-mammals"
+   ]
+  },
+  {
+   "id": "southernResident",
+   "common": "Southern Resident orca",
+   "scientific": "Orcinus orca (Southern Resident population)",
+   "group": "Marine mammals",
+   "blurb": "The salmon-eating orcas of the Salish Sea — endangered, and never mixing with Bigg’s orcas.",
+   "facts": [
+    "They eat fish, above all Chinook salmon, and travel in three pods: J, K and L.",
+    "Listed as endangered in the United States and Canada; fewer than 80 remain.",
+    "In Washington, boats must keep at least 1,000 yards away from them."
+   ],
+   "where": "Haro Strait and the west side of San Juan Island, when the salmon run",
+   "approachMetres": 914,
+   "sourceIds": [
+    "noaa-species",
+    "wa-srkw",
+    "bewhalewise"
+   ]
+  },
+  {
+   "id": "humpback",
+   "common": "Humpback whale",
+   "scientific": "Megaptera novaeangliae",
+   "group": "Marine mammals",
+   "blurb": "Once hunted out of the Salish Sea, humpbacks have come back in recent decades.",
+   "facts": [
+    "They feed on krill and small schooling fish.",
+    "The pattern under each tail fluke is unique and used to identify individuals."
+   ],
+   "where": "Open channels and straits, summer and autumn",
+   "approachMetres": 91,
+   "sourceIds": [
+    "noaa-species",
+    "bewhalewise"
+   ]
+  },
+  {
+   "id": "harbourSeal",
+   "common": "Harbour seal",
+   "scientific": "Phoca vitulina",
+   "group": "Marine mammals",
+   "blurb": "The most common marine mammal in the Salish Sea.",
+   "facts": [
+    "They haul out on rocks and beaches to rest, especially at low tide.",
+    "Pups born in summer are often left alone on shore while the mother feeds — leave them be."
+   ],
+   "where": "Rocky reefs and islets everywhere",
+   "approachMetres": 91,
+   "sourceIds": [
+    "noaa-species",
+    "noaa-mm"
+   ]
+  },
+  {
+   "id": "stellerSeaLion",
+   "common": "Steller sea lion",
+   "scientific": "Eumetopias jubatus",
+   "group": "Marine mammals",
+   "blurb": "The largest sea lion in the world; big males can weigh around a tonne.",
+   "facts": [
+    "You will often hear them before you see them: a deep roar across the water.",
+    "Pale tan to reddish brown, with a broad, blunt, bear-like head.",
+    "Unlike seals, sea lions have external ear flaps and walk on their flippers."
+   ],
+   "where": "Offshore rocks, mostly autumn to spring",
+   "approachMetres": 91,
+   "sourceIds": [
+    "noaa-species",
+    "noaa-mm"
+   ]
+  },
+  {
+   "id": "californiaSeaLion",
+   "common": "California sea lion",
+   "scientific": "Zalophus californianus",
+   "group": "Marine mammals",
+   "blurb": "Dark brown, sleek and loud: the barking sea lion of docks and navigation buoys.",
+   "facts": [
+    "Most here are males that come north after the breeding season in California.",
+    "Adult males have a raised crest on the top of the head; Steller sea lions do not.",
+    "Smaller and darker than the Steller sea lion, which is pale tan with a broad, bear-like face."
+   ],
+   "where": "Buoys, docks and rocks, autumn to spring",
+   "approachMetres": 91,
+   "sourceIds": [
+    "noaa-species",
+    "fhl-mammals"
+   ]
+  },
+  {
+   "id": "riverOtter",
+   "common": "River otter",
+   "scientific": "Lontra canadensis",
+   "group": "Marine mammals",
+   "blurb": "The otters you see on these shores are river otters, at home in salt water.",
+   "facts": [
+    "They den on land and run easily over rocks — sea otters rarely do.",
+    "Look for them porpoising along the shoreline at dawn and dusk."
+   ],
+   "where": "Shorelines and docks",
+   "approachMetres": 0,
+   "sourceIds": [
+    "wdfw"
+   ]
+  },
+  {
+   "id": "seaOtter",
+   "common": "Sea otter",
+   "scientific": "Enhydra lutris",
+   "group": "Marine mammals",
+   "blurb": "Rare in the Salish Sea: a sighting here is a real event.",
+   "facts": [
+    "Washington’s sea otters live mostly on the outer coast; only a few have been seen inside the Salish Sea.",
+    "They float on their backs and use stones as tools to crack open shellfish.",
+    "With no blubber, they keep warm with the densest fur of any animal."
+   ],
+   "where": "Very rarely, anywhere; mostly the outer coast",
+   "approachMetres": 91,
+   "sourceIds": [
+    "fws-otter",
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "harbourPorpoise",
+   "common": "Harbour porpoise",
+   "scientific": "Phocoena phocoena",
+   "group": "Marine mammals",
+   "blurb": "Small, shy and quick — often just a glimpse of a dark back and a soft “puff”.",
+   "facts": [
+    "Among the smallest cetaceans in the world.",
+    "They returned to Puget Sound after years of absence."
+   ],
+   "where": "Open water in the channels",
+   "approachMetres": 0,
+   "sourceIds": [
+    "noaa-species"
+   ]
+  },
+  {
+   "id": "minke",
+   "common": "Minke whale",
+   "scientific": "Balaenoptera acutorostrata",
+   "group": "Marine mammals",
+   "blurb": "The smallest baleen whale you will meet here: sleek, quick and usually alone.",
+   "facts": [
+    "Look for a pointed head, a curved dorsal fin that shows at the same moment as the blowhole, and a white band on each flipper.",
+    "Its blow is small and hard to see; often the back is the first thing you notice.",
+    "Minkes feed on small schooling fish, often over tide rips and banks."
+   ],
+   "where": "Open straits and banks, spring to autumn",
+   "approachMetres": 91,
+   "sourceIds": [
+    "noaa-species",
+    "fhl-mammals"
+   ]
+  },
+  {
+   "id": "dallsPorpoise",
+   "common": "Dall’s porpoise",
+   "scientific": "Phocoenoides dalli",
+   "group": "Marine mammals",
+   "blurb": "Black and white, very fast, and famous for its “rooster tail” of spray.",
+   "facts": [
+    "At speed it throws a cone of spray off its back, so you often see more splash than porpoise.",
+    "One of the fastest small cetaceans, it loves to ride the bow waves of boats.",
+    "Fewer are seen in Puget Sound now than in past decades."
+   ],
+   "where": "Deep channels with strong current",
+   "approachMetres": 91,
+   "sourceIds": [
+    "fhl-mammals",
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "baldEagle",
+   "common": "Bald eagle",
+   "scientific": "Haliaeetus leucocephalus",
+   "group": "Birds",
+   "blurb": "The San Juan Islands hold one of the densest nesting populations in the lower 48 states.",
+   "facts": [
+    "They build huge nests in tall shoreline trees and reuse them for years.",
+    "Their call is a surprisingly thin, high whistle."
+   ],
+   "where": "Tall firs along every shore",
+   "approachMetres": 0,
+   "sourceIds": [
+    "wdfw"
+   ]
+  },
+  {
+   "id": "peregrine",
+   "common": "Peregrine falcon",
+   "scientific": "Falco peregrinus",
+   "group": "Birds",
+   "blurb": "The fastest animal on Earth in its hunting dive.",
+   "facts": [
+    "In a stoop it can pass 300 km/h (about 200 mph).",
+    "Wiped out across much of North America by the pesticide DDT, it recovered and came off the US endangered list in 1999.",
+    "Cliffs and seabird colonies make the islands good hunting ground."
+   ],
+   "where": "Cliffs and headlands",
+   "approachMetres": 0,
+   "sourceIds": [
+    "allaboutbirds",
+    "wdfw"
+   ]
+  },
+  {
+   "id": "kingfisher",
+   "common": "Belted kingfisher",
+   "scientific": "Megaceryle alcyon",
+   "group": "Birds",
+   "blurb": "A blue-grey bird with a shaggy crest and a loud, rattling call.",
+   "facts": [
+    "It hovers or watches from a perch, then plunges headfirst for small fish.",
+    "Unusually for birds, the female is the more colourful: she has a rusty band across her belly.",
+    "It nests in a burrow dug into an earth bank."
+   ],
+   "where": "Calm shores, coves and docks",
+   "approachMetres": 0,
+   "sourceIds": [
+    "allaboutbirds"
+   ]
+  },
+  {
+   "id": "pigeonGuillemot",
+   "common": "Pigeon guillemot",
+   "scientific": "Cepphus columba",
+   "group": "Birds",
+   "blurb": "A black seabird with white wing patches — and startling red feet and mouth.",
+   "facts": [
+    "They nest in crevices in rocky cliffs and bluffs.",
+    "They dive and swim underwater using their wings."
+   ],
+   "where": "Rocky shores and bluffs",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "rhinoAuklet",
+   "common": "Rhinoceros auklet",
+   "scientific": "Cerorhinca monocerata",
+   "group": "Birds",
+   "blurb": "A relative of the puffins, named for the pale horn on its bill in breeding season.",
+   "facts": [
+    "They carry fish back to their burrows in the evening.",
+    "Protection Island in the Strait of Juan de Fuca hosts a large colony."
+   ],
+   "where": "Open water in the channels",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "heron",
+   "common": "Great blue heron",
+   "scientific": "Ardea herodias",
+   "group": "Birds",
+   "blurb": "Stands motionless in the shallows, then strikes.",
+   "facts": [
+    "Eelgrass beds are rich hunting grounds for small fish.",
+    "They nest together in colonies high in trees."
+   ],
+   "where": "Eelgrass shallows and quiet bays",
+   "approachMetres": 0,
+   "sourceIds": [
+    "wdfw"
+   ]
+  },
+  {
+   "id": "oystercatcher",
+   "common": "Black oystercatcher",
+   "scientific": "Haematopus bachmani",
+   "group": "Birds",
+   "blurb": "An all-black shorebird with a bright orange-red bill and a loud, piping call.",
+   "facts": [
+    "It pries limpets and mussels off rocks with its chisel bill.",
+    "It lives only on rocky shores."
+   ],
+   "where": "Rocky shores at the tide line",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "pelagicCormorant",
+   "common": "Pelagic cormorant",
+   "scientific": "Urile pelagicus",
+   "group": "Birds",
+   "blurb": "A slim, glossy black diver that nests on sheer cliff ledges.",
+   "facts": [
+    "It nests on narrower ledges than other cormorants; in the Salish Sea more and more pairs now nest on bridges.",
+    "It swims underwater with its feet, then stands with its wings held open to dry.",
+    "In breeding season it has white patches on its flanks and a red face. Give rookeries a wide berth: a flushed bird can leave its eggs to gulls."
+   ],
+   "where": "Cliff ledges; rookeries from April to August",
+   "approachMetres": 0,
+   "sourceIds": [
+    "allaboutbirds",
+    "birdweb"
+   ]
+  },
+  {
+   "id": "octopus",
+   "common": "Giant Pacific octopus",
+   "scientific": "Enteroctopus dofleini",
+   "group": "Intertidal & sea life",
+   "blurb": "The largest octopus species in the world.",
+   "facts": [
+    "It can change colour and skin texture in a moment.",
+    "It lives only a few years, dens under rocks, and leaves a midden of crab shells at the door."
+   ],
+   "where": "Rocky reefs; rarely, the lowest tide pools",
+   "approachMetres": 0,
+   "sourceIds": [
+    "wdfw",
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "seaStar",
+   "common": "Ochre sea star",
+   "scientific": "Pisaster ochraceus",
+   "group": "Intertidal & sea life",
+   "blurb": "Purple or orange, clinging to rocks at the low-tide line.",
+   "facts": [
+    "A classic keystone species: by eating mussels it keeps room on the rocks for many other animals.",
+    "Sea star wasting disease killed huge numbers from 2013; populations are still recovering."
+   ],
+   "where": "Low intertidal rocks",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "sunflowerStar",
+   "common": "Sunflower star",
+   "scientific": "Pycnopodia helianthoides",
+   "group": "Intertidal & sea life",
+   "blurb": "Once common, now critically endangered: the biggest, fastest sea star of these waters.",
+   "facts": [
+    "It can have up to 24 arms and grow about a metre across.",
+    "Sea star wasting disease killed about nine in ten of them from 2013; the species is now listed as critically endangered.",
+    "It eats sea urchins and so helps protect kelp forests. If you see one, report it."
+   ],
+   "where": "Rocky reefs below the low-tide line; rarely in the lowest pools",
+   "approachMetres": 0,
+   "sourceIds": [
+    "seadoc-pycno",
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "anemone",
+   "common": "Giant green anemone",
+   "scientific": "Anthopleura xanthogrammica",
+   "group": "Intertidal & sea life",
+   "blurb": "Its green colour comes from algae living inside it.",
+   "facts": [
+    "It catches crabs, mussels and small fish that fall into its tentacles."
+   ],
+   "where": "Tide pools and surge channels",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "nudibranch",
+   "common": "Opalescent nudibranch",
+   "scientific": "Hermissenda",
+   "group": "Intertidal & sea life",
+   "blurb": "A sea slug in electric orange and blue.",
+   "facts": [
+    "It eats hydroids and keeps their stinging cells for its own defence."
+   ],
+   "where": "Tide pools, docks and eelgrass",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "moonJelly",
+   "common": "Moon jelly",
+   "scientific": "Aurelia",
+   "group": "Intertidal & sea life",
+   "blurb": "A translucent bell drifting beneath the hull.",
+   "facts": [
+    "The four horseshoe shapes you can see through the bell are its reproductive organs."
+   ],
+   "where": "Calm bays in summer",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "lionsMane",
+   "common": "Lion’s mane jelly",
+   "scientific": "Cyanea capillata",
+   "group": "Intertidal & sea life",
+   "blurb": "The largest jelly in these waters, trailing a curtain of fine tentacles.",
+   "facts": [
+    "Its bell is red-brown to yellow, and its tentacles can stretch for metres.",
+    "It stings, and even a broken-off tentacle can. Keep your hands out of the water around it."
+   ],
+   "where": "Channels and bays, summer",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "friedEggJelly",
+   "common": "Fried egg jelly",
+   "scientific": "Phacellophora camtschatica",
+   "group": "Intertidal & sea life",
+   "blurb": "A pale bell with a yolk-yellow centre. It really does look like a fried egg.",
+   "facts": [
+    "It eats other jellies, especially moon jellies.",
+    "Small crabs and fish sometimes ride along beneath its bell."
+   ],
+   "where": "Open water, late summer and autumn",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "waterJelly",
+   "common": "Water jelly",
+   "scientific": "Aequorea victoria",
+   "group": "Intertidal & sea life",
+   "blurb": "A clear jelly that glows at its rim, and changed biology.",
+   "facts": [
+    "Its green glow comes from green fluorescent protein, now used in labs around the world to light up living cells.",
+    "Osamu Shimomura collected hundreds of thousands of them at Friday Harbor Laboratories from 1961, and shared the 2008 Nobel Prize in Chemistry for the discovery."
+   ],
+   "where": "Friday Harbor and calm bays, summer",
+   "approachMetres": 0,
+   "sourceIds": [
+    "nobel-gfp",
+    "fhl"
+   ]
+  },
+  {
+   "id": "bioluminescence",
+   "common": "Bioluminescent plankton",
+   "scientific": "Dinoflagellates such as Noctiluca",
+   "group": "Intertidal & sea life",
+   "blurb": "On summer nights every paddle stroke can leave a trail of blue sparks.",
+   "facts": [
+    "Single-celled plankton flash when the water around them is disturbed."
+   ],
+   "where": "Dark, calm bays on summer nights",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "bullKelp",
+   "common": "Bull kelp",
+   "scientific": "Nereocystis luetkeana",
+   "group": "Kelp & seaweeds",
+   "blurb": "A brown alga that grows from the seabed to the surface in a single season.",
+   "facts": [
+    "It can grow many centimetres in a day, buoyed by a gas-filled float.",
+    "Kelp forests shelter young fish — and they have declined in parts of the Salish Sea."
+   ],
+   "where": "Rocky points with good current",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "sugarKelp",
+   "common": "Sugar kelp",
+   "scientific": "Saccharina latissima",
+   "group": "Kelp & seaweeds",
+   "blurb": "A single long golden-brown blade with ruffled edges.",
+   "facts": [
+    "It grows from a holdfast on rocks, just below the low-tide line.",
+    "Dried, it tastes faintly sweet. It is eaten, and farmed, in the Pacific Northwest."
+   ],
+   "where": "Rocky shallows",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "seaLettuce",
+   "common": "Sea lettuce",
+   "scientific": "Ulva",
+   "group": "Kelp & seaweeds",
+   "blurb": "Bright green sheets, thin enough to see through.",
+   "facts": [
+    "Each sheet is only two cells thick.",
+    "It grows fast where nutrients are high, and can pile up on beaches in summer."
+   ],
+   "where": "Tide pools and sheltered shores",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "turkishTowel",
+   "common": "Turkish towel",
+   "scientific": "Chondracanthus exasperatus",
+   "group": "Kelp & seaweeds",
+   "blurb": "A red seaweed covered in little bumps. It feels like a towel.",
+   "facts": [
+    "It grows in the lowest tide pools and shallow water below.",
+    "Its blades are rich in carrageenan, a thickener used in foods."
+   ],
+   "where": "Low intertidal rocks",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "eelgrass",
+   "common": "Eelgrass",
+   "scientific": "Zostera marina",
+   "group": "Kelp & seaweeds",
+   "blurb": "Not a seaweed but a flowering plant that grows underwater.",
+   "facts": [
+    "Eelgrass meadows are nurseries for herring and young salmon."
+   ],
+   "where": "Sandy and muddy shallows",
+   "approachMetres": 0,
+   "sourceIds": [
+    "eopugetsound"
+   ]
+  },
+  {
+   "id": "madrona",
+   "common": "Pacific madrone (madrona, arbutus)",
+   "scientific": "Arbutus menziesii",
+   "group": "Trees",
+   "blurb": "Red bark that peels in curls, leaning out over the water from dry rocky bluffs.",
+   "facts": [
+    "Madrona in Washington, arbutus in British Columbia, madrone further south: three names for the same tree.",
+    "A broadleaf evergreen: it keeps its glossy leaves all year and sheds its bark instead."
+   ],
+   "where": "Sunny bluffs above the shore",
+   "approachMetres": 0,
+   "sourceIds": [
+    "wdfw"
+   ]
+  },
+  {
+   "id": "douglasFir",
+   "common": "Douglas fir",
+   "scientific": "Pseudotsuga menziesii",
+   "group": "Trees",
+   "blurb": "The tall conifer of every island skyline.",
+   "facts": [
+    "Despite its name it is not a true fir.",
+    "Its cones have three-pointed bracts poking out between the scales."
+   ],
+   "where": "Island forests everywhere",
+   "approachMetres": 0,
+   "sourceIds": [
+    "wdfw"
+   ]
+  },
+  {
+   "id": "redCedar",
+   "common": "Western redcedar",
+   "scientific": "Thuja plicata",
+   "group": "Trees",
+   "blurb": "Soft, rot-resistant and fragrant — the tree from which Coast Salish canoes are carved.",
+   "facts": [
+    "It grows best in moist, shaded ground.",
+    "Its drooping branches and stringy bark make it easy to tell from the firs around it."
+   ],
+   "where": "Damp hollows and north-facing slopes",
+   "approachMetres": 0,
+   "sourceIds": [
+    "wdfw",
+    "burke"
+   ]
+  },
+  {
+   "id": "garryOak",
+   "common": "Garry oak",
+   "scientific": "Quercus garryana",
+   "group": "Trees",
+   "blurb": "The only native oak of these islands, standing in open, grassy meadows.",
+   "facts": [
+    "Garry oak meadows are among the most endangered ecosystems in the region."
+   ],
+   "where": "Dry, open meadows",
+   "approachMetres": 0,
+   "sourceIds": [
+    "wdfw"
+   ]
+  }
+ ],
  "paddlers": [
   {
    "id": "mina",
