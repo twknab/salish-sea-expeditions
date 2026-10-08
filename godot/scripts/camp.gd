@@ -24,6 +24,7 @@ var _cam: Camera3D
 var _glows := 0            # bioluminescence sparked tonight, for the night card's own line
 var _day: Dictionary = {}  # the authored day, for the night's high water
 var _spot := "edge"        # where the boat sleeps: HaulOut.SPOTS
+var _food := "hung"        # where the food sleeps: FoodStore.SPOTS
 var _spot_row: BoxContainer
 
 func _ready() -> void:
@@ -65,6 +66,8 @@ func _ready() -> void:
 	_kayak.set_paddler_visible(false)  # the boat is empty on the beach; its paddler is making camp
 	var boat_param := App._url_param("boat")  # `?scene=camp&boat=grass` leaves the boat there, for checks
 	_spot = boat_param if boat_param != "" else str(App.save.get("haulout", "edge"))
+	var food_param := App._url_param("food")  # `?scene=camp&food=tent&step=4`: the raccoons' night, for checks
+	_food = food_param if food_param != "" else str(App.save.get("foodStore", "hung"))
 	_place_boat()
 	var pivot := Node3D.new()
 	pivot.position = shore
@@ -122,22 +125,32 @@ func _place_boat() -> void:
 	_kayak.position = Vector3(at.x, 0.1 if floated else maxf(_terrain.height_at(at.x, at.z), 0.3) + 0.25, at.z)
 	_kayak.rotation = Vector3(0.0, atan2(-_along.x, -_along.z) + deg_to_rad(55.0 if floated else 20.0), deg_to_rad(0.0 if floated else 8.0))
 
-## The row under the first card: three places to leave the boat, the chosen one lit.
+## The row under a card that asks a question: the places a thing can be left, the chosen one lit.
+## The first card asks where the boat sleeps; the raccoons card asks where the food does.
 func _spot_choices() -> void:
 	if _spot_row:
 		_spot_row.queue_free()
 		_spot_row = null
-	if _step != 0 or str(_leg.get("camp", {}).get("kind", "camp")) == "takeout":
+	if str(_leg.get("camp", {}).get("kind", "camp")) == "takeout":
 		return
+	var step_id := str(_steps[_step].get("id", "")) if _step < _steps.size() else ""
+	if step_id == "food":
+		_choice_row(FoodStore.SPOTS, _food, func(id: String) -> void: _food = id; App.save.foodStore = id; App.persist())
+		return
+	if _step != 0:
+		return
+	_choice_row(HaulOut.SPOTS, _spot, func(id: String) -> void: _spot = id; App.save.haulout = id; App.persist(); _place_boat())
+
+func _choice_row(spots: Array, current: String, on_pick: Callable) -> void:
 	# Three across on a desktop; stacked on a phone, where three would push the card off the screen.
 	_spot_row = VBoxContainer.new() if get_viewport().get_visible_rect().size.x < 600.0 else HBoxContainer.new()
 	_spot_row.add_theme_constant_override("separation", 8)
 	_spot_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	for s in HaulOut.SPOTS:
-		var b := UIKit.button(str(s.name), str(s.id) == _spot)
+	for s in spots:
+		var b := UIKit.button(str(s.name), str(s.id) == current)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var id := str(s.id)
-		b.pressed.connect(func() -> void: _spot = id; App.save.haulout = id; App.persist(); _place_boat(); _spot_choices())
+		b.pressed.connect(func() -> void: on_pick.call(id); _spot_choices())
 		_spot_row.add_child(b)
 	_ui.add_child(_spot_row)
 
@@ -198,8 +211,12 @@ func _show() -> void:
 	var is_camp := str(_leg.get("camp", {}).get("kind", "camp")) != "takeout"
 	if _step == 0 and is_camp:
 		body += "\n\n" + HaulOut.forecast_line(_day, _hour0) + " Where does the boat sleep?"
+	if str(s.get("id", "")) == "food":
+		body += "\n\nWhere does the food sleep?"
 	if _step == _steps.size() - 1 and is_camp:
 		body += "\n\n" + HaulOut.night_line(_spot, _day, _hour0)
+		if _has_step("food"):
+			body += " " + FoodStore.night_line(_food)
 		body += "\n\nThe cove is full of bioluminescence on a warm night: tap the water to stir it."
 	_place_boat()
 	body += _left_behind(str(s.get("id", "")), _step == 1)
@@ -218,6 +235,8 @@ func _leave() -> void:
 			if int(d.get("leg", -1)) == Leg.index():
 				d.boatSpot = _spot
 				d.boatVerdict = HaulOut.verdict(_spot, HaulOut.rise_m(_day, _hour0))
+				if _has_step("food"):
+					d.foodVerdict = FoodStore.verdict(_food)
 		App.save.days = days
 	App.advance_leg()
 
@@ -248,6 +267,12 @@ func _left_behind(step_id: String, first_evening: bool) -> String:
 			if not enables.has("sleep"):
 				lines.append("No sleeping bag: a night in every layer you own, awake for most of it.")
 	return "" if lines.is_empty() else "\n\n" + "\n".join(lines)
+
+func _has_step(id: String) -> bool:
+	for s in _steps:
+		if str(s.get("id", "")) == id:
+			return true
+	return false
 
 ## The last card is the night: late enough for full dark, whatever hour the boat came in.
 func _night_hour() -> float:

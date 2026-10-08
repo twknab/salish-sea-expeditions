@@ -24,7 +24,7 @@ func _ready() -> void:
 	if App._url_param("demo") == "1":  # `?scene=debrief&demo=1`: a finished expedition, for checks
 		save = {
 			"days": [
-				{ "leg": 0, "metres": 11200.0, "launchHour": 9.5, "arrivedHour": 12.1, "verdict": "good", "swims": 0, "respectful": 2, "boatSpot": "edge", "boatVerdict": "floated" },
+				{ "leg": 0, "metres": 11200.0, "launchHour": 9.5, "arrivedHour": 12.1, "verdict": "good", "swims": 0, "respectful": 2, "boatSpot": "edge", "boatVerdict": "floated", "foodVerdict": "taken" },
 				{ "leg": 1, "metres": 9600.0, "launchHour": 10.0, "arrivedHour": 13.4, "verdict": "fair", "swims": 1, "respectful": 1, "violations": 1 },
 				{ "leg": 2, "metres": 18500.0, "launchHour": 6.0, "arrivedHour": 11.2, "verdict": "good", "fog": true, "fogInHour": 6.0, "fogOffM": 260.0 },
 			],
@@ -91,6 +91,11 @@ func _days(col: VBoxContainer, legs: Array, save: Dictionary) -> void:
 				line += " · the tide came within a hand of the boat"
 			"dry":
 				line += " · the boat slept dry"
+		match str(d.get("foodVerdict", "")):
+			"taken":
+				line += " · raccoons took the breakfast"
+			"worked":
+				line += " · raccoons worked the hatch"
 		if bool(d.get("fog", false)):
 			var off := float(d.get("fogOffM", -1.0))
 			line += " · in fog from %s%s" % [Leg.clock(float(d.get("fogInHour", d.get("launchHour", 9.0)))), (", came out on the line" if off < 150.0 else ", came out %d m off the line" % int(off)) if off >= 0.0 else " to the landing"]

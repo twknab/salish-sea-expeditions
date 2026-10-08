@@ -237,6 +237,10 @@
 
 - [x] T014bh The first camp card reads the tide table aloud — tonight’s high water, when, and how far above the afternoon’s — and asks where the boat sleeps: the water’s edge, the wrack line, or the grass (`HaulOut`). The boat moves to the spot; the night card says what the water did (found it and you hauled it up wet in the dark; came within a hand; slept dry), and a boat the tide found is back in the shallows on the night card. The day's record keeps the spot and the verdict and the debrief's day line says so. `?boat=edge|wrack|grass` for checks; `camp-floated` joins the sweep.
 
+## Slice 45 — where the food sleeps
+
+- [x] T014bi The raccoons card on Jones asks where the food sleeps — the tent, the boat’s hatch, or the hard box hung — and the night card says what came of it (the breakfast gone and a torn mesh door; claw marks in the skin a hand from the seam; the box swinging untouched). The choice row is shared with the boat’s (`_choice_row`), the day's record keeps `foodVerdict`, and the debrief says so. `?food=tent|hatch|hung`; `camp-raccoons` joins the sweep.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
