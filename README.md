@@ -63,13 +63,24 @@ game on `main` stays the shipped game until the Godot one is better on a phone.
 
 ```bash
 godot --path godot                                               # open in the editor
+godot --headless --path godot --import                           # once, so the class cache knows the scripts
 godot --headless --path godot -s res://tests/run_tests.gd        # unit tests
+godot --headless --path godot -s res://tests/debug_scenes.gd     # every scene instantiates headless
 godot --headless --path godot --export-release Web ../build/web/index.html
-node tests/smoke/godot-shot.mjs                                  # headless smoke of the export
+mkdir -p build/web/audio && cp godot/audio/piece_*.mp3 build/web/audio/   # the music rides beside the pack
+node tests/smoke/godot-desktop-shot.mjs build/web '?scene=trip'  # headless Chromium smoke of the export
+node server/precompress.mjs build/web                            # brotli/gzip siblings, as the image does
 STATIC_DIR=build/web node server/server.mjs                      # serve it on :8080
 ```
 
-The opening follows the Phaser game in order — title, acknowledgment, outfitting, the ferry (mandatory), Kayak School, the water — with content exported from `src/content` by `tools/export-content.mjs`, sounds from `tools/synth-audio.mjs` and a six-stem techno soundtrack from `tools/synth-soundtrack.mjs`. `node tests/smoke/godot-tour.mjs` screenshots every scene.
+The game is a three-day sea-kayak expedition on the real islands: the opening (title,
+acknowledgment, outfitting, the ferry from Anacortes, Kayak School), then for each day a float plan
+on the chart with the day's water as a graph, the leg on the water with a partner, the ferry,
+wildlife, tide and rips, and camp or the take-out ashore. Content is exported from `src/content`
+by `tools/export-content.mjs`, the legs are laid over the water by `tools/geo/leg_routes.py`,
+sounds come from `tools/synth-audio.mjs` and four full-length pieces from `tools/synth-pieces.mjs`.
+`?scene=plan|trip|camp|guide`, `?leg=0|1|2` and `?near=jones|spieden|posey|ferry` open a station
+or a spot for checks; `specs/007-godot-rewrite/tasks.md` lists every slice.
 
 Needs Godot 4.5 and its web export templates (`.github/workflows/godot.yml` shows the install).
 
