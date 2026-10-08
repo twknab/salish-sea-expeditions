@@ -5,13 +5,18 @@ import { LESSONS } from '../src/content/lessons.js';
 import { SPECIES } from '../src/content/species.js';
 import { KAYAK_PARTS, BODY_POINTS, PADDLE_PARTS } from '../src/content/anatomy.js';
 import { PLACES_INFO } from '../src/content/places.js';
-import { FLOAT_PLAN, CAMP } from '../src/content/expedition.js';
+import { LEGS } from '../src/content/expedition.js';
 import { ACKNOWLEDGMENT } from '../src/content/acknowledgment.js';
 import { SKILLS } from '../src/sim/skills.js';
 import { LAYERS, KIT, KIT_GROUPS, LEGAL } from '../src/content/kit.js';
 import { gearById } from '../src/content/gear.js';
 
-const sourced = [...LESSONS, ...SPECIES, ...KAYAK_PARTS, ...BODY_POINTS, ...PADDLE_PARTS, ...PLACES_INFO, ACKNOWLEDGMENT, ...LAYERS, ...KIT, ...LEGAL, ...FLOAT_PLAN.steps, ...CAMP.steps];
+const sourced = [...LESSONS, ...SPECIES, ...KAYAK_PARTS, ...BODY_POINTS, ...PADDLE_PARTS, ...PLACES_INFO, ACKNOWLEDGMENT, ...LAYERS, ...KIT, ...LEGAL, ...LEGS.flatMap((l) => [...l.steps, l.landing, ...l.camp.steps])];
+
+test('the legs chain: each leg starts where the one before it landed', () => {
+  for (let i = 1; i < LEGS.length; i++) assert.equal(LEGS[i].from, LEGS[i - 1].to);
+  for (const l of LEGS) assert.equal(l.camp.place, l.to);
+});
 
 test('every source reference resolves to a credit', () => {
   for (const item of sourced) {

@@ -70,6 +70,8 @@ with `npx vite preview --port 4173` running, for a single screenshot.
 - Headless Chromium runs game time ~8× slow (Godot caps a frame's delta at 8 physics ticks); the
   ferry takes `?at=0.3` to open part way, and `WAIT=` on `godot-desktop-shot.mjs` sets the wait.
 - The flow is `App.FLOW`: title → acknowledgment → outfit → ferry → school → plan → trip → camp.
-  `?scene=plan|camp` open the stations; `?scene=trip&near=jones` starts 900 m off the cove.
+  `?scene=plan|camp` open the stations; `?scene=trip&near=jones` starts 900 m off the cove. The
+  expedition is `godot/content/legs.json` (geometry, from `tools/geo/leg_routes.py`) merged with the
+  legs in `src/content/expedition.js` (teaching) by `Leg`; `?leg=1` opens day two.
 - `run/main_scene` must be `title.tscn`. Smoke scripts that pass `?scene=` never exercise the main
   scene; `tests/smoke/godot-desktop-shot.mjs` loads the bare page and is the check for that.

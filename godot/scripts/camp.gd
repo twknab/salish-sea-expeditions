@@ -17,6 +17,7 @@ var _shore := Vector3.ZERO
 var _inland := Vector3.FORWARD
 var _along := Vector3.RIGHT
 var _tent: MeshInstance3D
+var _leg: Dictionary = {}
 
 func _ready() -> void:
 	_hour0 = clampf(float(App.save.get("arrivedHour", 17.5)), 15.5, 19.0)
@@ -24,7 +25,8 @@ func _ready() -> void:
 	_hour_target = _hour0
 	_terrain = Terrain.new()
 	add_child(_terrain)
-	var cove := Leg.COVE
+	_leg = Leg.current()
+	var cove := Leg.cove(_leg)
 	_terrain.focus = cove
 	_sea = Seascape.new()
 	_sea.sea_state = 0.08
@@ -71,7 +73,7 @@ func _ready() -> void:
 	add_child(ui)
 	_ui = UIKit.page(ui, 48, 24)
 	_ui.add_child(UIKit.spacer())
-	_steps = App.content.get("camp", {}).get("steps", [])
+	_steps = _leg.get("camp", {}).get("steps", [])
 	_show()
 
 ## From the cove's point, the nearest place the land comes up out of the water, and the direction
@@ -121,12 +123,9 @@ func _show() -> void:
 	if _step < _steps.size() - 1:
 		actions.append(["Next", func() -> void: _step += 1; _hour_target = _hour0 + 1.1 * _step; _show(), true])
 	else:
-		actions.append(["Tomorrow’s float plan", func() -> void:
-			App.save.stage = "camp_done"
-			App.persist()
-			App.go("title"), true])
+		actions.append(["The expedition ends · home" if Leg.is_last() else "Tomorrow’s float plan", func() -> void: App.advance_leg(), true])
 	var s: Dictionary = _steps[_step] if _step < _steps.size() else { "title": "Camp", "text": "", "sourceIds": [] }
-	_card = UIKit.card(s.get("title", ""), s.get("text", ""), App.sources_line(s.get("sourceIds", [])), actions, "Jones Island · %s · %d of %d" % [Leg.clock(_hour), _step + 1, _steps.size()])
+	_card = UIKit.card(s.get("title", ""), s.get("text", ""), App.sources_line(s.get("sourceIds", [])), actions, "%s · %s · %d of %d" % [_leg.get("camp", {}).get("name", "Camp"), Leg.clock(_hour), _step + 1, _steps.size()])
 	_ui.add_child(_card)
 
 func _process(delta: float) -> void:

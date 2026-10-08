@@ -12,4 +12,9 @@ export const PLACES_INFO = [
   { id: 'waspPassage', name: 'Wasp Passage', text: 'The narrow run between Shaw Island and Crane Island, with the Wasp Islands scattered to the north. Strong currents and small boats: the ferry slows here.', sourceIds: ['wsf', 'noaa-chart'] },
   { id: 'sanJuan', name: 'San Juan Island', text: 'Home to Friday Harbor, the Lime Kiln whale-watching shore and the old English and American camps. San Juan Channel runs along its east side, and the ferry turns down it for the landing.', sourceIds: ['wsf'] },
   { id: 'jones', name: 'Jones Island Marine State Park', text: 'A small island park reachable only by water, with paddle-in campsites on the Cascadia Marine Trail — and famously bold raccoons.', sourceIds: ['wa-parks-jones', 'wwta'] },
+  { id: 'spieden', name: 'Spieden Island', text: 'A long private island, grass on its south face and forest on its north, that walls the north side of Spieden Channel. There is no landing.', sourceIds: ['worldcover', 'noaa-chart'] },
+  { id: 'spiedenChannel', name: 'Spieden Channel', text: 'The run between Spieden Island and the north shore of San Juan Island, from San Juan Channel west to Haro Strait. Strong currents, and rips off the points.', sourceIds: ['noaa-tides', 'noaa-chart'] },
+  { id: 'davisonHead', name: 'Davison Head', text: 'The headland on the north of San Juan Island where Spieden Channel opens to Haro Strait, with Roche Harbor behind it.', sourceIds: ['noaa-chart'] },
+  { id: 'posey', name: 'Posey Island Marine State Park', text: 'A one-acre island at the mouth of Roche Harbor, reached only by small boat, with two primitive campsites on the Cascadia Marine Trail and no drinking water.', sourceIds: ['wa-parks-posey', 'wwta'] },
+  { id: 'rocheHarbor', name: 'Roche Harbor', text: 'A resort harbour and port of entry on the north-west of San Juan Island, once the largest lime works on the west coast.', sourceIds: ['noaa-chart'] },
 ];

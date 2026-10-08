@@ -45,6 +45,11 @@ PLACES = [
     ("orcas", "Orcas Island landing", 48.5980, -122.9440),
     ("lopez", "Lopez Island landing", 48.5700, -122.8830),
     ("sanJuanChannel", "San Juan Channel", 48.5600, -122.9700),
+    ("spiedenChannel", "Spieden Channel", 48.6380, -123.1150),
+    ("davisonHead", "Davison Head", 48.6250, -123.1450),
+    ("posey", "Posey Island", 48.6228, -123.1580),
+    ("rocheHarbor", "Roche Harbor", 48.6100, -123.1550),
+    ("pearl", "Pearl Island", 48.6180, -123.1480),
 ]
 
 def mercator_bounds(x, y, z):

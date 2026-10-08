@@ -16,3 +16,4 @@ godot/.godot/
 build/
 tools/geo/preview.png
 godot/terrain/*.import
+__pycache__/
