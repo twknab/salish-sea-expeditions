@@ -221,6 +221,10 @@
 
 - [x] T014bd "Begin at Anacortes" clears the swims and the ferries met with the rest of the record, and the take-out's tally counts this expedition's swims from the days' record rather than a lifetime total; the field guide and the drills stay yours for good
 
+## Slice 41 — the long way home has its wildlife too
+
+- [x] T014be Day three, the longest day, had three sightings to the others' five: the pod works Spieden Channel again on the way home, west on the ebb this time, and the eagle sits on Jones Island's south point as the boat comes down the channel
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

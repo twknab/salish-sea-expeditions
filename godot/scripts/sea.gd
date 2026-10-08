@@ -61,7 +61,10 @@ const SIGHTINGS := [
 	{ "leg": 1, "kind": "kelp", "species": "bullKelp", "at": Vector3(-9300.0, 0.0, -10080.0), "face": Vector3(-1, 0, 0), "radius": 200.0 },
 	{ "leg": 1, "kind": "eagle", "species": "baldEagle", "at": Vector3(-9600.0, 0.0, -9930.0), "face": Vector3(0, 0, -1), "radius": 320.0 },
 	# Day three, home: the porpoise again in the channel's narrows, seals on the islet by Yellow, the heron at the Labs.
+	# The pod again on the way home, working the channel west on the ebb this time, and the eagle on Jones's south point.
+	{ "leg": 2, "kind": "orcas", "species": "biggsOrca", "at": Vector3(-7400.0, 0.0, -10560.0), "face": Vector3(-1, 0, 0), "radius": 1400.0 },
 	{ "leg": 2, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-6200.0, 0.0, -10450.0), "face": Vector3(1, 0, 0), "radius": 420.0 },
+	{ "leg": 2, "kind": "eagle", "species": "baldEagle", "at": Vector3(-2300.0, 0.0, -8900.0), "face": Vector3(0, 0, 1), "radius": 320.0 },
 	{ "leg": 2, "kind": "seals", "species": "harbourSeal", "at": Vector3(-1100.0, 0.0, -6330.0), "face": Vector3(0, 0, 1), "radius": 260.0 },
 	{ "leg": 2, "kind": "heron", "species": "heron", "at": Vector3(560.0, 0.0, -1300.0), "face": Vector3(-1, 0, 0), "radius": 220.0 },
 ]
