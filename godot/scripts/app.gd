@@ -28,8 +28,11 @@ var sea_mode := "ambient"   # what sea.tscn should be when it loads: ambient | s
 var school_from := 0        # school phase to resume at
 var _home: CanvasLayer
 var _title_btn: Button
+var _pause_btn: Button
+var _pause_layer: CanvasLayer   # the pause card, over everything, alive while the tree is paused
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS  # the chips and the pause card work while the tree is paused
 	var f := FileAccess.open("res://content/content.json", FileAccess.READ)
 	if f:
 		var parsed = JSON.parse_string(f.get_as_text())
@@ -69,12 +72,19 @@ func _ready() -> void:
 		Sound.set_music(bool(save.music))
 		refresh.call())
 	refresh.call()
+	# Pause, on the water and in Kayak School: the chip, Escape or P, and the page going into a pocket.
+	_pause_btn = _chip("Pause", 76 + 92 * 2)
+	_pause_btn.visible = false
+	_pause_btn.pressed.connect(func() -> void: set_paused(not get_tree().paused))
 	Sound.call_deferred("set_enabled", bool(save.get("sound", true)))
 	Sound.call_deferred("set_music", bool(save.get("music", true)))
 	# `?scene=ferry` jumps straight to a screen (smoke tests and the editor's play button).
 	var leg_param := _url_param("leg")  # `?leg=1` opens the second day, for checks
 	if leg_param != "":
 		save.legIndex = int(leg_param)
+	var launch_param := _url_param("launch")  # `?launch=15` chooses the launch hour, for checks
+	if launch_param != "":
+		save.launchHour = float(launch_param)
 	var want := _url_param("scene")
 	if want != "" and SCENES.has(want):
 		call_deferred("go", want)
@@ -116,6 +126,8 @@ func go(name: String) -> void:
 		persist()
 	Sound.mood({ "title": "title", "acknowledgment": "title", "outfit": "calm", "ferry": "ferry", "assemble": "calm", "school": "dawn", "pack": "calm", "plan": "calm", "trip": "drive", "camp": "night", "debrief": "drive" }.get(name, "calm"))
 	_title_btn.visible = name != "title"
+	set_paused(false)
+	_pause_btn.visible = name in ["trip", "school"]
 	get_tree().change_scene_to_file(SCENES[name])
 
 ## The water of the current leg's day: the authored day, run later for each day out.
@@ -136,6 +148,42 @@ func advance_leg() -> void:
 	save.erase("arrivedHour")
 	persist()
 	go("plan")
+
+## Pause: the physics and the clock stop, a card says so, and the save is written. Escape or P
+## toggles it on the water; the page being hidden pauses it on its own, so a phone can go into a
+## pocket mid-channel and come out where it was.
+func set_paused(on: bool) -> void:
+	if on == get_tree().paused:
+		return
+	get_tree().paused = on
+	_pause_btn.text = "Resume" if on else "Pause"
+	if on:
+		persist()
+		_pause_layer = CanvasLayer.new()
+		_pause_layer.layer = 60
+		_pause_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+		add_child(_pause_layer)
+		var scrim := ColorRect.new()
+		scrim.color = Color(0.02, 0.07, 0.09, 0.55)
+		scrim.set_anchors_preset(Control.PRESET_FULL_RECT)
+		_pause_layer.add_child(scrim)
+		var v := UIKit.page(_pause_layer, 120, 40)
+		v.add_child(UIKit.spacer())
+		var touch := DisplayServer.is_touchscreen_available()
+		var how := "Hold the water to paddle · slide to lean · slide up to back off · the hips bar edges" if touch else "Hold W to paddle · A/D lean · S back · Q/E edge · J brace · M chart · P or Escape pauses"
+		v.add_child(UIKit.card("Paused", "The boat holds where it is and the clock stops. Your place is saved.\n\n" + how, "", [["Title", func() -> void: go("title"), false], ["Continue", func() -> void: set_paused(false), true]], current.capitalize()))
+		v.add_child(UIKit.spacer())
+	elif _pause_layer:
+		_pause_layer.queue_free()
+		_pause_layer = null
+
+func _unhandled_input(ev: InputEvent) -> void:
+	if ev is InputEventKey and ev.pressed and not ev.echo and (ev.keycode == KEY_ESCAPE or ev.keycode == KEY_P) and _pause_btn.visible:
+		set_paused(not get_tree().paused)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and _pause_btn != null and _pause_btn.visible:
+		set_paused(true)
 
 func _chip(text: String, x: float) -> Button:
 	var c := UIKit.button(text, false)

@@ -1160,6 +1160,10 @@
    "from": "fridayHarbor",
    "to": "jones",
    "title": "Friday Harbor to Jones Island",
+   "bailouts": [
+    "labs",
+    "yellow"
+   ],
    "steps": [
     {
      "id": "route",
@@ -1268,6 +1272,10 @@
    "from": "jones",
    "to": "posey",
    "title": "Jones Island to Posey Island",
+   "bailouts": [
+    "jones",
+    "davisonHead"
+   ],
    "steps": [
     {
      "id": "route",
@@ -1379,6 +1387,11 @@
    "from": "posey",
    "to": "fridayHarbor",
    "title": "Posey Island home to Friday Harbor",
+   "bailouts": [
+    "jonesSouth",
+    "yellow",
+    "labs"
+   ],
    "steps": [
     {
      "id": "route",
