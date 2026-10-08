@@ -108,6 +108,11 @@
 - [x] T014w The sea on the trip is the hour's: `Tides.sea_state` (wind, and wind against the stream) sets the seascape, the hull and the sound as the day passes, so a launch into the afternoon southerly over the ebb is a different leg from the morning flood
 - [x] T014x Rips, authored per leg in `leg_routes.py` (off Point Caution; the narrows of Spieden Channel; off Davison Head): `Leg.flow_at` scales the stream inside them with a smooth edge, the HUD names the rip and its factor, and in a rip the boat takes a wave on the beam every few seconds that the paddler braces for
 
+## Slice 14 — small things seen on the water
+
+- [x] T014y Place labels declutter: the nearer place keeps its name and a label that would land on it waits until it clears (Posey Island and Davison Head sat on one another from the channel)
+- [x] T014z The title's Continue names the day as well as the station
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
