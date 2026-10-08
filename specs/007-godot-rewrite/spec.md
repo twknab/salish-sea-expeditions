@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-06
 
-**Status**: Experiment — twenty-seven slices merged (see "What exists today" below and
+**Status**: Experiment — twenty-eight slices merged (see "What exists today" below and
 tasks.md); go/no-go pending the mobile Safari measurement from the Cloud Run URL (see research.md
 and the table at the end)
 
@@ -35,7 +35,7 @@ The Godot build on `main` is a complete three-day expedition, not a tech demo:
   launch, read the verdict (mean stream over the leg, chop, wind against tide), see the chart's
   light follow the hour.
 - **On the water**: hold-to-paddle with lean, reverse, brace and edge; the dome compass; a chart
-  tile of the real islands; the tide carrying the boat; rips off the points; the sea state of the
+  tile of the real islands; the tide carrying the boat and the wind pushing it; rips off the points; the sea state of the
   hour; a partner holding station; the ferry working the channel with a card, a horn and a wake;
   wildlife as its own models with field-guide sightings; a capsize with secondary stability and
   the rescue taught in the water.

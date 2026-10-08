@@ -298,6 +298,8 @@ func _leg(delta: float) -> void:
 	# The water of the hour: wind builds the sea, wind against the stream stands it up, and a rip
 	# throws the odd wave on the beam that the paddler must brace for.
 	var state := Tides.sea_state(_day, _hour, factor)
+	var w := Tides.wind(_day, _hour)
+	kayak.wind = Windage.vector(float(w.kn), float(w.fromDeg))
 	sea.set_sea_state(lerpf(sea.sea_state, lerpf(0.10, 0.70, state), minf(1.0, delta * 0.3)))
 	kayak.sea_state = sea.sea_state
 	if factor > 1.15 and kayak.speed > 0.3:

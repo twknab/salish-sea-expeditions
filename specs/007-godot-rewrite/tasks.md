@@ -169,6 +169,10 @@
 
 - [x] T014aq Kayak School ends with the drill you hope never to need: the boat goes over on its own in the harbour's flat water and the solo rescue is taught in it — wet exit, the paddle-float re-entry, pump out — then "Back in the boat" rights it and the drill is demonstrated for the debrief. The trip's capsize keeps the partner's T-rescue, and the two share one card machinery. `?scene=school&drill=rescue`
 
+## Slice 28 — the wind on the boat
+
+- [x] T014ar `Windage`: the day's wind, already on the HUD line, now acts on the boat — a drift downwind at three per cent of the wind's speed against the keel's grip, and with way on the bow comes up into a beam wind, a stern-heavy boat more so (the packing's stern-heavy wander is this now, not a sine). Rules tested headless
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

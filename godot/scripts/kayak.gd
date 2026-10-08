@@ -32,6 +32,7 @@ var paddler_look: Dictionary = {}   # set before the kayak enters the tree to dr
 var _hull_mesh: MeshInstance3D
 var trim: Dictionary = { "pitch": 0.0, "ends": 0.0, "top": 0.0 }   # from the packing (Packing.assess); zero for an empty boat
 var assembly := 1.0      # how well the boat went together (Assembly.quality): a slack hull wanders and loses its keel
+var wind := Vector3.ZERO  # the wind over the water, m/s (Windage.vector); the trip sets it by the hour
 var _mark: MeshInstance3D
 
 func debug_line() -> String:
@@ -174,8 +175,12 @@ func _physics_process(delta: float) -> void:
 	if assembly < 0.999:
 		apply_torque(Vector3.UP * (1.0 - assembly) * sin(sea_time * 0.9) * 10.0)  # a slack skin flexes and the boat wanders
 	apply_central_force(-fwd * v_f * absf(v_f) * mass * (0.12 + 0.05 * absf(trim.pitch)))  # a boat out of trim pushes water
-	# Mass at the ends resists the turn; a stern-heavy boat lets its bow blow off course.
-	apply_torque(-Vector3.UP * angular_velocity.y * trim.ends * 30.0 + Vector3.UP * maxf(0.0, -trim.pitch) * sin(sea_time * 0.7) * 6.0)
+	# Mass at the ends resists the turn.
+	apply_torque(-Vector3.UP * angular_velocity.y * trim.ends * 30.0)
+	# The wind: the boat drifts downwind, and with way on the bow comes up into it — a stern-heavy boat more so.
+	if wind.length_squared() > 0.01:
+		apply_central_force(Windage.drift_force(wind, mass, 2.2 * (0.6 + 0.4 * assembly)))
+		apply_torque(Vector3.UP * Windage.weathercock(wind.dot(right), v_f, trim.pitch))
 	# Edging: a knee lift rolls the boat; the chine probes bring it back when the knee relaxes.
 	# Paddler and hull together are a self-righting pair: the roll angle itself pulls the boat back.
 	var s := clampf(global_basis.y.cross(Vector3.UP).dot(fwd), -1.0, 1.0)
