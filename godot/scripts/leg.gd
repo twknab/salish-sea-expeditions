@@ -105,3 +105,19 @@ static func launch_hour() -> float:
 	if app == null:
 		return LAUNCH_HOUR
 	return clampf(float(app.save.get("launchHour", LAUNCH_HOUR)), EARLIEST_LAUNCH, LATEST_LAUNCH)
+
+## How much harder the stream runs here than the channel's figure, and where that is: {factor, name}.
+## Rips are authored per leg (tools/geo/leg_routes.py) and fall off smoothly to 1.0 at their radius.
+static func flow_at(leg: Dictionary, pos: Vector3) -> Dictionary:
+	var best := { "factor": 1.0, "name": "" }
+	for r in leg.get("rips", []):
+		var at: Array = r.at
+		var d := Vector2(pos.x - float(at[0]), pos.z - float(at[1])).length()
+		var radius := float(r.radius)
+		if d >= radius:
+			continue
+		var u := 1.0 - d / radius
+		var f := 1.0 + (float(r.factor) - 1.0) * (u * u * (3.0 - 2.0 * u))
+		if f > float(best.factor):
+			best = { "factor": f, "name": str(r.name) }
+	return best

@@ -21,6 +21,9 @@ var _arrived := false
 var _dest_label: Label
 var _route: Dictionary = {}
 var _chart: ChartTile
+var _flow: Dictionary = { "factor": 1.0, "name": "" }   # the local stream, from the leg's rips
+var _kick_t := 0.0
+const RIP_KICK_EVERY := 3.2    # seconds between beam waves in a rip at full strength
 ## Sightings on the leg: what, which species of the field guide it is, where, and how close you
 ## must come to notice it. Positions checked against the terrain: seals and kelp on the islet by
 ## Yellow Island, the heron in the Labs' shallows, the eagle on Point Caution, the porpoise mid-channel.
@@ -121,7 +124,7 @@ func _ready() -> void:
 			sea.apply_hour(_hour)
 			_set_label = UIKit.label("", 12, UIKit.MIST, false)
 			_set_label.position = Vector2(20, 172)
-			_set_label.size = Vector2(360, 20)
+			_set_label.size = Vector2(520, 20)
 			hud.add_child(_set_label)
 			_dest_label = UIKit.label("", 13, UIKit.FOAM, false, true)
 			_dest_label.position = Vector2(20, 150)
@@ -221,12 +224,26 @@ func _leg(delta: float) -> void:
 	sea.apply_hour(_hour)
 	# The current carries the boat over the ground, in the groove and out of it (the groove's hours
 	# pass faster, so its drift is scaled with them).
-	var cur := Tides.current_vector(_day, _hour)
+	_flow = Leg.flow_at(_route, here)
+	var factor: float = _flow.factor
+	var cur := Tides.current_vector(_day, _hour) * factor
+	# The water of the hour: wind builds the sea, wind against the stream stands it up, and a rip
+	# throws the odd wave on the beam that the paddler must brace for.
+	var state := Tides.sea_state(_day, _hour, factor)
+	sea.set_sea_state(lerpf(sea.sea_state, lerpf(0.10, 0.70, state), minf(1.0, delta * 0.3)))
+	kayak.sea_state = sea.sea_state
+	if factor > 1.15 and kayak.speed > 0.3:
+		_kick_t -= delta * (factor - 1.0) / 0.8
+		if _kick_t <= 0.0:
+			_kick_t = RIP_KICK_EVERY
+			kayak.kick(0.25 + 0.5 * state)
+			Sound.hull_slap(0.4 + 0.4 * state)
 	var drift := cur * delta * (1.0 + _groove * (GROOVE_HOURS_PER_SEC * 3600.0 - 1.0) * 0.25)
 	var landing := here + drift * 4.0
 	if terrain.height_at(landing.x, landing.z) < -0.5:
 		kayak.global_position += drift
-	_set_label.text = "%s: %s · wind %d kn from %03d°" % [str(_route.get("channel", "San Juan Channel")), Tides.describe(_day, _hour), int(round(Tides.wind(_day, _hour).kn)), int(round(Tides.wind(_day, _hour).fromDeg))]
+	var rip := " · ×%.1f %s" % [factor, str(_flow.name)] if factor > 1.15 else ""
+	_set_label.text = "%s: %s%s · wind %d kn from %03d°" % [str(_route.get("channel", "San Juan Channel")), Tides.describe(_day, _hour), rip, int(round(Tides.wind(_day, _hour).kn)), int(round(Tides.wind(_day, _hour).fromDeg))]
 	_dest_label.text = "%s · %.1f km · %03d° · %s%s" % [Leg.cove_name(_route), dist / 1000.0, int(round(brg)), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
 	if dist < 220.0:
 		_arrived = true

@@ -129,6 +129,14 @@ func _init() -> void:
 	var north := ChartTile.to_tile(Vector3(100.0, 0.0, -1500.0), view, tile)
 	check(north.y < tile.y * 0.5 and absf(north.x - tile.x * 0.5) < 1e-3, "north is up on the chart")
 	check(absf(ChartTile.to_tile(Vector3(1100.0, 0.0, -500.0), view, tile).x - tile.x * 0.5 - 1000.0 / ChartTile.SPAN_M * tile.x) < 1e-3, "a kilometre east is a kilometre's width")
+	# Rips: the stream runs harder inside an authored rip, falls off to the channel's figure at its edge.
+	if legs.size() >= 2:
+		var rip: Dictionary = legs[1].rips[0]
+		var at := Vector3(float(rip.at[0]), 0.0, float(rip.at[1]))
+		check(absf(float(Leg.flow_at(legs[1], at).factor) - float(rip.factor)) < 1e-6, "the rip's centre runs at its factor")
+		check(absf(float(Leg.flow_at(legs[1], at + Vector3(float(rip.radius) + 1.0, 0.0, 0.0)).factor) - 1.0) < 1e-6, "outside the rip the stream is the channel's")
+		check(String(Leg.flow_at(legs[1], at).name) != "", "a rip names where it is")
+	check(Tides.sea_state(july, 16.0, 1.8) > Tides.sea_state(july, 16.0, 1.0), "a stronger stream against the wind stands the sea up more")
 	var paddle := Paddler.greenland_paddle()
 	check(paddle.get_aabb().size.x > 2.1 and paddle.get_aabb().size.z < 0.1, "Greenland paddle is long and narrow")
 	print("tests: %d passed, %d failed" % [_n - _fails, _fails])

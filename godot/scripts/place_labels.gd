@@ -21,11 +21,23 @@ func add_place(id: String, text: String, world: Vector3, size := 13) -> void:
 	_labels[id] = l
 	_points[id] = world
 
+## Nearer places win: a label that would sit on top of a nearer one stays hidden until it clears.
 func update(cam: Camera3D) -> void:
-	for id in _labels:
+	var order: Array = _labels.keys()
+	order.sort_custom(func(a: String, b: String) -> bool: return _points[a].distance_to(cam.global_position) < _points[b].distance_to(cam.global_position))
+	var taken: Array[Rect2] = []
+	for id in order:
 		var w: Vector3 = _points[id]
 		var l: Label = _labels[id]
 		var show := not cam.is_position_behind(w) and w.distance_to(cam.global_position) < reach
-		l.visible = show
 		if show:
-			l.position = cam.unproject_position(w) - l.size * 0.5
+			var at := cam.unproject_position(w) - l.size * 0.5
+			var rect := Rect2(at, l.size).grow(2.0)
+			for t in taken:
+				if t.intersects(rect):
+					show = false
+					break
+			if show:
+				l.position = at
+				taken.append(rect)
+		l.visible = show

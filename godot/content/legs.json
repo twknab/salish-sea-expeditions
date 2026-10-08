@@ -10,6 +10,17 @@
    "length_m": 11183,
    "channel": "San Juan Channel",
    "floodSetDeg": 330,
+   "rips": [
+    {
+     "at": [
+      840,
+      -2320
+     ],
+     "radius": 900,
+     "factor": 1.35,
+     "name": "off Point Caution"
+    }
+   ],
    "waypoints": [
     [
      420.0,
@@ -127,6 +138,26 @@
    "length_m": 9611,
    "channel": "Spieden Channel",
    "floodSetDeg": 285,
+   "rips": [
+    {
+     "at": [
+      -8500,
+      -10400
+     ],
+     "radius": 1700,
+     "factor": 1.8,
+     "name": "in the narrows of Spieden Channel"
+    },
+    {
+     "at": [
+      -10000,
+      -10300
+     ],
+     "radius": 800,
+     "factor": 1.4,
+     "name": "off Davison Head"
+    }
+   ],
    "waypoints": [
     [
      -2200.0,

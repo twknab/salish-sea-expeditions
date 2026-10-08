@@ -33,7 +33,8 @@ func _ready() -> void:
 	v.add_child(begin)
 	var stage: String = App.save.get("stage", "title")
 	if stage != "title" and App.SCENES.has(stage):
-		var cont := UIKit.button("Continue · %s" % stage.capitalize(), false)
+		var day := "day %d · " % (int(App.save.get("legIndex", 0)) + 1) if stage in ["plan", "trip", "camp"] else ""
+		var cont := UIKit.button("Continue · %s%s" % [day, stage.capitalize()], false)
 		cont.pressed.connect(func() -> void: App.go(stage))
 		v.add_child(cont)
 	var school := UIKit.button("Kayak School · the orientation", false)
