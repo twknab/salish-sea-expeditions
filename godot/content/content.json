@@ -710,6 +710,14 @@
    "text": "When you tip, slap the back of the blade flat on the water on the low side, then snap your hips to bring the boat back under you. Head stays down — it comes up last.",
    "goal": "Recover from three wobbles",
    "keys": "hold J, L or Space"
+  },
+  {
+   "id": "rescue",
+   "title": "Wet exit and paddle-float re-entry",
+   "skill": "rescue",
+   "text": "The last drill is the one you hope never to need. Go over on purpose, here in the harbour: out of the boat, the paddle float on one blade as an outrigger, up onto the back deck and in, then pump dry. Do it once in calm water and the real one is a thing you have done before.",
+   "goal": "Out, back in, and pumped dry",
+   "keys": "the boat goes over on its own — read each card"
   }
  ],
  "places": [

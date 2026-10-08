@@ -99,7 +99,7 @@ func _init() -> void:
 						missing += 1
 						printerr("unknown source ", sid, " in ", key)
 		check(missing == 0, "all sourceIds resolve")
-		check(c.drills.size() == 5 and c.drills[0].id == "forward", "five drills, forward first")
+		check(c.drills.size() == 6 and c.drills[0].id == "forward" and c.drills[5].id == "rescue", "six drills, forward first and the rescue last")
 	# IK: the elbow keeps both bone lengths and bends toward the pole.
 	var sh := Vector3(0.2, 1.4, 0)
 	var hand := Vector3(0.45, 1.1, 0.3)

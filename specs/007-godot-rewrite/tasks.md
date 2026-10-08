@@ -165,6 +165,10 @@
 
 - [x] T014ap `Assembly` (the rules of `src/sim/assembly.js`: eight steps in order, half the mean and half the two jacks, never under 0.3) and the beach at Friday Harbor off the ferry: the skin unrolled flat, the colour-coded frame (`FrameModel`, keel and sheer tubes and ribs lofted from the same `Hull` as the skin, blue forward and red aft) snapped together beside it and slid in bow first, the coaming, the seat, then the two side jacks and the keel jack as holds with a right length — let go early and the hull is slack, hang on and it is forced — and the check. The heritage and hull-tension lessons on their steps. The boat you build is the boat you paddle: the quality is kept and the kayak loses keel and wanders by it, with "slack hull" on the water line. Rules tested headless; `?scene=assemble&step=N`
 
+## Slice 27 — the rescue drill
+
+- [x] T014aq Kayak School ends with the drill you hope never to need: the boat goes over on its own in the harbour's flat water and the solo rescue is taught in it — wet exit, the paddle-float re-entry, pump out — then "Back in the boat" rights it and the drill is demonstrated for the debrief. The trip's capsize keeps the partner's T-rescue, and the two share one card machinery. `?scene=school&drill=rescue`
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
