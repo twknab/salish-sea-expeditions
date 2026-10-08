@@ -69,9 +69,10 @@ jobs:
       - name: Import
         run: ~/godot/godot --headless --path godot --import || true
       - name: Unit tests
-        run: ~/godot/godot --headless --path godot -s res://tests/run_tests.gd
+        # A script that errors before quit() leaves Godot running forever; the timeout turns a hang into a failure.
+        run: timeout 300 ~/godot/godot --headless --path godot -s res://tests/run_tests.gd
       - name: Every scene instantiates headless
-        run: ~/godot/godot --headless --path godot -s res://tests/debug_scenes.gd 2>&1 | tee /tmp/scenes.log; grep -q "scenes ok" /tmp/scenes.log && ! grep -q "SCRIPT ERROR" /tmp/scenes.log
+        run: timeout 300 ~/godot/godot --headless --path godot -s res://tests/debug_scenes.gd 2>&1 | tee /tmp/scenes.log; grep -q "scenes ok" /tmp/scenes.log && ! grep -q "SCRIPT ERROR" /tmp/scenes.log
       - name: Export web
         run: mkdir -p build/web && ~/godot/godot --headless --path godot --export-release Web ../build/web/index.html
       - name: Export size
