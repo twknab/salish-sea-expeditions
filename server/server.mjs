@@ -1,6 +1,9 @@
 // Production server: serves the built game from dist/. No dependencies, no server-side data.
 //   GET /health  -> "ok"
 //   GET /*       -> static files; unknown paths fall back to index.html
+// A file with a `.br` or `.gz` sibling (server/precompress.mjs writes them at image build) is served
+// precompressed with Content-Encoding; otherwise text and wasm are gzipped on the fly. Every file
+// carries an ETag, so a revalidation of the 38 MB engine is a 304, not a download.
 import http from 'node:http';
 import { stat } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
@@ -13,7 +16,7 @@ const TYPES = {
   '.png': 'image/png', '.ico': 'image/x-icon', '.txt': 'text/plain; charset=utf-8', '.mp3': 'audio/mpeg',
   '.wasm': 'application/wasm', '.pck': 'application/octet-stream',
 };
-const ZIP = new Set(['.html', '.js', '.css', '.json', '.webmanifest', '.svg', '.txt', '.wasm', '.pck']);
+export const ZIP = new Set(['.html', '.js', '.css', '.json', '.webmanifest', '.svg', '.txt', '.wasm', '.pck']);
 
 export function createServer(root) {
   const ROOT = path.resolve(root);
@@ -25,7 +28,9 @@ export function createServer(root) {
     let st = await stat(file).catch(() => null);
     if (!st || st.isDirectory()) { file = path.join(ROOT, 'index.html'); st = await stat(file); p = '/index.html'; }
     const ext = path.extname(file);
+    const etag = `W/"${st.size.toString(16)}-${Math.floor(st.mtimeMs).toString(16)}"`;
     const headers = {
+      ETag: etag,
       'Content-Type': TYPES[ext] || 'application/octet-stream',
       'X-Content-Type-Options': 'nosniff',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
@@ -34,7 +39,19 @@ export function createServer(root) {
       // Hashed build assets never change; everything else (HTML, sw.js, manifest) must revalidate.
       'Cache-Control': p.startsWith('/assets/') ? 'public, max-age=31536000, immutable' : 'no-cache',
     };
-    if (ZIP.has(ext) && st.size > 1024 && /\bgzip\b/.test(req.headers['accept-encoding'] || '')) {
+    if (req.headers['if-none-match'] === etag) { res.writeHead(304, headers); return res.end(); }
+    const accepts = req.headers['accept-encoding'] || '';
+    if (ZIP.has(ext) && st.size > 1024) {
+      for (const [enc, suffix] of [['br', '.br'], ['gzip', '.gz']]) {
+        if (!new RegExp(`\\b${enc}\\b`).test(accepts)) continue;
+        const pre = await stat(file + suffix).catch(() => null);
+        if (!pre) continue;
+        res.writeHead(200, { ...headers, 'Content-Encoding': enc, 'Content-Length': pre.size, Vary: 'Accept-Encoding' });
+        if (req.method === 'HEAD') return res.end();
+        return createReadStream(file + suffix).pipe(res);
+      }
+    }
+    if (ZIP.has(ext) && st.size > 1024 && /\bgzip\b/.test(accepts)) {
       res.writeHead(200, { ...headers, 'Content-Encoding': 'gzip', Vary: 'Accept-Encoding' });
       if (req.method === 'HEAD') return res.end();
       return createReadStream(file).pipe(createGzip()).pipe(res);

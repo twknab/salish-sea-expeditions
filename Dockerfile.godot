@@ -7,6 +7,8 @@ WORKDIR /app
 ENV NODE_ENV=production PORT=8080 STATIC_DIR=/app/web
 COPY server ./server
 COPY build/web ./web
+# Brotli and gzip siblings for the engine, the pack and the loader, served with Content-Encoding.
+RUN node server/precompress.mjs /app/web
 USER node
 EXPOSE 8080
 CMD ["node", "server/server.mjs"]

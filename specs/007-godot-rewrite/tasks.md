@@ -137,6 +137,10 @@
 - [x] T014ah Sound and music chips beside the Title button on every screen, kept in the save and applied at start: the autoload had the switches and nothing reached them, and a web game must be muteable
 - [x] T014ai Once the expedition is done the title offers each day again, from its float plan
 
+## Slice 20 — the engine on the wire
+
+- [x] T014aj `server/precompress.mjs` writes brotli and gzip siblings at image build (`Dockerfile.godot`); the server sends a sibling with `Content-Encoding` when the browser accepts it and falls back to gzip on the fly; every file carries an ETag so a revalidation of the engine is a 304. Measured: the 38 MB engine is 6.5 MB as brotli, the 7.8 MB pack 5.9 MB; the whole export goes from 45 MB to about 13 MB on the wire, the first lever on the go/no-go "time to first frame" row
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

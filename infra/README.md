@@ -43,7 +43,7 @@ Terraform roots avoid the first-deploy trap: Cloud Run cannot start before an im
 | Pre-merge | `Preview` (`preview.yml`) | pull requests from this repo | builds the PR, deploys a **no-traffic** revision tagged `pr-<n>`, posts its private URL on the PR; removes the tag when the PR closes |
 | Post-merge | `Deploy (post-merge)` (`deploy.yml`) | `Checks` passed on `main` | builds, pushes, rolls out to production (all traffic), checks `/health`; skips if a newer commit is already on `main` |
 | Pre-merge | `Godot` (`godot.yml`) | pull requests and `main` touching `godot/**` | GDScript lint, content tests, headless unit tests, every scene instantiated headless, the web export, the bare page in headless Chromium on a desktop window and on a phone (screenshots kept 7 days), and a build of `Dockerfile.godot` answering `/health` |
-| Post-merge | `Deploy (post-merge)` → `expedition` job | as above, **and** the repository variable `EXPEDITION_DEPLOY` is `true` | exports the Godot build, builds `Dockerfile.godot`, pushes it to the `expedition` image and rolls it out to the `salish-sea-expedition` service, checks `/health` |
+| Post-merge | `Deploy (post-merge)` → `expedition` job | as above, **and** the repository variable `EXPEDITION_DEPLOY` is `true` | exports the Godot build, builds `Dockerfile.godot` (which precompresses the export with brotli and gzip, `server/precompress.mjs`), pushes it to the `expedition` image and rolls it out to the `salish-sea-expedition` service, checks `/health` |
 
 Previews and deploys need the three secrets (`GCP_PROJECT`, `GCP_DEPLOY_SA`, `GCP_WIF_PROVIDER`)
 and do nothing until they exist. No keys are stored anywhere: GitHub's OIDC token is exchanged for
