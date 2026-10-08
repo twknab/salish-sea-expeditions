@@ -91,6 +91,10 @@ func splash(strength := 0.6) -> void:
 	_play("splash_%d" % (randi() % 3 + 1), lerpf(-20.0, -10.0, clampf(strength, 0.0, 1.0)), randf_range(0.92, 1.08))
 	get_tree().create_timer(randf_range(0.35, 0.6)).timeout.connect(func() -> void: _play("drip_%d" % (randi() % 2 + 1), -22.0, randf_range(0.9, 1.1)))
 
+## A good stroke is nearly silent: a drip off the blade, not a splash.
+func dip(strength := 0.4) -> void:
+	_play("drip_%d" % (randi() % 2 + 1), lerpf(-30.0, -20.0, clampf(strength, 0.0, 1.0)), randf_range(0.9, 1.1))
+
 func hull_slap(strength := 0.6) -> void:
 	_play("hull_slap", lerpf(-22.0, -10.0, strength), randf_range(0.9, 1.1))
 

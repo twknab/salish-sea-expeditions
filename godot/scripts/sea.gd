@@ -48,6 +48,7 @@ func _ready() -> void:
 	kayak.build_hull()
 	controls.stroke.connect(_on_stroke)
 	controls.edge_changed.connect(func(v: float) -> void: kayak.edge = v)
+	controls.steer_changed.connect(func(v: float) -> void: kayak.steer = v)
 	_ui = UIKit.page($UI, 48, 24)
 	match mode:
 		"ambient":
@@ -61,7 +62,20 @@ func _ready() -> void:
 			_phase = App.school_from
 			_show_phase()
 		_:
-			note_label.text = "Friday Harbor · San Juan Channel opens ahead\nSwipe a blade zone from the top to the hip line."
+			_tilt_chip()
+			note_label.text = "Friday Harbor · San Juan Channel opens ahead\n%s" % ("Hold the water to paddle · slide to lean · slide up to back off" if controls.touch() else "Hold W to paddle · A/D lean to steer · S backs off · Q/E edge · J brace")
+
+## On a phone, the option to edge by tilting the handset (off by default; it stays as set).
+func _tilt_chip() -> void:
+	if not controls.touch():
+		return
+	var b := UIKit.button("Tilt to edge: %s" % ("on" if controls.tilt_enabled else "off"), false)
+	b.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	b.offset_left = -190; b.offset_right = -12; b.offset_top = -(Controls.HIPS_H + Controls.PAD * 2 + 48); b.offset_bottom = -(Controls.HIPS_H + Controls.PAD * 2 + 12)
+	b.pressed.connect(func() -> void:
+		controls.set_tilt(not controls.tilt_enabled)
+		b.text = "Tilt to edge: %s" % ("on" if controls.tilt_enabled else "off"))
+	hud.add_child(b)
 
 func _process(delta: float) -> void:
 	kayak.sea_time = sea.time
@@ -182,7 +196,7 @@ func _drill_progress(delta: float) -> void:
 		"sweep":
 			var dh := angle_difference(s.prev, kayak.heading)
 			s.prev = kayak.heading
-			if absf(kayak.edge) > 0.4:
+			if absf(kayak.edge) > 0.4 or absf(controls.steer) > 0.5:
 				s.turned += absf(dh)
 			p = s.turned / PI
 		"brace":
@@ -223,7 +237,10 @@ func _on_stroke(side: int, q: float, kind: String) -> void:
 	match kind:
 		"forward":
 			kayak.stroke(side, q)
-			Sound.splash(0.3 + 0.5 * q)
+			if q >= StrokeMath.GOOD_STROKE:
+				Sound.dip(0.5)  # good paddling is nearly silent
+			else:
+				Sound.splash(0.45)
 			if _drill >= 0 and _drills()[_drill].id == "forward":
 				if q >= StrokeMath.GOOD_STROKE:
 					_drill_state.count += 1
@@ -241,17 +258,10 @@ func _on_stroke(side: int, q: float, kind: String) -> void:
 			Sound.splash(0.7)
 		"reverse":
 			kayak.reverse(side)
-			Sound.splash(0.6)
+			Sound.dip(0.6)
 			if _drill >= 0 and _drills()[_drill].id == "reverse":
 				_drill_state.count += 1
 				note_label.text = "%d of 4 reverse strokes" % _drill_state.count
 
 func _why_arms() -> String:
-	var st := controls.last
-	if st.is_empty():
-		return "rotate, don’t pull"
-	if st.reach < 0.4:
-		return "start higher: the top of the blade zone is your feet"
-	if not st.exit_at_hip:
-		return "finish at the hip line"
-	return "pull steadily, not a flick"
+	return "hold and let the rhythm settle; a tap is an arm stroke"
