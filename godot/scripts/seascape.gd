@@ -77,6 +77,13 @@ func _ready() -> void:
 	_sky()
 	Sound.set_sea(sea_state)
 
+## The sea state as it changes through the day: the shader, the hull and the sound follow.
+func set_sea_state(v: float) -> void:
+	sea_state = clampf(v, 0.0, 1.0)
+	if _mat:
+		_mat.set_shader_parameter("sea_state", sea_state)
+	Sound.set_sea(sea_state)
+
 func _sky() -> void:
 	var env := Environment.new()
 	var sky := Sky.new()

@@ -52,12 +52,12 @@ static func describe(day: Dictionary, hour: float) -> String:
 
 ## Sea state 0..1 at an hour: wind builds waves, and wind blowing against the current shortens and
 ## steepens them — the channel's classic chop. Wind with the current flattens them.
-static func sea_state(day: Dictionary, hour: float) -> float:
+static func sea_state(day: Dictionary, hour: float, current_scale := 1.0) -> float:
 	var w := wind(day, hour)
 	var wind_kn := float(w.kn)
 	var from_deg := float(w.fromDeg)
 	var air := Vector3(-sin(deg_to_rad(from_deg)), 0.0, cos(deg_to_rad(from_deg)))  # the way the air moves
-	var cur := current_vector(day, hour)
+	var cur := current_vector(day, hour) * current_scale
 	var wind_wave := clampf(wind_kn / 25.0, 0.0, 1.0)
 	var opposing := 0.0
 	var c_speed := cur.length()
