@@ -6,6 +6,7 @@ class_name Kayak
 extends RigidBody3D
 
 signal stroke_done(side: int, q: float, kind: String)
+signal capsized
 
 @export var deck_color := Color("1b1e21")
 @export var hull_color := Color("f0f1ee")
@@ -20,6 +21,9 @@ var speed := 0.0         # m/s through the water, for the HUD
 var heading := 0.0       # radians, 0 = north (-z)
 var strokes_good := 0
 var strokes_arm := 0
+var roll := 0.0          # radians about the keel line, full range; 0 upright, ±PI inverted
+var over := false        # capsized: past the point of no return and not yet righted
+var _over_t := 0.0
 
 const SETTLE := 0.1
 var _probes: Array[Vector3] = []
@@ -159,8 +163,16 @@ func _physics_process(delta: float) -> void:
 	apply_central_force(-fwd * v_f * absf(v_f) * mass * 0.12)
 	# Edging: a knee lift rolls the boat; the chine probes bring it back when the knee relaxes.
 	# Paddler and hull together are a self-righting pair: the roll angle itself pulls the boat back.
-	var roll := asin(clampf(global_basis.y.cross(Vector3.UP).dot(fwd), -1.0, 1.0))
-	apply_torque(fwd * edge * 38.0 - fwd * angular_velocity.dot(fwd) * 40.0 + fwd * roll * 90.0)
+	var s := clampf(global_basis.y.cross(Vector3.UP).dot(fwd), -1.0, 1.0)
+	roll = atan2(s, global_basis.y.y)
+	apply_torque(fwd * edge * 38.0 - fwd * angular_velocity.dot(fwd) * 40.0 + fwd * StrokeMath.righting(roll))
+	if not over and StrokeMath.capsized(roll):
+		_over_t += delta
+		if _over_t > 0.6:
+			over = true
+			capsized.emit()
+	else:
+		_over_t = 0.0
 	# Leaning: a steady pressure that bends the course in proportion to the way on, the way a
 	# paddler steers with stern draws and a touch of edge without breaking the rhythm.
 	if absf(steer) > 0.01:
@@ -170,6 +182,20 @@ func _physics_process(delta: float) -> void:
 	_wobble_t = maxf(0.0, _wobble_t - delta)
 	if _paddler:
 		_paddler.advance(delta, edge)
+
+## Back in the boat: upright on the same heading, the way gone out of it.
+func right() -> void:
+	var fwd := -global_basis.z
+	fwd.y = 0.0
+	if fwd.length() < 0.01:
+		fwd = Vector3.FORWARD
+	global_basis = Basis.looking_at(fwd.normalized(), Vector3.UP)
+	angular_velocity = Vector3.ZERO
+	linear_velocity *= 0.2
+	global_position.y = 0.1
+	over = false
+	_over_t = 0.0
+	_wobble_t = 0.0
 
 ## A forward stroke on one side. q is rotation quality 0..1.
 func stroke(side: int, q: float) -> void:

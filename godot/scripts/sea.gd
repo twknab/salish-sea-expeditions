@@ -23,6 +23,10 @@ var _route: Dictionary = {}
 var _chart: ChartTile
 var _flow: Dictionary = { "factor": 1.0, "name": "" }   # the local stream, from the leg's rips
 var _kick_t := 0.0
+var _swimming := false       # capsized on the trip: the rescue cards are up
+var _rescue_step := 0
+const RESCUE_STEPS := ["coldWater", "wetExit", "pfRescue", "pumpOut"]
+var _since_start := 0.0
 const RIP_KICK_EVERY := 3.2    # seconds between beam waves in a rip at full strength
 ## Sightings on the leg: what, which species of the field guide it is, where, and how close you
 ## must come to notice it. Positions checked against the terrain: seals and kelp on the islet by
@@ -87,6 +91,7 @@ func _ready() -> void:
 	kayak.sea_state = sea.sea_state
 	kayak.build_hull()
 	controls.stroke.connect(_on_stroke)
+	kayak.capsized.connect(_on_capsized)
 	controls.edge_changed.connect(func(v: float) -> void: kayak.edge = v)
 	controls.steer_changed.connect(func(v: float) -> void: kayak.steer = v)
 	_ui = UIKit.page($UI, 48, 24)
@@ -236,7 +241,7 @@ func _leg(delta: float) -> void:
 		_kick_t -= delta * (factor - 1.0) / 0.8
 		if _kick_t <= 0.0:
 			_kick_t = RIP_KICK_EVERY
-			kayak.kick(0.25 + 0.5 * state)
+			kayak.kick(0.7 + 0.8 * state)  # up to a wave that will put an unbraced boat over
 			Sound.hull_slap(0.4 + 0.4 * state)
 	var drift := cur * delta * (1.0 + _groove * (GROOVE_HOURS_PER_SEC * 3600.0 - 1.0) * 0.25)
 	var landing := here + drift * 4.0
@@ -274,7 +279,12 @@ func _process(delta: float) -> void:
 	kayak.sea_time = sea.time
 	speed_label.text = "%.1f kn" % absf(kayak.speed_knots())
 	_compass.heading = kayak.heading
-	if mode == "trip" and not _arrived:
+	_since_start += delta
+	if mode == "trip" and not _arrived and not _swimming and App._url_param("capsize") == "1" and _since_start > 2.0 and not kayak.over:
+		kayak.over = true  # `?scene=trip&capsize=1`: straight into the water, for checks
+		kayak.global_basis = kayak.global_basis.rotated(-kayak.global_basis.z, PI)
+		_on_capsized()
+	if mode == "trip" and not _arrived and not _swimming:
 		_leg(delta)
 		if _chart:
 			_chart.boat = kayak.global_position
@@ -405,7 +415,7 @@ func _drill_progress(delta: float) -> void:
 			_wobble -= delta
 			if _wobble <= 0.0:
 				_wobble = 3.2
-				kayak.kick(1.4)
+				kayak.kick(1.3)  # rolls the boat to about 35°: a brace settles it, an unbraced boat survives it
 				Sound.hull_slap(0.7)
 			if kayak.wobbling() and controls.braced and not s.get("braced_now", false):
 				s.braced_now = true
@@ -473,3 +483,52 @@ func _unhandled_input(ev: InputEvent) -> void:
 		_chart.folded = not _chart.folded
 		App.save.chartFolded = _chart.folded
 		App.persist()
+
+## Over. On the trip the rescue is taught where it happens: the 1-10-1 rule, the wet exit, the
+## paddle-float re-entry, pumping out — then back in the boat, fifteen minutes and a lot of warmth
+## later. In Kayak School the boat simply comes back up with a word about bracing earlier.
+func _on_capsized() -> void:
+	Sound.splash(1.0)
+	if mode != "trip":
+		kayak.right()
+		note_label.text = "That one went over. Set up earlier: blade flat on the water, hips snap the boat back under you."
+		return
+	_swimming = true
+	_groove = 0.0
+	controls.visible = false
+	App.save.swims = int(App.save.get("swims", 0)) + 1
+	App.persist()
+	_rescue_step = 0
+	_show_rescue()
+
+func _lesson(id: String) -> Dictionary:
+	for l in App.content.get("lessons", []):
+		if l.id == id:
+			return l
+	return { "title": id, "text": "", "sourceIds": [] }
+
+func _show_rescue() -> void:
+	_clear_card()
+	var l := _lesson(RESCUE_STEPS[_rescue_step])
+	var last := _rescue_step >= RESCUE_STEPS.size() - 1
+	var actions: Array = [[("Back in the boat" if last else "Next"), func() -> void:
+		if last:
+			_righted()
+		else:
+			_rescue_step += 1
+			_show_rescue(), true]]
+	var kicker := "In the water · %s · %d of %d" % [Leg.clock(_hour), _rescue_step + 1, RESCUE_STEPS.size()]
+	var text: String = l.get("text", "")
+	if _rescue_step == 0:
+		text = "You are in nine-degree water. " + text
+	_card = UIKit.card(l.get("title", ""), text, App.sources_line(l.get("sourceIds", [])), actions, kicker)
+	_ui.add_child(UIKit.spacer())
+	_ui.add_child(_card)
+
+func _righted() -> void:
+	_clear_card()
+	kayak.right()
+	_hour += 0.25
+	_swimming = false
+	controls.visible = true
+	note_label.text = "Fifteen minutes in the water. Paddle to warm up, and make the next landing the bail-out if the shivering does not stop."
