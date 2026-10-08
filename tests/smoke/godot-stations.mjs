@@ -22,6 +22,8 @@ const STATIONS = [
   ['trip-whales', '?scene=trip&leg=1&near=orcas&close=1'],
   ['trip-wind', '?scene=trip&launch=15'],
   ['trip-capsize', '?scene=trip&capsize=1'],
+  ['trip-fog', '?scene=trip&leg=2&launch=6&near=ferry&fog=1'],
+  ['trip-fog-lifts', '?scene=trip&leg=2&launch=6&fog=lift'],
   ['camp-night', '?scene=camp&step=4&glow=1'],
   ['takeout', '?scene=camp&leg=2&step=1'],
   ['debrief', '?scene=debrief&demo=1'],

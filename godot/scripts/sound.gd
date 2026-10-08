@@ -109,8 +109,9 @@ func dip(strength := 0.4) -> void:
 func hull_slap(strength := 0.6) -> void:
 	_play("hull_slap", lerpf(-22.0, -10.0, strength), randf_range(0.9, 1.1))
 
-func horn() -> void:
-	_play("ferry_horn", -6.0)
+## The ferry's long blast; `far` is the one heard across the fog, not the one that is on you.
+func horn(far := false) -> void:
+	_play("ferry_horn", -18.0 if far else -6.0)
 
 func gull() -> void:
 	_play("gull", -20.0, randf_range(0.9, 1.15))

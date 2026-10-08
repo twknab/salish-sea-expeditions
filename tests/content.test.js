@@ -32,6 +32,16 @@ test('every bail-out a leg names is a place on the chart', () => {
   }
 });
 
+test('a leg that starts in fog says when it burns off, and teaches it', () => {
+  const foggy = LEGS.filter((l) => l.fog);
+  assert.ok(foggy.length >= 1, 'one morning starts in fog');
+  for (const l of foggy) {
+    assert.ok(l.fog.until > 5 && l.fog.until < 12, `${l.id} fog burns off in the morning`);
+    assert.ok(l.fog.burn > 0, `${l.id} fog burns off over some time`);
+    assert.ok(l.steps.some((s) => s.id === 'fog'), `${l.id} has a fog step in its float plan`);
+  }
+});
+
 test('the legs chain: each leg starts where the one before it landed', () => {
   for (let i = 1; i < LEGS.length; i++) assert.equal(LEGS[i].from, LEGS[i - 1].to);
   for (const l of LEGS) assert.equal(l.camp.place, l.to);

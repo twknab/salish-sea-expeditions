@@ -225,6 +225,14 @@
 
 - [x] T014be Day three, the longest day, had three sightings to the others' five: the pod works Spieden Channel again on the way home, west on the ebb this time, and the eagle sits on Jones Island's south point as the boat comes down the channel
 
+## Slice 42 — fog on the first-light launch
+
+- [x] T014bf Day three leaves Posey at first light on the ebb, and first light on cold water is fog: the leg carries `fog: {until, burn}`, the float plan says so at a launch inside it, and on the water the sky, the sun and the haze close to a couple of hundred metres (`Fog`, `Seascape.set_fog`). The chart keeps its last fix (a hollow arrow, "fog · last fix") and the destination line swaps the distance for the visibility and "steer 047°"; the note teaches the compass, the stroke count and the partner. The ferry sounds a long blast every two minutes (Rule 35) while it is within earshot, heard from a direction, and the fog burns off over the hour after `until`. The day's record carries `fog`; `?fog=1` socks any leg in for a check; `trip-fog` joins the stations sweep.
+
+## Slice 43 — the fog lifts, and the compass work is judged
+
+- [x] T014bg When the fog burns off, the note says where the compass put you: on the line you planned, or how many metres off it (`Leg.off_track_m`), with the cove's bearing to carry on by. The day's record keeps when the fog closed in and how far off the line it lifted, and the debrief's day line says so ("in fog from 06:00, came out 260 m off the line"). `?fog=lift` lifts it after a second for a check; `trip-fog-lifts` joins the sweep.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

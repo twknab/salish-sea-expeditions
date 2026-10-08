@@ -80,6 +80,17 @@ func _init() -> void:
 	check(absf(Windage.vector(10.0, 0.0).length() - 5.144) < 1e-3, "ten knots is five metres a second")
 	check(Windage.weathercock(1.0, 1.2) > 0.0 and Windage.weathercock(-1.0, 1.2) < 0.0 and Windage.weathercock(1.0, 0.0) == 0.0, "the bow turns into the wind, only with way on")
 	check(Windage.weathercock(1.0, 1.2, -0.5) > Windage.weathercock(1.0, 1.2, 0.0), "a stern-heavy boat weathercocks more")
+	# Fog: a leg's morning holds it until `until`, burns it off over `burn`; a leg without it is clear.
+	var foggy := {"fog": {"until": 7.5, "burn": 1.0}}
+	check(Fog.amount(foggy, 6.0) == 1.0 and Fog.amount(foggy, 7.5) == 1.0, "fog holds until the hour it says")
+	check(absf(Fog.amount(foggy, 8.0) - 0.5) < 1e-6 and Fog.amount(foggy, 8.5) == 0.0 and Fog.amount(foggy, 12.0) == 0.0, "and burns off over the hour after")
+	check(Fog.amount({}, 6.0) == 0.0 and Fog.plan_line({}, 6.0) == "", "a leg without fog is clear")
+	check(Fog.blind(1.0) and not Fog.blind(0.2) and Fog.visibility_m(1.0) < 300.0 and Fog.visibility_m(0.0) > 10000.0, "in fog the chart has no fix and the view is short")
+	check(Fog.density(1.0, 0.00022) > Fog.density(0.5, 0.00022) and Fog.density(0.0, 0.00022) == 0.00022, "the haze thickens with the fog and clears to the day's")
+	check(Fog.plan_line(foggy, 6.0).begins_with("Fog at launch") and Fog.plan_line(foggy, 9.0) == "", "the float plan says so at a launch in fog")
+	var line_leg := {"waypoints": [[0, 0], [1000, 0], [1000, 1000]]}
+	check(absf(Leg.off_track_m(line_leg, Vector3(500, 0, 300)) - 300.0) < 1e-3 and absf(Leg.off_track_m(line_leg, Vector3(1200, 0, 500)) - 200.0) < 1e-3 and Leg.off_track_m(line_leg, Vector3(1000, 0, 1000)) == 0.0, "the distance off the line is to its nearest leg")
+	check(Traffic.bearing_words(Vector3.ZERO, Vector3(0, 0, -100)) == "to the north" and Traffic.bearing_words(Vector3.ZERO, Vector3(100, 0, 0)) == "to the east", "a blast is heard from a direction")
 	check(Windage.drift_force(Vector3(5.0, 0, 0), 100.0, 2.2).x > 0.0, "the drift force is downwind")
 	# The ferry's wake: on the beam when the boat runs parallel to the ferry, bow-on when across it.
 	check(absf(Traffic.wake_beam(Vector3(0, 0, -1), Vector3(0, 0, 1)) - 1.0) < 1e-6 and Traffic.wake_beam(Vector3(1, 0, 0), Vector3(0, 0, 1)) < 1e-6, "the wake is on the beam of a parallel boat and bow-on across the track")

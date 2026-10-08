@@ -124,7 +124,8 @@ func _on_launch(h: float) -> void:
 	_sea.apply_hour(h - 0.5)
 	_refresh_head()
 	if _verdict:
-		_verdict.text = Tides.verdict_line(_day, h, Leg.hours_at_touring_pace(_leg), str(_leg.get("favours", "flood")))
+		var fog_line := Fog.plan_line(_leg, h)
+		_verdict.text = Tides.verdict_line(_day, h, Leg.hours_at_touring_pace(_leg), str(_leg.get("favours", "flood"))) + ("\n" + fog_line if fog_line != "" else "")
 
 func _refresh_head() -> void:
 	var h := Leg.launch_hour()
