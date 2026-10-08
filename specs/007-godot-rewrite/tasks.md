@@ -161,6 +161,10 @@
 
 - [x] T014ao `Score` (the rules of `src/sim/score.js`) and the record it counts: each leg landed keeps its launch and the tide's verdict on it, the landing hour, the swims, and the wildlife given room or approached inside the field guide's distance (a "too close" line on the water as it happens); each camp left is a night out and a clean camp; each drill finished in Kayak School is kept. The take-out ends in the debrief: miles, nights, score, each day as it went, how the points came, the drills, the species, and a share button (Web Share, else the clipboard). "Begin at Anacortes" starts a fresh record; the field guide and the drills are kept for good. Score and record tested headless; `?scene=debrief&demo=1`
 
+## Slice 26 — the boat goes together
+
+- [x] T014ap `Assembly` (the rules of `src/sim/assembly.js`: eight steps in order, half the mean and half the two jacks, never under 0.3) and the beach at Friday Harbor off the ferry: the skin unrolled flat, the colour-coded frame (`FrameModel`, keel and sheer tubes and ribs lofted from the same `Hull` as the skin, blue forward and red aft) snapped together beside it and slid in bow first, the coaming, the seat, then the two side jacks and the keel jack as holds with a right length — let go early and the hull is slack, hang on and it is forced — and the check. The heritage and hull-tension lessons on their steps. The boat you build is the boat you paddle: the quality is kept and the kayak loses keel and wanders by it, with "slack hull" on the water line. Rules tested headless; `?scene=assemble&step=N`
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

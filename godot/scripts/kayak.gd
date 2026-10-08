@@ -31,6 +31,7 @@ var _paddler: Paddler
 var paddler_look: Dictionary = {}   # set before the kayak enters the tree to dress someone other than the player
 var _hull_mesh: MeshInstance3D
 var trim: Dictionary = { "pitch": 0.0, "ends": 0.0, "top": 0.0 }   # from the packing (Packing.assess); zero for an empty boat
+var assembly := 1.0      # how well the boat went together (Assembly.quality): a slack hull wanders and loses its keel
 var _mark: MeshInstance3D
 
 func debug_line() -> String:
@@ -169,7 +170,9 @@ func _physics_process(delta: float) -> void:
 	var v := linear_velocity
 	var v_f := v.dot(fwd)
 	var v_s := v.dot(right)
-	apply_central_force(-right * v_s * mass * 2.2)
+	apply_central_force(-right * v_s * mass * 2.2 * (0.6 + 0.4 * assembly))
+	if assembly < 0.999:
+		apply_torque(Vector3.UP * (1.0 - assembly) * sin(sea_time * 0.9) * 10.0)  # a slack skin flexes and the boat wanders
 	apply_central_force(-fwd * v_f * absf(v_f) * mass * (0.12 + 0.05 * absf(trim.pitch)))  # a boat out of trim pushes water
 	# Mass at the ends resists the turn; a stern-heavy boat lets its bow blow off course.
 	apply_torque(-Vector3.UP * angular_velocity.y * trim.ends * 30.0 + Vector3.UP * maxf(0.0, -trim.pitch) * sin(sea_time * 0.7) * 6.0)
