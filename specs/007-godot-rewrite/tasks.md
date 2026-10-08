@@ -145,6 +145,10 @@
 
 - [x] T014ak The four pieces are excluded from the web pack (7.8 MB → 2.9 MB) and fetched from `audio/` beside the page once the scene asks for them, cached, and crossfaded in when they land; the editor and headless runs load them from the project as before; CI copies them beside the export
 
+## Slice 22 — the ferry in the channel
+
+- [x] T014al `Traffic`: an island ferry shuttles the San Juan Channel stretch of the real ferry track at sixteen knots with a dwell at each landing, leaving Friday Harbor behind you on day one and coming in to meet you on the way home; within 800 m a card says to hold position and cross the wake bow-on, within 450 m one long blast, within 260 m its wake arrives on the beam and the brace is needed. Track maths tested headless; `?scene=trip&near=ferry` opens with it 600 m ahead
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
