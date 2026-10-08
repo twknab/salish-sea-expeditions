@@ -10,17 +10,18 @@
   "lon_max": -122.64,
   "lat_max": 48.72
  },
- "width": 1720,
- "height": 1244,
- "metres_per_pixel": 24.0,
+ "width": 860,
+ "height": 622,
+ "metres_per_pixel": 48.0,
  "top_left": {
   "x": -13489.5,
   "z": -20533.6
  },
  "height_encoding": {
-  "formula": "metres = value / 50 - 200",
-  "png": "height.png",
-  "bits": 16
+  "file": "height.i16",
+  "formula": "metres = value / 10",
+  "type": "int16 little-endian, row-major from the top-left",
+  "cover": "cover.u8"
  },
  "cover_classes": {
   "10": "tree cover",
@@ -179,8 +180,8 @@
   }
  ],
  "stats": {
-  "land_pixels": 1153899,
-  "max_height_m": 731.889892578125,
+  "land_pixels": 217228,
+  "max_height_m": 726.9828491210938,
   "min_height_m": -200.0
  }
 }

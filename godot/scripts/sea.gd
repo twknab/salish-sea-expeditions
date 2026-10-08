@@ -10,6 +10,12 @@ extends Node3D
 @onready var heading_label: Label = $UI/HUD/Heading
 @onready var note_label: Label = $UI/HUD/Note
 @onready var rig: CameraRig = $CameraRig
+@onready var terrain: Terrain = $Terrain
+
+## Where the game puts you in on the water: the harbour at Friday Harbor, off the town float with
+## Brown Island to starboard, pointed up San Juan Channel. Metres from the town, and degrees true.
+const HARBOUR_SPAWN := Vector3(420.0, 0.1, -700.0)
+const HARBOUR_HEADING := 32.0
 
 var mode := "trip"
 var sea: Seascape
@@ -28,10 +34,12 @@ func _ready() -> void:
 	sea = Seascape.new()
 	sea.follow = kayak
 	sea.sea_state = 0.08 if mode == "school" else 0.22
-	sea.island_center = $Island.global_position
-	sea.island_radius = ($Island as Island).radius * 0.78
+	sea.terrain = terrain
 	add_child(sea)
 	move_child(sea, 0)
+	kayak.global_position = terrain.place("fridayHarbor") + HARBOUR_SPAWN
+	kayak.rotation.y = -deg_to_rad(HARBOUR_HEADING)  # heading = -yaw (see Kayak.heading)
+	terrain.focus = kayak.global_position
 	var sk := App.skin()
 	kayak.deck_color = Color(sk.deck)
 	kayak.panel_color = Color(sk.panel) if sk.panel else Color(sk.deck)
@@ -53,7 +61,7 @@ func _ready() -> void:
 			_phase = App.school_from
 			_show_phase()
 		_:
-			note_label.text = "Friday Harbor · calm water\nSwipe a blade zone from the top to the hip line."
+			note_label.text = "Friday Harbor · San Juan Channel opens ahead\nSwipe a blade zone from the top to the hip line."
 
 func _process(delta: float) -> void:
 	kayak.sea_time = sea.time
@@ -61,6 +69,16 @@ func _process(delta: float) -> void:
 	heading_label.text = "%03d°" % int(round(fposmod(rad_to_deg(kayak.heading), 360.0)))
 	if _drill >= 0:
 		_drill_progress(delta)
+
+func _physics_process(_delta: float) -> void:
+	# Running aground: the hull stops in the shallows instead of climbing the beach.
+	var fwd := -kayak.global_basis.z
+	var ahead := kayak.global_position + fwd * (2.6 if kayak.speed >= 0.0 else -2.6)
+	if terrain.height_at(ahead.x, ahead.z) > -0.5:
+		kayak.linear_velocity *= 0.6
+		kayak.apply_central_force(-fwd * signf(kayak.speed) * kayak.mass * 4.0)
+		if mode == "trip" and _drill < 0:
+			note_label.text = "Aground — reverse off (drag up, or hold S)."
 
 # ---------- Kayak School ----------
 

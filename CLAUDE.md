@@ -58,5 +58,11 @@ with `npx vite preview --port 4173` running, for a single screenshot.
 - The figure is `BodyMesh`: arrays built by hand with analytic normals. SurfaceTool will not merge
   vertices that carry bone weights, so its generated normals come out faceted — do not go back to it
   for skinned geometry.
+- The islands are data: `tools/geo/build_terrain.py` → `godot/terrain/{height.i16,cover.u8,terrain.json}`,
+  read by `terrain.gd` (`class_name Terrain`). Never put an image in `godot/terrain/`: Godot imports it
+  as a texture and packs it. The DEM flattens harbours to +1…2 m, so water is decided by cover **and**
+  height; the harbour bottom is synthesized by distance from shore until real soundings land.
+- `gdlint` runs in CI with `godot/.gdlintrc`; run it from `godot/` (it finds the config from the
+  working directory, not from the files).
 - `run/main_scene` must be `title.tscn`. Smoke scripts that pass `?scene=` never exercise the main
   scene; `tests/smoke/godot-desktop-shot.mjs` loads the bare page and is the check for that.

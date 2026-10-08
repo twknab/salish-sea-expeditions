@@ -26,7 +26,6 @@ func _ready() -> void:
 	_sea.sea_state = 0.3
 	_sea.hour = 7.5
 	_sea.follow = _ferry
-	_sea.island_center = Vector3(0, 0, -99999)
 	add_child(_sea)
 	move_child(_sea, 0)
 	var cam := Camera3D.new()
@@ -68,7 +67,7 @@ func _ready() -> void:
 	_counter = UIKit.label("", 12, UIKit.MIST)
 	_counter.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	Sound.horn()
-	_show_card("Walk-on with a folding kayak", "You are on the ferry out of Anacortes, kayak packed in its bag below. Nothing to paddle yet — that comes after Kayak School in Friday Harbor. Watch the islands go by; each one is named as it comes abeam. Lean on the rail to let the time pass faster.", App.sources_line(["wsf", "trak"]), "On the ferry · no paddling yet", true)
+	_show_card("Walk-on with a folding kayak", "You are on the ferry out of Anacortes, kayak packed in its bag below. Nothing to paddle yet — that comes after Kayak School in Friday Harbor. Watch the islands go by; each one is named as it comes abeam. Lean on the rail to let the time pass faster.", App.sources_line(["wsf", "trak"]), "On the ferry · no paddling yet")
 
 func _place(id: String) -> Dictionary:
 	for p in App.content.get("places", []):
@@ -76,7 +75,7 @@ func _place(id: String) -> Dictionary:
 			return p
 	return {}
 
-func _show_card(title: String, text: String, source: String, kicker: String, with_rail := false) -> void:
+func _show_card(title: String, text: String, source: String, kicker: String) -> void:
 	for ch in _ui.get_children():
 		ch.queue_free()
 	var bar := ProgressBar.new()

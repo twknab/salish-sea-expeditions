@@ -3,11 +3,11 @@
 
 Heights come from the AWS Terrain Tiles (Mapzen/Tilezen: USGS 3DEP, SRTM and ETOPO bathymetry
 merged), land cover from ESA WorldCover 2021 (10 m), both public. The output is a regular grid in
-the game's local metres with the origin at Friday Harbor: a 16-bit height PNG (land and seabed),
-an 8-bit cover PNG (WorldCover classes), a preview, and a JSON that says how to read them and where
-the named places are.
+the game's local metres with the origin at Friday Harbor: int16 heights in decimetres (land and
+seabed; height.i16), one byte of WorldCover class per cell (cover.u8), a JSON that says how to read
+them and where the named places are, and a preview image kept outside the Godot project.
 
-    python3 tools/geo/build_terrain.py <tiles_dir> <out_dir> [--step 24]
+    python3 tools/geo/build_terrain.py <tiles_dir> <out_dir> [--step 48] [--preview tools/geo/preview.png]
 
 Tiles are fetched by tools/geo/fetch-tiles.sh. Reproduction is deterministic.
 """
@@ -58,7 +58,9 @@ def local_xz(lat, lon):
 
 def main():
     tiles_dir, out_dir = sys.argv[1], sys.argv[2]
-    step = float(sys.argv[sys.argv.index('--step') + 1]) if '--step' in sys.argv else 24.0
+    step = float(sys.argv[sys.argv.index('--step') + 1]) if '--step' in sys.argv else 48.0
+    # The preview is for eyes only and lives outside the Godot project, where it would be imported.
+    preview = sys.argv[sys.argv.index('--preview') + 1] if '--preview' in sys.argv else os.path.join(os.path.dirname(os.path.abspath(__file__)), 'preview.png')
     os.makedirs(out_dir, exist_ok=True)
     # 1. Mosaic the Mercator tiles.
     first = rasterio.open(os.path.join(tiles_dir, f'{X0}_{Y0}.tif'))
@@ -117,14 +119,32 @@ def main():
                     lon = lon2
         except Exception as e:
             print('land cover tile unavailable', tile, e)
-    # The coastline is the height map's: anything the DEM calls sea is sea, whatever the cover says.
-    sea = height <= 0.0
+    # The coastline: anything the DEM calls sea is sea, and so is anything the cover calls water that
+    # the DEM holds near zero — 3DEP flattens harbours and channels to a surface a metre or two above
+    # datum, which read as land and put Friday Harbor's whole harbour ashore. Those cells get a
+    # shallow shelf; real bathymetry (negative heights) is kept where the tiles carry it.
+    sea = (height <= 0.0) | ((cover == 80) & (height < 4.0))
     cover[sea] = 80
+    # Where the tiles carry no bathymetry (the harbours and channels the DEM flattened), the bottom
+    # falls away with distance from the shore — a metre or so per cell out to thirty metres — so
+    # the shallows read as shallows and the channel as a channel until a real sounding set lands.
+    flat = sea & (height > -1.5)
+    land = ~sea
+    ring = land.copy()
+    for k in range(1, 26):
+        grown = ring.copy()
+        grown[1:, :] |= ring[:-1, :]; grown[:-1, :] |= ring[1:, :]
+        grown[:, 1:] |= ring[:, :-1]; grown[:, :-1] |= ring[:, 1:]
+        newly = grown & ~ring & flat
+        height[newly] = -(1.0 + 1.2 * k)
+        ring = grown
+    height[flat & ~ring] = -31.0
     land_px = int((~sea).sum())
-    # 4. Write: height as 16-bit (h + 200) * 50, cover as classes, a preview for eyes.
-    h16 = np.clip((height + 200.0) * 50.0, 0, 65535).astype(np.uint16)
-    Image.fromarray(h16).save(os.path.join(out_dir, 'height.png'))
-    Image.fromarray(cover, mode='L').save(os.path.join(out_dir, 'cover.png'))
+    # 4. Write. The heights ship as little-endian int16 (metres × 10) and the cover as bytes, read
+    # straight into arrays by terrain.gd: Godot's PNG loader strips 16-bit greys to 8 bits, and any
+    # image left in the project would be imported as a texture and packed twice.
+    np.clip(np.round(height * 10.0), -32000, 32000).astype('<i2').tofile(os.path.join(out_dir, 'height.i16'))
+    cover.astype(np.uint8).tofile(os.path.join(out_dir, 'cover.u8'))
     prev = np.zeros((H, W, 3), dtype=np.uint8)
     depth = np.clip(-height, 0, 120) / 120.0
     prev[sea] = (np.stack([20 + 40 * (1 - depth[sea]), 90 + 80 * (1 - depth[sea]), 110 + 90 * (1 - depth[sea])], -1)).astype(np.uint8)
@@ -135,7 +155,7 @@ def main():
         prev[m] = (np.array(rgb)[None, :] * shade[m][:, None]).astype(np.uint8)
     other = (~sea) & (prev.sum(-1) == 0)
     prev[other] = (np.array((150, 140, 110))[None, :] * shade[other][:, None]).astype(np.uint8)
-    Image.fromarray(prev).save(os.path.join(out_dir, 'preview.png'))
+    Image.fromarray(prev).save(preview)
     places = []
     for pid, name, lat, lon in PLACES:
         x, z = local_xz(lat, lon)
@@ -146,7 +166,7 @@ def main():
         "bbox": {"lon_min": BBOX[0], "lat_min": BBOX[1], "lon_max": BBOX[2], "lat_max": BBOX[3]},
         "width": W, "height": H, "metres_per_pixel": step,
         "top_left": {"x": round(ox, 1), "z": round(oz, 1)},
-        "height_encoding": {"formula": "metres = value / 50 - 200", "png": "height.png", "bits": 16},
+        "height_encoding": {"file": "height.i16", "formula": "metres = value / 10", "type": "int16 little-endian, row-major from the top-left", "cover": "cover.u8"},
         "cover_classes": {"10": "tree cover", "20": "shrubland", "30": "grassland", "40": "cropland", "50": "built-up", "60": "bare", "80": "water", "90": "wetland", "95": "mangrove", "100": "moss"},
         "sources": [
             {"id": "terrain-tiles", "title": "AWS Terrain Tiles (Mapzen/Tilezen; USGS 3DEP, SRTM, ETOPO1)", "licence": "public domain sources; tiles CC0 by Mapzen", "url": "https://registry.opendata.aws/terrain-tiles/"},

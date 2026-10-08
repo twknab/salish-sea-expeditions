@@ -4,14 +4,13 @@
 [ext_resource type="Script" path="res://scripts/kayak.gd" id="3_kayak"]
 [ext_resource type="Script" path="res://scripts/camera_rig.gd" id="4_cam"]
 [ext_resource type="Script" path="res://scripts/controls.gd" id="5_controls"]
-[ext_resource type="Script" path="res://scripts/island.gd" id="6_island"]
+[ext_resource type="Script" path="res://scripts/terrain.gd" id="6_terrain"]
 
 [node name="Sea" type="Node3D"]
 script = ExtResource("1_sea")
 
-[node name="Island" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -140)
-script = ExtResource("6_island")
+[node name="Terrain" type="Node3D" parent="."]
+script = ExtResource("6_terrain")
 
 [node name="Kayak" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)

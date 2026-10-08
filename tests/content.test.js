@@ -21,7 +21,7 @@ test('every source reference resolves to a credit', () => {
 
 test('every credit is used, apart from the engine and original-work credits', () => {
   const used = new Set(sourced.flatMap((i) => i.sourceIds));
-  for (const c of CREDITS) if (!['phaser', 'three', 'synth', 'godot', 'dejavu'].includes(c.id)) assert.ok(used.has(c.id), `unused credit ${c.id}`);
+  for (const c of CREDITS) if (!['phaser', 'three', 'synth', 'godot', 'dejavu', 'terrain-tiles', 'worldcover'].includes(c.id)) assert.ok(used.has(c.id), `unused credit ${c.id}`);
 });
 
 test('the field guide has at least twelve species across the required groups', () => {

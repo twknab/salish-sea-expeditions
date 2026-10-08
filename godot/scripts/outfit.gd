@@ -9,6 +9,7 @@ var _kayak: Kayak
 var _figure: Paddler
 var _cam: Camera3D
 var _sea: Seascape
+var _terrain: Terrain
 var _spin := 0.0
 var _pages: Array = []
 
@@ -16,17 +17,18 @@ func _ready() -> void:
 	_sea = Seascape.new()
 	_sea.sea_state = 0.1
 	_sea.hour = 7.5
-	_sea.island_center = Vector3(0, 0, -260)
-	_sea.island_radius = 60.0
+	# The real shore: the terrain is shifted so the float sits just off the Anacortes terminal,
+	# with Guemes Channel and Guemes Island north across the water behind the figure.
+	_terrain = Terrain.new()
+	add_child(_terrain)
+	var dock_at := _terrain.place("anacortes") + Vector3(-60.0, 0.0, -320.0)
+	_terrain.position = -dock_at
+	_sea.terrain = _terrain
 	add_child(_sea)
-	var island := Island.new()
-	island.radius = 80.0
-	island.seed = 3
-	island.position = Vector3(40, 0, -260)
-	add_child(island)
 	# A float to stand on, and the subjects.
 	_subject = Node3D.new()
 	add_child(_subject)
+	_sea.follow = _subject  # the float stays put; the water and the land are built around it
 	var dock := MeshInstance3D.new()
 	var bm := BoxMesh.new(); bm.size = Vector3(6.0, 0.3, 4.0)
 	dock.mesh = bm

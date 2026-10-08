@@ -6,11 +6,13 @@ extends Node3D
 @export var hour := 8.5
 @export var sea_state := 0.22
 @export var follow: Node3D
-@export var island_center := Vector3(0, 0, -140)
-@export var island_radius := 55.0
+## The real land, when a scene has it: the shader reads its heights for the shallows and the
+## shore foam, and a flat far plane carries the water out to the horizon under the islands.
+var terrain: Terrain
 
 var time := 0.0
 var _water: MeshInstance3D
+var _far: MeshInstance3D
 var _mat: ShaderMaterial
 var sun: DirectionalLight3D
 
@@ -35,11 +37,35 @@ func _ready() -> void:
 	_mat.set_shader_parameter("ripple", tex)
 	_mat.set_shader_parameter("waves", Waves.WAVES)
 	_mat.set_shader_parameter("sea_state", sea_state)
-	_mat.set_shader_parameter("island_center", island_center)
-	_mat.set_shader_parameter("island_radius", island_radius)
+	if terrain and not Terrain._cache_meta.is_empty():
+		_mat.set_shader_parameter("depth_map", Terrain.height_texture())
+		_mat.set_shader_parameter("map_rect", terrain.map_rect())
+	else:
+		var deep := Image.create(1, 1, false, Image.FORMAT_R8)
+		_mat.set_shader_parameter("depth_map", ImageTexture.create_from_image(deep))
+		_mat.set_shader_parameter("map_rect", Vector4(0, 0, 0, 0))
+	if App._url_param("debug") == "depth":
+		_mat.set_shader_parameter("debug_view", 1)
 	_water.material_override = _mat
 	_water.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(_water)
+	# The far water: the same shader with the swell switched off, so the islands kilometres away
+	# stand in water rather than in sky, and the near plane rides on top of it.
+	_far = MeshInstance3D.new()
+	var fm := PlaneMesh.new()
+	fm.size = Vector2(40000, 40000)
+	fm.subdivide_width = 40
+	fm.subdivide_depth = 40
+	_far.mesh = fm
+	var far_mat: ShaderMaterial = _mat.duplicate()
+	var flat: Array[Vector4] = []
+	for w in Waves.WAVES:
+		flat.append(Vector4(w.x, w.y, 0.0, w.w))
+	far_mat.set_shader_parameter("waves", flat)
+	_far.material_override = far_mat
+	_far.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_far.position.y = -0.6
+	add_child(_far)
 	_sky()
 	Sound.set_sea(sea_state)
 
@@ -63,7 +89,7 @@ func _sky() -> void:
 	env.tonemap_exposure = 0.95
 	env.fog_enabled = true
 	env.fog_light_color = Color("c0d0d8")
-	env.fog_density = 0.0012
+	env.fog_density = 0.00022  # Orcas is 12 km off and should be a shape in the haze, not gone
 	env.fog_sky_affect = 0.2
 	var we := WorldEnvironment.new()
 	we.environment = env
@@ -80,8 +106,12 @@ func _sky() -> void:
 func _process(delta: float) -> void:
 	time += delta
 	_mat.set_shader_parameter("t", time)
+	(_far.material_override as ShaderMaterial).set_shader_parameter("t", time)
 	if follow:
 		_water.global_position = Vector3(follow.global_position.x, 0.0, follow.global_position.z)
+		_far.global_position = Vector3(follow.global_position.x, -0.6, follow.global_position.z)
+		if terrain:
+			terrain.focus = follow.global_position
 
 func height_at(x: float, z: float) -> float:
 	return Waves.height(x, z, time, sea_state)

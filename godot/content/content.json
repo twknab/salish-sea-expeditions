@@ -1070,6 +1070,20 @@
    "licence": "MIT"
   },
   {
+   "id": "terrain-tiles",
+   "title": "AWS Terrain Tiles (Mapzen / Tilezen)",
+   "author": "USGS 3DEP, SRTM and ETOPO1 via Mapzen",
+   "url": "https://registry.opendata.aws/terrain-tiles/",
+   "licence": "Public-domain sources; tiles CC0"
+  },
+  {
+   "id": "worldcover",
+   "title": "ESA WorldCover 2021 v200",
+   "author": "European Space Agency",
+   "url": "https://esa-worldcover.org/",
+   "licence": "CC BY 4.0"
+  },
+  {
    "id": "dejavu",
    "title": "DejaVu Sans",
    "author": "DejaVu Fonts",

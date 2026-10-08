@@ -28,6 +28,34 @@ thread. Our static server does not need the headers.
 The wasm is the engine itself and does not grow with the game; the Phaser build was 2.5 MB. This
 is the single biggest risk for a phone on cellular and is the first thing to measure on a device.
 
+## Decision: real geography from open rasters, not a drawn or noise island
+
+The islands are built from two public datasets by `tools/geo/build_terrain.py` and shipped as raw
+arrays read by `terrain.gd`:
+
+- **AWS Terrain Tiles** (Mapzen / Tilezen; USGS 3DEP, SRTM and ETOPO1 merged; CC0 tiles) at zoom 13
+  for the heights of land and, where the sources carry it, the seabed.
+- **ESA WorldCover 2021 v200** (10 m, CC BY 4.0) for what grows where: tree cover, grassland,
+  shrub, cropland, built-up, bare, wetland, water.
+
+What the data taught us, and what the build does about it:
+
+| Finding | Consequence |
+|---|---|
+| 3DEP flattens harbours and channels to a surface a metre or two **above** datum | Anything WorldCover calls water that the DEM holds under 4 m is sea; Friday Harbor's whole harbour read as land before this rule |
+| The tiles have no soundings for most of the inshore water | Flattened cells get a bottom that falls away with distance from shore (about 1.2 m per 48 m cell, to 31 m), so shallows read as shallows until a real sounding set replaces it |
+| Godot's PNG loader strips 16-bit greys to 8 bits | Heights ship as int16 decimetres, cover as bytes; no image file lives in the project (it would be imported as a texture and packed twice) |
+| Reading WorldCover over HTTP drops range requests as silent zeros | The build reads 0.1° windows with retries through GDAL's proxy settings |
+
+Two layers of resolution: 48 m cells are the slice-1 grid (860 × 622 for the bbox −123.20…−122.64,
+48.45…48.72), full resolution within 4.2 km of the paddler and one vertex per three cells beyond.
+Mount Constitution comes out at 727 m against the surveyed 732 m.
+
+Not yet: tide heights and currents (NOAA CO-OPS and OFS; blocked from this build host, and a
+different kind of data), charted rocks and kelp (ENC S-57), and a bathymetry set for the channels
+(NOAA NCEI CUDEM at 1/9 arc-second covers the San Juans). Each is a follow-up with its own source
+line in the credits.
+
 ## Alternatives considered
 
 - **Stay on Phaser + three.js, render the world live in three.js.** Lowest risk, keeps 2.5 MB,
