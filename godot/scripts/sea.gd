@@ -22,11 +22,12 @@ var _dest_label: Label
 var _route: Dictionary = {}
 var _chart: ChartTile
 var _traffic: Traffic
+var _partner: Partner
 var _flow: Dictionary = { "factor": 1.0, "name": "" }   # the local stream, from the leg's rips
 var _kick_t := 0.0
 var _swimming := false       # capsized on the trip: the rescue cards are up
 var _rescue_step := 0
-const RESCUE_STEPS := ["coldWater", "wetExit", "pfRescue", "pumpOut"]
+const RESCUE_STEPS := ["coldWater", "wetExit", "tRescue", "pumpOut"]   # with a partner alongside, the T-rescue; the paddle float is the solo drill in Kayak School
 var _since_start := 0.0
 const RIP_KICK_EVERY := 3.2    # seconds between beam waves in a rip at full strength
 ## Sightings on the leg: what, which species of the field guide it is, where, and how close you
@@ -143,10 +144,23 @@ func _ready() -> void:
 			_spawn_sightings()
 			# The ferry works the channel whatever day it is: leaving the landing behind you on day one,
 			# coming in to meet you on the way home.
+			# The partner: another preset, another skin, holding station off the starboard quarter.
+			_partner = Partner.new()
+			var mine: Dictionary = App.save.get("paddler", {})
+			var preset := Partner.pick_preset(App.content.get("paddlers", []), mine)
+			_partner.preset = preset
+			var skins: Array = App.content.get("skins", [])
+			var other_skin: Dictionary = skins[0] if not skins.is_empty() else {}
+			for candidate in skins:
+				if candidate.id != App.save.get("skin", "blackBlue"):
+					other_skin = candidate
+					break
+			add_child(_partner)
+			_partner.setup(App.look_for(preset), other_skin, Partner.station_for(kayak.global_position, kayak.global_basis), -kayak.rotation.y)
 			_traffic = Traffic.new()
 			add_child(_traffic)
 			if Leg.index() == 0:
-				_traffic.depart_landing_in(90.0)
+				_traffic.inbound_in(0.0)  # coming down the channel to meet you in the first quarter hour
 			else:
 				_traffic.inbound_in(420.0)
 			# The chart in the deck bag, under the HUD's lines on the left; folded by default on a phone.
@@ -175,6 +189,8 @@ func _ready() -> void:
 					kayak.global_position = Vector3(590.0, 0.1, -1312.0)
 					kayak.rotation.y = -deg_to_rad(250.0)  # the heron 30 m off in the shallows
 			var opening := "Friday Harbor · San Juan Channel opens ahead" if Leg.index() == 0 else "Day %d · %s" % [Leg.index() + 1, str(_route.get("title", ""))]
+			if _partner:
+				opening += " · with %s" % str(_partner.preset.get("name", "a partner"))
 			note_label.text = "%s\n%s" % [opening, ("Hold the water to paddle · slide to lean · slide up to back off" if controls.touch() else "Hold W to paddle · A/D lean · S back · Q/E edge · J brace · M chart")]
 
 ## Put the animals and the kelp where they live, on the shore or the water the terrain says is there.
@@ -304,6 +320,8 @@ func _process(delta: float) -> void:
 	if mode == "trip" and not _arrived and not _swimming:
 		_leg(delta)
 		_watch_traffic(delta)
+	if _partner and mode == "trip" and not _arrived:
+		_partner.follow(kayak, sea, delta)
 		if _chart:
 			_chart.boat = kayak.global_position
 			_chart.heading = kayak.heading
@@ -538,7 +556,7 @@ func _show_rescue() -> void:
 	var kicker := "In the water · %s · %d of %d" % [Leg.clock(_hour), _rescue_step + 1, RESCUE_STEPS.size()]
 	var text: String = l.get("text", "")
 	if _rescue_step == 0:
-		text = "You are in nine-degree water. " + text
+		text = "You are in nine-degree water. %s is turning toward you. " % str(_partner.preset.get("name", "Your partner")) + text
 	_card = UIKit.card(l.get("title", ""), text, App.sources_line(l.get("sourceIds", [])), actions, kicker)
 	_ui.add_child(UIKit.spacer())
 	_ui.add_child(_card)
@@ -546,16 +564,18 @@ func _show_rescue() -> void:
 func _righted() -> void:
 	_clear_card()
 	kayak.right()
-	_hour += 0.25
+	_hour += 0.15
 	_swimming = false
 	controls.visible = true
-	note_label.text = "Fifteen minutes in the water. Paddle to warm up, and make the next landing the bail-out if the shivering does not stop."
+	note_label.text = "Nine minutes in the water with a partner alongside. Paddle to warm up, and make the next landing the bail-out if the shivering does not stop."
 
 ## The ferry: a card as it comes within reach, a long blast as it closes, and its wake on the beam.
 func _watch_traffic(delta: float) -> void:
 	if _traffic == null:
 		return
 	_traffic.advance(delta)
+	if _traffic.docked():
+		return
 	var d := _traffic.distance_to_boat(kayak.global_position)
 	if d < Traffic.WARN_M and not _traffic.warned:
 		_traffic.warned = true

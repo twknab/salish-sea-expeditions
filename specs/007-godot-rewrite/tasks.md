@@ -147,7 +147,11 @@
 
 ## Slice 22 — the ferry in the channel
 
-- [x] T014al `Traffic`: an island ferry shuttles the San Juan Channel stretch of the real ferry track at sixteen knots with a dwell at each landing, leaving Friday Harbor behind you on day one and coming in to meet you on the way home; within 800 m a card says to hold position and cross the wake bow-on, within 450 m one long blast, within 260 m its wake arrives on the beam and the brace is needed. Track maths tested headless; `?scene=trip&near=ferry` opens with it 600 m ahead
+- [x] T014al `Traffic`: an island ferry shuttles the San Juan Channel stretch of the real ferry track at sixteen knots with a dwell at each landing, coming down the channel to meet you on day one and in to meet you on the way home; within 800 m a card says to hold position and cross the wake bow-on, within 450 m one long blast, within 260 m its wake arrives on the beam and the brace is needed. Track maths tested headless; `?scene=trip&near=ferry` opens with it 600 m ahead
+
+## Slice 23 — the partner
+
+- [x] T014am `Partner`: a second boat, another preset and another skin, holding station off your starboard quarter, closing at your pace, riding the same water and stroking in the cadence; the opening line names them. With a partner alongside the rescue is the T-rescue (the paddle float stays the solo drill of Kayak School) and the time in the water is nine minutes, not fifteen. Station and preset choice tested headless
 
 ## Slice 2 — measure and decide
 
