@@ -34,8 +34,7 @@ var _bar: ProgressBar
 var _counter: Label
 var _rate_buttons: Array[Button] = []
 var _view_button: Button
-var _labels: Dictionary = {}        # place id -> Label, positioned over the island each frame
-var _label_layer: Control
+var _labels: PlaceLabels
 var _label_points: Dictionary = {}  # place id -> Vector3
 
 func _ready() -> void:
@@ -190,18 +189,10 @@ func _set_rate(i: int) -> void:
 func _build_ui() -> void:
 	var ui := CanvasLayer.new()
 	add_child(ui)
-	_label_layer = Control.new()
-	_label_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_label_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	ui.add_child(_label_layer)
+	_labels = PlaceLabels.new()
+	ui.add_child(_labels)
 	for id in _label_points:
-		var l := UIKit.label(_place_info(id).get("name", id), 13, UIKit.FOAM, false, true)
-		l.add_theme_constant_override("outline_size", 6)
-		l.add_theme_color_override("font_outline_color", Color(0.05, 0.09, 0.12, 0.85))
-		l.visible = false
-		_label_layer.add_child(l)
-		l.reset_size()
-		_labels[id] = l
+		_labels.add_place(id, _place_info(id).get("name", id), _label_points[id])
 	_ui = UIKit.page(ui, 48, 24)
 	var top := VBoxContainer.new()
 	top.add_theme_constant_override("separation", 8)
@@ -281,16 +272,7 @@ func _process(delta: float) -> void:
 		_show_card(p.get("name", e.place), p.get("text", ""), App.sources_line(p.get("sourceIds", [])), "Abeam · %d of %d" % [_next_event, _events.size() - 1])
 	_bar.value = _s / _length * 100.0
 	_counter.text = "%.1f km to Friday Harbor · %s" % [(_length - _s) / 1000.0, "at the rail" if _rail else "chart view"]
-	var cam := _rail_cam if _rail else _chart_cam
-	for id in _labels:
-		var w: Vector3 = _label_points[id]
-		var l: Label = _labels[id]
-		var behind := cam.is_position_behind(w)
-		var near := w.distance_to(cam.global_position) < 16000.0
-		l.visible = not behind and near
-		if l.visible:
-			var sp := cam.unproject_position(w)
-			l.position = sp - l.size * 0.5
+	_labels.update(_rail_cam if _rail else _chart_cam)
 	if not _arrived and _s >= _length:
 		_arrived = true
 		Sound.horn()

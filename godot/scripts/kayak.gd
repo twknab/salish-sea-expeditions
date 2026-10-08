@@ -25,6 +25,7 @@ const SETTLE := 0.1
 var _probes: Array[Vector3] = []
 var _paddler: Paddler
 var _hull_mesh: MeshInstance3D
+var _mark: MeshInstance3D
 
 func debug_line() -> String:
 	return "kayak pos=%s aabb=%s vis=%s" % [global_position, _hull_mesh.get_aabb().size, _hull_mesh.is_visible_in_tree()]
@@ -69,6 +70,51 @@ func build_hull() -> void:
 	mesh.rotation.y = PI / 2.0
 	add_child(mesh)
 	_hull_mesh = mesh
+	_aft_mark()
+
+## The maker's mark this boat carries instead of a logo: an orca's fin rising through a wave, laid
+## on the aft deck behind the cockpit in the panel colour and black. One per boat, always aft.
+func _aft_mark() -> void:
+	if _mark:
+		_mark.queue_free()
+	var s := 0.72                       # along the hull, bow 0 → stern 1
+	var k := 1.6                        # the mark's size on the deck
+	# An orca's fin is black; on a dark deck the mark borrows the hull's white so it still reads.
+	var fin_col := Color(0.05, 0.05, 0.06) if deck_color.get_luminance() > 0.25 else hull_color
+	var h := Hull.heights(s)
+	var z: float = -Hull.x_at(s)
+	var y: float = h.ridge + 0.004
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	# The wave: a ribbon that rises and curls, three humps across the deck.
+	var wave := PackedVector2Array()
+	var n := 14
+	for i in range(n + 1):
+		var t := i / float(n)
+		wave.append(Vector2((-0.14 + 0.28 * t) * k, (0.018 * sin(t * TAU * 1.5) - 0.02) * k))
+	for i in range(n):
+		var a := wave[i]; var b := wave[i + 1]
+		st.set_color(panel_color.lightened(0.35))
+		for v in [a, b + Vector2(0, 0.014 * k), a + Vector2(0, 0.014 * k), a, b, b + Vector2(0, 0.014 * k)]:
+			st.add_vertex(Vector3(v.x, y, z - v.y))
+	# The fin: a tall, swept-back triangle with a curved trailing edge, black.
+	var fin := PackedVector2Array([Vector2(-0.03, -0.01) * k, Vector2(0.035, -0.012) * k, Vector2(0.018, 0.02) * k, Vector2(0.0, 0.06) * k, Vector2(-0.012, 0.09) * k, Vector2(-0.02, 0.05) * k])
+	var tri := Geometry2D.triangulate_polygon(fin)
+	for i in range(0, tri.size(), 3):
+		for vi in [tri[i], tri[i + 2], tri[i + 1]]:
+			st.set_color(fin_col)
+			st.add_vertex(Vector3(fin[vi].x, y + 0.001, z - fin[vi].y))
+	st.generate_normals()
+	var mi := MeshInstance3D.new()
+	mi.mesh = st.commit()
+	var mat := StandardMaterial3D.new()
+	mat.vertex_color_use_as_albedo = true
+	mat.vertex_color_is_srgb = true
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.roughness = 0.5
+	mi.material_override = mat
+	add_child(mi)
+	_mark = mi
 
 ## Where a named point of the paddler or paddle is, in the kayak's local space.
 func paddler_anchor(id: String) -> Vector3:

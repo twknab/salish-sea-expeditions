@@ -14,7 +14,7 @@ await page.waitForTimeout(+(process.env.WAIT || 25000));
 // KEYS="w:12000,a:3000" holds keys for that many ms (in sequence) before the shot: a paddling check.
 for (const spec of (process.env.KEYS || '').split(',').filter(Boolean)) {
   const [key, ms] = spec.split(':');
-  await page.mouse.click(W / 2, H * 0.55); // focus the canvas
+  await page.mouse.click(W / 2, H * 0.08); // focus the canvas, above the water (a click on it would be a tap stroke)
   await page.keyboard.down(key); await page.waitForTimeout(+ms || 1000); await page.keyboard.up(key);
 }
 await page.screenshot({ path: process.env.OUT || 'tests/smoke/out/godot-desktop.png', timeout: 90000 });
