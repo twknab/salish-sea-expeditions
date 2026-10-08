@@ -84,6 +84,10 @@ func _days(col: VBoxContainer, legs: Array, save: Dictionary) -> void:
 		var waits := int(d.get("waits", 0))
 		if waits > 0:
 			line += " · waited out the wind %s" % ("once" if waits == 1 else "%d times" % waits)
+		if int(d.get("ferryHeld", 0)) > 0:
+			line += " · held for the ferry"
+		if int(d.get("ferryCrossed", 0)) > 0:
+			line += " · paddled on as the ferry came"
 		var room := int(d.get("respectful", 0))
 		var close := int(d.get("violations", 0))
 		if room > 0 or close > 0:

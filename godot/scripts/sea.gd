@@ -36,6 +36,8 @@ var _pack: Dictionary = {}       # Packing.assess of the boat as packed, on a tr
 var _swims_today := 0           # capsizes on this leg, for the day's record
 var _weather_asked := false     # the wind-is-up card goes up once a leg
 var _kelp_said := false         # the kelp's one line, the first time the boat is in it
+var _ferry_moved := false       # paddled on while the ferry closed from the horn to the wake
+var _ferry_verdicts: Array = []  # "held" or "crossed", one per ferry pass this leg, for the record
 const KELP_REACH := 70.0        # metres from a kelp sighting's centre the bed extends
 var _waits_today := 0           # times the wind was waited out in a lee
 const ROUGH := 0.5              # sea state at which the bail-outs are offered
@@ -388,6 +390,7 @@ func _record_day() -> void:
 		"leg": Leg.index(), "metres": Leg.length_m(_route), "launchHour": launch, "arrivedHour": _hour,
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
 		"swims": _swims_today, "waits": _waits_today, "respectful": respectful, "violations": violations,
+		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
 	}
 	var days: Array = App.save.get("days", [])
 	var kept: Array = []
@@ -766,11 +769,16 @@ func _watch_traffic(delta: float) -> void:
 		App.persist()
 	if d < Traffic.HORN_M and not _traffic.honked:
 		_traffic.honked = true
+		_ferry_moved = false
 		Sound.horn()
+	if _traffic.honked and not _traffic.waked and kayak.speed > 0.8:
+		_ferry_moved = true  # paddling on with the ferry closing is the thing the card said not to do
 	if d < Traffic.WAKE_M and not _traffic.waked:
 		_traffic.waked = true
 		# Taken bow-on the wake is a few pitches; on the beam it is the roll the card warned of.
 		var beam := Traffic.wake_beam(-kayak.global_basis.z, -_traffic.global_basis.z)
 		kayak.kick(Traffic.wake_kick(beam))
 		Sound.hull_slap(0.4 + 0.5 * beam)
-		note_label.text = "The ferry's wake, bow-on: a few pitches and it is past." if beam < 0.4 else "The ferry's wake on the beam: brace, and next time turn the bow into it."
+		var wake_line := "The ferry's wake, bow-on: a few pitches and it is past." if beam < 0.4 else "The ferry's wake on the beam: brace, and next time turn the bow into it."
+		_ferry_verdicts.append("crossed" if _ferry_moved else "held")
+		note_label.text = wake_line + (" You paddled on as it came: a ferry cannot stop for you, and the lane is its." if _ferry_moved else " You held and let it pass: that is the crossing rule.")
