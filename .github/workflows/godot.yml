@@ -87,8 +87,10 @@ jobs:
         run: PORT=4182 W=390 H=844 DPR=2 MOBILE=1 OUT=tests/smoke/out/godot-phone.png node tests/smoke/godot-desktop-shot.mjs build/web
       - name: Smoke — on the water
         run: PORT=4183 OUT=tests/smoke/out/godot-trip.png node tests/smoke/godot-desktop-shot.mjs build/web '?scene=trip'
+      - name: Smoke — every station from its check URL
+        run: PORT=4190 WAIT=12000 node tests/smoke/godot-stations.mjs build/web
       - uses: actions/upload-artifact@v4
         if: always()
-        with: { name: godot-web, path: "build/web\ntests/smoke/out/godot*.png", retention-days: 7 }
+        with: { name: godot-web, path: "build/web\ntests/smoke/out/godot*.png\ntests/smoke/out/station-*.png", retention-days: 7 }
       - name: The image the deploy would ship builds
         run: docker build -f Dockerfile.godot -t sse-expedition . && docker run --rm -d -p 8080:8080 --name sse sse-expedition && sleep 2 && curl -fsS localhost:8080/health && curl -fsSI localhost:8080/index.wasm | grep -i "application/wasm"; docker rm -f sse >/dev/null 2>&1 || true

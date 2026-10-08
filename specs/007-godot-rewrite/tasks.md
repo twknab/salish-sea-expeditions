@@ -197,6 +197,10 @@
 
 - [x] T014ax What was left on the beach at Friday Harbor is felt at camp, on the card where it would have been used: no tent at the pitch, no food at the raccoons, no water on Posey, no warm layers at drying out, no sleeping bag at night, and the headlamp as before — one plain line each
 
+## Slice 35 — every station, every push
+
+- [x] T014ay `tests/smoke/godot-stations.mjs`: every station of the export opened from its check URL in a fresh page, a page error or a GDScript error anywhere failing the run, the screenshots kept as artifacts. CI runs it after the export, so the sweep that was done by hand after each slice is done by the machine on every push
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
