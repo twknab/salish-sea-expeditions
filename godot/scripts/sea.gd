@@ -149,6 +149,12 @@ func _ready() -> void:
 	hud.add_child(_compass)
 	_places = PlaceLabels.new()
 	_places.reach = 8000.0  # the landings ahead show as you come up the channel without crowding the horizon
+	# The names stay off the HUD: the speed, the note and the destination lines at the top left, the
+	# compass at the top right, and the chart tile below them (a phone's HUD is taller and wider).
+	if controls.touch():
+		_places.keep_out = [Rect2(0, 0, 4000, 420), Rect2(0, 420, 180, 160)]
+	else:
+		_places.keep_out = [Rect2(0, 0, 700, 170), Rect2(0, 170, 180, 160), Rect2(1180, 0, 400, 140)]
 	$UI.add_child(_places)
 	$UI.move_child(_places, 0)
 	for p in terrain.meta.get("places", []):

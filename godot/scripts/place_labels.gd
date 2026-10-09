@@ -4,6 +4,7 @@ class_name PlaceLabels
 extends Control
 
 var reach := 16000.0
+var keep_out: Array[Rect2] = []  # screen rects the names stay off: the HUD's lines, the chart in the deck bag
 var _points: Dictionary = {}  # id -> Vector3
 var _labels: Dictionary = {}  # id -> Label
 
@@ -25,7 +26,7 @@ func add_place(id: String, text: String, world: Vector3, size := 13) -> void:
 func update(cam: Camera3D) -> void:
 	var order: Array = _labels.keys()
 	order.sort_custom(func(a: String, b: String) -> bool: return _points[a].distance_to(cam.global_position) < _points[b].distance_to(cam.global_position))
-	var taken: Array[Rect2] = []
+	var taken: Array[Rect2] = keep_out.duplicate()
 	for id in order:
 		var w: Vector3 = _points[id]
 		var l: Label = _labels[id]
