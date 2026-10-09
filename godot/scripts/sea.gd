@@ -415,6 +415,8 @@ func _leg(delta: float) -> void:
 	_flow = Leg.flow_at(_route, here)
 	var factor: float = _flow.factor
 	var cur := Tides.current_vector(_day, _hour) * factor
+	if _chart:
+		_chart.stream = cur  # the tile shows where the water is going, rips included
 	# The water of the hour: wind builds the sea, wind against the stream stands it up, and a rip
 	# throws the odd wave on the beam that the paddler must brace for.
 	# Bull kelp: a bed is a drag on the hull and a lee in a chop — the fronds lie the swell down.

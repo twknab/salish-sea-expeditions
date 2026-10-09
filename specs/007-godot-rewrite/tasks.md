@@ -329,6 +329,10 @@
 
 - [x] T014ce A night out no longer counts as a clean camp by itself: on Jones, food the raccoons took is wrappers in the salal by morning, so that camp is not clean (`FoodStore.leaves_clean`), the night card says so, and the score's 250 for it goes with it. Posey, with no raccoon card, still counts.
 
+## Slice 68 — the stream on the chart
+
+- [x] T014cf The chart in the deck bag draws the stream where the boat is: an arrow the way the water sets, longer as it runs harder, and its knots beside it — rips included, so the narrows of Spieden Channel show a longer arrow than the open channel. It reads from the same current vector that carries the boat.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
