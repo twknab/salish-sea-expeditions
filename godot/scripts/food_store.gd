@@ -22,11 +22,16 @@ static func verdict(spot_id: String) -> String:
 static func night_line(spot_id: String) -> String:
 	match verdict(spot_id):
 		"taken":
-			return "At two the tent zip went up on its own. Raccoons: the breakfast and half of tomorrow’s lunch gone up the bank, and a torn mesh door for the rest of the trip."
+			return "At two the tent zip went up on its own. Raccoons: the breakfast and half of tomorrow’s lunch gone up the bank, and a torn mesh door for the rest of the trip. The morning goes on picking wrappers out of the salal, and this camp does not count as clean."
 		"worked":
 			return "Something worked at the hatch cover for an hour in the dark. It held, but the raccoons left claw marks in the skin a hand from the seam — a hatch is not a hard box."
 		_:
 			return "The hard box swung from its branch all night. The raccoons came, found nothing, and went through the next site instead."
+
+## A camp is left clean only if nothing of yours was scattered up the bank in the night: food the
+## raccoons took is wrappers in the salal by morning, and a habituated raccoon is the next party's.
+static func leaves_clean(spot_id: String) -> bool:
+	return verdict(spot_id) != "taken"
 
 ## A few words for the day's record; nothing when nothing happened.
 static func record_words(spot_id: String) -> String:

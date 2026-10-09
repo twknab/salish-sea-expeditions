@@ -250,7 +250,9 @@ func _show() -> void:
 func _leave() -> void:
 	if str(_leg.get("camp", {}).get("kind", "camp")) != "takeout":
 		App.save.nights = int(App.save.get("nights", 0)) + 1
-		App.save.cleanCamps = int(App.save.get("cleanCamps", 0)) + 1
+		# A clean camp is earned: the raccoons scattering the breakfast up the bank is not one.
+		if not _has_step("food") or FoodStore.leaves_clean(_food):
+			App.save.cleanCamps = int(App.save.get("cleanCamps", 0)) + 1
 		# The day's record learns where the boat slept and what the tide did about it.
 		var days: Array = App.save.get("days", [])
 		for d in days:
