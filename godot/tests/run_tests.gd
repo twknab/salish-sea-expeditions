@@ -122,6 +122,14 @@ func _init() -> void:
 	# The ferry glide: bow north at 1.5 m/s, a 0.5 m/s stream setting east makes good about 018°.
 	var cmg := FerryGlide.course_made_good(Vector3(0, 0, -1.5), Vector3(0.5, 0, 0))
 	check(absf(cmg - 18.43) < 0.1 and absf(FerryGlide.set_off(0.0, cmg) - 18.43) < 0.1, "a beam stream sets the boat off its heading")
+	# Kayak School's eddy line: still water this side, a knot and a half across the line beyond it.
+	var ed := DrillWater.start("eddyline", Vector3(5, 0, 5), Vector3(0, 0, -1))
+	var ed_beyond := Vector3(5, 0, 5 - DrillWater.EDDY_M - 1.0)
+	check(DrillWater.carry("eddyline", ed, Vector3(5, 0, 0)) == Vector3.ZERO and DrillWater.carry("eddyline", ed, ed_beyond).x > 0.7, "the eddy drill's water is still this side of the line and sets across it beyond")
+	var ed_way := [DrillWater.crossed(ed, Vector3(5, 0, 0)), DrillWater.crossed(ed, ed_beyond), DrillWater.crossed(ed, ed_beyond), DrillWater.crossed(ed, Vector3(5, 0, 0))]
+	check(ed_way == [0, 1, 0, -1], "the drill counts the boat across the line, out and back in, once each way")
+	check(CrossingWatch.line_edged(0.8, Vector3(1, 0, 0), ed.stream, 1) and not CrossingWatch.line_edged(-0.8, Vector3(1, 0, 0), ed.stream, 1), "out into a stream from the left, the starboard edge slides over and the port edge trips")
+	check(DrillWater.carry("ferry", DrillWater.start("ferry", Vector3.ZERO, Vector3(0, 0, -1)), Vector3.ZERO).length() > 0.4, "the ferry drill's stream runs everywhere")
 	check(is_nan(FerryGlide.course_made_good(Vector3.ZERO, Vector3.ZERO)) and FerryGlide.set_off(0.0, NAN) == 0.0, "no way on, no course made good")
 	var hdg := FerryGlide.heading_for(0.0, 1.5, Vector3(0.5, 0, 0))
 	check(absf(hdg - (360.0 - 19.47)) < 0.1, "to hold north against an easterly set, point up into it by asin(0.5/1.5)")
@@ -255,7 +263,7 @@ func _init() -> void:
 						missing += 1
 						printerr("unknown source ", sid, " in ", key)
 		check(missing == 0, "all sourceIds resolve")
-		check(c.drills.size() == 8 and c.drills[0].id == "forward" and c.drills[5].id == "compass" and c.drills[6].id == "ferry" and c.drills[7].id == "rescue", "eight drills, forward first, the compass then the ferry angle before the rescue, the rescue last")
+		check(c.drills.size() == 9 and c.drills[0].id == "forward" and c.drills[5].id == "compass" and c.drills[6].id == "ferry" and c.drills[7].id == "eddyline" and c.drills[8].id == "rescue", "nine drills, forward first, the compass, the ferry angle and the eddy line before the rescue, the rescue last")
 	# IK: the elbow keeps both bone lengths and bends toward the pole.
 	var sh := Vector3(0.2, 1.4, 0)
 	var hand := Vector3(0.45, 1.1, 0.3)

@@ -695,7 +695,7 @@ func _build_tour() -> void:
 	for pp in c.get("paddleParts", []):
 		var v: Array = paddle_views.get(pp.id, [1.6, 1.0, 0.5])
 		_tour.append({ "kind": "paddle", "kicker": "The paddle", "title": pp.name, "text": pp.text, "source": App.sources_line(pp.sourceIds), "anchor": kayak.paddler_anchor(pp.id), "dist": v[0], "az": v[1], "el": v[2] })
-	_tour.append({ "kind": "drills", "kicker": "Calm water", "title": "Now paddle it", "text": "Eight short drills: the forward stroke, the reverse stroke, edging, the sweep turn, the low brace, a bearing held on the compass, a stream crossed on a ferry angle, and the rescue. Everything later builds on these.", "source": "", "anchor": Vector3(0, 0.3, 0), "dist": 6.0, "az": 0.2, "el": 0.5 })
+	_tour.append({ "kind": "drills", "kicker": "Calm water", "title": "Now paddle it", "text": "Nine short drills: forward and reverse strokes, edging, the sweep turn, the low brace, a compass bearing, a ferry angle, an eddy line crossed on an edge, and the rescue. Everything later builds on these.", "source": "", "anchor": Vector3(0, 0.3, 0), "dist": 6.0, "az": 0.2, "el": 0.5 })
 
 func _show_phase() -> void:
 	App.school_from = _phase
@@ -750,11 +750,11 @@ func _start_drill(i: int) -> void:
 		var target_deg := fposmod(FerryGlide.course_made_good(-kayak.global_basis.z, Vector3.ZERO) + 70.0, 360.0)
 		s_target_set(target_deg)
 		note_label.text = "%s\n%s\nGoal: steer %03d° and hold it for twelve seconds, under way.%s" % [d.title, d.text, int(round(target_deg)), keys]
-	elif d.id == "ferry":
-		# The line is where the bow points now; a knot of stream runs across it from the left.
-		_drill_state.line = FerryGlide.course_made_good(-kayak.global_basis.z, Vector3.ZERO)  # the bow now, not last tick's heading
-		_drill_state.stream = FerryGlide.across(float(_drill_state.line), 1.0)
+	elif d.id == "ferry" or d.id == "eddyline":  # the line is where the bow points now; the stream runs across it from the left
+		_drill_state.merge(DrillWater.start(d.id, kayak.global_position, -kayak.global_basis.z))
 		_compass.target = deg_to_rad(float(_drill_state.line))
+		if d.id == "eddyline":
+			add_child(DrillWater.line_mesh(_drill_state))
 	else:
 		_compass.target = NAN
 
@@ -784,6 +784,16 @@ func _drill_progress(delta: float) -> void:
 			s.t = s.t + delta if FerryGlide.off_line(cmg, float(s.line)) < 10.0 and not is_nan(cmg) else maxf(0.0, s.t - delta * 0.5)
 			p = s.t / 12.0
 			note_label.text = "%s\n%s\nGoal: %s." % [d.title, str(d.text) if is_nan(cmg) else "The line is the mark, %03d°. Making good %03d°." % [int(s.line), int(round(cmg))], d.goal]  # the lesson while still, numbers under way
+		"eddyline":
+			kayak.global_position += DrillWater.carry(d.id, s, kayak.global_position) * delta  # still water this side, the stream beyond
+			var dir := DrillWater.crossed(s, kayak.global_position)
+			if dir != 0:
+				var edged := CrossingWatch.line_edged(kayak.edge, kayak.global_basis.x, s.stream, dir)
+				s.count += 1 if edged else 0
+				if not edged:
+					kayak.kick(1.0)
+				note_label.text = CrossingWatch.line_note(edged, dir, controls.touch()) + ("\n%d of 2 edged crossings" % s.count if edged else "")
+			p = s.count / 2.0
 		"sweep":
 			var dh := angle_difference(s.prev, kayak.heading)
 			s.prev = kayak.heading
@@ -816,6 +826,8 @@ func _drill_progress(delta: float) -> void:
 	if p >= 1.0:
 		_drill = -1
 		_compass.target = NAN  # the drills' marks were theirs; the trip puts the cove's there
+		if has_node("EddyLine"):
+			get_node("EddyLine").queue_free()
 		var done: Array = App.save.get("drills", [])
 		if not done.has(d.id):
 			done.append(d.id)

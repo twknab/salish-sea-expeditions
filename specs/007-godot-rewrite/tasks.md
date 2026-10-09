@@ -411,6 +411,10 @@
 
 - [x] T014da The field guide's words on the water gain the eddy line (`src/content/glossary.js`, exported to `godot/content/content.json`): the seam where an eddy meets the stream, and how to cross it — edged toward where the new water pushes, with a brace ready. The content test now requires the eddy and the eddy line among the words, beside slack, the ferry angle, the course made good and the float plan.
 
+## Slice 88 — the eddy line, in Kayak School
+
+- [x] T014db Kayak School gains a ninth drill before the rescue: the eddy line (`src/content/anatomy.js`). The boat sits in still water; twelve metres ahead, past a pale seam drawn on the water, a knot and a half of stream runs across from the left (`DrillWater`, `drill_water.gd`, which now also starts the ferry drill's stream). Crossed on an edge toward where the new water pushes, the crossing counts; crossed flat, the line rolls the boat and the note says how to cross the next one, using the same `CrossingWatch.line_edged` and `line_note` as the leg. Two edged crossings, out and back in, complete it. `?scene=school&drill=eddyline` opens it, and the stations sweep opens it too.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
