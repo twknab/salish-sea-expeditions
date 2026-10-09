@@ -12,6 +12,7 @@ import { PADDLERS, SKIN_TONES, HAIR_COLOURS, HAIR_STYLES, BUILDS, PFD_COLOURS } 
 import { LESSONS } from '../src/content/lessons.js';
 import { CREDITS } from '../src/content/credits.js';
 import { GEAR } from '../src/content/gear.js';
+import { GLOSSARY } from '../src/content/glossary.js';
 import { SKINS } from '../src/content/skins.js';
 import { ASSEMBLY_STEPS } from '../src/sim/assembly.js';
 
@@ -23,7 +24,7 @@ const out = {
   species: SPECIES.map(({ id, common, scientific, group, blurb, facts, where, approachMetres, sourceIds }) => ({ id, common, scientific, group, blurb, facts, where, approachMetres: approachMetres ?? 0, sourceIds })),
   paddlers: PADDLERS, paddlerParts: { skin: SKIN_TONES, hair: HAIR_COLOURS, style: HAIR_STYLES, build: BUILDS, pfd: PFD_COLOURS },
   credits: CREDITS.map(({ id, title, author, url, licence }) => ({ id, title, author, url, licence })),
-  assemblySteps: ASSEMBLY_STEPS,
+  assemblySteps: ASSEMBLY_STEPS, glossary: GLOSSARY,
   skins: SKINS.map((s) => ({ id: s.id, name: s.name, deck: s.deck, deckHi: s.deckHi, panel: s.panel, hull: s.hull ?? '#f0f1ee' })),
 };
 mkdirSync('godot/content', { recursive: true });

@@ -41,6 +41,7 @@ const STATIONS = [
   ['debrief', '?scene=debrief&demo=1'],
   ['debrief-chart', '?scene=debrief&demo=1&at=chart'],
   ['guide', '?scene=guide&at=credits'],
+  ['guide-words', '?scene=guide&at=words'],
 ];
 const only = (process.env.ONLY || '').split(',').filter(Boolean);
 const concurrency = Math.max(1, +(process.env.CONCURRENCY || 3)); // pages at once: the sweep is a wait, not a load

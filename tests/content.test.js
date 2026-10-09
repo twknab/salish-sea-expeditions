@@ -9,11 +9,12 @@ import { PLACES_INFO } from '../src/content/places.js';
 import { TRIP_DAYS } from '../src/content/tripDay.js';
 import { LEGS } from '../src/content/expedition.js';
 import { ACKNOWLEDGMENT } from '../src/content/acknowledgment.js';
+import { GLOSSARY } from '../src/content/glossary.js';
 import { SKILLS } from '../src/sim/skills.js';
 import { LAYERS, KIT, KIT_GROUPS, LEGAL } from '../src/content/kit.js';
 import { gearById } from '../src/content/gear.js';
 
-const sourced = [...LESSONS, ...SPECIES, ...KAYAK_PARTS, ...BODY_POINTS, ...PADDLE_PARTS, ...PLACES_INFO, ACKNOWLEDGMENT, ...LAYERS, ...KIT, ...LEGAL, ...LEGS.flatMap((l) => [...l.steps, l.landing, ...l.camp.steps])];
+const sourced = [...GLOSSARY, ...LESSONS, ...SPECIES, ...KAYAK_PARTS, ...BODY_POINTS, ...PADDLE_PARTS, ...PLACES_INFO, ACKNOWLEDGMENT, ...LAYERS, ...KIT, ...LEGAL, ...LEGS.flatMap((l) => [...l.steps, l.landing, ...l.camp.steps])];
 
 test('every shore walk names species the field guide has', () => {
   const legs = JSON.parse(readFileSync(new URL('../godot/content/legs.json', import.meta.url), 'utf8')).legs;
@@ -79,6 +80,13 @@ test('every source reference resolves to a credit', () => {
 test('every credit is used, apart from the engine and original-work credits', () => {
   const used = new Set(sourced.flatMap((i) => i.sourceIds));
   for (const c of CREDITS) if (!['phaser', 'three', 'synth', 'godot', 'dejavu', 'terrain-tiles', 'worldcover'].includes(c.id)) assert.ok(used.has(c.id), `unused credit ${c.id}`);
+});
+
+test('the words on the water are defined once each, in a sentence or more', () => {
+  const ids = GLOSSARY.map((g) => g.id);
+  assert.equal(new Set(ids).size, ids.length);
+  for (const g of GLOSSARY) assert.ok(g.term && g.text.length > 60, g.id);
+  for (const w of ['slack', 'ferry', 'cmg', 'floatplan']) assert.ok(ids.includes(w), w);
 });
 
 test('the field guide has at least twelve species across the required groups', () => {

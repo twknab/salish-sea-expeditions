@@ -1,5 +1,5 @@
 ## The field guide and the credits, from the title. Every species in the content by group, the ones
-## met on the water marked from the save; then every source the game cites (Principle VIII), with
+## met on the water marked from the save; the words on the water; then every source the game cites (Principle VIII), with
 ## its licence, and a way to open it. One scrolling page, so it reads the same on a phone.
 extends Control
 
@@ -26,9 +26,14 @@ func _ready() -> void:
 	col.add_theme_constant_override("separation", 10)
 	_scroll.add_child(col)
 	_species(col)
+	var words := _words(col)
 	_credits(col)
 	if App._url_param("at") == "credits":
 		_scroll.call_deferred("set_v_scroll", 100000)
+	elif App._url_param("at") == "words":  # `?scene=guide&at=words`: the glossary, for checks
+		await get_tree().process_frame
+		await get_tree().process_frame
+		_scroll.set_v_scroll(int(words.position.y))
 
 func _species(col: VBoxContainer) -> void:
 	var seen: Array = App.save.get("seen", [])
@@ -53,6 +58,15 @@ func _species(col: VBoxContainer) -> void:
 				text += " Keep %d m off." % approach
 			var card := UIKit.card("%s%s" % [sp.common, "  · met" if met else ""], text, "%s · %s" % [sp.get("scientific", ""), App.sources_line(sp.get("sourceIds", []))], [], "")
 			col.add_child(card)
+
+## The words the chart, the plan and the notes use, each in a sentence or two with its source. Returns
+## the section's heading, so a check can scroll to it.
+func _words(col: VBoxContainer) -> Control:
+	var head := UIKit.kicker("Words on the water")
+	col.add_child(head)
+	for w in App.content.get("glossary", []):
+		col.add_child(UIKit.card(str(w.term), str(w.text), App.sources_line(w.get("sourceIds", [])), [], ""))
+	return head
 
 func _credits(col: VBoxContainer) -> void:
 	col.add_child(UIKit.spacer())
