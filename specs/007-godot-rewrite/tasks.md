@@ -407,6 +407,10 @@
 
 - [x] T014cz The README's account of the game carries slices 81–85: the rip heard as well as seen, the shore's eddies and the eddy line on the leg, the hardest water each day met in the debrief, and the `near=eddy` check start.
 
+## Slice 87 — the eddy line, in words
+
+- [x] T014da The field guide's words on the water gain the eddy line (`src/content/glossary.js`, exported to `godot/content/content.json`): the seam where an eddy meets the stream, and how to cross it — edged toward where the new water pushes, with a brace ready. The content test now requires the eddy and the eddy line among the words, beside slack, the ferry angle, the course made good and the float plan.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

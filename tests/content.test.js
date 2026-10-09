@@ -86,7 +86,7 @@ test('the words on the water are defined once each, in a sentence or more', () =
   const ids = GLOSSARY.map((g) => g.id);
   assert.equal(new Set(ids).size, ids.length);
   for (const g of GLOSSARY) assert.ok(g.term && g.text.length > 60, g.id);
-  for (const w of ['slack', 'ferry', 'cmg', 'floatplan']) assert.ok(ids.includes(w), w);
+  for (const w of ['slack', 'ferry', 'cmg', 'floatplan', 'eddy', 'eddyline']) assert.ok(ids.includes(w), w);
 });
 
 test('the field guide has at least twelve species across the required groups', () => {
