@@ -115,6 +115,10 @@ func _init() -> void:
 	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")
 	for ev in PartnerVoice.LINES.keys():
 		check(PartnerVoice.line(ev).length() < 70, "%s: a few words, not a lecture" % ev)
+	# The call ashore: closed from the float, late, or never — and the record only remembers trouble.
+	check(FloatPlanClose.verdict("now") == "closed" and FloatPlanClose.verdict("later") == "late" and FloatPlanClose.verdict("forgot") == "forgot" and FloatPlanClose.verdict("") == "closed", "the float plan is closed, late or forgotten")
+	check(FloatPlanClose.record_words("now") == "" and FloatPlanClose.closing_line("forgot").contains("Coast Guard"), "forgetting it brings the Coast Guard")
+	check(Seamanship.calls([{"verdict": "good", "floatPlan": "forgot"}]).size() == 4 and Seamanship.kept(Seamanship.calls([{"verdict": "good", "floatPlan": "now"}])) == 4, "closing the plan is a call when it came up")
 	# The water on Posey: drink it and tomorrow is thirsty; the tap costs an hour; rationed is fine.
 	check(WaterPlan.verdict("fill") == "thirsty" and WaterPlan.verdict("ration") == "fine" and WaterPlan.verdict("roche") == "late" and WaterPlan.verdict("") == "fine", "the water has three ends")
 	check(WaterPlan.effort("fill") < 0.9 and WaterPlan.effort("ration") == 1.0 and WaterPlan.late_hours("roche") == 1.0 and WaterPlan.late_hours("fill") == 0.0, "thirst shortens the stroke, the tap delays the launch")
@@ -158,7 +162,7 @@ func _init() -> void:
 						missing += 1
 						printerr("unknown source ", sid, " in ", key)
 		check(missing == 0, "all sourceIds resolve")
-		check(c.drills.size() == 6 and c.drills[0].id == "forward" and c.drills[5].id == "rescue", "six drills, forward first and the rescue last")
+		check(c.drills.size() == 7 and c.drills[0].id == "forward" and c.drills[5].id == "compass" and c.drills[6].id == "rescue", "seven drills, forward first, the compass before the rescue, the rescue last")
 	# IK: the elbow keeps both bone lengths and bends toward the pole.
 	var sh := Vector3(0.2, 1.4, 0)
 	var hand := Vector3(0.45, 1.1, 0.3)

@@ -73,17 +73,28 @@ node server/precompress.mjs build/web                            # brotli/gzip s
 STATIC_DIR=build/web node server/server.mjs                      # serve it on :8080
 ```
 
-The game is a three-day sea-kayak expedition on the real islands: the opening (title,
+The game is a three-day sea-kayak expedition on the real islands, on a settled July day or a
+September spring tide with the first autumn southerly behind it: the opening (title,
 acknowledgment, outfitting, the ferry from Anacortes, the boat assembled on the beach, Kayak School
 with its six drills, packing the boat), then for each day a float plan on the chart with the day's
-water as a graph, the leg on the water with a partner — the ferry and its wake, the tide, the wind,
-rips and kelp, the bail-outs when the wind is up, wildlife from seals to a pod of killer whales, a
-capsize and the rescue — and camp ashore with the shore walk and the night, or the take-out and the
-debrief. Pause anywhere; About carries the acknowledgment. Content is exported from `src/content`
+water as a graph, the leg on the water with a partner who speaks at the moments that matter — the
+ferry and its wake, the tide, the wind, rips and kelp, the bail-outs when the wind is up, fog on the
+first-light launch with the compass to steer by, wildlife from seals to a pod of killer whales with
+the whale-watch fleet holding off it, a capsize and the rescue, the light going when the day was
+planned too long — and camp ashore with the shore walk and the night, where the boat sleeps above
+the tide or is found by it, the food is hung or lost to the raccoons, and Posey's water is drunk,
+rationed or fetched at the cost of the morning's ebb. Then the take-out, the ferry home in the
+evening light, and the debrief: each day as it went, the score, and the seamanship calls kept and
+missed, with the other day offered to paddle it again. Pause anywhere; About carries the
+acknowledgment. Content is exported from `src/content`
 by `tools/export-content.mjs`, the legs are laid over the water by `tools/geo/leg_routes.py`,
 sounds come from `tools/synth-audio.mjs` and four full-length pieces from `tools/synth-pieces.mjs`.
-`?scene=assemble|pack|plan|trip|camp|guide|debrief`, `?leg=0|1|2`, `?pack=bow|ideal` and `?near=jones|spieden|posey|ferry|orcas` open a station (`&fog=1` socks it in; `&day=september` is the harder day)
-or a spot for checks; `specs/007-godot-rewrite/tasks.md` lists every slice.
+`?scene=assemble|pack|plan|trip|camp|guide|debrief`, `?leg=0|1|2`, `?pack=bow|ideal` and
+`?near=jones|spieden|posey|ferry|orcas|fleet` open a station or a spot for checks (`&fog=1` socks it
+in, `&day=september` is the harder day, `&hour=20` is night on the water, `&boat=edge`,
+`&food=tent` and `&water=fill` are the camp's choices gone wrong, `?scene=ferry&home=1` is the ride
+home); `tests/smoke/godot-stations.mjs` opens every one of them, and
+`specs/007-godot-rewrite/tasks.md` lists every slice.
 
 Needs Godot 4.5 and its web export templates (`.github/workflows/godot.yml` shows the install).
 

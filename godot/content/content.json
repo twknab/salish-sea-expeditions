@@ -712,6 +712,14 @@
    "keys": "hold J, L or Space"
   },
   {
+   "id": "compass",
+   "title": "Compass: hold a bearing",
+   "skill": "navigation",
+   "text": "The dome compass reads the way the bow points. Bring the bow round until the lubber line sits on the mark, then hold it there with small corrections. In fog this is the whole of navigation.",
+   "goal": "Hold the bearing within ten degrees for twelve seconds, under way",
+   "keys": "W to paddle; A or D to lean the bow round; the target is the mark on the compass"
+  },
+  {
    "id": "rescue",
    "title": "Wet exit and paddle-float re-entry",
    "skill": "rescue",

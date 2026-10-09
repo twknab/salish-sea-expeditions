@@ -57,6 +57,13 @@ with `npx vite preview --port 4173` running, for a single screenshot.
   excluded from the web pack and fetched from `audio/` beside the page after the first frame (CI copies
   them there); the editor and headless runs load them from the project. `?scene=ferry` jumps to a screen in the web build.
 - `tests/debug_scenes.gd` instantiates every scene headless; run it before an export.
+- A `-s` test script can only touch classes that do not read an autoload at compile time: a static
+  helper on `seascape.gd` hung `run_tests.gd` silently (no output, spinning) because the scene script
+  reads `Sound`. Keep the pure maths in its own `class_name` (`Daylight`, `Fog`, `HaulOut`, …) and
+  test that. `signal` lines go after `extends`, or the whole class fails to parse and every script
+  that names it fails with it.
+- On the water, `_spawn_sightings()` runs before the `?near=` switch, so a check start may use what
+  spawned; the chase camera then takes a second to swing behind a boat whose rotation was just set.
 - The figure is `BodyMesh`: arrays built by hand with analytic normals. SurfaceTool will not merge
   vertices that carry bone weights, so its generated normals come out faceted — do not go back to it
   for skinned geometry.
@@ -73,8 +80,8 @@ with `npx vite preview --port 4173` running, for a single screenshot.
   ferry takes `?at=0.3` to open part way, and `WAIT=` on `godot-desktop-shot.mjs` sets the wait.
 - The flow is `App.FLOW`: title → acknowledgment → outfit → ferry → assemble → school → pack → plan → trip → camp.
   `?scene=assemble|pack|plan|camp|debrief` open the stations (`&step=N` for the assembly, `&demo=1`
-  fills the debrief); `?scene=school&drill=rescue` opens Kayak School on a drill;
-  `?scene=trip&near=jones` starts 900 m off the cove (`&leg=1&near=orcas` meets the pod, `&near=fleet` the whale-watch boat on it); `?about=1` opens About on the title; `?scene=ferry&home=1` is the ferry home at the end (the track reversed, the evening light, the debrief after); `?scene=trip&leg=2&launch=6` is the first-light launch in fog (`&fog=1` forces fog on any leg, `&fog=lift` lifts it after a second to see the fix); `?scene=camp&step=4&glow=1` is the night in the cove (`&boat=edge|wrack|grass` is where the boat was left; the tide finds the edge; `&food=tent|hatch|hung` is where the food was left, and `&step=2` is the raccoons card; `&leg=1&step=1&water=fill|ration|roche` is Posey's water) (`&pack=none` shows what an empty boat costs);
+  fills the debrief); `?scene=school&drill=rescue|compass` opens Kayak School on a drill;
+  `?scene=trip&near=jones` starts 900 m off the cove (`&leg=1&near=orcas` meets the pod, `&near=fleet` the whale-watch boat on it); `?about=1` opens About on the title; `?scene=ferry&home=1` is the ferry home at the end (the track reversed, the evening light, the debrief after); `?scene=trip&leg=2&launch=6` is the first-light launch in fog (`&fog=1` forces fog on any leg, `&fog=lift` lifts it after a second to see the fix); `?scene=camp&step=4&glow=1` is the night in the cove (`&boat=edge|wrack|grass` is where the boat was left; the tide finds the edge; `&food=tent|hatch|hung` is where the food was left, and `&step=2` is the raccoons card; `&leg=1&step=1&water=fill|ration|roche` is Posey's water; `&leg=2&step=3&close=now|later|forgot` is the take-out's call ashore) (`&pack=none` shows what an empty boat costs);
   `?launch=15` chooses the launch hour (the afternoon southerly on an ebb puts the bail-outs card up); `?day=september` paddles any screen on the September day (the title offers the days; `save.dayId` keeps the choice); `?scene=trip&hour=20` sets the trip's clock (night on the water, on the September day);
   `?pack=bow|ideal` packs the boat for a check (everything in the bow, or the suggested layout). The
   expedition is `godot/content/legs.json` (geometry, from `tools/geo/leg_routes.py`) merged with the
@@ -82,6 +89,7 @@ with `npx vite preview --port 4173` running, for a single screenshot.
 - `?perf=1` on any screen shows the go/no-go numbers (fps, worst fps, frame time, time to first frame,
   memory, device) at the foot of the screen and prints them once at ten seconds.
 - `tests/smoke/godot-stations.mjs` opens every station from its check URL in a fresh page and fails on any
-  script error; CI runs it after the export, so a new station belongs in its list with its check URL.
+  script error; CI runs it after the export, so a new station belongs in its list with its check URL. It
+  opens `CONCURRENCY` pages at once (three); `ONLY=a,b` narrows it.
 - `run/main_scene` must be `title.tscn`. Smoke scripts that pass `?scene=` never exercise the main
   scene; `tests/smoke/godot-desktop-shot.mjs` loads the bare page and is the check for that.

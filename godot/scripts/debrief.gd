@@ -26,7 +26,7 @@ func _ready() -> void:
 			"days": [
 				{ "leg": 0, "metres": 11200.0, "launchHour": 9.5, "arrivedHour": 12.1, "verdict": "good", "swims": 0, "respectful": 2, "boatSpot": "edge", "boatVerdict": "floated", "foodVerdict": "taken" },
 				{ "leg": 1, "metres": 9600.0, "launchHour": 10.0, "arrivedHour": 13.4, "verdict": "fair", "swims": 1, "respectful": 1, "violations": 1, "ferryHeld": 1, "boatVerdict": "dry", "dark": true, "waterVerdict": "thirsty" },
-				{ "leg": 2, "metres": 18500.0, "launchHour": 6.0, "arrivedHour": 11.2, "verdict": "good", "fog": true, "fogInHour": 6.0, "fogOffM": 260.0, "thirsty": true },
+				{ "leg": 2, "metres": 18500.0, "launchHour": 6.0, "arrivedHour": 11.2, "verdict": "good", "fog": true, "fogInHour": 6.0, "fogOffM": 260.0, "thirsty": true, "floatPlan": "forgot" },
 			],
 			"nights": 2, "cleanCamps": 2, "seen": ["harbourSeal", "baldEagle", "harbourPorpoise"], "drills": ["forward", "reverse", "brace"],
 		}
@@ -116,6 +116,11 @@ func _days(col: VBoxContainer, legs: Array, save: Dictionary) -> void:
 			line += " · landed in the dark"
 		if bool(d.get("thirsty", false)):
 			line += " · paddled thirsty"
+		match str(d.get("floatPlan", "")):
+			"forgot":
+				line += " · the float plan was never closed"
+			"late":
+				line += " · closed the float plan late"
 		if float(d.get("lateStart", 0.0)) > 0.0:
 			line += " · an hour to Roche Harbor for water first"
 		match str(d.get("waterVerdict", "")):

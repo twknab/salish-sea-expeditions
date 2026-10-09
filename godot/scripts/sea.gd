@@ -639,7 +639,7 @@ func _build_tour() -> void:
 	for pp in c.get("paddleParts", []):
 		var v: Array = paddle_views.get(pp.id, [1.6, 1.0, 0.5])
 		_tour.append({ "kind": "paddle", "kicker": "The paddle", "title": pp.name, "text": pp.text, "source": App.sources_line(pp.sourceIds), "anchor": kayak.paddler_anchor(pp.id), "dist": v[0], "az": v[1], "el": v[2] })
-	_tour.append({ "kind": "drills", "kicker": "Calm water", "title": "Now paddle it", "text": "Six short drills: the forward stroke, the reverse stroke, edging, the sweep turn, the low brace, and the rescue. Everything later builds on these.", "source": "", "anchor": Vector3(0, 0.3, 0), "dist": 6.0, "az": 0.2, "el": 0.5 })
+	_tour.append({ "kind": "drills", "kicker": "Calm water", "title": "Now paddle it", "text": "Seven short drills: the forward stroke, the reverse stroke, edging, the sweep turn, the low brace, a bearing held on the compass, and the rescue. Everything later builds on these.", "source": "", "anchor": Vector3(0, 0.3, 0), "dist": 6.0, "az": 0.2, "el": 0.5 })
 
 func _show_phase() -> void:
 	App.school_from = _phase
@@ -695,6 +695,18 @@ func _start_drill(i: int) -> void:
 		_wobble = 2.5
 	if d.id == "rescue":
 		_capsize_in = 2.5
+	if d.id == "compass":
+		# Seventy degrees round from where the bow points now: a real turn to make, then a line to hold.
+		var target_deg := fposmod(rad_to_deg(kayak.heading) + 70.0, 360.0)
+		s_target_set(target_deg)
+		note_label.text = "%s\n%s\nGoal: steer %03d° and hold it for twelve seconds, under way.%s" % [d.title, d.text, int(round(target_deg)), keys]
+	else:
+		_compass.target = NAN
+
+## The compass drill's mark on the dome, and the number the note names.
+func s_target_set(target_deg: float) -> void:
+	_drill_state.target = target_deg
+	_compass.target = deg_to_rad(target_deg)
 
 func _drill_progress(delta: float) -> void:
 	var d: Dictionary = _drills()[_drill]
@@ -706,6 +718,11 @@ func _drill_progress(delta: float) -> void:
 		"edge":
 			s.t = s.t + delta if absf(kayak.edge) > 0.6 else maxf(0.0, s.t - delta * 2.0)
 			p = s.t / 3.0
+		"compass":
+			var off := absf(angle_difference(deg_to_rad(float(s.get("target", 0.0))), kayak.heading))
+			var on_line := off < deg_to_rad(10.0) and kayak.speed > 0.4
+			s.t = s.t + delta if on_line else maxf(0.0, s.t - delta * 0.5)
+			p = s.t / 12.0
 		"sweep":
 			var dh := angle_difference(s.prev, kayak.heading)
 			s.prev = kayak.heading
@@ -737,6 +754,8 @@ func _drill_progress(delta: float) -> void:
 	_drill_bar.value = clampf(p, 0.0, 1.0) * 100.0
 	if p >= 1.0:
 		_drill = -1
+		if d.id == "compass":
+			_compass.target = NAN  # the mark was the drill's; the trip puts the cove's there
 		var done: Array = App.save.get("drills", [])
 		if not done.has(d.id):
 			done.append(d.id)
