@@ -182,6 +182,12 @@ func _init() -> void:
 	cw_max.eddy(500.0, 1.0, "")
 	cw_max.tick(1.0, Vector3(0, 0, -1), 1.5, 0.0, Vector3(0, 0, 1.0 * FerryGlide.KN), false, true)
 	check(absf(cw_max.max_kn - 3.0) < 0.01 and cw_max.max_at == "in the narrows", "the record keeps the hardest stream met, and where")
+	var cw_lines := CrossingWatch.new()
+	for e in [true, false, true]:
+		cw_lines.crossed_line(e)
+	check(cw_lines.lines_edged == 2 and cw_lines.lines_tripped == 1, "the record counts the eddy lines crossed on an edge and the ones that tripped the boat")
+	check(CrossingWatch.lines_line(2, 1) == "3 eddy lines: 2 on an edge, 1 tripped the boat" and CrossingWatch.lines_line(1, 0) == "across an eddy line on an edge once" and CrossingWatch.lines_line(0, 2) == "tripped by an eddy line twice", "the debrief names the day's eddy lines")
+	check(CrossingWatch.lines_line(0, 0) == "", "a day that crossed no eddy line says nothing of them")
 	check(CrossingWatch.hardest_line(3.24, "in the narrows") == "the stream at 3.2 kn in the narrows" and CrossingWatch.hardest_line(0.6, "x") == "", "a day that never ran a knot says nothing of it")
 	var cw_line := CrossingWatch.new()
 	cw_line.eddy(60.0, 2.5, "", 1.0)

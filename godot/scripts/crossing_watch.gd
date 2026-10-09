@@ -31,6 +31,8 @@ var line_dir := 0       # this frame: +1 out of an eddy into the stream, -1 into
 var _inside := false
 var _read := false      # the first reading only sets which side of the line the boat is on
 var _line_cool := 0.0
+var lines_edged := 0   # eddy lines crossed on the leg on an edge, for the record
+var lines_tripped := 0  # and crossed flat or edged the wrong way, so the line rolled the boat
 var max_kn := 0.0       # the hardest stream the boat met on the leg, knots, as it reached the boat
 var max_at := ""        # and where, for the record
 var _was_sign := 0.0    # the way the channel's stream last ran: + flood, - ebb, 0 not yet read
@@ -133,6 +135,25 @@ static func line_edged(edge: float, right: Vector3, stream: Vector3, dir: int) -
 	var push := stream.normalized() * float(dir)
 	var side := signf(push.dot(right))
 	return edge * side > 0.4
+
+## Count an eddy line crossed, the right way or not.
+func crossed_line(edged: bool) -> void:
+	if edged:
+		lines_edged += 1
+	else:
+		lines_tripped += 1
+
+## The debrief's words for a day's eddy lines: how many were crossed on an edge and how many tripped
+## the boat. A day that crossed none says nothing.
+static func lines_line(edged: int, tripped: int) -> String:
+	var n := func(k: int) -> String: return "once" if k == 1 else ("twice" if k == 2 else "%d times" % k)
+	if edged > 0 and tripped > 0:
+		return "%d eddy lines: %d on an edge, %d tripped the boat" % [edged + tripped, edged, tripped]
+	if edged > 0:
+		return "across an eddy line on an edge %s" % n.call(edged)
+	if tripped > 0:
+		return "tripped by an eddy line %s" % n.call(tripped)
+	return ""
 
 static func line_note(edged: bool, dir: int, short := false) -> String:
 	var where := "out into the stream" if dir > 0 else "into the eddy"
