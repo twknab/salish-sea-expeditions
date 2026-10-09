@@ -12,6 +12,9 @@ const NO_HEADWAY := 0.25       # m/s along the line at the ferry angle: below it
 const EDDY_NEAR := 80.0        # metres off the shore inside which its eddies take most of the stream
 const EDDY_FAR := 240.0        # and beyond which the channel's stream runs full
 const EDDY_LEFT := 0.3         # how much of the stream is left close in
+const LINE_K := 0.6            # the eddy line: where the shore's share of the stream changes fast
+const LINE_KN := 1.5           # a line is only felt with this much stream running outside it
+const LINE_EVERY := 20.0       # seconds before the next line crossing is worth a note
 
 var stream_s := 0.0     # seconds under way in a real stream
 var on_line_s := 0.0    # of those, the seconds making good the line
@@ -24,6 +27,10 @@ var eddy_k := 1.0      # how much of the channel's stream reaches the boat here,
 var eddy_said := false
 var _raw_kn := 0.0      # the stream here before the shore takes any of it, knots
 var _place := ""        # where the stream runs hard here ("in the narrows of Spieden Channel"), or ""
+var line_dir := 0       # this frame: +1 out of an eddy into the stream, -1 into an eddy, 0 not crossing
+var _inside := false
+var _read := false      # the first reading only sets which side of the line the boat is on
+var _line_cool := 0.0
 var max_kn := 0.0       # the hardest stream the boat met on the leg, knots, as it reached the boat
 var max_at := ""        # and where, for the record
 var _was_sign := 0.0    # the way the channel's stream last ran: + flood, - ebb, 0 not yet read
@@ -91,8 +98,16 @@ static func eddy_factor(shore_m: float) -> float:
 
 ## The shore this frame: keeps how much of the stream reaches the boat (and how hard it runs out in
 ## the channel, `kn`, and where it runs hard, `place`), and returns the factor to scale the stream by.
-func eddy(shore_m: float, kn: float, place := "") -> float:
+func eddy(shore_m: float, kn: float, place := "", delta := 0.0) -> float:
 	eddy_k = eddy_factor(shore_m)
+	var inside := eddy_k < LINE_K
+	_line_cool = maxf(0.0, _line_cool - delta)
+	line_dir = 0
+	if _read and inside != _inside and absf(kn) > LINE_KN and _line_cool <= 0.0:
+		line_dir = -1 if inside else 1
+		_line_cool = LINE_EVERY
+	_inside = inside
+	_read = true
 	_raw_kn = kn
 	_place = place
 	return eddy_k
@@ -109,3 +124,20 @@ static func hardest_line(kn: float, at: String) -> String:
 	if kn < 1.0:
 		return ""
 	return "the stream at %.1f kn%s" % [kn, (" " + at) if at != "" else ""]
+
+## Crossing an eddy line the new water shoves the hull sideways: toward downstream coming out into
+## the stream, back toward upstream (into the turn) going into an eddy. Edged toward that shove, the
+## hull slides over the line; edged away, or flat, the line trips it. `edge` is the hips (-1 port ..
+## 1 starboard), `right` the boat's starboard direction, `stream` the channel's set.
+static func line_edged(edge: float, right: Vector3, stream: Vector3, dir: int) -> bool:
+	var push := stream.normalized() * float(dir)
+	var side := signf(push.dot(right))
+	return edge * side > 0.4
+
+static func line_note(edged: bool, dir: int, short := false) -> String:
+	var where := "out into the stream" if dir > 0 else "into the eddy"
+	if short:
+		return "Eddy line, %s: %s" % [where, "edged right, and it slid under you." if edged else "it tripped the boat. Edge toward the new water."]
+	if edged:
+		return "Across the eddy line %s, edged the way the new water pushes: the shear slid under the hull instead of tripping it." % where
+	return "The eddy line, %s: the new water grabbed the hull and rolled it. Crossing a line, edge toward where the water will push you — downstream coming out, into the turn going in — and brace if it bites." % where
