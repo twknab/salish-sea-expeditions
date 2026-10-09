@@ -43,6 +43,7 @@ var _fog_in_hour := -1.0        # when the fog closed in, for the record
 var _dark_said := false         # the night-on-the-water note goes up once
 var _rain_said := false         # the squall's note goes up once
 var _notes: Array = []          # every note the day put up, in order, for the field notes
+var _note_at: Array = []        # [[x, z]] where each was said, for the chart of the expedition
 var _last_note := ""
 const NOTES_KEPT := 24
 var _rained := false            # rain fell on the leg, for the record
@@ -513,7 +514,7 @@ func _record_day() -> void:
 		"swims": _swims_today, "waits": _waits_today, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
 		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
-		"notes": _notes.duplicate(),
+		"notes": _notes.duplicate(), "noteAt": _note_at.duplicate(),
 		"lateStart": float(App.save.get("lateStart", 0.0)),
 	}
 	App.save.erase("lateStart")  # the water run and the thirst are this day's; tomorrow starts fresh
@@ -592,6 +593,7 @@ func _process(delta: float) -> void:
 		var line := _last_note.strip_edges()
 		if line != "" and not line.begins_with("Day ") and not line.begins_with("Friday Harbor ·") and not line.contains("rotation strokes") and not _notes.has(line) and _notes.size() < NOTES_KEPT:
 			_notes.append(line)
+			_note_at.append([snappedf(kayak.global_position.x, 1.0), snappedf(kayak.global_position.z, 1.0)])
 	_compass.heading = kayak.heading
 	_since_start += delta
 	if mode == "trip" and not _arrived and not _swimming and App._url_param("capsize") == "1" and _since_start > 2.0 and not kayak.over:

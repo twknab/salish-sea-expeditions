@@ -37,6 +37,7 @@ const STATIONS = [
   ['takeout', '?scene=camp&leg=2&step=1'],
   ['takeout-close', '?scene=camp&leg=2&step=3&close=forgot'],
   ['debrief', '?scene=debrief&demo=1'],
+  ['debrief-chart', '?scene=debrief&demo=1&at=chart'],
   ['guide', '?scene=guide&at=credits'],
 ];
 const only = (process.env.ONLY || '').split(',').filter(Boolean);

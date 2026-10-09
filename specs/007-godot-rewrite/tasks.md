@@ -305,6 +305,10 @@
 
 - [x] T014by The place names floated over the land no longer land on the HUD: `PlaceLabels.keep_out` seeds the collision rects with the speed, note and destination lines, the compass and the chart tile (a taller, wider set on a phone), so a cove's name that would sit under the note waits until it clears.
 
+## Slice 62 — the chart of the expedition
+
+- [x] T014bz The debrief draws the whole expedition on one chart (`ExpeditionChart`, from the same height texture the water reads): the three legs' tracks, the camps as rings, and a numbered mark where each field note was said — the notes carry the boat's position now (`noteAt`), and the list numbers them to match. The window is the legs' own extent with a margin, so nothing is cropped on a phone.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

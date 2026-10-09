@@ -30,7 +30,7 @@ func _ready() -> void:
 					"Mina: “On my quarter. Count with me — one, two…”  Fog. The islands are gone and the chart has no fix; the compass does. Hold 130°, count your strokes, keep a paddle length off.",
 					"A long blast in the fog, to the north: a vessel under way, somewhere in the channel. Stop paddling and listen.",
 					"The fog lifts. You came out 260 m off the line you planned; Friday Harbor bears 131°.",
-				] },
+				], "noteAt": [[-6200, -10100], [-4100, -9200], [-2300, -7600]] },
 			],
 			"nights": 2, "cleanCamps": 2, "seen": ["harbourSeal", "baldEagle", "harbourPorpoise"], "drills": ["forward", "reverse", "brace"],
 		}
@@ -90,19 +90,43 @@ func _ready() -> void:
 	elif App._url_param("demo") == "1":
 		v.add_child(UIKit.button("Paddle it again · a september day", false))
 
-## The field notes: every note the water put up, day by day, as it was said on the deck.
+## The field notes: every note the water put up, day by day, as it was said on the deck — and the
+## chart of the whole expedition with a numbered mark where each one was.
 func _field_notes(col: VBoxContainer, save: Dictionary) -> void:
 	var days: Array = save.get("days", [])
+	var legs := Leg.all()
 	var lines: Array = []
+	var marks: Array = []
+	var n := 0
 	for d in days:
 		var notes: Array = d.get("notes", [])
+		var at: Array = d.get("noteAt", [])
 		if notes.is_empty():
 			continue
 		lines.append("Day %d" % (int(d.get("leg", 0)) + 1))
-		for n in notes:
-			lines.append("  · " + str(n).replace("\n", " "))
-	if not lines.is_empty():
-		_section(col, "Field notes", lines)
+		for i in range(notes.size()):
+			n += 1
+			lines.append("  %d · %s" % [n, str(notes[i]).replace("\n", " ")])
+			if i < at.size():
+				marks.append({ "x": float(at[i][0]), "z": float(at[i][1]), "n": n })
+	if lines.is_empty():
+		return
+	var chart := ExpeditionChart.new()
+	chart.terrain = Terrain.new()
+	add_child(chart.terrain)
+	chart.terrain.visible = false
+	chart.legs = legs
+	chart.marks = marks
+	for leg in legs:
+		if str(leg.get("camp", {}).get("kind", "camp")) != "takeout":
+			chart.camps.append(Leg.cove(leg))
+	chart.custom_minimum_size = Vector2(0, 300)
+	col.add_child(chart)
+	if App._url_param("at") == "chart":  # `?scene=debrief&demo=1&at=chart` scrolls to it, for checks
+		var sc := col.get_parent() as ScrollContainer
+		if sc:
+			get_tree().create_timer(0.5).timeout.connect(func() -> void: sc.ensure_control_visible(chart))
+	_section(col, "Field notes", lines)
 
 ## Each day as it went: the launch the plan chose and its verdict, the landing, the swims.
 func _days(col: VBoxContainer, legs: Array, save: Dictionary) -> void:
