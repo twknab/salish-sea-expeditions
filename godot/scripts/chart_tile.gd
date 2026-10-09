@@ -15,6 +15,7 @@ var dest := Vector3.ZERO
 var boat := Vector3.ZERO
 var heading := 0.0            # radians, 0 north, clockwise
 var blind := false            # in fog: no fix — the arrow is hollow and the tile says so
+var stream := Vector3.ZERO    # the current over the ground here, m/s (x east, z south): drawn as set and drift
 var folded := false:
 	set(v):
 		folded = v
@@ -98,6 +99,19 @@ func _draw() -> void:
 	else:
 		draw_colored_polygon(PackedVector2Array([c + f * 8.0, c - f * 6.0 + r * 5.0, c - f * 3.0, c - f * 6.0 - r * 5.0]), Color(0.98, 0.98, 0.95))
 		draw_polyline(PackedVector2Array([c + f * 8.0, c - f * 6.0 + r * 5.0, c - f * 3.0, c - f * 6.0 - r * 5.0, c + f * 8.0]), Color(0.05, 0.1, 0.12, 0.9), 1.0, true)
+	# The stream: an arrow the way the water sets, its length the drift, the knots beside it.
+	var kn := Vector2(stream.x, stream.z).length() / 0.5144
+	if kn >= 0.15:
+		# A pale chip in the corner so the arrow reads over deep water as well as over the land.
+		draw_rect(Rect2(Vector2(size.x - 56, size.y - 50), Vector2(52, 46)), Color(0.93, 0.9, 0.8, 0.88))
+		var o := Vector2(size.x - 30, size.y - 30)
+		var sd := Vector2(stream.x, stream.z).normalized()
+		var tip := o + sd * clampf(6.0 + kn * 6.0, 8.0, 20.0)
+		var ink := Color(0.05, 0.22, 0.45, 1.0)
+		draw_line(o - sd * 6.0, tip, ink, 2.0, true)
+		var side := Vector2(-sd.y, sd.x)
+		draw_colored_polygon(PackedVector2Array([tip + sd * 4.0, tip - sd * 2.0 + side * 3.5, tip - sd * 2.0 - side * 3.5]), ink)
+		draw_string(UIKit.bold(), Vector2(size.x - 52, size.y - 6), "%.1f kn" % kn, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, ink)
 	# North arrow and a scale bar: one kilometre.
 	var font := UIKit.bold()
 	draw_string(font, Vector2(size.x - 14, 14), "N", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(0.1, 0.12, 0.14, 0.9))
