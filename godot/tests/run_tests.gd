@@ -156,6 +156,13 @@ func _init() -> void:
 	check(not cw_turn.turned(1.2) and not cw_turn.turned(0.4) and not cw_turn.turned(0.0) and cw_turn.turned(-0.1) and not cw_turn.turned(-0.8), "the turn is felt once, on the frame the stream changes direction")
 	check(CrossingWatch.turn_note(-0.3, "flood").contains("ebb is starting") and CrossingWatch.turn_note(-0.3, "flood").contains("against you") and CrossingWatch.turn_note(-0.3, "ebb", true).contains("with you"), "the turn's note names the new stream and whether it helps this leg")
 	check(CrossingWatch.rip_level(1.0, 2.5) == 0.0 and CrossingWatch.rip_level(1.8, 0.0) == 0.0 and CrossingWatch.rip_level(1.8, 2.8) > 0.9 and CrossingWatch.rip_level(1.3, 1.0) < 0.25, "the rip is heard in the narrows at the run of the stream, not in open water or at slack")
+	check(CrossingWatch.eddy_factor(500.0) == 1.0 and CrossingWatch.eddy_factor(40.0) == CrossingWatch.EDDY_LEFT and CrossingWatch.eddy_factor(160.0) > 0.5 and CrossingWatch.eddy_factor(160.0) < 0.8, "the stream eases toward the shore, full in the channel and a third of itself close in")
+	var cw_eddy := CrossingWatch.new()
+	cw_eddy.eddy(60.0, 2.4)
+	check(cw_eddy.tick(1.0, Vector3(0, 0, -1), 1.5, 0.0, Vector3(0, 0, 0.2), false, false) == "eddy" and cw_eddy.tick(1.0, Vector3(0, 0, -1), 1.5, 0.0, Vector3(0, 0, 0.2), false, false) == "", "the eddy is said once, when the boat finds it with a real stream outside")
+	var cw_calm := CrossingWatch.new()
+	cw_calm.eddy(60.0, 0.4)
+	check(cw_calm.tick(1.0, Vector3(0, 0, -1), 1.5, 0.0, Vector3.ZERO, false, false) == "", "close in on a slack day there is nothing to say")
 	var turning := { "current": [{ "t": 0, "kn": 3.0 }, { "t": 120, "kn": 1.0 }, { "t": 180, "kn": -1.0 }] }
 	var slack_h := Tides.next_slack(turning, 0.0)
 	check(slack_h > 2.3 and slack_h < 2.9 and is_nan(Tides.next_slack({ "current": [{ "t": 0, "kn": 3.0 }, { "t": 900, "kn": 3.0 }] }, 0.0)), "slack is when the stream eases or turns, and a stream that runs on has none")
