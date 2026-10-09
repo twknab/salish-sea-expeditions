@@ -26,7 +26,11 @@ func _ready() -> void:
 			"days": [
 				{ "leg": 0, "metres": 11200.0, "launchHour": 9.5, "arrivedHour": 12.1, "verdict": "good", "swims": 0, "respectful": 2, "boatSpot": "edge", "boatVerdict": "floated", "foodVerdict": "taken" },
 				{ "leg": 1, "metres": 9600.0, "launchHour": 10.0, "arrivedHour": 13.4, "verdict": "fair", "swims": 1, "respectful": 1, "violations": 1, "ferryHeld": 1, "boatVerdict": "dry", "dark": true, "waterVerdict": "thirsty" },
-				{ "leg": 2, "metres": 18500.0, "launchHour": 6.0, "arrivedHour": 11.2, "verdict": "good", "fog": true, "fogInHour": 6.0, "fogOffM": 260.0, "thirsty": true, "floatPlan": "forgot" },
+				{ "leg": 2, "metres": 18500.0, "launchHour": 6.0, "arrivedHour": 11.2, "verdict": "good", "fog": true, "fogInHour": 6.0, "fogOffM": 260.0, "thirsty": true, "floatPlan": "forgot", "notes": [
+					"Mina: “On my quarter. Count with me — one, two…”  Fog. The islands are gone and the chart has no fix; the compass does. Hold 130°, count your strokes, keep a paddle length off.",
+					"A long blast in the fog, to the north: a vessel under way, somewhere in the channel. Stop paddling and listen.",
+					"The fog lifts. You came out 260 m off the line you planned; Friday Harbor bears 131°.",
+				] },
 			],
 			"nights": 2, "cleanCamps": 2, "seen": ["harbourSeal", "baldEagle", "harbourPorpoise"], "drills": ["forward", "reverse", "brace"],
 		}
@@ -49,6 +53,7 @@ func _ready() -> void:
 	var calls := Seamanship.calls(save.get("days", []))
 	if not calls.is_empty():
 		_section(col, "Seamanship · %d of %d calls" % [Seamanship.kept(calls), calls.size()], Seamanship.lines(calls))
+	_field_notes(col, save)
 	var drills: Array = save.get("drills", [])
 	var names: Array = []
 	for d in App.content.get("drills", []):
@@ -84,6 +89,20 @@ func _ready() -> void:
 		v.add_child(again)
 	elif App._url_param("demo") == "1":
 		v.add_child(UIKit.button("Paddle it again · a september day", false))
+
+## The field notes: every note the water put up, day by day, as it was said on the deck.
+func _field_notes(col: VBoxContainer, save: Dictionary) -> void:
+	var days: Array = save.get("days", [])
+	var lines: Array = []
+	for d in days:
+		var notes: Array = d.get("notes", [])
+		if notes.is_empty():
+			continue
+		lines.append("Day %d" % (int(d.get("leg", 0)) + 1))
+		for n in notes:
+			lines.append("  · " + str(n).replace("\n", " "))
+	if not lines.is_empty():
+		_section(col, "Field notes", lines)
 
 ## Each day as it went: the launch the plan chose and its verdict, the landing, the swims.
 func _days(col: VBoxContainer, legs: Array, save: Dictionary) -> void:
