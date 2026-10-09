@@ -36,7 +36,7 @@
 - [x] T013m `sea.tscn` opens in the harbour at Friday Harbor with the channel north; running aground stops the hull; outfitting stands on the real Anacortes shore; `island.gd` remains only under the ferry until the chart-style crossing lands
 - [x] T013n CI gates in `godot.yml`: gdlint (`godot/.gdlintrc`), content tests, headless unit and scene tests, export, bare-page desktop and phone smoke that fails on page or script errors, and the `Dockerfile.godot` image answering `/health`
 - [x] T013o Deploy framed, off: `Dockerfile.godot`, the `expedition` job in `deploy.yml` behind `EXPEDITION_DEPLOY`, and the `salish-sea-expedition` service in `infra/service` behind `expedition_image`
-- [ ] T013p Datasets and libraries ADR for the rewrite (terrain tiles, WorldCover, the sound libraries to come)
+- [x] T013p Datasets and libraries ADR for the rewrite (`adr-datasets-and-libraries.md`): the terrain tiles, WorldCover, the routes laid over the grid, the authored water, sound synthesized in code with lamejs at build time only, DejaVu, and what was turned down
 
 ## Slice 2 — the crossing as a chart
 
@@ -426,6 +426,10 @@
 ## Slice 91 — the eddy lines, a seamanship call
 
 - [x] T014de The debrief's seamanship calls gain "Crossed eddy lines on an edge", read across the days from `linesEdged` and `linesTripped` (`Seamanship.calls`). It is kept when no line tripped the boat ("on an edge every time, 3 of 3"), missed when one did ("tripped once, 3 of 4 on an edge"), and absent on an expedition that crossed no eddy line, like every call that only counts when it came up. The demo debrief now reads twelve calls.
+
+## Slice 92 — the datasets and libraries, on record
+
+- [x] T014df `adr-datasets-and-libraries.md` closes T013p. It records each dataset and library under the rewrite: how it is used, its licence and what it obliges, and what was considered and turned down. It notes that lamejs (LGPL-3.0) runs only at build time, and that the WorldCover and DejaVu credits are not guarded by the content test.
 
 ## Slice 2 — measure and decide
 
