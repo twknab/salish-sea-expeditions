@@ -383,6 +383,10 @@
 
 - [x] T014ct README's Godot paragraph carries slices 74–79: slack marked on the float plan's graph, the verdict naming a turn inside the leg, the moment the stream turns felt on the water, and the words on the water in the field guide.
 
+## Slice 81 — the rip you can hear
+
+- [x] T014cu A tide rip is heard as well as seen: a new seeded loop (`rip_loop`, `tools/synth-audio.mjs`) — a chatter of short slaps and glugs over a low rush — comes up as the boat runs into a rip at the run of the stream and falls away to nothing in open water and at slack (`CrossingWatch.rip_level`, `Sound.set_rip`). Leaving the water now hushes the engine, the rain and the rip at once (`Sound.hush_water`): before, one gliding step per call left them sounding under the camp and the debrief.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

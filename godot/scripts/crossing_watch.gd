@@ -62,3 +62,8 @@ static func turn_note(kn: float, favours: String, short := false) -> String:
 	if short:
 		return "Slack water: the %s is starting, %s." % [tide, "with you" if with_you else "against you"]
 	return "Slack water: the stream has turned, and the %s is starting. %s" % [tide, "From here it builds with you, and the miles come easier." if with_you else "From here it builds against you: hug the shore where the eddies run, or land and wait for the next turn."]
+
+## How loud the rip runs here, 0 to 1: how much harder than the channel the stream runs at this spot
+## (`factor`, 1 in open water), times how hard the channel runs now. Silent at slack and in the open.
+static func rip_level(factor: float, kn: float) -> float:
+	return clampf((factor - 1.0) / 0.6, 0.0, 1.0) * clampf(absf(kn) * factor / 3.0, 0.0, 1.0)

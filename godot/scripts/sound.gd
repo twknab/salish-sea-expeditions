@@ -22,6 +22,7 @@ const MOODS := {
 var _players: Array[AudioStreamPlayer] = []  # two, so one piece can fade out under the next
 var _engine: AudioStreamPlayer
 var _rain: AudioStreamPlayer
+var _rip: AudioStreamPlayer
 var _live := 0
 var _piece := ""   # what is playing
 var _wanted := ""  # what the scene asked for, kept across the music being switched off and on
@@ -33,7 +34,7 @@ var _http: HTTPRequest
 var _fetching := ""
 
 func _ready() -> void:
-	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull", "blow", "eagle", "engine_idle", "raccoons", "rain_loop"]:
+	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull", "blow", "eagle", "engine_idle", "raccoons", "rain_loop", "rip_loop"]:
 		var s := _load("res://audio/%s.wav" % n)
 		if s:
 			_streams[n] = s
@@ -41,6 +42,7 @@ func _ready() -> void:
 	_wind = _loop("wind_loop", -26.0)
 	_engine = _loop("engine_idle", -80.0)  # a diesel at idle, brought up when a boat is near
 	_rain = _loop("rain_loop", -80.0)      # rain on the water and the deck, brought up with the squall
+	_rip = _loop("rip_loop", -80.0)        # a tide rip standing up, brought up as the boat runs into one
 	for i in range(6):
 		var p := AudioStreamPlayer.new()
 		add_child(p)
@@ -138,6 +140,20 @@ func set_rain(a: float) -> void:
 		return
 	var want := lerpf(-80.0, -14.0, clampf(a, 0.0, 1.0)) if a > 0.01 else -80.0
 	_rain.volume_db = lerpf(_rain.volume_db, want, 0.1)
+
+## The rip: `a` 0 in slack or open water to 1 in the narrows at the run of the stream. Glides.
+func set_rip(a: float) -> void:
+	if _rip == null:
+		return
+	var want := lerpf(-34.0, -10.0, clampf(a, 0.0, 1.0)) if a > 0.03 else -80.0
+	_rip.volume_db = lerpf(_rip.volume_db, want, 0.05)
+
+## Off the water at once: the engine, the rain and the rip, which otherwise glide a step per call and
+## would carry on under the next screen.
+func hush_water() -> void:
+	for p in [_engine, _rain, _rip]:
+		if p:
+			p.volume_db = -80.0
 
 ## The idle of the nearest boat, `near` 1 alongside to 0 out of hearing; glides, so it never pops.
 func set_engine(near: float) -> void:

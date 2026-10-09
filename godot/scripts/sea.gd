@@ -426,6 +426,7 @@ func _leg(delta: float) -> void:
 		_chart.stream = cur  # the tile shows where the water is going, rips included
 		_chart.cmg = _cross.cmg
 	var kn := Tides.current_kn(_day, _hour)
+	Sound.set_rip(CrossingWatch.rip_level(factor, kn))
 	if _cross.turned(kn) and not Fog.blind(_fog) and _card == null:
 		note_label.text = _said("turn") + CrossingWatch.turn_note(kn, str(_route.get("favours", "flood")), controls.touch())
 		_note_hold = NOTE_HOLD
@@ -992,5 +993,4 @@ func _watch_traffic(delta: float) -> void:
 		note_label.text = _said("wake") + wake_line + (" You paddled on as it came: a ferry cannot stop for you, and the lane is its." if _ferry_moved else " You held and let it pass: that is the crossing rule.")
 
 func _exit_tree() -> void:
-	Sound.set_engine(0.0)  # the idle belongs to the water; the next screen starts quiet
-	Sound.set_rain(0.0)
+	Sound.hush_water()  # the idle, the rain and the rip belong to the water; the next screen starts quiet
