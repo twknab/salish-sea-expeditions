@@ -419,6 +419,10 @@
 
 - [x] T014dc Kayak School's walk around the boat, the body and the paddle moves out of the water scene into a pure class (`SchoolTour`, `school_tour.gd`): one stop per part in the content, each with where the camera looks and from how far, then the drills. The scene passes in the figure's anchors and the source line, so the tests can walk the tour without the autoloads. They check that every part, body point and paddle part has a stop, from the intro to the drills; that every stop has somewhere for the camera to look from; and that the tour's count of drills matches the drills there are. `sea.gd` drops from 999 lines to 970, under the lint limit of 1000, with room for what comes next.
 
+## Slice 90 — the eddy lines, remembered
+
+- [x] T014dd Each day's record counts the eddy lines the boat crossed on an edge and the ones that tripped it (`CrossingWatch.crossed_line`, `lines_edged`, `lines_tripped`; record fields `linesEdged`, `linesTripped`). The debrief's Each day names them: "3 eddy lines: 2 on an edge, 1 tripped the boat", "across an eddy line on an edge once" or "tripped by an eddy line twice". A day that crossed none says nothing. The demo debrief carries an example on day two.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

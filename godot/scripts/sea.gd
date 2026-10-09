@@ -410,6 +410,7 @@ func _leg(delta: float) -> void:
 	var kn := Tides.current_kn(_day, _hour)
 	if _cross.line_dir != 0 and not Fog.blind(_fog) and _card == null:  # the eddy line: edged, it slides under; flat, it trips
 		var edged := CrossingWatch.line_edged(kayak.edge, kayak.global_basis.x, cur, _cross.line_dir)
+		_cross.crossed_line(edged)
 		if not edged:
 			kayak.kick(1.0)
 		note_label.text = ("" if edged else _said("eddyline")) + CrossingWatch.line_note(edged, _cross.line_dir, controls.touch())
@@ -528,7 +529,7 @@ func _record_day() -> void:
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
 		"swims": _swims_today, "waits": _waits_today, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
-		"streamS": _cross.stream_s, "onLineS": _cross.on_line_s, "maxKn": snappedf(_cross.max_kn, 0.1), "maxAt": _cross.max_at, "eddy": _cross.eddy_said,
+		"streamS": _cross.stream_s, "onLineS": _cross.on_line_s, "maxKn": snappedf(_cross.max_kn, 0.1), "maxAt": _cross.max_at, "eddy": _cross.eddy_said, "linesEdged": _cross.lines_edged, "linesTripped": _cross.lines_tripped,
 		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
 		"notes": _notes.duplicate(), "noteAt": _note_at.duplicate(),
 		"lateStart": float(App.save.get("lateStart", 0.0)),

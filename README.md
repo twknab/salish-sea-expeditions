@@ -88,7 +88,7 @@ planned too long, the September squall, the white light after dark — and camp 
 the tide or is found by it, the food is hung or lost to the raccoons, and Posey's water is drunk,
 rationed or fetched at the cost of the morning's ebb. Then the take-out with the call ashore that closes the float plan, the ferry home in the
 evening light, and the debrief: each day as it went, the score, the seamanship calls kept and
-missed (a stream crossed on the line among them), the hardest water each day met, the field notes on the chart of the whole expedition, with the other day offered to paddle
+missed (a stream crossed on the line among them), the hardest water each day met and the eddy lines crossed, the field notes on the chart of the whole expedition, with the other day offered to paddle
 it again. The field guide carries the species and the words on the water, from slack to the
 white light, each with its source. Pause anywhere; About carries the
 acknowledgment. Content is exported from `src/content`
