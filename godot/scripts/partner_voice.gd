@@ -19,6 +19,7 @@ const LINES := {
 	"turn": "Feel that? It’s turning.",
 	"eddy": "In close. Feel it ease?",
 	"eddyline": "Edge it — lean with the water!",
+	"eddyline_edged": "That’s it. You rode it over.",
 }
 
 ## The partner's words for an event, by name, or empty when there are none.

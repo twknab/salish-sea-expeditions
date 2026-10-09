@@ -435,6 +435,10 @@
 
 - [x] T014dg The credits the Godot build relies on (the engine, the terrain tiles, WorldCover, DejaVu and the original-work credit) are exempt from the unused-credit check, so a content test of their own now fails if one goes missing, if WorldCover's CC BY 4.0 attribution to the European Space Agency changes, or if DejaVu's Bitstream Vera licence changes. The datasets ADR says so, in place of the warning it carried.
 
+## Slice 94 — the partner, when it goes right
+
+- [x] T014dh The partner spoke at an eddy line only when it tripped the boat. Now they speak when it is crossed on an edge too (`PartnerVoice` key `eddyline_edged`: "That’s it. You rode it over."), so the nerve the partner carries is for the good crossings as well as the bad ones.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
