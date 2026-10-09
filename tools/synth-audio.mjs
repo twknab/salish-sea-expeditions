@@ -151,3 +151,26 @@ for (let k = 0; k < 2; k++) {
   const x = SR * 0.5; for (let i = 0; i < x; i++) { const a = i / x; out[len - x + i] = out[len - x + i] * (1 - a) + out[i] * a; }
   wav('rain_loop', out);
 }
+
+// A tide rip: water standing up and breaking against itself — a chatter of short slaps and glugs over
+// a low rush, louder and busier than the lap at the hull. Seeded throughout, so regenerating it gives
+// the same file. Seamless loop.
+{
+  const len = SR * 7, out = new Float32Array(len); const rush = lp(500), hiss = hp(700), body = lp(1800);
+  const events = [];
+  for (let t = 0; t < 7; t += 0.06 + (rnd() + 0.5) * 0.18) events.push({ t, f: 180 + (rnd() + 0.5) * 520, a: 0.5 + (rnd() + 0.5) * 0.7, k: 30 + (rnd() + 0.5) * 50 });
+  let e = 0;
+  for (let i = 0; i < len; i++) {
+    const t = i / SR;
+    while (e < events.length - 1 && events[e + 1].t <= t) e++;
+    let slap = 0;
+    for (let j = Math.max(0, e - 2); j <= e; j++) {
+      const ev = events[j], dt = t - ev.t;
+      if (dt >= 0 && dt < 0.25) slap += Math.sin(2 * Math.PI * ev.f * dt * (1 - dt)) * Math.exp(-dt * ev.k) * ev.a;
+    }
+    const surge = 0.7 + 0.3 * Math.sin(2 * Math.PI * t / 3.5) * Math.sin(2 * Math.PI * t / 1.3 + 0.5);
+    out[i] = (rush(rnd()) * 0.9 + hiss(body(rnd())) * 0.35) * surge + slap * 0.22;
+  }
+  const x = SR * 0.5; for (let i = 0; i < x; i++) { const a = i / x; out[len - x + i] = out[len - x + i] * (1 - a) + out[i] * a; }
+  wav('rip_loop', out);
+}
