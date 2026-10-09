@@ -139,6 +139,19 @@ func _init() -> void:
 	check(Tides.turn_line(turns_day, 1.5, 1.0) == "" and Tides.turn_line(turns_day, 0.9, 1.0) == "", "no turn inside the leg, or one at the launch itself, goes unsaid")
 	var rough := { "current": [{ "t": 0, "kn": 0.1 }, { "t": 600, "kn": 0.1 }], "wind": [{ "t": 0, "kn": 25, "fromDeg": 180 }, { "t": 600, "kn": 25, "fromDeg": 180 }] }
 	check(Tides.verdict_line(rough, 2.0, 1.0).begins_with("Poor") and Tides.verdict_line(rough, 2.0, 1.0).contains("rough sea") and not Tides.verdict_line(rough, 2.0, 1.0).contains("whole leg"), "a poor day for its chop blames the wind, not the stream for the whole leg")
+	# CrossingWatch: the water scene's crossing logic, driven without the scene.
+	var bow_n := Vector3(0, 0, -1)
+	var cw := CrossingWatch.new()
+	check(cw.tick(1.0, bow_n, 1.5, 0.0, Vector3(0.5, 0, 0), false, false) == "ferry" and cw.set_deg > 12.0 and not is_nan(cw.steer) and cw.steer > 300.0, "a beam stream sets the boat off and the ferry note goes up, steering up into it")
+	check(cw.tick(1.0, bow_n, 1.5, 0.0, Vector3(0.5, 0, 0), false, false) == "", "and only once a leg")
+	check(cw.stream_s == 2.0 and cw.on_line_s == 0.0, "pointing straight at the far side in a stream is time off the line")
+	var cw_held := CrossingWatch.new()
+	var hold := Vector3(sin(deg_to_rad(cw.steer)), 0, -cos(deg_to_rad(cw.steer)))
+	cw_held.tick(1.0, hold, 1.5, 0.0, Vector3(0.5, 0, 0), false, false)
+	check(cw_held.on_line_s == 1.0 and absf(cw_held.set_deg) > 12.0, "steering the ferry angle makes good the line, set off the heading and on the line")
+	var cw_head := CrossingWatch.new()
+	check(cw_head.tick(1.0, bow_n, 1.5, 0.0, Vector3(0, 0, 2.0), false, true) == "" and cw_head.tick(1.0, bow_n, 1.5, 0.0, Vector3(0, 0, 2.0), false, false) == "slack" and cw_head.slack == 1, "a head stream faster than the boat offers slack, once the screen is clear")
+	check(CrossingWatch.new().tick(1.0, bow_n, 1.5, 0.0, Vector3(0, 0, 2.0), true, false) == "" and CrossingWatch.new().tick(1.0, bow_n, 0.2, 0.0, Vector3(0.5, 0, 0), false, false) == "", "nothing is said blind in fog, or to a boat not yet under way")
 	var turning := { "current": [{ "t": 0, "kn": 3.0 }, { "t": 120, "kn": 1.0 }, { "t": 180, "kn": -1.0 }] }
 	var slack_h := Tides.next_slack(turning, 0.0)
 	check(slack_h > 2.3 and slack_h < 2.9 and is_nan(Tides.next_slack({ "current": [{ "t": 0, "kn": 3.0 }, { "t": 900, "kn": 3.0 }] }, 0.0)), "slack is when the stream eases or turns, and a stream that runs on has none")
