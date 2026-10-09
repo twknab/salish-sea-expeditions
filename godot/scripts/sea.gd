@@ -246,21 +246,16 @@ func _ready() -> void:
 			_chart.position = Vector2(20, 224 if controls.touch() else 200)
 			_chart.folded = controls.touch() or bool(App.save.get("chartFolded", false))
 			hud.add_child(_chart)
-			match App._url_param("near"):  # starts for checks
+			var start := CheckStarts.at(App._url_param("near"), App._url_param("close") == "1")  # starts for checks
+			if not start.is_empty():
+				kayak.global_position = Vector3(float(start[0]), 0.1, float(start[1]))
+				kayak.rotation.y = -deg_to_rad(float(start[2]))
+			match App._url_param("near"):
 				"jones", "posey", "home":
 					kayak.global_position = _dest + Vector3(0.0, 0.1, -900.0)  # 900 m north of the cove
 					kayak.rotation.y = PI  # heading south, into the cove
 				"ferry":  # `?scene=trip&near=ferry`: the ferry 600 m ahead, coming up the channel
-					kayak.global_position = Vector3(500.0, 0.1, -2900.0)
-					kayak.rotation.y = -deg_to_rad(340.0)
 					_traffic.place_near(kayak.global_position, 600.0)
-				"orcas":  # `?scene=trip&leg=1&near=orcas`: the pod 1.1 km ahead, coming the other way
-					if App._url_param("close") == "1":  # `&close=1`: in the pod's path as it starts its pass, to look at it
-						kayak.global_position = Vector3(-8800.0, 0.1, -10712.0)
-						kayak.rotation.y = -deg_to_rad(270.0)  # facing west down the pod's line: it comes on from 100 m
-					else:
-						kayak.global_position = Vector3(-7200.0, 0.1, -10700.0)
-						kayak.rotation.y = -deg_to_rad(270.0)
 				"fleet":  # `?scene=trip&leg=1&near=fleet`: astern of the whale-watch boat, looking along the pod's line
 					if not _watchers.is_empty():
 						var w: Dictionary = _watchers[0]
@@ -268,19 +263,6 @@ func _ready() -> void:
 						var h: Vector3 = Vector3(w.heading).normalized()
 						kayak.global_position = Vector3(b.x, 0.1, b.z) - h * 60.0  # the boat walks with the pod, away from here
 						kayak.rotation = Vector3(0.0, atan2(-h.x, -h.z), 0.0)  # the bow (-z) along the pod's heading, the boat on it
-				"spieden":
-					kayak.global_position = Vector3(-7000.0, 0.1, -10450.0)
-					kayak.rotation.y = -deg_to_rad(270.0)  # west down Spieden Channel, the porpoise ahead
-				"yellow":
-					if App._url_param("close") == "1":  # `&close=1`: seventy metres off the seals' rock, inside the hundred yards
-						kayak.global_position = Vector3(-1040.0, 0.1, -6270.0)
-						kayak.rotation.y = -deg_to_rad(315.0)  # the rock is north-west
-					else:
-						kayak.global_position = Vector3(-860.0, 0.1, -6225.0)
-						kayak.rotation.y = -deg_to_rad(300.0)  # the kelp 50 m ahead, the seals' rock beyond
-				"labs":
-					kayak.global_position = Vector3(590.0, 0.1, -1312.0)
-					kayak.rotation.y = -deg_to_rad(250.0)  # the heron 30 m off in the shallows
 			if App._url_param("hdg") != "":  # `&hdg=0`: the bow on a bearing, for checks
 				kayak.rotation.y = -deg_to_rad(float(App._url_param("hdg")))
 			if App._url_param("underway") == "1":  # `&underway=1`: the boat already making way, for checks
@@ -434,6 +416,7 @@ func _leg(delta: float) -> void:
 		_offer_slack(cur.length() / FerryGlide.KN)
 	elif said == "eddy":
 		note_label.text = _said("eddy") + CrossingWatch.eddy_note(controls.touch())
+		_note_hold = NOTE_HOLD
 	elif said == "ferry":
 		note_label.text = FerryGlide.note(_cross.set_deg, _cross.steer, Leg.cove_name(_route), controls.touch())
 		_note_hold = NOTE_HOLD

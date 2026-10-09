@@ -391,6 +391,10 @@
 
 - [x] T014cv The advice the turn gives — work up the shore inside the eddies — is now true on the water: the stream eases toward the shore, full beyond 240 m and a third of itself inside 80 m (`CrossingWatch.eddy_factor`), measured each frame by a coarse ring probe for land (`Terrain.shore_distance`). The chart's stream arrow, the course made good and the slack card all read the eased stream. The first time the boat finds an eddy with a real stream running outside it, the partner says so and the note says how a paddler uses it.
 
+## Slice 83 — the eddy, checked
+
+- [x] T014cw The water scene's fixed check starts move into a table (`CheckStarts`, `check_starts.gd`; the starts that depend on what spawned stay in the scene), and a new one, `?scene=trip&leg=1&near=eddy`, puts the boat 80 m off Spieden Island's south shore in the narrows — with `&day=september&hour=16.5&underway=1` the September ebb runs 3.2 kn outside and 0.9 kn in the eddy, and the eddy's note is on screen. Seeing it found that the ferry-angle note took the line from the eddy's a frame later: the ferry angle is now taught in open water only, and the eddy's note holds the line like the turn's. The stations sweep opens the new start.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
