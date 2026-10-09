@@ -101,6 +101,7 @@ func _init() -> void:
 	check(HaulOut.verdict("grass", 0.0) == "dry" and HaulOut.record_words("grass", rise) == "" and HaulOut.record_words("edge", rise) != "", "only trouble is written down")
 	check(HaulOut.forecast_line(tide_day, 17.5).begins_with("Tonight’s high water is 2.5 m at 23:"), "the first card reads the table aloud")
 	check(FoodStore.verdict("tent") == "taken" and FoodStore.verdict("hatch") == "worked" and FoodStore.verdict("hung") == "safe" and FoodStore.verdict("") == "safe", "the raccoons get the tent, work the hatch, and leave the hung box")
+	check(FoodStore.leaves_clean("hung") and FoodStore.leaves_clean("hatch") and not FoodStore.leaves_clean("tent"), "a camp the raccoons scattered is not a clean camp")
 	check(FoodStore.record_words("hung") == "" and FoodStore.record_words("tent") != "" and FoodStore.night_line("hatch").contains("claw"), "only trouble with the food is written down")
 	# The day's own light: a July night falls after nine, a September one before.
 	check(Daylight.night_at(13.0, 5.5, 21.17) == 0.0 and Daylight.night_at(20.0, 5.5, 21.17) == 0.0 and Daylight.night_at(23.0, 5.5, 21.17) == 1.0, "a July evening is light until nine")
