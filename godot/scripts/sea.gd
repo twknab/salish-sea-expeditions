@@ -42,6 +42,8 @@ var _fogged := false            # launched or paddled in fog today, for the reco
 var _fog_in_hour := -1.0        # when the fog closed in, for the record
 var _dark_said := false         # the night-on-the-water note goes up once
 var _rain_said := false         # the squall's note goes up once
+var _note_hold := 0.0           # seconds a time-critical note keeps the line before the squall's or the night's may take it
+const NOTE_HOLD := 8.0
 var _notes: Array = []          # every note the day put up, in order, for the field notes
 var _note_at: Array = []        # [[x, z]] where each was said, for the chart of the expedition
 var _last_note := ""
@@ -408,7 +410,8 @@ func _leg(delta: float) -> void:
 	var lights := sea.night > 0.3 or Fog.blind(_fog)
 	for k in [kayak, _partner.kayak if _partner else null]:
 		if k: k.set_light(lights)
-	if sea.night > 0.3 and not _dark_said:
+	_note_hold = maxf(0.0, _note_hold - delta)
+	if sea.night > 0.3 and not _dark_said and _note_hold <= 0.0:
 		_dark_said = true
 		_dark = true
 		note_label.text = _said("dark") + ("Night on the water. The white light goes on, the shore is a shape, and the landing is by compass and the sound of the beach." if not controls.touch() else "Night on the water: light on, land by compass.")
@@ -425,10 +428,12 @@ func _leg(delta: float) -> void:
 	var kn := Tides.current_kn(_day, _hour)
 	if _cross.turned(kn) and not Fog.blind(_fog) and _card == null:
 		note_label.text = _said("turn") + CrossingWatch.turn_note(kn, str(_route.get("favours", "flood")), controls.touch())
+		_note_hold = NOTE_HOLD
 	elif said == "slack":
 		_offer_slack(cur.length() / FerryGlide.KN)
 	elif said == "ferry":
 		note_label.text = FerryGlide.note(_cross.set_deg, _cross.steer, Leg.cove_name(_route), controls.touch())
+		_note_hold = NOTE_HOLD
 	# The water of the hour: wind builds the sea, wind against the stream stands it up, and a rip
 	# throws the odd wave on the beam that the paddler must brace for.
 	# Bull kelp: a bed is a drag on the hull and a lee in a chop — the fronds lie the swell down.
@@ -468,7 +473,7 @@ func _leg(delta: float) -> void:
 	Sound.set_rain(rain)
 	if rain > 0.3:
 		_rained = true
-		if not _rain_said:
+		if not _rain_said and _note_hold <= 0.0:
 			_rain_said = true
 			note_label.text = _said("rain") + ("Rain. Hood up and keep paddling: the drops flatten the chop, and it is the wind behind the front that matters, not the water on your deck." if not controls.touch() else "Rain. Hood up, keep paddling; watch the wind behind it.")
 	if _chart:
