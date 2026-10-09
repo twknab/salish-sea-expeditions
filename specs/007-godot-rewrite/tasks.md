@@ -341,6 +341,11 @@
 
 - [x] T014ch A stream crossing is a seamanship call when one came up: the water scene times every second under way in a stream of more than half a knot, and the seconds the course made good stays within twelve degrees of the line to the landing (`FerryGlide.off_line`). On the line three-fifths of the way is a crossing held (`FerryGlide.held`); under a minute in a stream is not judged. The debrief's Each day names it ("ferried across the stream on the line", or "set down the stream, 48% of the crossing on the line") and Seamanship carries "Crossed the stream on a ferry angle".
 
+## Slice 71 — the ferry angle in Kayak School
+
+- [x] T014ci Kayak School teaches the crossing before the water does: an eighth drill, "Ferry angle: cross a stream", between the compass and the rescue. A knot of stream runs across the line from the left (`FerryGlide.across`), the compass marks the line, and the note shows the course made good once the boat is moving. Making good the line within ten degrees for twelve seconds completes it. The drills' lines are now taken from the bow as it is, not from last tick's heading.
+- [x] T014cj The phone HUD stops overlapping itself: the ferry-angle note has a two-line phone form (`FerryGlide.note(…, short)`), the opening hint is shorter on a phone, and the compass sits under the note and the trip lines (no higher than 222 pt, lower when the note runs long).
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

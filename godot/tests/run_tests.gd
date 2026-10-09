@@ -127,6 +127,11 @@ func _init() -> void:
 	check(absf(hdg - (360.0 - 19.47)) < 0.1, "to hold north against an easterly set, point up into it by asin(0.5/1.5)")
 	check(absf(FerryGlide.course_made_good(-Vector3(sin(deg_to_rad(hdg)), 0, -cos(deg_to_rad(hdg))) * -1.5, Vector3(0.5, 0, 0))) < 0.1 or absf(FerryGlide.course_made_good(Vector3(sin(deg_to_rad(hdg)), 0, -cos(deg_to_rad(hdg))) * 1.5, Vector3(0.5, 0, 0))) < 0.1, "and the boat then makes good the line")
 	check(is_nan(FerryGlide.heading_for(0.0, 0.4, Vector3(0.5, 0, 0))), "a stream faster across the line than the boat cannot be ferried")
+	check(FerryGlide.note(-18.0, 72.0, "Posey Island").contains("18° left") and FerryGlide.note(-18.0, 72.0, "Posey Island").contains("steer about 072°") and FerryGlide.note(30.0, NAN, "Posey Island").contains("wait for slack"), "the ferry note names the set, the side and the heading, or says no angle holds it")
+	check(FerryGlide.note(-18.0, 72.0, "Posey Island", true) == "Set 18° left: steer about 072° to hold the line.", "and on a phone in two short lines")
+	var sch := FerryGlide.across(90.0, 1.0)
+	check(absf(sch.length() - FerryGlide.KN) < 0.001 and sch.z > 0.5 * FerryGlide.KN, "the school's stream runs across the line, to starboard of a boat pointing down it")
+	check(fposmod(90.0 - FerryGlide.heading_for(90.0, 1.5, sch), 360.0) < 30.0 and fposmod(90.0 - FerryGlide.heading_for(90.0, 1.5, sch), 360.0) > 15.0, "and holding the line means pointing up into it, to port, by about twenty degrees")
 	check(absf(FerryGlide.off_line(355.0, 5.0) - 10.0) < 0.01 and FerryGlide.off_line(NAN, 90.0) == 0.0, "off the line is measured the short way round")
 	check(FerryGlide.held(30.0, 0.0) == "" and FerryGlide.held(300.0, 200.0) == "held" and FerryGlide.held(300.0, 100.0) == "set", "a crossing is held on the line three-fifths of the way, and a brush with a stream is not judged")
 	check(Seamanship.calls([{"verdict": "good", "streamS": 300.0, "onLineS": 100.0}]).size() == 4 and Seamanship.kept(Seamanship.calls([{"verdict": "good", "streamS": 300.0, "onLineS": 100.0}])) == 3, "a stream crossing is a call when one came up")
@@ -182,7 +187,7 @@ func _init() -> void:
 						missing += 1
 						printerr("unknown source ", sid, " in ", key)
 		check(missing == 0, "all sourceIds resolve")
-		check(c.drills.size() == 7 and c.drills[0].id == "forward" and c.drills[5].id == "compass" and c.drills[6].id == "rescue", "seven drills, forward first, the compass before the rescue, the rescue last")
+		check(c.drills.size() == 8 and c.drills[0].id == "forward" and c.drills[5].id == "compass" and c.drills[6].id == "ferry" and c.drills[7].id == "rescue", "eight drills, forward first, the compass then the ferry angle before the rescue, the rescue last")
 	# IK: the elbow keeps both bone lengths and bends toward the pole.
 	var sh := Vector3(0.2, 1.4, 0)
 	var hand := Vector3(0.45, 1.1, 0.3)

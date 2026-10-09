@@ -720,6 +720,14 @@
    "keys": "W to paddle; A or D to lean the bow round; the target is the mark on the compass"
   },
   {
+   "id": "ferry",
+   "title": "Ferry angle: cross a stream",
+   "skill": "navigation",
+   "text": "A knot of stream runs across your line from the left. Point straight down the line and the water carries you off it; point the bow up into the stream and the boat crabs across, making good the line while it points somewhere else. The stronger the stream, the wider the angle.",
+   "goal": "Make good the line within ten degrees for twelve seconds",
+   "keys": "W to paddle; A to bring the bow up into the stream; the mark on the compass is the line"
+  },
+  {
    "id": "rescue",
    "title": "Wet exit and paddle-float re-entry",
    "skill": "rescue",

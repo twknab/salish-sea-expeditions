@@ -123,3 +123,17 @@ static func spacer() -> Control:
 	c.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return c
+
+## A thin progress bar across the foot of a screen, `rise` points up from the bottom edge.
+static func thin_bar(rise: int) -> ProgressBar:
+	var b := ProgressBar.new()
+	b.show_percentage = false
+	b.custom_minimum_size = Vector2(0, 5)
+	b.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	b.offset_left = 30; b.offset_right = -30
+	b.offset_top = -rise; b.offset_bottom = -rise + 5
+	var bg := StyleBoxFlat.new(); bg.bg_color = Color(1, 1, 1, 0.15); bg.set_corner_radius_all(3)
+	var fg := StyleBoxFlat.new(); fg.bg_color = SUN; fg.set_corner_radius_all(3)
+	b.add_theme_stylebox_override("background", bg)
+	b.add_theme_stylebox_override("fill", fg)
+	return b

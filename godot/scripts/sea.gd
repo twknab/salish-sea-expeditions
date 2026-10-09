@@ -148,7 +148,7 @@ func _ready() -> void:
 	heading_label.visible = false
 	_compass = Compass.new()
 	_compass.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	var top := 150.0 if controls.touch() else 40.0  # under the note on a phone, beside it on a desktop
+	var top := 222.0 if controls.touch() else 40.0  # under the note and the trip lines on a phone, beside them on a desktop
 	_compass.offset_left = -112; _compass.offset_right = -14; _compass.offset_top = top; _compass.offset_bottom = top + 118
 	hud.add_child(_compass)
 	_places = PlaceLabels.new()
@@ -185,6 +185,7 @@ func _ready() -> void:
 				if want >= 0:
 					_start_drills()
 					_start_drill(want)
+					kayak.linear_velocity = -kayak.global_basis.z * (1.6 if App._url_param("underway") == "1" else 0.0)  # `&underway=1`
 					return
 			_show_phase()
 		_:
@@ -286,7 +287,7 @@ func _ready() -> void:
 			var opening := "Friday Harbor · San Juan Channel opens ahead" if Leg.index() == 0 else "Day %d · %s" % [Leg.index() + 1, str(_route.get("title", ""))]
 			if _partner:
 				opening += " · with %s" % str(_partner.preset.get("name", "a partner"))
-			note_label.text = "%s\n%s" % [opening, ("Hold the water to paddle · slide to lean · slide up to back off" if controls.touch() else "Hold W to paddle · A/D lean · S back · Q/E edge · J brace · M chart")]
+			note_label.text = "%s\n%s" % [opening, ("Hold to paddle · slide to lean" if controls.touch() else "Hold W to paddle · A/D lean · S back · Q/E edge · J brace · M chart")]
 
 ## Put the animals and the kelp where they live, on the shore or the water the terrain says is there.
 func _spawn_sightings() -> void:
@@ -435,13 +436,7 @@ func _leg(delta: float) -> void:
 	_stream_s[1] += delta if crossing and FerryGlide.off_line(cmg, brg) <= 12.0 else 0.0
 	if absf(set_deg) > 12.0 and cur.length() > 0.45 * FerryGlide.KN and not _ferry_said and not Fog.blind(_fog):
 		_ferry_said = true
-		var steer := FerryGlide.heading_for(brg, kayak.speed, cur)
-		var side := "right" if set_deg > 0.0 else "left"
-		if is_nan(steer):
-			note_label.text = "The stream is setting you %d° off, and it runs faster across the line than you paddle. No angle holds it: wait for slack, or make for the bail-out down-stream." % int(absf(set_deg))
-		else:
-			var hold := "To hold the line to %s, point up into it: steer about %03d°, a ferry angle, and the boat crabs across on the line." % [Leg.cove_name(_route), int(round(steer))]
-			note_label.text = "The stream is setting you %d° %s of where the bow points (the dashed line on the chart). %s" % [int(absf(set_deg)), side, hold]
+		note_label.text = FerryGlide.note(set_deg, FerryGlide.heading_for(brg, kayak.speed, cur), Leg.cove_name(_route), controls.touch())
 	# The water of the hour: wind builds the sea, wind against the stream stands it up, and a rip
 	# throws the odd wave on the beam that the paddler must brace for.
 	# Bull kelp: a bed is a drag on the hull and a lee in a chop — the fronds lie the swell down.
@@ -656,6 +651,8 @@ func _process(delta: float) -> void:
 	if _places.visible:
 		_places.reach = minf(minf(8000.0, Fog.visibility_m(_fog)), lerpf(8000.0, 2500.0, _rain_now))  # in fog, and in rain, the shore names go with the shore
 		_places.update(rig.camera())
+	if controls.touch():  # on a phone the compass sits under the note, however long the note runs
+		_compass.position.y = maxf(222.0, note_label.get_rect().end.y + 10.0)
 	if _drill >= 0:
 		_drill_progress(delta)
 
@@ -743,27 +740,21 @@ func _start_drill(i: int) -> void:
 	var keys := "" if DisplayServer.is_touchscreen_available() else "\nKeyboard: %s." % d.get("keys", "")
 	note_label.text = "%s\n%s\nGoal: %s.%s" % [d.title, d.text, d.goal, keys]
 	if _drill_bar == null:
-		_drill_bar = ProgressBar.new()
-		_drill_bar.show_percentage = false
-		_drill_bar.custom_minimum_size = Vector2(0, 5)
-		_drill_bar.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-		_drill_bar.offset_left = 30; _drill_bar.offset_right = -30
-		_drill_bar.offset_top = -234; _drill_bar.offset_bottom = -229
-		var bg := StyleBoxFlat.new(); bg.bg_color = Color(1, 1, 1, 0.15); bg.set_corner_radius_all(3)
-		var fg := StyleBoxFlat.new(); fg.bg_color = UIKit.SUN; fg.set_corner_radius_all(3)
-		_drill_bar.add_theme_stylebox_override("background", bg)
-		_drill_bar.add_theme_stylebox_override("fill", fg)
+		_drill_bar = UIKit.thin_bar(234)
 		hud.add_child(_drill_bar)
 	_drill_bar.value = 0
-	if d.id == "brace":
-		_wobble = 2.5
-	if d.id == "rescue":
-		_capsize_in = 2.5
+	_wobble = 2.5 if d.id == "brace" else _wobble
+	_capsize_in = 2.5 if d.id == "rescue" else _capsize_in
 	if d.id == "compass":
 		# Seventy degrees round from where the bow points now: a real turn to make, then a line to hold.
-		var target_deg := fposmod(rad_to_deg(kayak.heading) + 70.0, 360.0)
+		var target_deg := fposmod(FerryGlide.course_made_good(-kayak.global_basis.z, Vector3.ZERO) + 70.0, 360.0)
 		s_target_set(target_deg)
 		note_label.text = "%s\n%s\nGoal: steer %03d° and hold it for twelve seconds, under way.%s" % [d.title, d.text, int(round(target_deg)), keys]
+	elif d.id == "ferry":
+		# The line is where the bow points now; a knot of stream runs across it from the left.
+		_drill_state.line = FerryGlide.course_made_good(-kayak.global_basis.z, Vector3.ZERO)  # the bow now, not last tick's heading
+		_drill_state.stream = FerryGlide.across(float(_drill_state.line), 1.0)
+		_compass.target = deg_to_rad(float(_drill_state.line))
 	else:
 		_compass.target = NAN
 
@@ -787,6 +778,12 @@ func _drill_progress(delta: float) -> void:
 			var on_line := off < deg_to_rad(10.0) and kayak.speed > 0.4
 			s.t = s.t + delta if on_line else maxf(0.0, s.t - delta * 0.5)
 			p = s.t / 12.0
+		"ferry":
+			kayak.global_position += s.stream * delta  # the water carries the boat, whatever it points at
+			var cmg := FerryGlide.course_made_good(-kayak.global_basis.z * kayak.speed, s.stream) if kayak.speed > 0.4 else NAN
+			s.t = s.t + delta if FerryGlide.off_line(cmg, float(s.line)) < 10.0 and not is_nan(cmg) else maxf(0.0, s.t - delta * 0.5)
+			p = s.t / 12.0
+			note_label.text = "%s\n%s\nGoal: %s." % [d.title, str(d.text) if is_nan(cmg) else "The line is the mark, %03d°. Making good %03d°." % [int(s.line), int(round(cmg))], d.goal]  # the lesson while still, numbers under way
 		"sweep":
 			var dh := angle_difference(s.prev, kayak.heading)
 			s.prev = kayak.heading
@@ -818,8 +815,7 @@ func _drill_progress(delta: float) -> void:
 	_drill_bar.value = clampf(p, 0.0, 1.0) * 100.0
 	if p >= 1.0:
 		_drill = -1
-		if d.id == "compass":
-			_compass.target = NAN  # the mark was the drill's; the trip puts the cove's there
+		_compass.target = NAN  # the drills' marks were theirs; the trip puts the cove's there
 		var done: Array = App.save.get("drills", [])
 		if not done.has(d.id):
 			done.append(d.id)
