@@ -321,6 +321,10 @@
 
 - [x] T014cc README's Godot paragraph carries slices 56–64: seven drills, the squall, the white light, the call ashore, the field notes on the chart of the expedition.
 
+## Slice 66 — the shore walk's own tide
+
+- [x] T014cd The shore walk reads the tide it really has (`Tides.next_low`): its kicker carries the water standing on the shore now and when the next low comes, and when the pools are still under water the first card says so and that the walk is what the low will uncover — on a September spring tide that is a different shore from July's.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

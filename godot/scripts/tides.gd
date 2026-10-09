@@ -82,6 +82,17 @@ static func wind_against_tide(day: Dictionary, hour: float) -> bool:
 ## Judging a launch hour for a leg that runs north with the flood: the mean current over the leg's
 ## hours (positive helps), the worst chop, and whether wind opposes the tide at any point.
 ## Returns {cur, worst, against, verdict: "good" | "fair" | "poor"}.
+## The next low water from an hour, within the next tidal cycle and a bit: {hour, h}.
+static func next_low(day: Dictionary, hour: float) -> Dictionary:
+	var best := { "hour": hour, "h": height_m(day, hour) }
+	var t := hour
+	while t <= hour + 14.0:
+		var v := height_m(day, t)
+		if v < float(best.h):
+			best = { "hour": t, "h": v }
+		t += 1.0 / 6.0
+	return best
+
 ## When the sun sets on the day, in hours.
 static func sunset_h(day: Dictionary) -> float:
 	return float(day.get("sunset", 1270)) / 60.0
