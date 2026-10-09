@@ -363,6 +363,10 @@
 
 - [x] T014co The plan's verdict names a slack that falls inside the leg (`Tides.turn_line`): "The stream turns at 13:20, partway through, and runs against you after it" — or carries you, on a leg that favours the ebb. A turn in the first or last quarter hour is the launch's or the landing's and goes unsaid. A poor verdict for chop no longer says the stream is "near slack for the whole leg"; it names the wind's rough sea, and "for the whole leg" is kept for a leg that really runs against the stream.
 
+## Slice 76 — words on the water
+
+- [x] T014cp The field guide carries "Words on the water": thirteen terms the chart, the plan and the notes use — flood and ebb, slack water, set and drift, course made good, ferry angle, tide rip, eddy, wind against tide, lee, float plan, bail-out, 1-10-1, the white light — each in a sentence or two with its sources (`src/content/glossary.js`, exported with the content; `tests/content.test.js` resolves every source). `?scene=guide&at=words` opens on it.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

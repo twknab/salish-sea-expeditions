@@ -1,0 +1,18 @@
+// Words on the water: the terms the game uses on the chart, the plan and the notes, defined once in
+// plain words for the field guide. Every entry is cited (Principle VIII).
+
+export const GLOSSARY = [
+  { id: 'flood', term: 'Flood and ebb', text: 'The tidal stream runs one way while the tide rises (the flood) and the other while it falls (the ebb). In San Juan Channel the flood sets north-northwest and the ebb south-southeast.', sourceIds: ['noaa-tides'] },
+  { id: 'slack', term: 'Slack water', text: 'The short time when the stream has eased to nothing as it turns between flood and ebb. In a channel it rarely falls at high or low water itself, so it is read from the current table, not the tide table. Crossings are easiest near it.', sourceIds: ['noaa-tides'] },
+  { id: 'set', term: 'Set and drift', text: 'The set is the direction a stream flows toward; the drift is its speed. "Flood 1.2 kn setting 330°" is water moving toward 330° at a knot and a fifth.', sourceIds: ['noaa-tides', 'noaa-chart'] },
+  { id: 'cmg', term: 'Course made good', text: 'Where the boat actually goes over the ground: the way it points and its speed through the water, added to the set and drift of the stream. On the chart it is the dashed line.', sourceIds: ['aca', 'noaa-chart'] },
+  { id: 'ferry', term: 'Ferry angle', text: 'Pointing the bow up into a stream that runs across your line, so the boat crabs across and makes good the line. The faster the stream against your speed, the wider the angle — and past your own speed, no angle holds it.', sourceIds: ['aca'] },
+  { id: 'rip', term: 'Tide rip', text: 'Rough, confused water where a stream runs fast over shallows, through narrows or off a point. Rips run harder than the open channel and throw waves from odd directions.', sourceIds: ['aca', 'noaa-chart'] },
+  { id: 'eddy', term: 'Eddy', text: 'Water circling behind a point or in a bay, often running against the main stream. A paddler rests in one, or works up-stream along the shore inside it.', sourceIds: ['aca'] },
+  { id: 'windtide', term: 'Wind against tide', text: 'When the wind blows against the way the stream runs, the waves shorten and steepen. The same wind with the stream lies the sea down.', sourceIds: ['aca', 'uscg'] },
+  { id: 'lee', term: 'Lee', text: 'The sheltered side of an island or point, out of the wind. Waiting in a lee for an afternoon wind to blow through is seamanship, not defeat.', sourceIds: ['aca'] },
+  { id: 'floatplan', term: 'Float plan', text: 'The route, the times and the bail-outs, left with someone ashore who will call for help at an agreed hour if you have not called in. It is closed by calling when you land.', sourceIds: ['cgaux-paddlers', 'uscg'] },
+  { id: 'bailout', term: 'Bail-out', text: 'A landing on the route, planned before launching, to make for when the water or the weather turns. Nobody has to make a crossing in one push.', sourceIds: ['cgaux-paddlers', 'aca'] },
+  { id: 'onetenone', term: '1-10-1', text: 'In cold water: about one minute to get your breathing under control, about ten minutes of useful movement to get out or get help, and about an hour before hypothermia takes consciousness.', sourceIds: ['coldwater'] },
+  { id: 'whitelight', term: 'The white light', text: 'A vessel under oars keeps a white light ready at hand — a torch or a lantern — and shows it in time to prevent collision, after dark and in poor visibility. On a kayak that is a light carried on deck where it can be seen all round.', sourceIds: ['colregs'] },
+];
