@@ -23,6 +23,9 @@ var slack := 0          # the slack card: 0 not yet, 1 asked, 2 waited for
 var eddy_k := 1.0      # how much of the channel's stream reaches the boat here, this frame
 var eddy_said := false
 var _raw_kn := 0.0      # the stream here before the shore takes any of it, knots
+var _place := ""        # where the stream runs hard here ("in the narrows of Spieden Channel"), or ""
+var max_kn := 0.0       # the hardest stream the boat met on the leg, knots, as it reached the boat
+var max_at := ""        # and where, for the record
 var _was_sign := 0.0    # the way the channel's stream last ran: + flood, - ebb, 0 not yet read
 
 ## One frame. `fwd` is the bow's direction, `speed` its pace through the water (m/s), `line_deg` the
@@ -30,6 +33,10 @@ var _was_sign := 0.0    # the way the channel's stream last ran: + flood, - ebb,
 ## up, "ferry" when the note should, or "".
 func tick(delta: float, fwd: Vector3, speed: float, line_deg: float, stream: Vector3, blind: bool, card_open: bool) -> String:
 	cmg = FerryGlide.course_made_good(fwd * speed, stream) if speed > 0.4 else NAN
+	var felt := stream.length() / FerryGlide.KN
+	if felt > max_kn:
+		max_kn = felt
+		max_at = _place
 	var heading := FerryGlide.course_made_good(fwd, Vector3.ZERO)
 	set_deg = FerryGlide.set_off(heading, cmg)
 	var real := stream.length() > REAL_STREAM_KN * FerryGlide.KN
@@ -83,10 +90,11 @@ static func eddy_factor(shore_m: float) -> float:
 	return lerpf(EDDY_LEFT, 1.0, smoothstep(EDDY_NEAR, EDDY_FAR, shore_m))
 
 ## The shore this frame: keeps how much of the stream reaches the boat (and how hard it runs out in
-## the channel, `kn`), and returns the factor to scale the stream by.
-func eddy(shore_m: float, kn: float) -> float:
+## the channel, `kn`, and where it runs hard, `place`), and returns the factor to scale the stream by.
+func eddy(shore_m: float, kn: float, place := "") -> float:
 	eddy_k = eddy_factor(shore_m)
 	_raw_kn = kn
+	_place = place
 	return eddy_k
 
 ## The note the first time the boat finds the shore's eddy with a real stream running outside it.
@@ -94,3 +102,10 @@ static func eddy_note(short := false) -> String:
 	if short:
 		return "In the shore's eddy: the stream eases in here."
 	return "In close to the shore the stream eases: points and bays turn it back on itself in eddies. Working against the run, go up the shore inside them, point to point, and cross where you must."
+
+## The day's hardest water for the record line: "the stream at 3.2 kn in the narrows of Spieden
+## Channel" — or empty for a day that never ran a knot.
+static func hardest_line(kn: float, at: String) -> String:
+	if kn < 1.0:
+		return ""
+	return "the stream at %.1f kn%s" % [kn, (" " + at) if at != "" else ""]
