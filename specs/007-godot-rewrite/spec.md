@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-06
 
-**Status**: Experiment — fifty-eight slices merged (see "What exists today" below and
+**Status**: Experiment — sixty-one slices merged (see "What exists today" below and
 tasks.md); go/no-go pending the mobile Safari measurement from the Cloud Run URL (see research.md
 and the table at the end)
 
@@ -41,13 +41,13 @@ The Godot build on `main` is a complete three-day expedition, not a tech demo:
   the rescue taught in the water.
 - **Ashore**: camp on Jones and Posey with the shore walk at low tide, the boat carried above the night's high water or found by it, the food hung or lost to the raccoons, Posey's water drunk, rationed or fetched at the cost of the ebb, the stars and the
   bioluminescence of the cove at night, the take-out at Friday
-  Harbor with the tally and the call ashore that closes the float plan, the ferry home to Anacortes in the evening light, then the debrief: each day as it went, the score by the Phaser rules, the seamanship calls kept and missed,
+  Harbor with the tally and the call ashore that closes the float plan, the ferry home to Anacortes in the evening light, then the debrief: each day as it went, the score by the Phaser rules, the seamanship calls kept and missed, the field notes of each day,
   the drills and the species; the field guide and every source a button away from the title.
 - **Pause**: Escape, P, a chip, or the page going into a pocket holds the boat and the clock
   under a card; About carries the acknowledgment and the safety note at all times.
 - **Sound**: four full-length pieces fetched beside the page after the first frame, the sea, the strokes, the blow, the eagle, a diesel at idle and the raccoons synthesized; sound and music switches on every screen.
 - **Again, harder**: the title offers a second authored day, a September spring tide with the first
-  autumn southerly, and every reading of the water — and the light — follows the choice; the debrief offers the other day, and the title remembers the last expedition.
+  autumn southerly and the squall it brings, and every reading of the water — and the light — follows the choice; the debrief offers the other day, and the title remembers the last expedition.
 - **Delivery**: the export is served precompressed with ETags (about 13 MB on the wire for the
   first frame against 45 MB raw), the Docker image and Terraform are framed behind a repository
   variable, and a private demo page tracks `main`.

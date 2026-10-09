@@ -50,7 +50,7 @@ test('every day the title offers has the same shape, and September is the harder
     assert.ok(d.id && d.label && d.blurb, `${d.id} is named`);
     assert.ok(!ids.has(d.id), `${d.id} is unique`);
     ids.add(d.id);
-    for (const key of ['tides', 'current', 'wind']) {
+    for (const key of ['tides', 'current', 'wind', ...(d.rain ? ['rain'] : [])]) {
       const t = d[key].map((r) => r.t);
       assert.deepEqual(t, [...t].sort((a, b) => a - b), `${d.id} ${key} is in time order`);
     }
@@ -61,6 +61,7 @@ test('every day the title offers has the same shape, and September is the harder
   const july = TRIP_DAYS.find((d) => d.id === 'july');
   const sept = TRIP_DAYS.find((d) => d.id === 'september');
   assert.ok(peak(sept) > peak(july) && range(sept) > range(july), 'September blows harder and runs bigger');
+  assert.ok(sept.rain && Math.max(...sept.rain.map((r) => r.r)) > 0.5 && !july.rain, 'September brings a squall, July stays dry');
 });
 
 test('the legs chain: each leg starts where the one before it landed', () => {

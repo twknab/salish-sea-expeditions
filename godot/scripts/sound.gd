@@ -21,6 +21,7 @@ const MOODS := {
 }
 var _players: Array[AudioStreamPlayer] = []  # two, so one piece can fade out under the next
 var _engine: AudioStreamPlayer
+var _rain: AudioStreamPlayer
 var _live := 0
 var _piece := ""   # what is playing
 var _wanted := ""  # what the scene asked for, kept across the music being switched off and on
@@ -32,13 +33,14 @@ var _http: HTTPRequest
 var _fetching := ""
 
 func _ready() -> void:
-	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull", "blow", "eagle", "engine_idle", "raccoons"]:
+	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull", "blow", "eagle", "engine_idle", "raccoons", "rain_loop"]:
 		var s := _load("res://audio/%s.wav" % n)
 		if s:
 			_streams[n] = s
 	_water = _loop("water_loop", -14.0)
 	_wind = _loop("wind_loop", -26.0)
 	_engine = _loop("engine_idle", -80.0)  # a diesel at idle, brought up when a boat is near
+	_rain = _loop("rain_loop", -80.0)      # rain on the water and the deck, brought up with the squall
 	for i in range(6):
 		var p := AudioStreamPlayer.new()
 		add_child(p)
@@ -129,6 +131,13 @@ func eagle() -> void:
 
 func raccoons() -> void:
 	_play("raccoons", -14.0)
+
+## Rain, 0 dry to 1 a squall; glides.
+func set_rain(a: float) -> void:
+	if _rain == null:
+		return
+	var want := lerpf(-80.0, -14.0, clampf(a, 0.0, 1.0)) if a > 0.01 else -80.0
+	_rain.volume_db = lerpf(_rain.volume_db, want, 0.1)
 
 ## The idle of the nearest boat, `near` 1 alongside to 0 out of hearing; glides, so it never pops.
 func set_engine(near: float) -> void:

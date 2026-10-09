@@ -135,3 +135,19 @@ for (let k = 0; k < 2; k++) {
   for (let i = Math.floor(0.75 * SR); i < Math.floor(1.05 * SR); i++) { const t = i / SR - 0.75; out[i] += l(rnd()) * Math.sin(Math.PI * t / 0.3) * (0.5 + 0.5 * Math.max(0, Math.sin(2 * Math.PI * 28 * t))) * 0.35; }
   wav('raccoons', out);
 }
+
+// Rain on the water and the deck: a hiss of filtered noise with a scatter of heavier drops. Seamless loop.
+{
+  const len = SR * 6, out = new Float32Array(len); const l = lp(3200), h = hp(400), l2 = lp(900);
+  let drop = 0, dropT = 0;
+  for (let i = 0; i < len; i++) {
+    const t = i / SR;
+    if (Math.random() < 0.0009) { drop = 0.9 + Math.random() * 0.5; dropT = 0; }
+    const d = drop > 0 ? Math.sin(2 * Math.PI * (900 + 400 * Math.random()) * dropT) * Math.exp(-dropT * 90) * drop : 0;
+    dropT += 1 / SR; if (dropT > 0.08) drop = 0;
+    const swell = 0.8 + 0.2 * Math.sin(2 * Math.PI * t / 3.3);
+    out[i] = (h(l(rnd())) * 0.5 + l2(rnd()) * 0.2) * swell + d * 0.25;
+  }
+  const x = SR * 0.5; for (let i = 0; i < x; i++) { const a = i / x; out[len - x + i] = out[len - x + i] * (1 - a) + out[i] * a; }
+  wav('rain_loop', out);
+}
