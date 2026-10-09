@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { CREDITS, creditById } from '../src/content/credits.js';
 import { LESSONS } from '../src/content/lessons.js';
 import { SPECIES } from '../src/content/species.js';
-import { KAYAK_PARTS, BODY_POINTS, PADDLE_PARTS } from '../src/content/anatomy.js';
+import { KAYAK_PARTS, BODY_POINTS, PADDLE_PARTS, DRILLS } from '../src/content/anatomy.js';
 import { PLACES_INFO } from '../src/content/places.js';
 import { TRIP_DAYS } from '../src/content/tripDay.js';
 import { LEGS } from '../src/content/expedition.js';
@@ -89,6 +89,10 @@ test('the credits the Godot build relies on are kept, with what each obliges', (
   assert.match(byId.worldcover.licence, /CC BY 4\.0/);
   assert.match(byId.worldcover.author, /European Space Agency/);
   assert.match(byId.dejavu.licence, /Bitstream Vera/);
+});
+
+test('every drill says how to do it on a phone as well as on a keyboard', () => {
+  for (const d of DRILLS) assert.ok(d.keys && d.touch && d.touch.length > 10, d.id);
 });
 
 test('the words on the water are defined once each, in a sentence or more', () => {

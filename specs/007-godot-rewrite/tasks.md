@@ -439,6 +439,10 @@
 
 - [x] T014dh The partner spoke at an eddy line only when it tripped the boat. Now they speak when it is crossed on an edge too (`PartnerVoice` key `eddyline_edged`: "That’s it. You rode it over."), so the nerve the partner carries is for the good crossings as well as the bad ones.
 
+## Slice 95 — the drills, on a phone
+
+- [x] T014di On a phone the drills hid their keyboard line and said nothing in its place, so nobody was told to drag the hips bar to edge, slide up to back off, or put two thumbs down to brace. Every drill now carries a `touch` line beside its `keys` (`src/content/anatomy.js`), shown as "On the screen: …" on a touchscreen and "Keyboard: …" elsewhere. The content test requires both for every drill.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
