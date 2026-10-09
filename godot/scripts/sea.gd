@@ -400,7 +400,7 @@ func _leg(delta: float) -> void:
 	# The current carries the boat over the ground, in the groove and out of it (scaled with its hours).
 	_flow = Leg.flow_at(_route, here)
 	var factor: float = _flow.factor
-	var cur := Tides.current_vector(_day, _hour) * factor * _cross.eddy(terrain.shore_distance(here.x, here.z), Tides.current_kn(_day, _hour) * factor)
+	var cur := Tides.current_vector(_day, _hour) * factor * _cross.eddy(terrain.shore_distance(here.x, here.z), Tides.current_kn(_day, _hour) * factor, str(_flow.name))
 	# The crossing: the course made good against the line, timed for the record, and the ferry note or
 	# the slack card when the stream calls for one.
 	var said := _cross.tick(delta, -kayak.global_basis.z, kayak.speed, brg, cur, Fog.blind(_fog), _card != null)
@@ -522,7 +522,7 @@ func _record_day() -> void:
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
 		"swims": _swims_today, "waits": _waits_today, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
-		"streamS": _cross.stream_s, "onLineS": _cross.on_line_s,
+		"streamS": _cross.stream_s, "onLineS": _cross.on_line_s, "maxKn": snappedf(_cross.max_kn, 0.1), "maxAt": _cross.max_at, "eddy": _cross.eddy_said,
 		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
 		"notes": _notes.duplicate(), "noteAt": _note_at.duplicate(),
 		"lateStart": float(App.save.get("lateStart", 0.0)),

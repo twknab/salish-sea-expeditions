@@ -395,6 +395,10 @@
 
 - [x] T014cw The water scene's fixed check starts move into a table (`CheckStarts`, `check_starts.gd`; the starts that depend on what spawned stay in the scene), and a new one, `?scene=trip&leg=1&near=eddy`, puts the boat 80 m off Spieden Island's south shore in the narrows — with `&day=september&hour=16.5&underway=1` the September ebb runs 3.2 kn outside and 0.9 kn in the eddy, and the eddy's note is on screen. Seeing it found that the ferry-angle note took the line from the eddy's a frame later: the ferry angle is now taught in open water only, and the eddy's note holds the line like the turn's. The stations sweep opens the new start.
 
+## Slice 84 — the hardest water
+
+- [x] T014cx Each day's record keeps the hardest stream the boat met, as it reached the boat (after the shore's eddies), and where — the rip's name when it was in one — and whether the boat worked up the shore in an eddy (`CrossingWatch.max_kn`, `max_at`, `hardest_line`). The debrief's Each day names it: "the stream at 3.2 kn in the narrows of Spieden Channel · up the shore in the eddies". A day that never ran a knot says nothing of it.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

@@ -168,6 +168,13 @@ func _init() -> void:
 	cw_calm.eddy(60.0, 0.4)
 	check(cw_calm.tick(1.0, Vector3(0, 0, -1), 1.5, 0.0, Vector3.ZERO, false, false) == "", "close in on a slack day there is nothing to say")
 	check(CheckStarts.at("orcas", true)[0] == -8800.0 and CheckStarts.at("spieden", true)[0] == -7000.0 and CheckStarts.at("jones").is_empty(), "a check start falls back to its plain form, and the cove's start is the scene's")
+	var cw_max := CrossingWatch.new()
+	cw_max.eddy(500.0, 3.0, "in the narrows")
+	cw_max.tick(1.0, Vector3(0, 0, -1), 1.5, 0.0, Vector3(0, 0, 3.0 * FerryGlide.KN), false, true)
+	cw_max.eddy(500.0, 1.0, "")
+	cw_max.tick(1.0, Vector3(0, 0, -1), 1.5, 0.0, Vector3(0, 0, 1.0 * FerryGlide.KN), false, true)
+	check(absf(cw_max.max_kn - 3.0) < 0.01 and cw_max.max_at == "in the narrows", "the record keeps the hardest stream met, and where")
+	check(CrossingWatch.hardest_line(3.24, "in the narrows") == "the stream at 3.2 kn in the narrows" and CrossingWatch.hardest_line(0.6, "x") == "", "a day that never ran a knot says nothing of it")
 	var turning := { "current": [{ "t": 0, "kn": 3.0 }, { "t": 120, "kn": 1.0 }, { "t": 180, "kn": -1.0 }] }
 	var slack_h := Tides.next_slack(turning, 0.0)
 	check(slack_h > 2.3 and slack_h < 2.9 and is_nan(Tides.next_slack({ "current": [{ "t": 0, "kn": 3.0 }, { "t": 900, "kn": 3.0 }] }, 0.0)), "slack is when the stream eases or turns, and a stream that runs on has none")
