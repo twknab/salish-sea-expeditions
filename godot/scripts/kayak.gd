@@ -127,6 +127,38 @@ func _aft_mark() -> void:
 	add_child(mi)
 	_mark = mi
 
+## The white all-round light a boat under oars shows after dark and in fog (Rule 25(d)): a small
+## lamp on the stern deck, lit from the scene when the light goes or the fog comes in.
+var _lamp: Node3D
+
+func set_light(on: bool) -> void:
+	if _lamp == null:
+		_lamp = Node3D.new()
+		_lamp.position = Vector3(0.0, 0.22, Hull.L * 0.42)  # the stern deck, where the paddler is not
+		var bulb := MeshInstance3D.new()
+		var sm := SphereMesh.new()
+		sm.radius = 0.035
+		sm.height = 0.07
+		bulb.mesh = sm
+		var mat := StandardMaterial3D.new()
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.albedo_color = Color(1.0, 0.98, 0.9)
+		mat.emission_enabled = true
+		mat.emission = Color(1.0, 0.95, 0.8)
+		mat.emission_energy_multiplier = 3.0
+		bulb.material_override = mat
+		_lamp.add_child(bulb)
+		var light := OmniLight3D.new()
+		light.light_color = Color(1.0, 0.96, 0.85)
+		light.light_energy = 1.6
+		light.omni_range = 7.0
+		light.omni_attenuation = 1.4
+		light.shadow_enabled = false
+		_lamp.add_child(light)
+		add_child(_lamp)
+		_lamp.visible = false
+	_lamp.visible = on
+
 ## An empty boat: on a beach, or alongside a float, nobody is in it.
 func set_paddler_visible(on: bool) -> void:
 	if _paddler:
