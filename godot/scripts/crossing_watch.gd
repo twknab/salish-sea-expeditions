@@ -48,7 +48,7 @@ func tick(delta: float, fwd: Vector3, speed: float, line_deg: float, stream: Vec
 	if eddy_k < 0.5 and absf(_raw_kn) > 1.0 and speed > 0.4 and not eddy_said:
 		eddy_said = true
 		return "eddy"
-	if way >= NO_HEADWAY and real and absf(set_deg) > SET_SAID_DEG and not ferry_said:
+	if way >= NO_HEADWAY and real and absf(set_deg) > SET_SAID_DEG and eddy_k >= 0.5 and not ferry_said:  # the ferry angle is for open water
 		ferry_said = true
 		return "ferry"
 	return ""

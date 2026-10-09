@@ -25,6 +25,7 @@ const STATIONS = [
   ['trip-whales', '?scene=trip&leg=1&near=orcas&close=1'],
   ['trip-fleet', '?scene=trip&leg=1&near=fleet'],
   ['trip-ferry-angle', '?scene=trip&leg=1&near=spieden&launch=12&hdg=0&underway=1'],
+  ['trip-eddy', '?scene=trip&leg=1&near=eddy&day=september&hour=16.5&underway=1'],
   ['trip-wind', '?scene=trip&launch=15'],
   ['trip-september', '?scene=trip&day=september&launch=13'],
   ['trip-dark', '?scene=trip&day=september&hour=20&near=jones'],

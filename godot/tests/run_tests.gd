@@ -160,9 +160,14 @@ func _init() -> void:
 	var cw_eddy := CrossingWatch.new()
 	cw_eddy.eddy(60.0, 2.4)
 	check(cw_eddy.tick(1.0, Vector3(0, 0, -1), 1.5, 0.0, Vector3(0, 0, 0.2), false, false) == "eddy" and cw_eddy.tick(1.0, Vector3(0, 0, -1), 1.5, 0.0, Vector3(0, 0, 0.2), false, false) == "", "the eddy is said once, when the boat finds it with a real stream outside")
+	var cw_in := CrossingWatch.new()
+	cw_in.eddy(60.0, 2.4)
+	cw_in.eddy_said = true
+	check(cw_in.tick(1.0, Vector3(0, 0, -1), 1.5, 0.0, Vector3(0.5, 0, 0), false, false) == "", "the ferry angle is not taught inside the shore's eddy")
 	var cw_calm := CrossingWatch.new()
 	cw_calm.eddy(60.0, 0.4)
 	check(cw_calm.tick(1.0, Vector3(0, 0, -1), 1.5, 0.0, Vector3.ZERO, false, false) == "", "close in on a slack day there is nothing to say")
+	check(CheckStarts.at("orcas", true)[0] == -8800.0 and CheckStarts.at("spieden", true)[0] == -7000.0 and CheckStarts.at("jones").is_empty(), "a check start falls back to its plain form, and the cove's start is the scene's")
 	var turning := { "current": [{ "t": 0, "kn": 3.0 }, { "t": 120, "kn": 1.0 }, { "t": 180, "kn": -1.0 }] }
 	var slack_h := Tides.next_slack(turning, 0.0)
 	check(slack_h > 2.3 and slack_h < 2.9 and is_nan(Tides.next_slack({ "current": [{ "t": 0, "kn": 3.0 }, { "t": 900, "kn": 3.0 }] }, 0.0)), "slack is when the stream eases or turns, and a stream that runs on has none")
