@@ -153,11 +153,11 @@ static func verdict_line(day: Dictionary, launch_hour: float, hours: float, favo
 	var cur := float(j.cur)
 	var against := "the flood" if favours == "ebb" else "the ebb"
 	var carry := "the channel carries you" if cur >= 0.2 else ("you paddle against %s" % against if cur <= -0.2 else "the water is near slack")
-	var squall := ""
+	var squall := turn_line(day, launch_hour, hours, favours)
 	var h := launch_hour
 	while h <= launch_hour + hours:
 		if rain(day, h) > 0.5:
-			squall = " A squall comes through at %s." % Leg.clock(h)
+			squall += " A squall comes through at %s." % Leg.clock(h)
 			break
 		h += 0.5
 	match String(j.verdict):
@@ -168,8 +168,19 @@ static func verdict_line(day: Dictionary, launch_hour: float, hours: float, favo
 				return "Poor: the sun sets at %s and you would land in the dark." % Leg.clock(sunset_h(day))
 			if bool(j.against):
 				return "Poor: wind against the stream, and the channel stands up in short, steep chop.%s" % squall
-			return "Poor: %s for the whole leg.%s" % [carry, squall]
+			if cur < -0.8:
+				return "Poor: %s for the whole leg.%s" % [carry, squall]
+			return "Poor: %s, but the wind builds a rough sea on the way.%s" % [carry, squall]  # the chop, not the stream
 	return "Fair: %s, but there is chop on the way — keep the bail-outs in mind.%s" % [carry, squall]
+
+## When the stream turns inside the leg: the hour of that slack, and which way the water runs after
+## it, as a sentence. A turn in the first or last quarter hour is the launch's or the landing's, not
+## the leg's, and goes unsaid.
+static func turn_line(day: Dictionary, launch_hour: float, hours: float, favours := "flood") -> String:
+	for t in slacks(day, launch_hour + 0.25, launch_hour + hours - 0.25):
+		var after := current_kn(day, float(t) + 0.5) * (-1.0 if favours == "ebb" else 1.0)
+		return " The stream turns at %s, partway through, and %s after it." % [Leg.clock(snappedf(float(t), 1.0 / 12.0)), "carries you" if after > 0.0 else "runs against you"]
+	return ""
 
 ## The same day's tables run `minutes` later: tomorrow's water, roughly, is today's fifty minutes on.
 static func shifted(day: Dictionary, minutes: float) -> Dictionary:

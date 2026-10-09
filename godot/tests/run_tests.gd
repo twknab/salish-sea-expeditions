@@ -134,6 +134,11 @@ func _init() -> void:
 	check(Leg.clock(7.0 + 50.0 / 60.0) == "07:50" and Leg.clock(9.5) == "09:30" and Leg.clock(23.999) == "00:00" and Leg.clock(25.25) == "01:15", "the clock reads to the nearest minute, past midnight too")
 	var turns := Tides.slacks({ "current": [{ "t": 0, "kn": 2.0 }, { "t": 120, "kn": -2.0 }, { "t": 240, "kn": 2.0 }] }, 0.0, 4.0)
 	check(turns.size() == 2 and absf(float(turns[0]) - 1.0) < 0.05 and absf(float(turns[1]) - 3.0) < 0.05, "the graph's slack marks sit where the stream crosses zero")
+	var turns_day := { "current": [{ "t": 0, "kn": 2.0 }, { "t": 120, "kn": -2.0 }, { "t": 240, "kn": 2.0 }] }
+	check(Tides.turn_line(turns_day, 0.5, 1.0).contains("turns at 01:00") and Tides.turn_line(turns_day, 0.5, 1.0).contains("runs against you") and Tides.turn_line(turns_day, 0.5, 1.0, "ebb").contains("carries you"), "a turn inside the leg is named, with the way the water runs after it")
+	check(Tides.turn_line(turns_day, 1.5, 1.0) == "" and Tides.turn_line(turns_day, 0.9, 1.0) == "", "no turn inside the leg, or one at the launch itself, goes unsaid")
+	var rough := { "current": [{ "t": 0, "kn": 0.1 }, { "t": 600, "kn": 0.1 }], "wind": [{ "t": 0, "kn": 25, "fromDeg": 180 }, { "t": 600, "kn": 25, "fromDeg": 180 }] }
+	check(Tides.verdict_line(rough, 2.0, 1.0).begins_with("Poor") and Tides.verdict_line(rough, 2.0, 1.0).contains("rough sea") and not Tides.verdict_line(rough, 2.0, 1.0).contains("whole leg"), "a poor day for its chop blames the wind, not the stream for the whole leg")
 	var turning := { "current": [{ "t": 0, "kn": 3.0 }, { "t": 120, "kn": 1.0 }, { "t": 180, "kn": -1.0 }] }
 	var slack_h := Tides.next_slack(turning, 0.0)
 	check(slack_h > 2.3 and slack_h < 2.9 and is_nan(Tides.next_slack({ "current": [{ "t": 0, "kn": 3.0 }, { "t": 900, "kn": 3.0 }] }, 0.0)), "slack is when the stream eases or turns, and a stream that runs on has none")
