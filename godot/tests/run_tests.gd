@@ -129,6 +129,12 @@ func _init() -> void:
 	check(is_nan(FerryGlide.heading_for(0.0, 0.4, Vector3(0.5, 0, 0))), "a stream faster across the line than the boat cannot be ferried")
 	check(FerryGlide.note(-18.0, 72.0, "Posey Island").contains("18° left") and FerryGlide.note(-18.0, 72.0, "Posey Island").contains("steer about 072°") and FerryGlide.note(30.0, NAN, "Posey Island").contains("wait for slack"), "the ferry note names the set, the side and the heading, or says no angle holds it")
 	check(FerryGlide.note(-18.0, 72.0, "Posey Island", true) == "Set 18° left: steer about 072° to hold the line.", "and on a phone in two short lines")
+	check(absf(FerryGlide.headway(0.0, 1.5, Vector3.ZERO) - 1.5) < 0.01 and FerryGlide.headway(0.0, 1.5, Vector3(0, 0, 2.0)) < 0.0, "a head stream faster than the boat takes away all its headway")
+	check(FerryGlide.headway(0.0, 1.5, Vector3(0.5, 0, 0)) > 1.3 and FerryGlide.headway(0.0, 1.5, Vector3(2.0, 0, 0)) < 0.0, "a ferry angle costs a little headway, and a stream across faster than the boat all of it")
+	var turning := { "current": [{ "t": 0, "kn": 3.0 }, { "t": 120, "kn": 1.0 }, { "t": 180, "kn": -1.0 }] }
+	var slack_h := Tides.next_slack(turning, 0.0)
+	check(slack_h > 2.3 and slack_h < 2.9 and is_nan(Tides.next_slack({ "current": [{ "t": 0, "kn": 3.0 }, { "t": 900, "kn": 3.0 }] }, 0.0)), "slack is when the stream eases or turns, and a stream that runs on has none")
+	check(FerryGlide.slack_body(4.2, "Posey Island", 14.5, "14:30").contains("slack at 14:30") and FerryGlide.slack_body(4.2, "Posey Island", NAN, "").contains("bail-out") and FerryGlide.slack_body(4.2, "Posey Island", 20.0, "20:00", true).contains("in the dark"), "the slack card names the hour, the dark if it comes after sunset, or the bail-out when there is none")
 	var sch := FerryGlide.across(90.0, 1.0)
 	check(absf(sch.length() - FerryGlide.KN) < 0.001 and sch.z > 0.5 * FerryGlide.KN, "the school's stream runs across the line, to starboard of a boat pointing down it")
 	check(fposmod(90.0 - FerryGlide.heading_for(90.0, 1.5, sch), 360.0) < 30.0 and fposmod(90.0 - FerryGlide.heading_for(90.0, 1.5, sch), 360.0) > 15.0, "and holding the line means pointing up into it, to port, by about twenty degrees")

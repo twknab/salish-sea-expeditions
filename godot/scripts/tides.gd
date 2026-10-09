@@ -93,6 +93,18 @@ static func next_low(day: Dictionary, hour: float) -> Dictionary:
 		t += 1.0 / 6.0
 	return best
 
+## Slack water: the first hour within the next eight when the stream has eased under half a knot,
+## or turned — NAN when it does not, in the data the day carries.
+static func next_slack(day: Dictionary, hour: float) -> float:
+	var was := current_kn(day, hour)
+	var t := hour
+	while t <= hour + 8.0:
+		var kn := current_kn(day, t)
+		if absf(kn) < 0.5 or signf(kn) != signf(was):
+			return t
+		t += 1.0 / 6.0
+	return NAN
+
 ## When the sun sets on the day, in hours.
 static func sunset_h(day: Dictionary) -> float:
 	return float(day.get("sunset", 1270)) / 60.0

@@ -143,6 +143,8 @@ func _days(col: VBoxContainer, legs: Array, save: Dictionary) -> void:
 		var waits := int(d.get("waits", 0))
 		if waits > 0:
 			line += " · waited out the wind %s" % ("once" if waits == 1 else "%d times" % waits)
+		if bool(d.get("slackWaited", false)):
+			line += " · waited for slack water to cross"
 		match str(d.get("boatVerdict", "")):
 			"floated":
 				line += " · the tide found the boat in the night"

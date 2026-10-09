@@ -346,6 +346,11 @@
 - [x] T014ci Kayak School teaches the crossing before the water does: an eighth drill, "Ferry angle: cross a stream", between the compass and the rescue. A knot of stream runs across the line from the left (`FerryGlide.across`), the compass marks the line, and the note shows the course made good once the boat is moving. Making good the line within ten degrees for twelve seconds completes it. The drills' lines are now taken from the bow as it is, not from last tick's heading.
 - [x] T014cj The phone HUD stops overlapping itself: the ferry-angle note has a two-line phone form (`FerryGlide.note(…, short)`), the opening hint is shorter on a phone, and the compass sits under the note and the trip lines (no higher than 222 pt, lower when the note runs long).
 
+## Slice 72 — waiting for slack
+
+- [x] T014ck When the stream outruns the boat on its line, head-on or across, the water says so and offers the real choice. `FerryGlide.headway` is how fast a boat at touring pace makes good along the line while steering the ferry angle. Under half a knot, once the boat is moving, a card "Faster than you paddle" names the stream and the hour of slack water (`Tides.next_slack`: the stream under half a knot, or turned), says when slack comes after sunset, and offers "Push on" or "Wait for slack · HH:MM". Waiting moves the clock to slack (the September afternoon ebb in the Spieden narrows: 3.5 kn at 16:30, slack at 20:00, in the dark). The day's record keeps it ("waited for slack water to cross"), apart from waiting out the wind. The ferry-angle note no longer fires when no angle can hold the line, and its heading is worked for a boat under way rather than one just starting.
+- [x] T014cl `sea.gd` shows every card through `_show`, which clears the last one; Kayak School's tour card counts eight drills; `godot-desktop-shot.mjs` takes `CLICK=` and `THEN=` (clicks before and after `KEYS`) so a check can press a card's button.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
