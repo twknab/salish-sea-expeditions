@@ -709,7 +709,7 @@ func _start_drill(i: int) -> void:
 	_drill = i
 	_drill_state = { "count": 0, "t": 0.0, "turned": 0.0, "prev": kayak.heading }
 	var d: Dictionary = _drills()[i]
-	var keys := "" if DisplayServer.is_touchscreen_available() else "\nKeyboard: %s." % d.get("keys", "")
+	var keys := "\n%s: %s." % (["On the screen", d.get("touch", "")] if DisplayServer.is_touchscreen_available() else ["Keyboard", d.get("keys", "")])
 	note_label.text = "%s\n%s\nGoal: %s.%s" % [d.title, d.text, d.goal, keys]
 	if _drill_bar == null:
 		_drill_bar = UIKit.thin_bar(234)
