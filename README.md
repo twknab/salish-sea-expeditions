@@ -76,7 +76,7 @@ STATIC_DIR=build/web node server/server.mjs                      # serve it on :
 The game is a three-day sea-kayak expedition on the real islands, on a settled July day or a
 September spring tide with the first autumn southerly behind it: the opening (title,
 acknowledgment, outfitting, the ferry from Anacortes, the boat assembled on the beach, Kayak School
-with its seven drills, a bearing held on the compass among them, packing the boat), then for each day a float plan on the chart with the day's
+with its eight drills, a bearing held on the compass and a stream crossed on a ferry angle among them, packing the boat), then for each day a float plan on the chart with the day's
 water as a graph, the leg on the water with a partner who speaks at the moments that matter — the
 ferry and its wake, the tide, the wind, rips and kelp, the bail-outs when the wind is up, fog on the
 first-light launch with the compass to steer by, wildlife from seals to a pod of killer whales with

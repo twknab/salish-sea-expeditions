@@ -42,3 +42,20 @@ static func held(stream_s: float, on_line_s: float) -> String:
 	if stream_s < 60.0:
 		return ""
 	return "held" if on_line_s >= 0.6 * stream_s else "set"
+
+## Kayak School's stream: `knots` running straight across a line, setting a boat that points down
+## the line off to starboard.
+static func across(line_deg: float, knots: float) -> Vector3:
+	var w := deg_to_rad(line_deg + 90.0)
+	return Vector3(sin(w), 0.0, -cos(w)) * knots * KN
+
+## The note on the water when the stream sets the boat well off: how far, which way, and the heading
+## that holds the line to `cove` — or, when no angle can, what to do instead. `short` is a phone's
+## two lines, which must clear the destination and stream lines under the note.
+static func note(set_deg: float, steer: float, cove: String, short := false) -> String:
+	if short:
+		return "Set %d° %s: no angle holds it. Wait for slack." % [int(absf(set_deg)), "right" if set_deg > 0.0 else "left"] if is_nan(steer) else "Set %d° %s: steer about %03d° to hold the line." % [int(absf(set_deg)), "right" if set_deg > 0.0 else "left", int(round(steer))]
+	if is_nan(steer):
+		return "The stream is setting you %d° off, and it runs faster across the line than you paddle. No angle holds it: wait for slack, or make for the bail-out down-stream." % int(absf(set_deg))
+	var hold := "To hold the line to %s, point up into it: steer about %03d°, a ferry angle, and the boat crabs across on the line." % [cove, int(round(steer))]
+	return "The stream is setting you %d° %s of where the bow points (the dashed line on the chart). %s" % [int(absf(set_deg)), "right" if set_deg > 0.0 else "left", hold]
