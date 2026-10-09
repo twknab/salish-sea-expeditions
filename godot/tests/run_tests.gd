@@ -152,6 +152,9 @@ func _init() -> void:
 	var cw_head := CrossingWatch.new()
 	check(cw_head.tick(1.0, bow_n, 1.5, 0.0, Vector3(0, 0, 2.0), false, true) == "" and cw_head.tick(1.0, bow_n, 1.5, 0.0, Vector3(0, 0, 2.0), false, false) == "slack" and cw_head.slack == 1, "a head stream faster than the boat offers slack, once the screen is clear")
 	check(CrossingWatch.new().tick(1.0, bow_n, 1.5, 0.0, Vector3(0, 0, 2.0), true, false) == "" and CrossingWatch.new().tick(1.0, bow_n, 0.2, 0.0, Vector3(0.5, 0, 0), false, false) == "", "nothing is said blind in fog, or to a boat not yet under way")
+	var cw_turn := CrossingWatch.new()
+	check(not cw_turn.turned(1.2) and not cw_turn.turned(0.4) and not cw_turn.turned(0.0) and cw_turn.turned(-0.1) and not cw_turn.turned(-0.8), "the turn is felt once, on the frame the stream changes direction")
+	check(CrossingWatch.turn_note(-0.3, "flood").contains("ebb is starting") and CrossingWatch.turn_note(-0.3, "flood").contains("against you") and CrossingWatch.turn_note(-0.3, "ebb", true).contains("with you"), "the turn's note names the new stream and whether it helps this leg")
 	var turning := { "current": [{ "t": 0, "kn": 3.0 }, { "t": 120, "kn": 1.0 }, { "t": 180, "kn": -1.0 }] }
 	var slack_h := Tides.next_slack(turning, 0.0)
 	check(slack_h > 2.3 and slack_h < 2.9 and is_nan(Tides.next_slack({ "current": [{ "t": 0, "kn": 3.0 }, { "t": 900, "kn": 3.0 }] }, 0.0)), "slack is when the stream eases or turns, and a stream that runs on has none")

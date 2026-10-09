@@ -17,6 +17,7 @@ var set_deg := 0.0      # how far the stream sets the boat off its heading, sign
 var steer := NAN        # the heading that holds the line at touring pace, NAN when none can
 var ferry_said := false
 var slack := 0          # the slack card: 0 not yet, 1 asked, 2 waited for
+var _was_sign := 0.0    # the way the channel's stream last ran: + flood, - ebb, 0 not yet read
 
 ## One frame. `fwd` is the bow's direction, `speed` its pace through the water (m/s), `line_deg` the
 ## bearing to the landing, `stream` the set and drift here. Returns "slack" when the card should go
@@ -42,3 +43,22 @@ func tick(delta: float, fwd: Vector3, speed: float, line_deg: float, stream: Vec
 		ferry_said = true
 		return "ferry"
 	return ""
+
+## True on the frame the channel's stream turns, flood to ebb or ebb to flood. A reading of exactly
+## zero is slack itself and is not a direction; the first reading only sets the way it runs.
+func turned(kn: float) -> bool:
+	if kn == 0.0:
+		return false
+	var sgn := signf(kn)
+	var was := _was_sign
+	_was_sign = sgn
+	return was != 0.0 and sgn != was
+
+## The note when the stream turns under the boat: which way it runs now, and what that means for a
+## leg that favours `favours`. `short` is a phone's line.
+static func turn_note(kn: float, favours: String, short := false) -> String:
+	var tide := "flood" if kn > 0.0 else "ebb"
+	var with_you := (kn > 0.0) == (favours != "ebb")
+	if short:
+		return "Slack water: the %s is starting, %s." % [tide, "with you" if with_you else "against you"]
+	return "Slack water: the stream has turned, and the %s is starting. %s" % [tide, "From here it builds with you, and the miles come easier." if with_you else "From here it builds against you: hug the shore where the eddies run, or land and wait for the next turn."]

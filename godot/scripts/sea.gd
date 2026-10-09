@@ -422,7 +422,10 @@ func _leg(delta: float) -> void:
 	if _chart:
 		_chart.stream = cur  # the tile shows where the water is going, rips included
 		_chart.cmg = _cross.cmg
-	if said == "slack":
+	var kn := Tides.current_kn(_day, _hour)
+	if _cross.turned(kn) and not Fog.blind(_fog) and _card == null:
+		note_label.text = _said("turn") + CrossingWatch.turn_note(kn, str(_route.get("favours", "flood")), controls.touch())
+	elif said == "slack":
 		_offer_slack(cur.length() / FerryGlide.KN)
 	elif said == "ferry":
 		note_label.text = FerryGlide.note(_cross.set_deg, _cross.steer, Leg.cove_name(_route), controls.touch())
