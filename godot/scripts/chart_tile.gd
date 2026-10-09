@@ -16,6 +16,7 @@ var boat := Vector3.ZERO
 var heading := 0.0            # radians, 0 north, clockwise
 var blind := false            # in fog: no fix — the arrow is hollow and the tile says so
 var stream := Vector3.ZERO    # the current over the ground here, m/s (x east, z south): drawn as set and drift
+var cmg := NAN                # course made good over the ground, degrees: drawn as a thin line ahead of the boat
 var folded := false:
 	set(v):
 		folded = v
@@ -89,8 +90,12 @@ func _draw() -> void:
 	var d := to_tile(dest, view, size)
 	if clip.has_point(d):
 		draw_arc(d, 5.0, 0.0, TAU, 24, UIKit.SUN, 2.0, true)
-	# The boat: a small arrow pointing the way it heads.
 	var c := size * 0.5
+	# Where the boat is actually going over the ground: a thin line ahead, beside the arrow of its heading.
+	if not is_nan(cmg):
+		var g := Vector2.from_angle(deg_to_rad(cmg) - PI / 2.0)
+		draw_dashed_line(c, c + g * 34.0, Color(0.05, 0.22, 0.45, 0.95), 1.5, 3.0, true, true)
+	# The boat: a small arrow pointing the way it heads.
 	var f := Vector2.from_angle(heading - PI / 2.0)
 	var r := Vector2(-f.y, f.x)
 	if blind:

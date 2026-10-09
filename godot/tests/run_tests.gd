@@ -119,6 +119,14 @@ func _init() -> void:
 	check(absf(ww.x - 100.0) < 1e-3 and absf(ww.z - 200.0 - WhaleWatch.STANDOFF) < 1e-3 and ww.y == 0.0, "abeam of an eastbound pod is south of it")
 	check(absf(WhaleWatch.station_for(Vector3.ZERO, Vector3(1, 0, 0), 1.0, 914.0).z - 914.0) < 1e-3, "at the field guide's distance when it names one")
 	check(WhaleWatch.station_for(Vector3.ZERO, Vector3(0, 0, -1)).x > 0.0 and absf(WhaleWatch.station_for(Vector3.ZERO, Vector3(0, 0.5, -1), -1.0).x + WhaleWatch.STANDOFF) < 1e-3, "and east of a northbound one, or west on the other side")
+	# The ferry glide: bow north at 1.5 m/s, a 0.5 m/s stream setting east makes good about 018°.
+	var cmg := FerryGlide.course_made_good(Vector3(0, 0, -1.5), Vector3(0.5, 0, 0))
+	check(absf(cmg - 18.43) < 0.1 and absf(FerryGlide.set_off(0.0, cmg) - 18.43) < 0.1, "a beam stream sets the boat off its heading")
+	check(is_nan(FerryGlide.course_made_good(Vector3.ZERO, Vector3.ZERO)) and FerryGlide.set_off(0.0, NAN) == 0.0, "no way on, no course made good")
+	var hdg := FerryGlide.heading_for(0.0, 1.5, Vector3(0.5, 0, 0))
+	check(absf(hdg - (360.0 - 19.47)) < 0.1, "to hold north against an easterly set, point up into it by asin(0.5/1.5)")
+	check(absf(FerryGlide.course_made_good(-Vector3(sin(deg_to_rad(hdg)), 0, -cos(deg_to_rad(hdg))) * -1.5, Vector3(0.5, 0, 0))) < 0.1 or absf(FerryGlide.course_made_good(Vector3(sin(deg_to_rad(hdg)), 0, -cos(deg_to_rad(hdg))) * 1.5, Vector3(0.5, 0, 0))) < 0.1, "and the boat then makes good the line")
+	check(is_nan(FerryGlide.heading_for(0.0, 0.4, Vector3(0.5, 0, 0))), "a stream faster across the line than the boat cannot be ferried")
 	# The partner speaks at the moments that matter, in a few words, and not when there is nothing to say.
 	check(PartnerVoice.line("ferry") != "" and PartnerVoice.line("nothing") == "" and PartnerVoice.said("Mina", "nothing") == "", "silent when there is nothing to say")
 	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")
