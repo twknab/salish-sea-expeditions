@@ -400,7 +400,7 @@ func _leg(delta: float) -> void:
 	# The current carries the boat over the ground, in the groove and out of it (scaled with its hours).
 	_flow = Leg.flow_at(_route, here)
 	var factor: float = _flow.factor
-	var cur := Tides.current_vector(_day, _hour) * factor * _cross.eddy(terrain.shore_distance(here.x, here.z), Tides.current_kn(_day, _hour) * factor, str(_flow.name))
+	var cur := Tides.current_vector(_day, _hour) * factor * _cross.eddy(terrain.shore_distance(here.x, here.z), Tides.current_kn(_day, _hour) * factor, str(_flow.name), delta)
 	# The crossing: the course made good against the line, timed for the record, and the ferry note or
 	# the slack card when the stream calls for one.
 	var said := _cross.tick(delta, -kayak.global_basis.z, kayak.speed, brg, cur, Fog.blind(_fog), _card != null)
@@ -408,6 +408,12 @@ func _leg(delta: float) -> void:
 		_chart.stream = cur  # the tile shows where the water is going, rips included
 		_chart.cmg = _cross.cmg
 	var kn := Tides.current_kn(_day, _hour)
+	if _cross.line_dir != 0 and not Fog.blind(_fog) and _card == null:  # the eddy line: edged, it slides under; flat, it trips
+		var edged := CrossingWatch.line_edged(kayak.edge, kayak.global_basis.x, cur, _cross.line_dir)
+		if not edged:
+			kayak.kick(1.0)
+		note_label.text = ("" if edged else _said("eddyline")) + CrossingWatch.line_note(edged, _cross.line_dir, controls.touch())
+		_note_hold = NOTE_HOLD
 	Sound.set_rip(CrossingWatch.rip_level(factor, kn))
 	if _cross.turned(kn) and not Fog.blind(_fog) and _card == null:
 		note_label.text = _said("turn") + CrossingWatch.turn_note(kn, str(_route.get("favours", "flood")), controls.touch())
