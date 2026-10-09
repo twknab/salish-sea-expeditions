@@ -423,6 +423,10 @@
 
 - [x] T014dd Each day's record counts the eddy lines the boat crossed on an edge and the ones that tripped it (`CrossingWatch.crossed_line`, `lines_edged`, `lines_tripped`; record fields `linesEdged`, `linesTripped`). The debrief's Each day names them: "3 eddy lines: 2 on an edge, 1 tripped the boat", "across an eddy line on an edge once" or "tripped by an eddy line twice". A day that crossed none says nothing. The demo debrief carries an example on day two.
 
+## Slice 91 — the eddy lines, a seamanship call
+
+- [x] T014de The debrief's seamanship calls gain "Crossed eddy lines on an edge", read across the days from `linesEdged` and `linesTripped` (`Seamanship.calls`). It is kept when no line tripped the boat ("on an edge every time, 3 of 3"), missed when one did ("tripped once, 3 of 4 on an edge"), and absent on an expedition that crossed no eddy line, like every call that only counts when it came up. The demo debrief now reads twelve calls.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

@@ -232,6 +232,11 @@ func _init() -> void:
 	check(WaterPlan.record_words("ration") == "" and WaterPlan.night_line("roche").contains("Roche Harbor"), "only trouble with the water is written down")
 	check(Seamanship.calls([{"verdict": "good", "waterVerdict": "thirsty"}]).size() == 4 and Seamanship.kept(Seamanship.calls([{"verdict": "good", "waterVerdict": "thirsty"}])) == 3, "the water is a call when it came up")
 	# Seamanship: the calls are read back from the days, and only the ones that came up.
+	var eddy_calls := Seamanship.calls([{"verdict": "good", "linesEdged": 2, "linesTripped": 1}, {"verdict": "good", "linesEdged": 1}])
+	var eddy_call: Dictionary = eddy_calls.filter(func(c: Dictionary) -> bool: return str(c.label) == "Crossed eddy lines on an edge").front()
+	check(not bool(eddy_call.ok) and str(eddy_call.note) == "tripped once, 3 of 4 on an edge", "the eddy lines are a call across the days, missed when one tripped the boat")
+	check(Seamanship.kept(Seamanship.calls([{"verdict": "good", "linesEdged": 2}])) == 4 and Seamanship.calls([{"verdict": "good", "linesEdged": 2}]).size() == 4, "kept when every line was crossed on an edge")
+	check(not Seamanship.calls([{"verdict": "good"}]).any(func(c: Dictionary) -> bool: return str(c.label).begins_with("Crossed eddy")), "a day with no eddy line has no eddy-line call")
 	check(Seamanship.calls([]).is_empty(), "no days, no calls")
 	var quiet := Seamanship.calls([{"verdict": "good"}])
 	check(quiet.size() == 3 and Seamanship.kept(quiet) == 3, "a clean day with nothing met keeps the launch, the daylight and the boat")
