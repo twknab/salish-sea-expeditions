@@ -80,9 +80,10 @@ static func card(title: String, body: String, source := "", actions: Array = [],
 	if source != "":
 		v.add_child(label(source, 11, MIST))
 	if actions.size() > 0:
-		var h := HBoxContainer.new()
-		h.add_theme_constant_override("separation", 10)
-		h.alignment = BoxContainer.ALIGNMENT_END
+		var h := HFlowContainer.new()  # wraps on a phone instead of pushing the card wider than the screen
+		h.add_theme_constant_override("h_separation", 10)
+		h.add_theme_constant_override("v_separation", 8)
+		h.alignment = FlowContainer.ALIGNMENT_END
 		for a in actions:
 			var b := button(a[0], a[2] if a.size() > 2 else true)
 			b.pressed.connect(a[1])
