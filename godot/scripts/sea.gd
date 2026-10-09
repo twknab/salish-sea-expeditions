@@ -48,6 +48,7 @@ var _last_note := ""
 const NOTES_KEPT := 24
 var _rained := false            # rain fell on the leg, for the record
 var _rain_now := 0.0            # the rain of the hour, read before the sea state is set
+var _ferry_said := false        # the ferry-angle note goes up once a leg
 var _thirsty := false           # last night's water was drunk: the strokes are shorter today
 var _watchers: Array = []       # [{boat: WhaleWatch, pod: Wildlife, heading, seen}] — the fleet on the pod
 var _thirsty_said := false
@@ -277,6 +278,10 @@ func _ready() -> void:
 				"labs":
 					kayak.global_position = Vector3(590.0, 0.1, -1312.0)
 					kayak.rotation.y = -deg_to_rad(250.0)  # the heron 30 m off in the shallows
+			if App._url_param("hdg") != "":  # `&hdg=0`: the bow on a bearing, for checks
+				kayak.rotation.y = -deg_to_rad(float(App._url_param("hdg")))
+			if App._url_param("underway") == "1":  # `&underway=1`: the boat already making way, for checks
+				kayak.linear_velocity = -kayak.global_basis.z * 1.6
 			var opening := "Friday Harbor · San Juan Channel opens ahead" if Leg.index() == 0 else "Day %d · %s" % [Leg.index() + 1, str(_route.get("title", ""))]
 			if _partner:
 				opening += " · with %s" % str(_partner.preset.get("name", "a partner"))
@@ -417,6 +422,22 @@ func _leg(delta: float) -> void:
 	var cur := Tides.current_vector(_day, _hour) * factor
 	if _chart:
 		_chart.stream = cur  # the tile shows where the water is going, rips included
+	# The ferry angle: where the bow points against where the boat goes over the ground. When the
+	# stream sets the boat well off its heading, say once how far to point up into it.
+	var water_vel := -kayak.global_basis.z * kayak.speed
+	var cmg := FerryGlide.course_made_good(water_vel, cur) if kayak.speed > 0.4 else NAN
+	if _chart:
+		_chart.cmg = cmg
+	var set_deg := FerryGlide.set_off(rad_to_deg(kayak.heading), cmg)
+	if absf(set_deg) > 12.0 and cur.length() > 0.45 * FerryGlide.KN and not _ferry_said and not Fog.blind(_fog):
+		_ferry_said = true
+		var steer := FerryGlide.heading_for(brg, kayak.speed, cur)
+		var side := "right" if set_deg > 0.0 else "left"
+		if is_nan(steer):
+			note_label.text = "The stream is setting you %d° off, and it runs faster across the line than you paddle. No angle holds it: wait for slack, or make for the bail-out down-stream." % int(absf(set_deg))
+		else:
+			var hold := "To hold the line to %s, point up into it: steer about %03d°, a ferry angle, and the boat crabs across on the line." % [Leg.cove_name(_route), int(round(steer))]
+			note_label.text = "The stream is setting you %d° %s of where the bow points (the dashed line on the chart). %s" % [int(absf(set_deg)), side, hold]
 	# The water of the hour: wind builds the sea, wind against the stream stands it up, and a rip
 	# throws the odd wave on the beam that the paddler must brace for.
 	# Bull kelp: a bed is a drag on the hull and a lee in a chop — the fronds lie the swell down.

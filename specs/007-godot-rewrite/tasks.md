@@ -333,6 +333,10 @@
 
 - [x] T014cf The chart in the deck bag draws the stream where the boat is: an arrow the way the water sets, longer as it runs harder, and its knots beside it — rips included, so the narrows of Spieden Channel show a longer arrow than the open channel. It reads from the same current vector that carries the boat.
 
+## Slice 69 — the ferry angle
+
+- [x] T014cg Crossing a stream is taught where it happens: the chart draws the course the boat is making good over the ground as a dashed line beside the arrow of its heading, and when the stream sets the boat more than twelve degrees off, the note says by how much and what to steer to hold the line to the cove — the ferry angle, `asin(cross-stream / boat speed)` up into the stream — or that no angle holds it when the stream across the line outruns the boat (`FerryGlide`, pure and tested).
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
