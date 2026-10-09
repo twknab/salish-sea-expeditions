@@ -403,6 +403,10 @@
 
 - [x] T014cy Crossing an eddy line — out of the shore's eddy into the stream, or back in — with more than a knot and a half running outside it is felt (`CrossingWatch.line_dir`, at most once in twenty seconds; the first reading only says which side the boat is on). Edged toward where the new water pushes — downstream coming out, into the turn going in (`CrossingWatch.line_edged`, from the hips bar against the boat's beam) — the hull slides over; flat or edged the wrong way, the line rolls the boat (`kayak.kick`), the partner calls it, and the note says how to cross the next one, with a brace if it bites.
 
+## Slice 86 — the README catches up
+
+- [x] T014cz The README's account of the game carries slices 81–85: the rip heard as well as seen, the shore's eddies and the eddy line on the leg, the hardest water each day met in the debrief, and the `near=eddy` check start.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

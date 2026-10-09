@@ -78,23 +78,24 @@ September spring tide with the first autumn southerly behind it: the opening (ti
 acknowledgment, outfitting, the ferry from Anacortes, the boat assembled on the beach, Kayak School
 with its eight drills, a bearing held on the compass and a stream crossed on a ferry angle among them, packing the boat), then for each day a float plan on the chart with the day's
 water as a graph (slack water marked on it, and the verdict naming a turn that falls inside the leg), the leg on the water with a partner who speaks at the moments that matter — the
-ferry and its wake, the tide and the moment it turns, the wind, rips and kelp, the stream drawn on the chart beside the
+ferry and its wake, the tide and the moment it turns, the wind, rips heard as well as seen and kelp, the stream drawn on the chart beside the
 course the boat is really making good, a ferry angle to hold the line across it and slack water to
-wait for when it runs faster than a boat can paddle, the bail-outs when the wind is up, fog on the
+wait for when it runs faster than a boat can paddle, the shore's eddies to work up inside and the
+eddy line that rolls a boat crossed flat, the bail-outs when the wind is up, fog on the
 first-light launch with the compass to steer by, wildlife from seals to a pod of killer whales with
 the whale-watch fleet holding off it, a capsize and the rescue, the light going when the day was
 planned too long, the September squall, the white light after dark — and camp ashore with the shore walk and the night, where the boat sleeps above
 the tide or is found by it, the food is hung or lost to the raccoons, and Posey's water is drunk,
 rationed or fetched at the cost of the morning's ebb. Then the take-out with the call ashore that closes the float plan, the ferry home in the
 evening light, and the debrief: each day as it went, the score, the seamanship calls kept and
-missed (a stream crossed on the line among them), the field notes on the chart of the whole expedition, with the other day offered to paddle
+missed (a stream crossed on the line among them), the hardest water each day met, the field notes on the chart of the whole expedition, with the other day offered to paddle
 it again. The field guide carries the species and the words on the water, from slack to the
 white light, each with its source. Pause anywhere; About carries the
 acknowledgment. Content is exported from `src/content`
 by `tools/export-content.mjs`, the legs are laid over the water by `tools/geo/leg_routes.py`,
 sounds come from `tools/synth-audio.mjs` and four full-length pieces from `tools/synth-pieces.mjs`.
 `?scene=assemble|pack|plan|trip|camp|guide|debrief`, `?leg=0|1|2`, `?pack=bow|ideal` and
-`?near=jones|spieden|posey|ferry|orcas|fleet` open a station or a spot for checks (`&fog=1` socks it
+`?near=jones|spieden|posey|ferry|orcas|fleet|eddy` open a station or a spot for checks (`&fog=1` socks it
 in, `&day=september` is the harder day, `&hour=20` is night on the water, `&boat=edge`,
 `&food=tent` and `&water=fill` are the camp's choices gone wrong, `?scene=ferry&home=1` is the ride
 home); `tests/smoke/godot-stations.mjs` opens every one of them, and
