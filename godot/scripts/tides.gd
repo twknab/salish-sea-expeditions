@@ -116,16 +116,23 @@ static func verdict_line(day: Dictionary, launch_hour: float, hours: float, favo
 	var cur := float(j.cur)
 	var against := "the flood" if favours == "ebb" else "the ebb"
 	var carry := "the channel carries you" if cur >= 0.2 else ("you paddle against %s" % against if cur <= -0.2 else "the water is near slack")
+	var squall := ""
+	var h := launch_hour
+	while h <= launch_hour + hours:
+		if rain(day, h) > 0.5:
+			squall = " A squall comes through at %s." % Leg.clock(h)
+			break
+		h += 0.5
 	match String(j.verdict):
 		"good":
-			return "Good: %s, light wind, and no chop to speak of." % carry
+			return "Good: %s, light wind, and no chop to speak of.%s" % [carry, squall]
 		"poor":
 			if bool(j.dark):
 				return "Poor: the sun sets at %s and you would land in the dark." % Leg.clock(sunset_h(day))
 			if bool(j.against):
 				return "Poor: wind against the stream, and the channel stands up in short, steep chop."
 			return "Poor: %s for the whole leg." % carry
-	return "Fair: %s, but there is chop on the way — keep the bail-outs in mind." % carry
+	return "Fair: %s, but there is chop on the way — keep the bail-outs in mind.%s" % [carry, squall]
 
 ## The same day's tables run `minutes` later: tomorrow's water, roughly, is today's fifty minutes on.
 static func shifted(day: Dictionary, minutes: float) -> Dictionary:
