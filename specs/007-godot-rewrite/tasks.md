@@ -379,6 +379,10 @@
 
 - [x] T014cs A time-critical note — the turn of the stream, the ferry angle — keeps the note line for eight seconds (`NOTE_HOLD`) before the squall's or the night's note, which go up once and can wait, may take it. On the September day the stream turns at 13:20 inside the squall; the turn's note now holds while the rain falls, and the rain's note follows when the hold is spent. `?scene=trip&day=september&hour=13.33` is a few seconds before that turn.
 
+## Slice 80 — the docs catch up with the turn
+
+- [x] T014ct README's Godot paragraph carries slices 74–79: slack marked on the float plan's graph, the verdict naming a turn inside the leg, the moment the stream turns felt on the water, and the words on the water in the field guide.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
