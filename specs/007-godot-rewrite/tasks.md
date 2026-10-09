@@ -351,6 +351,10 @@
 - [x] T014ck When the stream outruns the boat on its line, head-on or across, the water says so and offers the real choice. `FerryGlide.headway` is how fast a boat at touring pace makes good along the line while steering the ferry angle. Under half a knot, once the boat is moving, a card "Faster than you paddle" names the stream and the hour of slack water (`Tides.next_slack`: the stream under half a knot, or turned), says when slack comes after sunset, and offers "Push on" or "Wait for slack · HH:MM". Waiting moves the clock to slack (the September afternoon ebb in the Spieden narrows: 3.5 kn at 16:30, slack at 20:00, in the dark). The day's record keeps it ("waited for slack water to cross"), apart from waiting out the wind. The ferry-angle note no longer fires when no angle can hold the line, and its heading is worked for a boat under way rather than one just starting.
 - [x] T014cl `sea.gd` shows every card through `_show`, which clears the last one; Kayak School's tour card counts eight drills; `godot-desktop-shot.mjs` takes `CLICK=` and `THEN=` (clicks before and after `KEYS`) so a check can press a card's button.
 
+## Slice 73 — the docs catch up with the stream
+
+- [x] T014cm README's Godot paragraph carries slices 68–72: the stream on the chart beside the course made good, the ferry angle, slack water when the stream outruns the boat, and the crossing among the seamanship calls.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
