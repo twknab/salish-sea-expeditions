@@ -130,8 +130,8 @@ static func verdict_line(day: Dictionary, launch_hour: float, hours: float, favo
 			if bool(j.dark):
 				return "Poor: the sun sets at %s and you would land in the dark." % Leg.clock(sunset_h(day))
 			if bool(j.against):
-				return "Poor: wind against the stream, and the channel stands up in short, steep chop."
-			return "Poor: %s for the whole leg." % carry
+				return "Poor: wind against the stream, and the channel stands up in short, steep chop.%s" % squall
+			return "Poor: %s for the whole leg.%s" % [carry, squall]
 	return "Fair: %s, but there is chop on the way — keep the bail-outs in mind.%s" % [carry, squall]
 
 ## The same day's tables run `minutes` later: tomorrow's water, roughly, is today's fifty minutes on.
