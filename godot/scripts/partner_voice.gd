@@ -17,6 +17,7 @@ const LINES := {
 	"kelp": "Kelp. Short strokes, we’re fine.",
 	"rain": "Here it comes. Hood up — it’ll pass.",
 	"turn": "Feel that? It’s turning.",
+	"eddy": "In close. Feel it ease?",
 }
 
 ## The partner's words for an event, by name, or empty when there are none.

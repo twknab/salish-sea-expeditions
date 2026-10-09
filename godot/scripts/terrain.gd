@@ -111,6 +111,18 @@ func cover_at(x: float, z: float) -> int:
 func is_land(x: float, z: float) -> bool:
 	return cover_at(x, z) != WATER and height_at(x, z) > 0.0
 
+## Metres to the nearest land, searched in rings of eight bearings out to `reach`: a coarse probe for
+## the shore's eddies, cheap enough for every frame. `reach` + 1 when no land is that close.
+func shore_distance(x: float, z: float, reach := 320.0) -> float:
+	var r := 40.0
+	while r <= reach:
+		for i in 8:
+			var a := TAU * i / 8.0
+			if is_land(x + sin(a) * r, z - cos(a) * r):
+				return r
+		r += 40.0
+	return reach + 1.0
+
 ## Where a named place is, in world metres (places are in the grid's frame, offset by this node).
 func place(id: String) -> Vector3:
 	for p in meta.get("places", []):

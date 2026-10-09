@@ -418,7 +418,7 @@ func _leg(delta: float) -> void:
 	# The current carries the boat over the ground, in the groove and out of it (scaled with its hours).
 	_flow = Leg.flow_at(_route, here)
 	var factor: float = _flow.factor
-	var cur := Tides.current_vector(_day, _hour) * factor
+	var cur := Tides.current_vector(_day, _hour) * factor * _cross.eddy(terrain.shore_distance(here.x, here.z), Tides.current_kn(_day, _hour) * factor)
 	# The crossing: the course made good against the line, timed for the record, and the ferry note or
 	# the slack card when the stream calls for one.
 	var said := _cross.tick(delta, -kayak.global_basis.z, kayak.speed, brg, cur, Fog.blind(_fog), _card != null)
@@ -432,6 +432,8 @@ func _leg(delta: float) -> void:
 		_note_hold = NOTE_HOLD
 	elif said == "slack":
 		_offer_slack(cur.length() / FerryGlide.KN)
+	elif said == "eddy":
+		note_label.text = _said("eddy") + CrossingWatch.eddy_note(controls.touch())
 	elif said == "ferry":
 		note_label.text = FerryGlide.note(_cross.set_deg, _cross.steer, Leg.cove_name(_route), controls.touch())
 		_note_hold = NOTE_HOLD

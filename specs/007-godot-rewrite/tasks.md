@@ -387,6 +387,10 @@
 
 - [x] T014cu A tide rip is heard as well as seen: a new seeded loop (`rip_loop`, `tools/synth-audio.mjs`) — a chatter of short slaps and glugs over a low rush — comes up as the boat runs into a rip at the run of the stream and falls away to nothing in open water and at slack (`CrossingWatch.rip_level`, `Sound.set_rip`). Leaving the water now hushes the engine, the rain and the rip at once (`Sound.hush_water`): before, one gliding step per call left them sounding under the camp and the debrief.
 
+## Slice 82 — the shore's eddies
+
+- [x] T014cv The advice the turn gives — work up the shore inside the eddies — is now true on the water: the stream eases toward the shore, full beyond 240 m and a third of itself inside 80 m (`CrossingWatch.eddy_factor`), measured each frame by a coarse ring probe for land (`Terrain.shore_distance`). The chart's stream arrow, the course made good and the slack card all read the eased stream. The first time the boat finds an eddy with a real stream running outside it, the partner says so and the note says how a paddler uses it.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
