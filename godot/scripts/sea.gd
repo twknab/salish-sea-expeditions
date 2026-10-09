@@ -41,6 +41,8 @@ var _fog_signal_t := 0.0        # seconds to the ferry's next blast in the fog
 var _fogged := false            # launched or paddled in fog today, for the record
 var _fog_in_hour := -1.0        # when the fog closed in, for the record
 var _dark_said := false         # the night-on-the-water note goes up once
+var _rain_said := false         # the squall's note goes up once
+var _rained := false            # rain fell on the leg, for the record
 var _thirsty := false           # last night's water was drunk: the strokes are shorter today
 var _watchers: Array = []       # [{boat: WhaleWatch, pod: Wildlife, heading, seen}] — the fleet on the pod
 var _thirsty_said := false
@@ -430,6 +432,14 @@ func _leg(delta: float) -> void:
 		var line := "The fog lifts. %s" % ("You are on the line you planned: %s is fine on the bow at %03d°." % [Leg.cove_name(_route), int(round(brg))] if _fog_off_m < 150.0 else "You came out %d m off the line you planned; %s bears %03d°. Dead reckoning drifts with the stream — that is why the fix matters." % [int(_fog_off_m), Leg.cove_name(_route), int(round(brg))])
 		note_label.text = _said("fog_lifts") + line
 	sea.set_fog(_fog)
+	var rain := 1.0 if App._url_param("rain") == "1" else Tides.rain(_day, _hour)  # `?rain=1` for checks
+	sea.set_rain(rain)
+	Sound.set_rain(rain)
+	if rain > 0.3:
+		_rained = true
+		if not _rain_said:
+			_rain_said = true
+			note_label.text = _said("rain") + ("Rain. Hood up and keep paddling: the drops flatten the chop, and it is the wind behind the front that matters, not the water on your deck." if not controls.touch() else "Rain. Hood up, keep paddling; watch the wind behind it.")
 	if _chart:
 		_chart.blind = Fog.blind(_fog)
 	if Fog.blind(_fog):
@@ -493,7 +503,7 @@ func _record_day() -> void:
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
 		"swims": _swims_today, "waits": _waits_today, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
-		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty,
+		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
 		"lateStart": float(App.save.get("lateStart", 0.0)),
 	}
 	App.save.erase("lateStart")  # the water run and the thirst are this day's; tomorrow starts fresh
@@ -933,3 +943,4 @@ func _watch_traffic(delta: float) -> void:
 
 func _exit_tree() -> void:
 	Sound.set_engine(0.0)  # the idle belongs to the water; the next screen starts quiet
+	Sound.set_rain(0.0)

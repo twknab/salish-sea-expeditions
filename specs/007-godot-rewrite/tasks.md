@@ -293,6 +293,10 @@
 
 - [x] T014bv `tests/smoke/godot-stations.mjs` opens its stations through a small worker pool (`CONCURRENCY`, three by default) instead of one after another: each station is a twelve-second wait, not a load, so the sweep of twenty-eight stations takes a third of the time and CI's Godot job comes back under twenty minutes. The report is in finishing order, with each station's errors under its line.
 
+## Slice 59 — the squall
+
+- [x] T014bw The September day carries a rain table (`rain: [{t, r}]`, read by `Tides.rain`): the front comes through with the early-afternoon wind. On the water the sky goes slate, the light flat, and streaks fall around the boat (`Seascape.set_rain`, CPUParticles following the sea's follow node); a synthesized rain loop comes up with it (`Sound.set_rain`); the partner says hood up and the note says the wind behind the front is the thing to watch. The day's record keeps it and the debrief says "paddled through a squall". `?hour=14` on the September day, or `&rain=1` on any leg; `trip-squall` joins the sweep.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

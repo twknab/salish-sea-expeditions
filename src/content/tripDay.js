@@ -88,6 +88,14 @@ export const SEPTEMBER_DAY = {
     { t: 1200, kn: 11, fromDeg: 190 },
     { t: 1440, kn: 6, fromDeg: 195 },
   ],
+  // Rain, 0 dry to 1 a squall, by the minute: the front comes through with the afternoon wind.
+  rain: [
+    { t: 0, r: 0 },
+    { t: 780, r: 0 },
+    { t: 840, r: 0.9 },
+    { t: 960, r: 0.6 },
+    { t: 1080, r: 0 },
+  ],
   sunrise: 410,
   sunset: 1140,
 };

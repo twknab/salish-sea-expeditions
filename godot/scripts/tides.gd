@@ -35,6 +35,10 @@ static func current_vector(day: Dictionary, hour: float) -> Vector3:
 	var dir := Vector3(sin(deg_to_rad(set_deg)), 0.0, -cos(deg_to_rad(set_deg)))
 	return dir * kn * KNOT
 
+## Rain, 0 dry to 1 a squall, at an hour; a day without a rain table is dry.
+static func rain(day: Dictionary, hour: float) -> float:
+	return clampf(sample(day.get("rain", []), hour * 60.0, "r"), 0.0, 1.0)
+
 ## Wind speed in knots and the direction it blows from, in degrees, at an hour.
 static func wind(day: Dictionary, hour: float) -> Dictionary:
 	var w: Array = day.get("wind", [])

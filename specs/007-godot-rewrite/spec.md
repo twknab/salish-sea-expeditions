@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-06
 
-**Status**: Experiment — fifty-eight slices merged (see "What exists today" below and
+**Status**: Experiment — fifty-nine slices merged (see "What exists today" below and
 tasks.md); go/no-go pending the mobile Safari measurement from the Cloud Run URL (see research.md
 and the table at the end)
 
@@ -47,7 +47,7 @@ The Godot build on `main` is a complete three-day expedition, not a tech demo:
   under a card; About carries the acknowledgment and the safety note at all times.
 - **Sound**: four full-length pieces fetched beside the page after the first frame, the sea, the strokes, the blow, the eagle, a diesel at idle and the raccoons synthesized; sound and music switches on every screen.
 - **Again, harder**: the title offers a second authored day, a September spring tide with the first
-  autumn southerly, and every reading of the water — and the light — follows the choice; the debrief offers the other day, and the title remembers the last expedition.
+  autumn southerly and the squall it brings, and every reading of the water — and the light — follows the choice; the debrief offers the other day, and the title remembers the last expedition.
 - **Delivery**: the export is served precompressed with ETags (about 13 MB on the wire for the
   first frame against 45 MB raw), the Docker image and Terraform are framed behind a repository
   variable, and a private demo page tracks `main`.

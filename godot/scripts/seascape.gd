@@ -25,6 +25,8 @@ var _stars: MeshInstance3D
 var _star_mat: StandardMaterial3D
 var night := 0.0   # 0 by day, 1 at full dark; scenes read it (the camp's bioluminescence waits for it)
 var fog := 0.0     # 0 a clear day, 1 socked in; set_fog() — the leg's morning fog, if it has one
+var rain := 0.0    # 0 dry, 1 a squall; set_rain() — streaks over the follow node and a grey sky
+var _rain: CPUParticles3D
 
 ## Take the day's sunrise and sunset from the chosen day, when the app is running.
 func set_day(day: Dictionary) -> void:
@@ -187,7 +189,11 @@ func apply_hour(h: float) -> void:
 		_sky_mat.sky_top_color = Color("3f6f9a").lerp(Color("2a3f6a"), dusk * 0.6).lerp(Color("05070f"), night)
 		_sky_mat.sky_horizon_color = Color("a9bcc8").lerp(Color("e0a878"), dusk * dusk).lerp(Color("141a2a"), night)
 		_sky_mat.ground_horizon_color = Color("9fb3bc").lerp(Color("10161f"), night)
-	sun.light_energy *= 1.0 - 0.7 * fog
+	sun.light_energy *= (1.0 - 0.7 * fog) * (1.0 - 0.45 * rain)
+	if _sky_mat and rain > 0.0:
+		var slate := Color("6f7a82").lerp(Color("141a2a"), night)
+		_sky_mat.sky_top_color = _sky_mat.sky_top_color.lerp(slate, rain * 0.8)
+		_sky_mat.sky_horizon_color = _sky_mat.sky_horizon_color.lerp(slate.lightened(0.15), rain * 0.8)
 	if _sky_mat and fog > 0.0:
 		var grey := Color("d8dde0").lerp(Color("141a2a"), night)
 		_sky_mat.sky_top_color = _sky_mat.sky_top_color.lerp(grey, fog * 0.85)
@@ -198,6 +204,39 @@ func apply_hour(h: float) -> void:
 		_env.fog_light_color = Color("c0d0d8").lerp(Color("d8dde0"), fog).lerp(Color("0c1018"), night)
 		_env.fog_density = Fog.density(fog, fog_density)
 		_env.fog_sky_affect = lerpf(0.2, 0.9, fog)
+
+## Rain on the water, 0 to 1: streaks fall around whatever the sea follows, and the light goes flat.
+func set_rain(a: float) -> void:
+	a = clampf(a, 0.0, 1.0)
+	if absf(a - rain) < 0.002:
+		return
+	rain = a
+	if _rain == null:
+		_rain = CPUParticles3D.new()
+		_rain.amount = 900
+		_rain.lifetime = 1.1
+		_rain.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+		_rain.emission_box_extents = Vector3(28.0, 0.5, 28.0)
+		_rain.direction = Vector3(0, -1, 0)
+		_rain.spread = 2.0
+		_rain.initial_velocity_min = 11.0
+		_rain.initial_velocity_max = 14.0
+		_rain.gravity = Vector3(0, -4.0, 0)
+		_rain.scale_amount_min = 0.6
+		_rain.scale_amount_max = 1.0
+		var bm := BoxMesh.new()
+		bm.size = Vector3(0.012, 0.45, 0.012)
+		_rain.mesh = bm
+		var mat := StandardMaterial3D.new()
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.albedo_color = Color(0.85, 0.9, 0.95, 0.55)
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		_rain.material_override = mat
+		_rain.position = Vector3(0, 14.0, 0)
+		add_child(_rain)
+	_rain.emitting = rain > 0.05
+	_rain.amount_ratio = rain
+	apply_hour(hour)
 
 ## How much fog is on the water, 0 to 1. The sky, the sun and the haze follow it.
 func set_fog(a: float) -> void:
@@ -216,6 +255,8 @@ func _process(delta: float) -> void:
 		if _stars:
 			_stars.global_position = Vector3(follow.global_position.x, 0.0, follow.global_position.z)
 		_far.global_position = Vector3(follow.global_position.x, -0.6, follow.global_position.z)
+		if _rain:
+			_rain.global_position = Vector3(follow.global_position.x, 14.0, follow.global_position.z)
 		if terrain:
 			terrain.focus = follow.global_position
 

@@ -15,6 +15,7 @@ const LINES := {
 	"landing": "Nose it in. I’ll come in behind you.",
 	"wake": "Bow into it. There — that’s all it is.",
 	"kelp": "Kelp. Short strokes, we’re fine.",
+	"rain": "Here it comes. Hood up — it’ll pass.",
 }
 
 ## The partner's words for an event, by name, or empty when there are none.
