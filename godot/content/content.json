@@ -728,6 +728,14 @@
    "keys": "W to paddle; A to bring the bow up into the stream; the mark on the compass is the line"
   },
   {
+   "id": "eddyline",
+   "title": "Eddy line: cross it on an edge",
+   "skill": "edging",
+   "text": "You sit in still water, as behind a point. Twelve metres ahead a stream of a knot and a half runs across from the left, and the pale seam on the water is the eddy line. Cross it flat and the new water grabs the hull and rolls it. Edge toward where the water will push you, downstream going out and into the turn coming back, and it slides under you.",
+   "goal": "Cross the eddy line twice on an edge: out into the stream, then back into the still water",
+   "keys": "W to paddle; Q or E to edge; A or D to turn back"
+  },
+  {
    "id": "rescue",
    "title": "Wet exit and paddle-float re-entry",
    "skill": "rescue",
