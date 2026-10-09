@@ -375,6 +375,10 @@
 
 - [x] T014cr When the channel's stream turns during a leg, the partner feels it ("Feel that? It's turning.") and the note says which way the water runs now and what that means for this leg — the flood starting with you, or the ebb building against you, with the shore's eddies or a landing to wait for the next turn (`CrossingWatch.turned`, `CrossingWatch.turn_note`, a two-line form on a phone). Not in fog, and not over a card.
 
+## Slice 79 — the note keeps the line
+
+- [x] T014cs A time-critical note — the turn of the stream, the ferry angle — keeps the note line for eight seconds (`NOTE_HOLD`) before the squall's or the night's note, which go up once and can wait, may take it. On the September day the stream turns at 13:20 inside the squall; the turn's note now holds while the rain falls, and the rain's note follows when the hold is spent. `?scene=trip&day=september&hour=13.33` is a few seconds before that turn.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
