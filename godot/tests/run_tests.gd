@@ -131,6 +131,9 @@ func _init() -> void:
 	check(FerryGlide.note(-18.0, 72.0, "Posey Island", true) == "Set 18° left: steer about 072° to hold the line.", "and on a phone in two short lines")
 	check(absf(FerryGlide.headway(0.0, 1.5, Vector3.ZERO) - 1.5) < 0.01 and FerryGlide.headway(0.0, 1.5, Vector3(0, 0, 2.0)) < 0.0, "a head stream faster than the boat takes away all its headway")
 	check(FerryGlide.headway(0.0, 1.5, Vector3(0.5, 0, 0)) > 1.3 and FerryGlide.headway(0.0, 1.5, Vector3(2.0, 0, 0)) < 0.0, "a ferry angle costs a little headway, and a stream across faster than the boat all of it")
+	check(Leg.clock(7.0 + 50.0 / 60.0) == "07:50" and Leg.clock(9.5) == "09:30" and Leg.clock(23.999) == "00:00" and Leg.clock(25.25) == "01:15", "the clock reads to the nearest minute, past midnight too")
+	var turns := Tides.slacks({ "current": [{ "t": 0, "kn": 2.0 }, { "t": 120, "kn": -2.0 }, { "t": 240, "kn": 2.0 }] }, 0.0, 4.0)
+	check(turns.size() == 2 and absf(float(turns[0]) - 1.0) < 0.05 and absf(float(turns[1]) - 3.0) < 0.05, "the graph's slack marks sit where the stream crosses zero")
 	var turning := { "current": [{ "t": 0, "kn": 3.0 }, { "t": 120, "kn": 1.0 }, { "t": 180, "kn": -1.0 }] }
 	var slack_h := Tides.next_slack(turning, 0.0)
 	check(slack_h > 2.3 and slack_h < 2.9 and is_nan(Tides.next_slack({ "current": [{ "t": 0, "kn": 3.0 }, { "t": 900, "kn": 3.0 }] }, 0.0)), "slack is when the stream eases or turns, and a stream that runs on has none")
