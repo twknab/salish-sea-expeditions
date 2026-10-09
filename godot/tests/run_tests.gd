@@ -90,6 +90,10 @@ func _init() -> void:
 	check(Fog.plan_line(foggy, 6.0).begins_with("Fog at launch") and Fog.plan_line(foggy, 9.0) == "", "the float plan says so at a launch in fog")
 	# Where the boat sleeps: the authored day's night high is 2.5 m at 23:50, above a 17:30 landing's water.
 	var tide_day := {"tides": [{"t": -40, "h": 1.3}, {"t": 50, "h": 2.4}, {"t": 430, "h": -0.2}, {"t": 820, "h": 1.9}, {"t": 1110, "h": 1.2}, {"t": 1430, "h": 2.5}, {"t": 1850, "h": 0.1}]}
+	# The shore walk's tide: the next low from an hour, within the half day.
+	var low := Tides.next_low(tide_day, 17.5)
+	check(float(low.hour) > 28.0 and float(low.h) < 0.5 and float(low.h) < Tides.height_m(tide_day, 17.5) - 1.0, "from the evening the next low is in the small hours, a metre and more below")
+	check(absf(float(Tides.next_low(tide_day, 5.0).hour) - 7.17) < 0.2, "from first light it is the morning's")
 	check(absf(HaulOut.night_high_m(tide_day, 17.5) - 2.5) < 0.02 and absf(HaulOut.night_high_hour(tide_day, 17.5) - 23.83) < 0.2, "the night's high water is read off the table")
 	var rise := HaulOut.rise_m(tide_day, 17.5)
 	check(rise > 1.0 and rise < 1.4, "it rises more than a metre on the afternoon's water")

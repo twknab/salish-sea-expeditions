@@ -397,7 +397,12 @@ func _show_walk() -> void:
 		text += "\n\n%s." % where
 	var last := _walk >= shore.size() - 1
 	var actions: Array = [["Back to camp" if last else "Next", func() -> void: _walk += 1; _show_walk(), true]]
-	_card = UIKit.card(sp.get("common", "On the shore"), text, App.sources_line(sp.get("sourceIds", [])), actions, "The shore at low tide · %s · %d of %d" % [Leg.clock(_hour), _walk + 1, shore.size()])
+	# The tide the walk really has: what the table says is standing on the shore now, and when it is lowest.
+	var now_h := Tides.height_m(_day, _hour)
+	var low := Tides.next_low(_day, _hour)
+	if _walk == 0 and now_h > float(low.h) + 0.8:
+		text += "\n\nThe water stands at %.1f m and the pools are still under it; the low is %.1f m at %s. This walk is what that low uncovers." % [now_h, float(low.h), Leg.clock(fmod(float(low.hour), 24.0))]
+	_card = UIKit.card(sp.get("common", "On the shore"), text, App.sources_line(sp.get("sourceIds", [])), actions, "The shore · tide %.1f m, low %.1f m at %s · %d of %d" % [now_h, float(low.h), Leg.clock(fmod(float(low.hour), 24.0)), _walk + 1, shore.size()])
 	_ui.add_child(_card)
 
 func _species(id: String) -> Dictionary:

@@ -76,16 +76,17 @@ STATIC_DIR=build/web node server/server.mjs                      # serve it on :
 The game is a three-day sea-kayak expedition on the real islands, on a settled July day or a
 September spring tide with the first autumn southerly behind it: the opening (title,
 acknowledgment, outfitting, the ferry from Anacortes, the boat assembled on the beach, Kayak School
-with its six drills, packing the boat), then for each day a float plan on the chart with the day's
+with its seven drills, a bearing held on the compass among them, packing the boat), then for each day a float plan on the chart with the day's
 water as a graph, the leg on the water with a partner who speaks at the moments that matter — the
 ferry and its wake, the tide, the wind, rips and kelp, the bail-outs when the wind is up, fog on the
 first-light launch with the compass to steer by, wildlife from seals to a pod of killer whales with
 the whale-watch fleet holding off it, a capsize and the rescue, the light going when the day was
-planned too long — and camp ashore with the shore walk and the night, where the boat sleeps above
+planned too long, the September squall, the white light after dark — and camp ashore with the shore walk and the night, where the boat sleeps above
 the tide or is found by it, the food is hung or lost to the raccoons, and Posey's water is drunk,
-rationed or fetched at the cost of the morning's ebb. Then the take-out, the ferry home in the
-evening light, and the debrief: each day as it went, the score, and the seamanship calls kept and
-missed, with the other day offered to paddle it again. Pause anywhere; About carries the
+rationed or fetched at the cost of the morning's ebb. Then the take-out with the call ashore that closes the float plan, the ferry home in the
+evening light, and the debrief: each day as it went, the score, the seamanship calls kept and
+missed, the field notes on the chart of the whole expedition, with the other day offered to paddle
+it again. Pause anywhere; About carries the
 acknowledgment. Content is exported from `src/content`
 by `tools/export-content.mjs`, the legs are laid over the water by `tools/geo/leg_routes.py`,
 sounds come from `tools/synth-audio.mjs` and four full-length pieces from `tools/synth-pieces.mjs`.

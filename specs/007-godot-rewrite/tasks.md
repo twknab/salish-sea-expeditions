@@ -313,6 +313,18 @@
 
 - [x] T014ca The float plan's verdict names the squall when the leg runs into it ("A squall comes through at 14:00"), rain lies the chop down a quarter while it falls, and the shore names go with the shore as the visibility closes to a couple of kilometres.
 
+## Slice 64 — the white light
+
+- [x] T014cb After dark and in fog both boats show the white all-round light a boat under oars carries (Rule 25(d), the one the kit list asked for): a small lamp on the stern deck with its own glow on the water, lit from the water scene when the night comes or the fog closes in, and off again when they go.
+
+## Slice 65 — the docs catch up again
+
+- [x] T014cc README's Godot paragraph carries slices 56–64: seven drills, the squall, the white light, the call ashore, the field notes on the chart of the expedition.
+
+## Slice 66 — the shore walk's own tide
+
+- [x] T014cd The shore walk reads the tide it really has (`Tides.next_low`): its kicker carries the water standing on the shore now and when the next low comes, and when the pools are still under water the first card says so and that the walk is what the low will uncover — on a September spring tide that is a different shore from July's.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

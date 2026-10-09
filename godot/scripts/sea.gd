@@ -401,6 +401,11 @@ func _leg(delta: float) -> void:
 	else:
 		_hour += delta / 3600.0 * 12.0  # out of the groove the day still passes, twelve times real
 	sea.apply_hour(_hour)
+	# The white light: shown after dark and in fog, on both boats, as the kit list said it would be.
+	var lights := sea.night > 0.3 or Fog.blind(_fog)
+	kayak.set_light(lights)
+	if _partner and _partner.kayak:
+		_partner.kayak.set_light(lights)
 	if sea.night > 0.3 and not _dark_said:
 		_dark_said = true
 		_dark = true
