@@ -443,6 +443,10 @@
 
 - [x] T014di On a phone the drills hid their keyboard line and said nothing in its place, so nobody was told to drag the hips bar to edge, slide up to back off, or put two thumbs down to brace. Every drill now carries a `touch` line beside its `keys` (`src/content/anatomy.js`), shown as "On the screen: …" on a touchscreen and "Keyboard: …" elsewhere. The content test requires both for every drill.
 
+## Slice 96 — the cards, on a phone
+
+- [x] T014dj On a phone, the night in the cove ran off the right edge of the screen: its three buttons (Back, Walk the shore, Tomorrow’s float plan) set the card's width, and the text and the last button were cut off. A card's buttons now sit in an `HFlowContainer` (`UIKit.card`), which wraps them onto a second row when they do not fit, as the outfitting presets already did. Desktop cards are unchanged. All 36 stations pass the sweep.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
