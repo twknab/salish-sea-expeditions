@@ -29,3 +29,16 @@ static func heading_for(want_deg: float, speed: float, stream: Vector3) -> float
 	if speed <= 0.05 or absf(cross) >= speed:
 		return NAN
 	return fposmod(want_deg - rad_to_deg(asin(cross / speed)), 360.0)
+
+## How far the course made good runs off the line to the destination, degrees (0 with no way on).
+static func off_line(cmg_deg: float, line_deg: float) -> float:
+	if is_nan(cmg_deg):
+		return 0.0
+	return absf(wrapf(cmg_deg - line_deg, -180.0, 180.0))
+
+## A crossing held: on the line for at least three-fifths of the time the stream ran across it.
+## A stream met for under a minute is not a crossing, and is not judged.
+static func held(stream_s: float, on_line_s: float) -> String:
+	if stream_s < 60.0:
+		return ""
+	return "held" if on_line_s >= 0.6 * stream_s else "set"

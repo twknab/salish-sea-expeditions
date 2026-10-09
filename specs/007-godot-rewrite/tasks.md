@@ -337,6 +337,10 @@
 
 - [x] T014cg Crossing a stream is taught where it happens: the chart draws the course the boat is making good over the ground as a dashed line beside the arrow of its heading, and when the stream sets the boat more than twelve degrees off, the note says by how much and what to steer to hold the line to the cove — the ferry angle, `asin(cross-stream / boat speed)` up into the stream — or that no angle holds it when the stream across the line outruns the boat (`FerryGlide`, pure and tested).
 
+## Slice 70 — the crossing, scored
+
+- [x] T014ch A stream crossing is a seamanship call when one came up: the water scene times every second under way in a stream of more than half a knot, and the seconds the course made good stays within twelve degrees of the line to the landing (`FerryGlide.off_line`). On the line three-fifths of the way is a crossing held (`FerryGlide.held`); under a minute in a stream is not judged. The debrief's Each day names it ("ferried across the stream on the line", or "set down the stream, 48% of the crossing on the line") and Seamanship carries "Crossed the stream on a ferry angle".
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
