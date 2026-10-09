@@ -82,6 +82,15 @@ test('every credit is used, apart from the engine and original-work credits', ()
   for (const c of CREDITS) if (!['phaser', 'three', 'synth', 'godot', 'dejavu', 'terrain-tiles', 'worldcover'].includes(c.id)) assert.ok(used.has(c.id), `unused credit ${c.id}`);
 });
 
+test('the credits the Godot build relies on are kept, with what each obliges', () => {
+  // Exempt from the unused-credit check above, so guarded here (specs/007-godot-rewrite/adr-datasets-and-libraries.md).
+  const byId = Object.fromEntries(CREDITS.map((c) => [c.id, c]));
+  for (const id of ['godot', 'terrain-tiles', 'worldcover', 'dejavu', 'synth']) assert.ok(byId[id], `missing credit ${id}`);
+  assert.match(byId.worldcover.licence, /CC BY 4\.0/);
+  assert.match(byId.worldcover.author, /European Space Agency/);
+  assert.match(byId.dejavu.licence, /Bitstream Vera/);
+});
+
 test('the words on the water are defined once each, in a sentence or more', () => {
   const ids = GLOSSARY.map((g) => g.id);
   assert.equal(new Set(ids).size, ids.length);

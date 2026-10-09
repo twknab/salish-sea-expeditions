@@ -431,6 +431,10 @@
 
 - [x] T014df `adr-datasets-and-libraries.md` closes T013p. It records each dataset and library under the rewrite: how it is used, its licence and what it obliges, and what was considered and turned down. It notes that lamejs (LGPL-3.0) runs only at build time, and that the WorldCover and DejaVu credits are not guarded by the content test.
 
+## Slice 93 — the attributions, guarded
+
+- [x] T014dg The credits the Godot build relies on (the engine, the terrain tiles, WorldCover, DejaVu and the original-work credit) are exempt from the unused-credit check, so a content test of their own now fails if one goes missing, if WorldCover's CC BY 4.0 attribution to the European Space Agency changes, or if DejaVu's Bitstream Vera licence changes. The datasets ADR says so, in place of the warning it carried.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
