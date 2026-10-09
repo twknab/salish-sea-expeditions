@@ -127,6 +127,9 @@ func _init() -> void:
 	check(absf(hdg - (360.0 - 19.47)) < 0.1, "to hold north against an easterly set, point up into it by asin(0.5/1.5)")
 	check(absf(FerryGlide.course_made_good(-Vector3(sin(deg_to_rad(hdg)), 0, -cos(deg_to_rad(hdg))) * -1.5, Vector3(0.5, 0, 0))) < 0.1 or absf(FerryGlide.course_made_good(Vector3(sin(deg_to_rad(hdg)), 0, -cos(deg_to_rad(hdg))) * 1.5, Vector3(0.5, 0, 0))) < 0.1, "and the boat then makes good the line")
 	check(is_nan(FerryGlide.heading_for(0.0, 0.4, Vector3(0.5, 0, 0))), "a stream faster across the line than the boat cannot be ferried")
+	check(absf(FerryGlide.off_line(355.0, 5.0) - 10.0) < 0.01 and FerryGlide.off_line(NAN, 90.0) == 0.0, "off the line is measured the short way round")
+	check(FerryGlide.held(30.0, 0.0) == "" and FerryGlide.held(300.0, 200.0) == "held" and FerryGlide.held(300.0, 100.0) == "set", "a crossing is held on the line three-fifths of the way, and a brush with a stream is not judged")
+	check(Seamanship.calls([{"verdict": "good", "streamS": 300.0, "onLineS": 100.0}]).size() == 4 and Seamanship.kept(Seamanship.calls([{"verdict": "good", "streamS": 300.0, "onLineS": 100.0}])) == 3, "a stream crossing is a call when one came up")
 	# The partner speaks at the moments that matter, in a few words, and not when there is nothing to say.
 	check(PartnerVoice.line("ferry") != "" and PartnerVoice.line("nothing") == "" and PartnerVoice.said("Mina", "nothing") == "", "silent when there is nothing to say")
 	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")

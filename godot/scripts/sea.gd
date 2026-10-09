@@ -49,6 +49,7 @@ const NOTES_KEPT := 24
 var _rained := false            # rain fell on the leg, for the record
 var _rain_now := 0.0            # the rain of the hour, read before the sea state is set
 var _ferry_said := false        # the ferry-angle note goes up once a leg
+var _stream_s := [0.0, 0.0]     # seconds under way in a real stream, and of those on the line
 var _thirsty := false           # last night's water was drunk: the strokes are shorter today
 var _watchers: Array = []       # [{boat: WhaleWatch, pod: Wildlife, heading, seen}] — the fleet on the pod
 var _thirsty_said := false
@@ -429,6 +430,9 @@ func _leg(delta: float) -> void:
 	if _chart:
 		_chart.cmg = cmg
 	var set_deg := FerryGlide.set_off(rad_to_deg(kayak.heading), cmg)
+	var crossing := cur.length() > 0.45 * FerryGlide.KN and not is_nan(cmg)  # a real stream, and way on
+	_stream_s[0] += delta if crossing else 0.0
+	_stream_s[1] += delta if crossing and FerryGlide.off_line(cmg, brg) <= 12.0 else 0.0
 	if absf(set_deg) > 12.0 and cur.length() > 0.45 * FerryGlide.KN and not _ferry_said and not Fog.blind(_fog):
 		_ferry_said = true
 		var steer := FerryGlide.heading_for(brg, kayak.speed, cur)
@@ -543,6 +547,7 @@ func _record_day() -> void:
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
 		"swims": _swims_today, "waits": _waits_today, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
+		"streamS": _stream_s[0], "onLineS": _stream_s[1],
 		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
 		"notes": _notes.duplicate(), "noteAt": _note_at.duplicate(),
 		"lateStart": float(App.save.get("lateStart", 0.0)),

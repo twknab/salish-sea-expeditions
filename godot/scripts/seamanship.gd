@@ -1,6 +1,7 @@
 ## The judgement calls an expedition is made of, read back from the days' record: the launch
 ## window, the boat above the tide, the food out of reach, daylight for the landing, the ferry
-## held for, the line held in fog, room given to wildlife, the boat kept upright. A call counts
+## held for, the stream crossed on a ferry angle, the line held in fog, room given to wildlife,
+## the boat kept upright. A call counts
 ## only on a day it came up — no fog, no fog call. Pure, so the headless tests can check it.
 class_name Seamanship
 
@@ -31,7 +32,11 @@ static func calls(days: Array) -> Array:
 	var close := 0
 	var waters: Array = []
 	var plans: Array = []
+	var streams: Array = []
 	for d in days:
+		var sv := FerryGlide.held(float(d.get("streamS", 0.0)), float(d.get("onLineS", 0.0)))
+		if sv != "":
+			streams.append(sv)
 		var fp := str(d.get("floatPlan", ""))
 		if fp != "":
 			plans.append(fp)
@@ -72,6 +77,9 @@ static func calls(days: Array) -> Array:
 	out.append({ "label": "Landed in daylight", "ok": dark == 0, "note": "every landing" if dark == 0 else ("%s in the dark" % ("one landing" if dark == 1 else "%d landings" % dark)) })
 	if ferries > 0:
 		out.append({ "label": "Held for the ferry", "ok": ferries_held == ferries, "note": "%d of %d times" % [ferries_held, ferries] })
+	if not streams.is_empty():
+		var set_n := streams.count("set")
+		out.append({ "label": "Crossed the stream on a ferry angle", "ok": set_n == 0, "note": "on the line, pointed up into the water" if set_n == 0 else "set down the stream %s, the bow on the far side and the boat going elsewhere" % ("once" if set_n == 1 else "%d times" % set_n) })
 	if fogs > 0:
 		out.append({ "label": "Held the line in fog", "ok": fogs_held == fogs, "note": "came out on the line" if fogs_held == fogs else "came out off the line — the stream had the boat while the islands were gone" })
 	if sightings > 0:
