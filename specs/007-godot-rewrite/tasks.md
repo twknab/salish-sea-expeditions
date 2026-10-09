@@ -359,6 +359,10 @@
 
 - [x] T014cn The float plan's tide graph marks slack water: a diamond on the zero line wherever the stream turns (`Tides.slacks`), with its time to the five minutes, so a crossing can be planned for the turn before launching rather than discovered on the water. The legend is laid out by measure and fits a phone. `Leg.clock` rounds to the nearest minute (it floored, so 7 h 50 m held as 7.8333 read 07:49).
 
+## Slice 75 — the turn inside the leg
+
+- [x] T014co The plan's verdict names a slack that falls inside the leg (`Tides.turn_line`): "The stream turns at 13:20, partway through, and runs against you after it" — or carries you, on a leg that favours the ebb. A turn in the first or last quarter hour is the launch's or the landing's and goes unsaid. A poor verdict for chop no longer says the stream is "near slack for the whole leg"; it names the wind's rough sea, and "for the whole leg" is kept for a leg that really runs against the stream.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
