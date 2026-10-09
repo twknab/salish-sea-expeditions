@@ -91,8 +91,8 @@ the inventory and the reasoning behind it.
   output is deterministic.
 - Two obligations travel with the build: CC BY attribution for WorldCover, and the DejaVu notice.
   Both live in `credits.js` and show on the field guide's credits page. The content test's
-  unused-credit check exempts them, as it does the engine and original-work credits, so removing
-  one would go unnoticed: keep them by hand.
+  unused-credit check exempts them, as it does the engine and original-work credits, so a test of
+  their own (`tests/content.test.js`) keeps them and their licences in place.
 - Open items: real soundings to replace the synthesized harbour bottom; the mixes tuned on real
   speakers (T014n). Any sampled or licensed sound added later needs an entry in this record and a
   credit.
