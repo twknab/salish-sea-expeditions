@@ -220,6 +220,7 @@ func _init() -> void:
 	# The partner speaks at the moments that matter, in a few words, and not when there is nothing to say.
 	check(PartnerVoice.line("ferry") != "" and PartnerVoice.line("nothing") == "" and PartnerVoice.said("Mina", "nothing") == "", "silent when there is nothing to say")
 	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")
+	check(PartnerVoice.line("eddyline_edged") != "" and PartnerVoice.line("eddyline_edged") != PartnerVoice.line("eddyline"), "the partner has a word for an eddy line crossed well, not only for one that trips the boat")
 	for ev in PartnerVoice.LINES.keys():
 		check(PartnerVoice.line(ev).length() < 70, "%s: a few words, not a lecture" % ev)
 	# The call ashore: closed from the float, late, or never — and the record only remembers trouble.

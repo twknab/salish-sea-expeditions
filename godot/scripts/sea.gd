@@ -413,7 +413,7 @@ func _leg(delta: float) -> void:
 		_cross.crossed_line(edged)
 		if not edged:
 			kayak.kick(1.0)
-		note_label.text = ("" if edged else _said("eddyline")) + CrossingWatch.line_note(edged, _cross.line_dir, controls.touch())
+		note_label.text = _said("eddyline_edged" if edged else "eddyline") + CrossingWatch.line_note(edged, _cross.line_dir, controls.touch())
 		_note_hold = NOTE_HOLD
 	Sound.set_rip(CrossingWatch.rip_level(factor, kn))
 	if _cross.turned(kn) and not Fog.blind(_fog) and _card == null:
