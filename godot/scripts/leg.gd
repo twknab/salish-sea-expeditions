@@ -99,9 +99,8 @@ static func bearing_deg(a: Vector3, b: Vector3) -> float:
 	return fposmod(rad_to_deg(atan2(b.x - a.x, -(b.z - a.z))), 360.0)
 
 static func clock(hour: float) -> String:
-	var h := int(floor(hour)) % 24
-	var m := int(floor((hour - floor(hour)) * 60.0))
-	return "%02d:%02d" % [h, m]
+	var mins := int(round(hour * 60.0))  # to the nearest minute: 7 h 50 m held as 7.8333 must not read 07:49
+	return "%02d:%02d" % [floori(mins / 60.0) % 24, mins % 60]
 
 ## The chosen launch hour from the save when there is an App; the headless tests get the default.
 static func launch_hour() -> float:

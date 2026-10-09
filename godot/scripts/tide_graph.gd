@@ -113,20 +113,36 @@ func _draw() -> void:
 	for i in range(0, n, 2):
 		draw_line(tide[i], tide[i + 1], Color(UIKit.MIST, 0.7), 1.5, true)
 	draw_polyline(windp, Color(UIKit.SUN, 0.85), 1.5, true)
+	# Slack water: where the stream turns, and the crossings are easiest. Labels alternate above and
+	# below the line so two turns close together do not overprint.
+	var k := 0
+	for sh in Tides.slacks(day, H0, H1):
+		var sx := _x(float(sh))
+		_diamond(Vector2(sx, mid), 4.5, UIKit.FOAM)
+		var lab := Leg.clock(snappedf(float(sh), 1.0 / 12.0))  # to the five minutes: a tide table's precision, not more
+		var lw := font.get_string_size(lab, HORIZONTAL_ALIGNMENT_LEFT, -1, 9).x
+		draw_string(font, Vector2(clampf(sx - lw * 0.5, p.position.x + 2, p.end.x - lw - 2), mid + (-8.0 if k % 2 == 0 else 17.0)), lab, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color(UIKit.FOAM, 0.9))
+		k += 1
 	# The launch cursor.
 	draw_line(Vector2(x0, p.position.y - 4), Vector2(x0, p.end.y + 4), UIKit.SUN, 2.0, true)
 	draw_circle(Vector2(x0, p.position.y - 4), 4.0, UIKit.SUN)
 	draw_string(font, Vector2(x0 + 6, p.position.y + 10), "launch %s" % Leg.clock(launch), HORIZONTAL_ALIGNMENT_LEFT, -1, 11, UIKit.SUN)
-	# Legend on its own line under the hours, so a narrow graph does not run them together.
-	var lx := p.position.x
+	# Legend on its own line under the hours, laid out by measure from the left edge so a phone's
+	# narrow graph still holds every key.
+	var lx := 8.0
 	var ly := p.end.y + 30.0
-	draw_line(Vector2(lx, ly - 4), Vector2(lx + 14, ly - 4), Color(UIKit.FOAM, 0.95), 2.0)
-	draw_string(font, Vector2(lx + 18, ly), "current", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(UIKit.MIST, 0.9))
-	draw_line(Vector2(lx + 68, ly - 4), Vector2(lx + 82, ly - 4), Color(UIKit.SUN, 0.85), 1.5)
-	draw_string(font, Vector2(lx + 86, ly), "wind", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(UIKit.MIST, 0.9))
-	draw_line(Vector2(lx + 120, ly - 4), Vector2(lx + 134, ly - 4), Color(UIKit.MIST, 0.7), 1.5)
-	draw_string(font, Vector2(lx + 138, ly), "tide height", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(UIKit.MIST, 0.9))
-	draw_rect(Rect2(lx + 196, ly - 9, 10, 8), Color(UIKit.SUN, 0.3))
-	draw_string(font, Vector2(lx + 210, ly), "the leg", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(UIKit.MIST, 0.9))
+	for key in [["current", 0], ["wind", 1], ["tide", 2], ["the leg", 3], ["slack", 4]]:
+		var kc := Vector2(lx + 7, ly - 4)
+		match int(key[1]):
+			0: draw_line(kc - Vector2(7, 0), kc + Vector2(7, 0), Color(UIKit.FOAM, 0.95), 2.0)
+			1: draw_line(kc - Vector2(7, 0), kc + Vector2(7, 0), Color(UIKit.SUN, 0.85), 1.5)
+			2: draw_line(kc - Vector2(7, 0), kc + Vector2(7, 0), Color(UIKit.MIST, 0.7), 1.5)
+			3: draw_rect(Rect2(kc.x - 5, ly - 9, 10, 8), Color(UIKit.SUN, 0.3))
+			4: _diamond(kc, 4.0, UIKit.FOAM)
+		draw_string(font, Vector2(lx + 18, ly), str(key[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(UIKit.MIST, 0.9))
+		lx += 18.0 + font.get_string_size(str(key[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, 10).x + 12.0
 	if has_focus():
 		draw_rect(Rect2(Vector2.ZERO, size).grow(-1), UIKit.SUN, false, 2.0)
+
+func _diamond(c: Vector2, r: float, col: Color) -> void:
+	draw_colored_polygon(PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c + Vector2(0, r), c + Vector2(-r, 0)]), col)

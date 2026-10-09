@@ -105,6 +105,20 @@ static func next_slack(day: Dictionary, hour: float) -> float:
 		t += 1.0 / 6.0
 	return NAN
 
+## Every turn of the stream between two hours: the slack waters, where the current crosses zero.
+static func slacks(day: Dictionary, h0: float, h1: float) -> Array:
+	var out: Array = []
+	var step := 1.0 / 12.0
+	var t := h0
+	var was := current_kn(day, t)
+	while t < h1:
+		var now := current_kn(day, t + step)
+		if signf(now) != signf(was) and was != 0.0:
+			out.append(t + step * absf(was) / maxf(absf(was) + absf(now), 0.0001))
+		was = now
+		t += step
+	return out
+
 ## When the sun sets on the day, in hours.
 static func sunset_h(day: Dictionary) -> float:
 	return float(day.get("sunset", 1270)) / 60.0

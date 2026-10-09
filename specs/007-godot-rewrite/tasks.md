@@ -355,6 +355,10 @@
 
 - [x] T014cm README's Godot paragraph carries slices 68–72: the stream on the chart beside the course made good, the ferry angle, slack water when the stream outruns the boat, and the crossing among the seamanship calls.
 
+## Slice 74 — slack on the float plan
+
+- [x] T014cn The float plan's tide graph marks slack water: a diamond on the zero line wherever the stream turns (`Tides.slacks`), with its time to the five minutes, so a crossing can be planned for the turn before launching rather than discovered on the water. The legend is laid out by measure and fits a phone. `Leg.clock` rounds to the nearest minute (it floored, so 7 h 50 m held as 7.8333 read 07:49).
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
