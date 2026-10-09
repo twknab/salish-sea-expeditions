@@ -1,6 +1,6 @@
 ## The judgement calls an expedition is made of, read back from the days' record: the launch
 ## window, the boat above the tide, the food out of reach, daylight for the landing, the ferry
-## held for, the stream crossed on a ferry angle, the line held in fog, room given to wildlife,
+## held for, the stream crossed on a ferry angle, the eddy lines crossed on an edge, the line held in fog, room given to wildlife,
 ## the boat kept upright. A call counts
 ## only on a day it came up — no fog, no fog call. Pure, so the headless tests can check it.
 class_name Seamanship
@@ -33,6 +33,8 @@ static func calls(days: Array) -> Array:
 	var waters: Array = []
 	var plans: Array = []
 	var streams: Array = []
+	var lines_edged := 0
+	var lines_tripped := 0
 	for d in days:
 		var sv := FerryGlide.held(float(d.get("streamS", 0.0)), float(d.get("onLineS", 0.0)))
 		if sv != "":
@@ -52,6 +54,8 @@ static func calls(days: Array) -> Array:
 		if bool(d.get("dark", false)):
 			dark += 1
 		swims += int(d.get("swims", 0))
+		lines_edged += int(d.get("linesEdged", 0))
+		lines_tripped += int(d.get("linesTripped", 0))
 		var held := int(d.get("ferryHeld", 0))
 		var crossed := int(d.get("ferryCrossed", 0))
 		ferries += held + crossed
@@ -80,6 +84,9 @@ static func calls(days: Array) -> Array:
 	if not streams.is_empty():
 		var set_n := streams.count("set")
 		out.append({ "label": "Crossed the stream on a ferry angle", "ok": set_n == 0, "note": "on the line, pointed up into the water" if set_n == 0 else "set down the stream %s, the bow on the far side and the boat going elsewhere" % ("once" if set_n == 1 else "%d times" % set_n) })
+	if lines_edged + lines_tripped > 0:
+		var all_n := lines_edged + lines_tripped
+		out.append({ "label": "Crossed eddy lines on an edge", "ok": lines_tripped == 0, "note": ("on an edge every time, %d of %d" % [lines_edged, all_n]) if lines_tripped == 0 else ("tripped %s, %d of %d on an edge" % ["once" if lines_tripped == 1 else "%d times" % lines_tripped, lines_edged, all_n]) })
 	if fogs > 0:
 		out.append({ "label": "Held the line in fog", "ok": fogs_held == fogs, "note": "came out on the line" if fogs_held == fogs else "came out off the line — the stream had the boat while the islands were gone" })
 	if sightings > 0:
