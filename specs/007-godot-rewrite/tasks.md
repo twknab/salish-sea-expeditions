@@ -415,6 +415,10 @@
 
 - [x] T014db Kayak School gains a ninth drill before the rescue: the eddy line (`src/content/anatomy.js`). The boat sits in still water; twelve metres ahead, past a pale seam drawn on the water, a knot and a half of stream runs across from the left (`DrillWater`, `drill_water.gd`, which now also starts the ferry drill's stream). Crossed on an edge toward where the new water pushes, the crossing counts; crossed flat, the line rolls the boat and the note says how to cross the next one, using the same `CrossingWatch.line_edged` and `line_note` as the leg. Two edged crossings, out and back in, complete it. `?scene=school&drill=eddyline` opens it, and the stations sweep opens it too.
 
+## Slice 89 — the school's tour, as data
+
+- [x] T014dc Kayak School's walk around the boat, the body and the paddle moves out of the water scene into a pure class (`SchoolTour`, `school_tour.gd`): one stop per part in the content, each with where the camera looks and from how far, then the drills. The scene passes in the figure's anchors and the source line, so the tests can walk the tour without the autoloads. They check that every part, body point and paddle part has a stop, from the intro to the drills; that every stop has somewhere for the camera to look from; and that the tour's count of drills matches the drills there are. `sea.gd` drops from 999 lines to 970, under the lint limit of 1000, with room for what comes next.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

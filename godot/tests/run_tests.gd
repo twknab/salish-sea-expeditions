@@ -264,6 +264,11 @@ func _init() -> void:
 						printerr("unknown source ", sid, " in ", key)
 		check(missing == 0, "all sourceIds resolve")
 		check(c.drills.size() == 9 and c.drills[0].id == "forward" and c.drills[5].id == "compass" and c.drills[6].id == "ferry" and c.drills[7].id == "eddyline" and c.drills[8].id == "rescue", "nine drills, forward first, the compass, the ferry angle and the eddy line before the rescue, the rescue last")
+		var tour := SchoolTour.build(c, func(_id: String) -> Vector3: return Vector3.UP, func(sids: Array) -> String: return ",".join(sids))
+		var stops: int = c.kayakParts.size() + c.bodyPoints.size() + c.paddleParts.size() + 2
+		check(tour.size() == stops and tour[0].kind == "intro" and tour[-1].kind == "drills", "the school tour walks every part, the body and the paddle, from the intro to the drills")
+		check(tour.all(func(t: Dictionary) -> bool: return t.has("anchor") and t.has("dist") and float(t.dist) > 1.0), "every stop of the tour has somewhere for the camera to look from")
+		check(str(tour[-1].text).begins_with("Nine short drills") and c.drills.size() == 9, "the tour counts the drills there are")
 	# IK: the elbow keeps both bone lengths and bends toward the pole.
 	var sh := Vector3(0.2, 1.4, 0)
 	var hand := Vector3(0.45, 1.1, 0.3)

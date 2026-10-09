@@ -666,36 +666,7 @@ func _physics_process(_delta: float) -> void:
 ## Every stop on the tour: boat parts on the hull, body points on the paddler, paddle parts, then
 ## the drills. Anchors are in the kayak's local space (x starboard, y up, z aft).
 func _build_tour() -> void:
-	var c := App.content
-	var hull_anchor := func(s: float, lat: float, which: String) -> Vector3:
-		var h := Hull.heights(s)
-		return Vector3(lat, h[which], -Hull.x_at(s))
-	var anchors := {
-		"bow": hull_anchor.call(0.02, 0.0, "ridge"), "stern": hull_anchor.call(0.98, 0.0, "ridge"),
-		"deck": hull_anchor.call(0.25, 0.0, "ridge"), "hull": hull_anchor.call(0.3, 0.22, "chine"),
-		"keel": hull_anchor.call(0.48, 0.0, "keel"), "chine": hull_anchor.call(0.76, 0.22, "chine"),
-		"cockpit": Vector3(0, 0.26, -0.35), "skirt": Vector3(0, 0.3, 0.0), "frame": hull_anchor.call(0.15, 0.15, "sheer"),
-		"jacks": Vector3(0.2, 0.2, -0.05), "float": hull_anchor.call(0.82, 0.1, "sheer"),
-	}
-	var views := {
-		"bow": [3.2, 0.4, 0.25], "stern": [3.2, PI - 0.4, 0.25], "deck": [2.6, 1.1, 0.7], "hull": [3.0, 1.3, -0.05],
-		"keel": [3.4, 1.5, -0.25], "chine": [2.8, 1.7, 0.05], "cockpit": [2.4, 0.9, 0.8], "skirt": [2.0, 0.5, 0.9],
-		"frame": [2.4, 1.2, 0.5], "jacks": [2.2, 1.4, 0.6], "float": [2.6, 2.3, 0.5],
-	}
-	_tour.clear()
-	_tour.append({ "kind": "intro", "kicker": "Kayak School", "title": "Know your boat, your body, your paddle", "text": "Before the crossing, a quiet beach and the boat you will paddle all game. Tap Next to walk around it.", "source": "", "anchor": Vector3(0, 0.2, 0), "dist": 7.0, "az": 0.7, "el": 0.45 })
-	for p in c.get("kayakParts", []):
-		var v: Array = views.get(p.id, [3.0, 0.8, 0.4])
-		_tour.append({ "kind": "boat", "kicker": "The boat", "title": p.name, "text": p.text, "source": App.sources_line(p.sourceIds), "anchor": anchors.get(p.id, Vector3.ZERO), "dist": v[0], "az": v[1], "el": v[2] })
-	var body_views := { "feet": [2.2, 0.9, 0.5], "knees": [2.0, 1.0, 0.55], "hips": [2.2, 1.3, 0.35], "back": [2.2, 2.6, 0.4], "head": [1.8, 0.8, 0.3] }
-	for b in c.get("bodyPoints", []):
-		var v: Array = body_views.get(b.id, [2.2, 1.0, 0.4])
-		_tour.append({ "kind": "body", "kicker": "The body", "title": b.name, "text": b.text, "source": App.sources_line(b.sourceIds), "anchor": kayak.paddler_anchor(b.id), "dist": v[0], "az": v[1], "el": v[2] })
-	var paddle_views := { "blade": [1.6, 1.4, 0.5], "loom": [1.6, 0.2, 0.7], "shoulder": [1.4, 1.6, 0.6], "tip": [1.4, 1.7, 0.4], "box": [2.0, 0.1, 0.5] }
-	for pp in c.get("paddleParts", []):
-		var v: Array = paddle_views.get(pp.id, [1.6, 1.0, 0.5])
-		_tour.append({ "kind": "paddle", "kicker": "The paddle", "title": pp.name, "text": pp.text, "source": App.sources_line(pp.sourceIds), "anchor": kayak.paddler_anchor(pp.id), "dist": v[0], "az": v[1], "el": v[2] })
-	_tour.append({ "kind": "drills", "kicker": "Calm water", "title": "Now paddle it", "text": "Nine short drills: forward and reverse strokes, edging, the sweep turn, the low brace, a compass bearing, a ferry angle, an eddy line crossed on an edge, and the rescue. Everything later builds on these.", "source": "", "anchor": Vector3(0, 0.3, 0), "dist": 6.0, "az": 0.2, "el": 0.5 })
+	_tour = SchoolTour.build(App.content, kayak.paddler_anchor, App.sources_line)
 
 func _show_phase() -> void:
 	App.school_from = _phase
