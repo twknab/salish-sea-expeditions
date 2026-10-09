@@ -43,9 +43,11 @@ var _fog_in_hour := -1.0        # when the fog closed in, for the record
 var _dark_said := false         # the night-on-the-water note goes up once
 var _rain_said := false         # the squall's note goes up once
 var _notes: Array = []          # every note the day put up, in order, for the field notes
+var _note_at: Array = []        # [[x, z]] where each was said, for the chart of the expedition
 var _last_note := ""
 const NOTES_KEPT := 24
 var _rained := false            # rain fell on the leg, for the record
+var _rain_now := 0.0            # the rain of the hour, read before the sea state is set
 var _thirsty := false           # last night's water was drunk: the strokes are shorter today
 var _watchers: Array = []       # [{boat: WhaleWatch, pod: Wildlife, heading, seen}] — the fleet on the pod
 var _thirsty_said := false
@@ -419,7 +421,8 @@ func _leg(delta: float) -> void:
 	if kelp > 0.3 and not _kelp_said:
 		_kelp_said = true
 		note_label.text = _said("kelp") + "In the kelp: the fronds grab the blade and the swell lies down. A kelp bed is a lee, and a slow one."
-	var state := Tides.sea_state(_day, _hour, factor) * (1.0 - 0.6 * kelp)
+	_rain_now = 1.0 if App._url_param("rain") == "1" else Tides.rain(_day, _hour)  # `?rain=1` for checks
+	var state := Tides.sea_state(_day, _hour, factor) * (1.0 - 0.6 * kelp) * (1.0 - 0.25 * _rain_now)  # rain lies the chop down a little
 	if state >= ROUGH and not _weather_asked and _card == null:
 		_offer_bailouts(state)
 	var w := Tides.wind(_day, _hour)
@@ -441,7 +444,7 @@ func _leg(delta: float) -> void:
 		var line := "The fog lifts. %s" % ("You are on the line you planned: %s is fine on the bow at %03d°." % [Leg.cove_name(_route), int(round(brg))] if _fog_off_m < 150.0 else "You came out %d m off the line you planned; %s bears %03d°. Dead reckoning drifts with the stream — that is why the fix matters." % [int(_fog_off_m), Leg.cove_name(_route), int(round(brg))])
 		note_label.text = _said("fog_lifts") + line
 	sea.set_fog(_fog)
-	var rain := 1.0 if App._url_param("rain") == "1" else Tides.rain(_day, _hour)  # `?rain=1` for checks
+	var rain := _rain_now
 	sea.set_rain(rain)
 	Sound.set_rain(rain)
 	if rain > 0.3:
@@ -513,7 +516,7 @@ func _record_day() -> void:
 		"swims": _swims_today, "waits": _waits_today, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
 		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
-		"notes": _notes.duplicate(),
+		"notes": _notes.duplicate(), "noteAt": _note_at.duplicate(),
 		"lateStart": float(App.save.get("lateStart", 0.0)),
 	}
 	App.save.erase("lateStart")  # the water run and the thirst are this day's; tomorrow starts fresh
@@ -592,6 +595,7 @@ func _process(delta: float) -> void:
 		var line := _last_note.strip_edges()
 		if line != "" and not line.begins_with("Day ") and not line.begins_with("Friday Harbor ·") and not line.contains("rotation strokes") and not _notes.has(line) and _notes.size() < NOTES_KEPT:
 			_notes.append(line)
+			_note_at.append([snappedf(kayak.global_position.x, 1.0), snappedf(kayak.global_position.z, 1.0)])
 	_compass.heading = kayak.heading
 	_since_start += delta
 	if mode == "trip" and not _arrived and not _swimming and App._url_param("capsize") == "1" and _since_start > 2.0 and not kayak.over:
@@ -617,7 +621,7 @@ func _process(delta: float) -> void:
 		_watch_sightings()
 	_places.visible = hud.visible
 	if _places.visible:
-		_places.reach = minf(8000.0, Fog.visibility_m(_fog))  # in fog the shore names go with the shore
+		_places.reach = minf(minf(8000.0, Fog.visibility_m(_fog)), lerpf(8000.0, 2500.0, _rain_now))  # in fog, and in rain, the shore names go with the shore
 		_places.update(rig.camera())
 	if _drill >= 0:
 		_drill_progress(delta)

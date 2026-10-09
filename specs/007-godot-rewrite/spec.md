@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-06
 
-**Status**: Experiment — sixty-one slices merged (see "What exists today" below and
+**Status**: Experiment — sixty-three slices merged (see "What exists today" below and
 tasks.md); go/no-go pending the mobile Safari measurement from the Cloud Run URL (see research.md
 and the table at the end)
 
@@ -41,7 +41,7 @@ The Godot build on `main` is a complete three-day expedition, not a tech demo:
   the rescue taught in the water.
 - **Ashore**: camp on Jones and Posey with the shore walk at low tide, the boat carried above the night's high water or found by it, the food hung or lost to the raccoons, Posey's water drunk, rationed or fetched at the cost of the ebb, the stars and the
   bioluminescence of the cove at night, the take-out at Friday
-  Harbor with the tally and the call ashore that closes the float plan, the ferry home to Anacortes in the evening light, then the debrief: each day as it went, the score by the Phaser rules, the seamanship calls kept and missed, the field notes of each day,
+  Harbor with the tally and the call ashore that closes the float plan, the ferry home to Anacortes in the evening light, then the debrief: each day as it went, the score by the Phaser rules, the seamanship calls kept and missed, the field notes of each day on the chart of the whole expedition,
   the drills and the species; the field guide and every source a button away from the title.
 - **Pause**: Escape, P, a chip, or the page going into a pocket holds the boat and the clock
   under a card; About carries the acknowledgment and the safety note at all times.

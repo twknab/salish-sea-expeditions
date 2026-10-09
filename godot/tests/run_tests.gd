@@ -105,6 +105,8 @@ func _init() -> void:
 	var short_day := {"sunset": 1140, "tides": [], "current": [], "wind": []}
 	var wet_day := {"rain": [{"t": 780, "r": 0.0}, {"t": 840, "r": 0.9}, {"t": 1080, "r": 0.0}]}
 	check(Tides.rain(short_day, 14.0) == 0.0 and Tides.rain(wet_day, 12.0) == 0.0 and Tides.rain(wet_day, 14.0) > 0.8 and Tides.rain(wet_day, 19.0) == 0.0, "the squall comes through with the afternoon and goes")
+	var wet_calm := {"rain": wet_day.rain, "tides": [], "current": [], "wind": [], "sunset": 1270}
+	check(Tides.verdict_line(wet_calm, 12.0, 3.0).contains("squall comes through at 14:00") and not Tides.verdict_line(wet_calm, 6.0, 3.0).contains("squall"), "the float plan names the squall when the leg runs into it")
 	check(Tides.lands_in_the_dark(short_day, 16.0, 3.0) and not Tides.lands_in_the_dark(short_day, 12.0, 3.0), "a late launch on a short day lands in the dark")
 	check(String(Tides.judge(short_day, 16.0, 3.0).verdict) == "poor" and Tides.verdict_line(short_day, 16.0, 3.0).contains("in the dark"), "and the float plan says so")
 	# The whale-watch boat holds off the pod abeam at four hundred yards, whichever way the pod goes.
