@@ -49,6 +49,7 @@ const NOTES_KEPT := 24
 var _rained := false            # rain fell on the leg, for the record
 var _rain_now := 0.0            # the rain of the hour, read before the sea state is set
 var _ferry_said := false        # the ferry-angle note goes up once a leg
+var _slack := 0                 # the card to wait for slack, when the stream outruns the boat: 1 asked, 2 waited
 var _stream_s := [0.0, 0.0]     # seconds under way in a real stream, and of those on the line
 var _thirsty := false           # last night's water was drunk: the strokes are shorter today
 var _watchers: Array = []       # [{boat: WhaleWatch, pod: Wildlife, heading, seen}] — the fleet on the pod
@@ -372,10 +373,7 @@ func _watch_sightings() -> void:
 		var approach := int(sp.get("approachMetres", 0))
 		if approach > 0:
 			text += "\n\nKeep %d m off: let it come to you, or not." % approach
-		_clear_card()
-		_card = UIKit.card(sp.get("common", conf.species), text, App.sources_line(sp.get("sourceIds", [])), [["Noted", _clear_card, true]], "Sighting · %s" % sp.get("group", ""))
-		_ui.add_child(UIKit.spacer())
-		_ui.add_child(_card)
+		_show(UIKit.card(sp.get("common", conf.species), text, App.sources_line(sp.get("sourceIds", [])), [["Noted", _clear_card, true]], "Sighting · %s" % sp.get("group", "")))
 		Sound.gull()
 
 func _species(id: String) -> Dictionary:
@@ -410,33 +408,35 @@ func _leg(delta: float) -> void:
 	sea.apply_hour(_hour)
 	# The white light: shown after dark and in fog, on both boats, as the kit list said it would be.
 	var lights := sea.night > 0.3 or Fog.blind(_fog)
-	kayak.set_light(lights)
-	if _partner and _partner.kayak:
-		_partner.kayak.set_light(lights)
+	for k in [kayak, _partner.kayak if _partner else null]:
+		if k: k.set_light(lights)
 	if sea.night > 0.3 and not _dark_said:
 		_dark_said = true
 		_dark = true
 		note_label.text = _said("dark") + ("Night on the water. The white light goes on, the shore is a shape, and the landing is by compass and the sound of the beach." if not controls.touch() else "Night on the water: light on, land by compass.")
-	# The current carries the boat over the ground, in the groove and out of it (the groove's hours
-	# pass faster, so its drift is scaled with them).
+	# The current carries the boat over the ground, in the groove and out of it (scaled with its hours).
 	_flow = Leg.flow_at(_route, here)
 	var factor: float = _flow.factor
 	var cur := Tides.current_vector(_day, _hour) * factor
-	if _chart:
-		_chart.stream = cur  # the tile shows where the water is going, rips included
 	# The ferry angle: where the bow points against where the boat goes over the ground. When the
 	# stream sets the boat well off its heading, say once how far to point up into it.
 	var water_vel := -kayak.global_basis.z * kayak.speed
 	var cmg := FerryGlide.course_made_good(water_vel, cur) if kayak.speed > 0.4 else NAN
 	if _chart:
+		_chart.stream = cur  # the tile shows where the water is going, rips included
 		_chart.cmg = cmg
 	var set_deg := FerryGlide.set_off(rad_to_deg(kayak.heading), cmg)
 	var crossing := cur.length() > 0.45 * FerryGlide.KN and not is_nan(cmg)  # a real stream, and way on
 	_stream_s[0] += delta if crossing else 0.0
 	_stream_s[1] += delta if crossing and FerryGlide.off_line(cmg, brg) <= 12.0 else 0.0
-	if absf(set_deg) > 12.0 and cur.length() > 0.45 * FerryGlide.KN and not _ferry_said and not Fog.blind(_fog):
+	var tour := maxf(kayak.speed, Leg.TOURING_KNOTS * FerryGlide.KN)  # the advice is for a boat under way, not one just starting
+	var way := FerryGlide.headway(brg, tour, cur)  # m/s along the line at the ferry angle: below 0.25, the stream has the boat
+	if way < 0.25 and kayak.speed > 0.4 and _slack == 0 and _card == null and not Fog.blind(_fog):
+		_slack = 1  # the stream outruns the boat on its line: wait for slack, or be carried
+		_offer_slack(cur.length() / FerryGlide.KN)
+	elif way >= 0.25 and absf(set_deg) > 12.0 and cur.length() > 0.45 * FerryGlide.KN and not _ferry_said and not Fog.blind(_fog):
 		_ferry_said = true
-		note_label.text = FerryGlide.note(set_deg, FerryGlide.heading_for(brg, kayak.speed, cur), Leg.cove_name(_route), controls.touch())
+		note_label.text = FerryGlide.note(set_deg, FerryGlide.heading_for(brg, tour, cur), Leg.cove_name(_route), controls.touch())
 	# The water of the hour: wind builds the sea, wind against the stream stands it up, and a rip
 	# throws the odd wave on the beam that the paddler must brace for.
 	# Bull kelp: a bed is a drag on the hull and a lee in a chop — the fronds lie the swell down.
@@ -518,11 +518,8 @@ func _leg(delta: float) -> void:
 		App.persist()
 		controls.visible = false
 		Sound.gull()
-		_clear_card()
 		var land_card: Dictionary = _route.get("landing", {})
-		_card = UIKit.card(land_card.get("title", "Landing"), "%s%s The day is done at %s." % [_said("landing"), land_card.get("text", ""), Leg.clock(_hour)], App.sources_line(land_card.get("sourceIds", [])), [["Land and make camp", func() -> void: App.next(), true]], "Landing · day %d" % (Leg.index() + 1))
-		_ui.add_child(UIKit.spacer())
-		_ui.add_child(_card)
+		_show(UIKit.card(land_card.get("title", "Landing"), "%s%s The day is done at %s." % [_said("landing"), land_card.get("text", ""), Leg.clock(_hour)], App.sources_line(land_card.get("sourceIds", [])), [["Land and make camp", func() -> void: App.next(), true]], "Landing · day %d" % (Leg.index() + 1)))
 
 ## The day for the debrief: the launch and its verdict, the landing, the swims, and the wildlife
 ## given room or not. One entry per leg; paddling a day again replaces its entry.
@@ -540,7 +537,7 @@ func _record_day() -> void:
 	var entry := {
 		"leg": Leg.index(), "metres": Leg.length_m(_route), "launchHour": launch, "arrivedHour": _hour,
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
-		"swims": _swims_today, "waits": _waits_today, "respectful": respectful, "violations": violations,
+		"swims": _swims_today, "waits": _waits_today, "slackWaited": _slack == 2, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
 		"streamS": _stream_s[0], "onLineS": _stream_s[1],
 		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
@@ -580,22 +577,31 @@ func _offer_bailouts(state: float) -> void:
 	var opener := "%s: %d knots from %03d° and the sea is standing up%s. The float plan's bail-outs:\n%s"
 	var body := _said("rough") + (opener + "\n\nNobody has to make it in one push. In a lee the afternoon wind blows through in an hour or two.") % [str(_route.get("channel", "San Juan Channel")), int(round(float(w.kn))), int(round(float(w.fromDeg))), " against the stream" if Tides.wind_against_tide(_day, _hour) else "", "\n".join(lines)]
 	var l := _lesson("bailouts")
-	_clear_card()
-	_card = UIKit.card("The wind is up", body, App.sources_line(["uscg", "aca"]) if l.get("text", "") == "" else App.sources_line(l.get("sourceIds", [])), [
+	_show(UIKit.card("The wind is up", body, App.sources_line(["uscg", "aca"]) if l.get("text", "") == "" else App.sources_line(l.get("sourceIds", [])), [
 		["Push on", _clear_card, false],
 		["Wait it out · %s" % nearest, func() -> void: _wait_in_lee(nearest), true],
-	], "Sea state %d%% · %s" % [int(round(state * 100.0)), Leg.clock(_hour)])
-	_ui.add_child(UIKit.spacer())
-	_ui.add_child(_card)
+	], "Sea state %d%% · %s" % [int(round(state * 100.0)), Leg.clock(_hour)]))
 
-## An hour and a half in the lee: the clock moves, the water is read again, and the day's record
+## Time waited ashore or in an eddy: the clock moves, the water is read again, and the day's record
 ## keeps the judgment.
-func _wait_in_lee(where: String) -> void:
+func _wait(hours: float) -> void:
 	_clear_card()
-	_hour += 1.5
-	_waits_today += 1
+	_hour += hours
 	_groove = 0.0
 	sea.apply_hour(_hour)
+
+## The stream faster across the line than the boat: wait for slack, or push on and be carried.
+func _offer_slack(knots: float) -> void:
+	var slack := Tides.next_slack(_day, _hour)
+	var actions: Array = [["Push on", _clear_card, is_nan(slack)]]
+	if not is_nan(slack):
+		actions.append(["Wait for slack · %s" % Leg.clock(slack), func() -> void: _wait(slack - _hour); _slack = 2; note_label.text = "Slack water at %s: the stream has stopped. Cross now, before it turns and runs the other way." % Leg.clock(_hour), true])
+	_show(UIKit.card("Faster than you paddle", FerryGlide.slack_body(knots, Leg.cove_name(_route), slack, Leg.clock(slack) if not is_nan(slack) else "", slack > Tides.sunset_h(_day)), App.sources_line(["noaa-tides", "aca"]), actions, "Stream %.1f kn · %s" % [knots, Leg.clock(_hour)]))
+
+## An hour and a half in the lee, out of the wind.
+func _wait_in_lee(where: String) -> void:
+	_wait(1.5)
+	_waits_today += 1
 	var after := Tides.sea_state(_day, _hour, _flow.factor)
 	note_label.text = "An hour and a half in the lee of %s, out of the wind, warm drink in hand. %s" % [where, "The sea has eased. Go on when you are ready." if after < ROUGH else "It is still rough. The next landing is the day's end if it does not ease."]
 	if after < ROUGH:
@@ -700,7 +706,7 @@ func _build_tour() -> void:
 	for pp in c.get("paddleParts", []):
 		var v: Array = paddle_views.get(pp.id, [1.6, 1.0, 0.5])
 		_tour.append({ "kind": "paddle", "kicker": "The paddle", "title": pp.name, "text": pp.text, "source": App.sources_line(pp.sourceIds), "anchor": kayak.paddler_anchor(pp.id), "dist": v[0], "az": v[1], "el": v[2] })
-	_tour.append({ "kind": "drills", "kicker": "Calm water", "title": "Now paddle it", "text": "Seven short drills: the forward stroke, the reverse stroke, edging, the sweep turn, the low brace, a bearing held on the compass, and the rescue. Everything later builds on these.", "source": "", "anchor": Vector3(0, 0.3, 0), "dist": 6.0, "az": 0.2, "el": 0.5 })
+	_tour.append({ "kind": "drills", "kicker": "Calm water", "title": "Now paddle it", "text": "Eight short drills: the forward stroke, the reverse stroke, edging, the sweep turn, the low brace, a bearing held on the compass, a stream crossed on a ferry angle, and the rescue. Everything later builds on these.", "source": "", "anchor": Vector3(0, 0.3, 0), "dist": 6.0, "az": 0.2, "el": 0.5 })
 
 func _show_phase() -> void:
 	App.school_from = _phase
@@ -714,9 +720,14 @@ func _show_phase() -> void:
 		actions.append(["Into the water", _start_drills, true])
 	else:
 		actions.append(["Next", func() -> void: _phase += 1; _show_phase(), true])
-	_card = UIKit.card(t.title, t.text, t.source, actions, "%s · %d of %d" % [t.kicker, _phase + 1, _tour.size()])
+	_show(UIKit.card(t.title, t.text, t.source, actions, "%s · %d of %d" % [t.kicker, _phase + 1, _tour.size()]))
+
+## A card at the foot of the screen, in place of the last one, pushed down by a spacer.
+func _show(card: PanelContainer) -> void:
+	_clear_card()
+	_card = card
 	_ui.add_child(UIKit.spacer())
-	_ui.add_child(_card)
+	_ui.add_child(card)
 
 func _clear_card() -> void:
 	for ch in _ui.get_children():
@@ -831,10 +842,7 @@ func _drill_progress(delta: float) -> void:
 func _finish_school() -> void:
 	controls.visible = false
 	_drill_bar.visible = false
-	_clear_card()
-	_card = UIKit.card("Kayak School complete", "Power from the torso, control from the hips, head down in a brace. Everything from here builds on this.", App.sources_line(["aca"]), [["Pack the boat", func() -> void: App.next(), true]], "Kayak School")
-	_ui.add_child(UIKit.spacer())
-	_ui.add_child(_card)
+	_show(UIKit.card("Kayak School complete", "Power from the torso, control from the hips, head down in a brace. Everything from here builds on this.", App.sources_line(["aca"]), [["Pack the boat", func() -> void: App.next(), true]], "Kayak School"))
 
 # ---------- Strokes ----------
 
@@ -932,9 +940,7 @@ func _show_rescue() -> void:
 		text = _said("capsize") + "You are in nine-degree water. %s is turning toward you. " % str(_partner.preset.get("name", "Your partner")) + text
 	if _rescue_steps[_rescue_step] == "pumpOut" and not solo and not _pack.get("enables", []).has("pumpOut"):
 		text = "The pump is on the beach at Friday Harbor. Bail with a sponge and a hat: twice as long with a boat full of nine-degree water. " + text
-	_card = UIKit.card(l.get("title", ""), text, App.sources_line(l.get("sourceIds", [])), actions, kicker)
-	_ui.add_child(UIKit.spacer())
-	_ui.add_child(_card)
+	_show(UIKit.card(l.get("title", ""), text, App.sources_line(l.get("sourceIds", [])), actions, kicker))
 
 func _righted() -> void:
 	_clear_card()
@@ -968,10 +974,7 @@ func _watch_traffic(delta: float) -> void:
 		_fog_signal_t = 0.0
 	if d < Traffic.WARN_M and not _traffic.warned:
 		_traffic.warned = true
-		_clear_card()
-		_card = UIKit.card("Ferry in the channel", _said("ferry") + "Hold your position and let it pass well ahead — it cannot stop or turn for you, and it is faster than it looks. When it has gone by, cross its wake at right angles, bow into the waves.", App.sources_line(["colregs", "wsf"]), [["Holding", _clear_card, true]], "Traffic")
-		_ui.add_child(UIKit.spacer())
-		_ui.add_child(_card)
+		_show(UIKit.card("Ferry in the channel", _said("ferry") + "Hold your position and let it pass well ahead — it cannot stop or turn for you, and it is faster than it looks. When it has gone by, cross its wake at right angles, bow into the waves.", App.sources_line(["colregs", "wsf"]), [["Holding", _clear_card, true]], "Traffic"))
 		var met := int(App.save.get("ferriesMet", 0))
 		App.save.ferriesMet = met + 1
 		App.persist()

@@ -59,3 +59,21 @@ static func note(set_deg: float, steer: float, cove: String, short := false) -> 
 		return "The stream is setting you %d° off, and it runs faster across the line than you paddle. No angle holds it: wait for slack, or make for the bail-out down-stream." % int(absf(set_deg))
 	var hold := "To hold the line to %s, point up into it: steer about %03d°, a ferry angle, and the boat crabs across on the line." % [cove, int(round(steer))]
 	return "The stream is setting you %d° %s of where the bow points (the dashed line on the chart). %s" % [int(absf(set_deg)), "right" if set_deg > 0.0 else "left", hold]
+
+## How fast a boat at `speed` makes good along the line to `want_deg` when it steers the ferry angle
+## for `stream`, m/s: below zero when the stream is the faster, head-on or across.
+static func headway(want_deg: float, speed: float, stream: Vector3) -> float:
+	var steer := heading_for(want_deg, speed, stream)
+	if is_nan(steer):
+		return -1.0
+	var w := deg_to_rad(want_deg)
+	var h := deg_to_rad(steer)
+	return (Vector3(sin(h), 0.0, -cos(h)) * speed + stream).dot(Vector3(sin(w), 0.0, -cos(w)))
+
+## The card when the stream outruns the boat on its line, head-on or across.
+## Slack is when the water stops between flood and ebb, and the crossing is made then.
+static func slack_body(knots: float, cove: String, slack_h: float, clock: String, after_dark := false) -> String:
+	var why := "The stream here is running %.1f knots, and on the line to %s a boat at touring pace makes almost nothing over the ground — the shore stands still beside you however hard you paddle." % [knots, cove]
+	if is_nan(slack_h):
+		return why + " It does not ease for hours. Make for the bail-out down-stream, with the water, and cross another day."
+	return why + " The stream eases to slack at %s, when the water stops between the flood and the ebb. Wait in the eddy along the shore and cross then — or push on, and be carried." % clock + (" Slack comes after sunset: wait for it and the landing is in the dark, light on." if after_dark else "")
