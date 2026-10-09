@@ -367,6 +367,10 @@
 
 - [x] T014cp The field guide carries "Words on the water": thirteen terms the chart, the plan and the notes use — flood and ebb, slack water, set and drift, course made good, ferry angle, tide rip, eddy, wind against tide, lee, float plan, bail-out, 1-10-1, the white light — each in a sentence or two with its sources (`src/content/glossary.js`, exported with the content; `tests/content.test.js` resolves every source). `?scene=guide&at=words` opens on it.
 
+## Slice 77 — the crossing in its own class
+
+- [x] T014cq The water scene's crossing logic moves out of `sea.gd` into `CrossingWatch` (`crossing_watch.gd`, pure, a `RefCounted` the scene feeds each frame): the course made good, the seconds in a real stream and on the line, and when to say the ferry note or put up the slack card. Behaviour is unchanged (the July ferry note and the September slack card match frame for frame); the headless tests now drive it directly — a beam stream, the ferry angle held, a head stream, fog and a boat not yet under way — and `sea.gd` is back under the lint's thousand lines with room for what comes next.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
