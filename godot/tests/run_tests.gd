@@ -395,6 +395,11 @@ func _init() -> void:
 	var closes := [mate.drew(1), mate.drew(1), mate.drew(1)]
 	check(closes == [false, false, true] and mate.rafted(), "three draws toward the partner raft the boats up")
 	check(Partner.station_for(Vector3.ZERO, Basis.IDENTITY, mate.gap).length() < 1.6, "rafted up, the partner sits about a metre and a half off, hulls touching")
+	var blow := Partner.new()
+	blow.raft_now()
+	blow.raft_now()
+	check(blow.rafted() and blow.rafts == 1, "rafting up from the card brings the boats alongside, counted once")
+	blow.free()
 	var away := Partner.new()
 	check(not away.drew(-1) and away.gap == 1.0, "a draw away from the partner leaves them on station")
 	check(mate.rafts == 1 and not mate.drew(1) and mate.rafts == 1, "a raft is counted once, and drawing on while rafted adds none")

@@ -8,6 +8,7 @@ const MAX_SPEED := 2.4  # m/s, a hard sprint
 const STROKE_DV := 0.34 # m/s per full-quality stroke at rest
 const DRAW_DV := 0.6     # m/s sideways from one draw stroke: the blade planted out to the side, pulled in to the hull
 const KEEL_DRAG := 2.2   # per second: how fast the keel line kills sideways slip on an assembled boat
+const RAFT_HOLD := 3.0   # rafted up: how much more the roll is held and righted with a hand on the other boat
 
 ## How far one draw carries the boat sideways before the keel stops it: the slip decays as e^(-kt),
 ## so the whole of it comes to dv / k.
