@@ -495,6 +495,10 @@
 
 - [x] T014dv The day's record counts the times the wind-is-up card went up (`blows`) and the times the paddler pushed on into it (`pushes`). Seamanship reads them back as a new call, "Let the wind blow through": kept when every blow was waited out in a lee or rafted out, missed with "pushed on into it 1 of 3 times" when not, and absent on a day the wind never rose. The demo debrief's day two has a blow, waited out.
 
+## Slice 109 — pushing on, with a word
+
+- [x] T014dw Choosing "Push on" at the wind-is-up card used to close it in silence. Now the partner answers ("Right. Stay close — I’ll call the big ones.") and the note says how to go on in it: stay within a shout, take the waves off the bow rather than on the beam, brace on the steep faces. The raft's note is shortened to two lines so neither runs into the line below it.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

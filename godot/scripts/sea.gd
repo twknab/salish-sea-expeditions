@@ -571,13 +571,19 @@ func _offer_bailouts(state: float) -> void:
 	var opener := "%s: %d knots from %03d° and the sea is standing up%s. The float plan's bail-outs:\n%s"
 	var body := _said("rough") + (opener + "\n\nNobody has to make it in one push. In a lee the afternoon wind blows through in an hour or two.") % [str(_route.get("channel", "San Juan Channel")), int(round(float(w.kn))), int(round(float(w.fromDeg))), " against the stream" if Tides.wind_against_tide(_day, _hour) else "", "\n".join(lines)]
 	var l := _lesson("bailouts")
-	var actions: Array = [["Push on", func() -> void: _blows.y += 1; _clear_card(), false], ["Wait it out · %s" % nearest, func() -> void: _wait_in_lee(nearest), true]]
+	var actions: Array = [["Push on", _on_pushed, false], ["Wait it out · %s" % nearest, func() -> void: _wait_in_lee(nearest), true]]
 	if _partner:  # the third answer to a blow: two boats held together are steadier than either
 		actions.insert(1, ["Raft up with %s" % str(_partner.preset.get("name", "your partner")), func() -> void: _clear_card(); _partner.raft_now(); _on_rafted(), false])
 	_show(UIKit.card("The wind is up", body, App.sources_line(["uscg", "aca"]) if l.get("text", "") == "" else App.sources_line(l.get("sourceIds", [])), actions, "Sea state %d%% · %s" % [int(round(state * 100.0)), Leg.clock(_hour)]))
 
+func _on_pushed() -> void:
+	_blows.y += 1
+	_clear_card()
+	note_label.text = _said("push") + "Pushing on: stay within a shout, take the waves off the bow rather than on the beam, brace on the steep faces."
+	_note_hold = NOTE_HOLD
+
 func _on_rafted() -> void:
-	note_label.text = _said("raft") + "Rafted up: the boats side by side, a hand on each other's deck. The steadiest place on the water to eat, drink, fix something or wait out a squall. Paddle on to break it."
+	note_label.text = _said("raft") + "Rafted up, side by side: the steadiest place on the water to eat, drink or wait out a squall. Paddle on to break it."
 	_note_hold = NOTE_HOLD
 
 ## Time waited ashore or in an eddy: the clock moves, the water is read again, and the day's record
