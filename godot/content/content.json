@@ -3155,6 +3155,15 @@
    ]
   },
   {
+   "id": "beam",
+   "term": "Beam sea",
+   "text": "Waves coming at the side of the boat. A kayak rolls most and is easiest to capsize with the sea on its beam, so in a steep chop take the waves a little off the bow or the stern, keep the paddle moving, and brace on the steep faces.",
+   "sourceIds": [
+    "aca",
+    "uscg"
+   ]
+  },
+  {
    "id": "lee",
    "term": "Lee",
    "text": "The sheltered side of an island or point, out of the wind. Waiting in a lee for an afternoon wind to blow through is seamanship, not defeat.",

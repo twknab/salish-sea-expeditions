@@ -503,6 +503,10 @@
 
 - [x] T014dx The README's tour of the Godot build names the three answers to a blow (wait in a lee, raft up, push on), the seamanship call for letting the wind blow through, and the rafts in each day's record.
 
+## Slice 111 — glossary: Beam sea
+
+- [x] T014dy The field guide's words on the water gain "Beam sea" (waves on the side of the boat, where a kayak rolls most), the term behind the push-on note's advice to take the waves off the bow. Sources: ACA, USCG.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
