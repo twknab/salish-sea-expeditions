@@ -639,6 +639,7 @@ func _process(delta: float) -> void:
 	Sound.set_engine(engine)
 	if _partner and mode == "trip" and not _arrived:
 		_partner.follow(kayak, sea, delta)
+		kayak.rafted = _partner.rafted()
 		if _chart and not _chart.blind:  # in fog the chart keeps the last fix
 			_chart.boat = kayak.global_position
 			_chart.heading = kayak.heading

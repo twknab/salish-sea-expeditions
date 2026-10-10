@@ -483,6 +483,10 @@
 
 - [x] T014ds Each day's record counts the times the boats rafted up (`Partner.rafts`, record field `rafts`). A raft is counted once however long it lasts, and drawing on while rafted adds none. The debrief's Each day names them ("rafted up once", "twice", "3 times"), and says nothing of a day without one. The demo debrief shows one on day two.
 
+## Slice 106 — a raft is steady
+
+- [x] T014dt The raft's note called it the steadiest place on the water, and now it is. Rafted up, the kayak holds and rights its roll three times as hard (`StrokeMath.RAFT_HOLD`) and cannot go over while a hand is on the other boat (`Kayak.rafted`, set each frame from the partner). Measured headless with the same kick, the boat rolled 40° alone and 15° rafted. The wind's drift now reads the keel's resistance from `StrokeMath.KEEL_DRAG` too, not a second copy of the number.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

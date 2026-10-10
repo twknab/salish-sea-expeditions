@@ -23,6 +23,7 @@ var strokes_good := 0
 var strokes_arm := 0
 var roll := 0.0          # radians about the keel line, full range; 0 upright, ±PI inverted
 var over := false        # capsized: past the point of no return and not yet righted
+var rafted := false      # a hand on the partner's deck: the raft holds the roll, and the boat cannot go over
 var _over_t := 0.0
 
 const SETTLE := 0.1
@@ -220,14 +221,15 @@ func _physics_process(delta: float) -> void:
 	apply_torque(-Vector3.UP * angular_velocity.y * trim.ends * 30.0)
 	# The wind: the boat drifts downwind, and with way on the bow comes up into it — a stern-heavy boat more so.
 	if wind.length_squared() > 0.01:
-		apply_central_force(Windage.drift_force(wind, mass, 2.2 * (0.6 + 0.4 * assembly)))
+		apply_central_force(Windage.drift_force(wind, mass, StrokeMath.KEEL_DRAG * (0.6 + 0.4 * assembly)))
 		apply_torque(Vector3.UP * Windage.weathercock(wind.dot(right), v_f, trim.pitch))
 	# Edging: a knee lift rolls the boat; the chine probes bring it back when the knee relaxes.
 	# Paddler and hull together are a self-righting pair: the roll angle itself pulls the boat back.
 	var s := clampf(global_basis.y.cross(Vector3.UP).dot(fwd), -1.0, 1.0)
 	roll = atan2(s, global_basis.y.y)
-	apply_torque(fwd * edge * 38.0 - fwd * angular_velocity.dot(fwd) * 40.0 + fwd * StrokeMath.righting(roll) * (1.0 - 0.35 * minf(1.0, trim.top)))
-	if not over and StrokeMath.capsized(roll):
+	var held := StrokeMath.RAFT_HOLD if rafted else 1.0  # rafted up, the other boat is an outrigger
+	apply_torque(fwd * edge * 38.0 - fwd * angular_velocity.dot(fwd) * 40.0 * held + fwd * StrokeMath.righting(roll) * (1.0 - 0.35 * minf(1.0, trim.top)) * held)
+	if not over and not rafted and StrokeMath.capsized(roll):
 		_over_t += delta
 		if _over_t > 0.6:
 			over = true
