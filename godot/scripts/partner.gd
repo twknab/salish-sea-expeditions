@@ -93,3 +93,12 @@ func follow(player: Kayak, sea: Node, delta: float) -> void:  # the Seascape, un
 			_stroke_t = CADENCE
 			_side = -_side
 			kayak.stroke_anim(_side)
+
+## The squall's note. With a partner, a squall is what rafting up is for, so it says how to get
+## alongside; alone, it says to keep paddling.
+static func rain_note(partnered: bool, touch: bool) -> String:
+	if partnered:
+		return "Rain. It is the wind behind the front that matters, not the water on your deck. If it blows, raft up: %s." % ("double-tap a side to draw alongside" if touch else "Shift+A/D draws you alongside")
+	if touch:
+		return "Rain. Hood up, keep paddling; watch the wind behind it."
+	return "Rain. Hood up and keep paddling: the drops flatten the chop, and it is the wind behind the front that matters, not the water on your deck."

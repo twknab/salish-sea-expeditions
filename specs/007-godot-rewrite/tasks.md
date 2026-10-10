@@ -507,6 +507,10 @@
 
 - [x] T014dy The field guide's words on the water gain "Beam sea" (waves on the side of the boat, where a kayak rolls most), the term behind the push-on note's advice to take the waves off the bow. Sources: ACA, USCG.
 
+## Slice 112 — raft up in a squall
+
+- [x] T014dz With a partner along, the squall's note now says what rafting up is for and how to get there: "If it blows, raft up: Shift+A/D draws you alongside" (on a touchscreen, "double-tap a side to draw alongside"). Paddling alone, the note is unchanged. The copy moved into `Partner.rain_note`, with a test, which also keeps `sea.gd` under the linter's file length.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

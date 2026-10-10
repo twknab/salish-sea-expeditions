@@ -471,7 +471,7 @@ func _leg(delta: float) -> void:
 		_rained = true
 		if not _rain_said and _note_hold <= 0.0:
 			_rain_said = true
-			note_label.text = _said("rain") + ("Rain. Hood up and keep paddling: the drops flatten the chop, and it is the wind behind the front that matters, not the water on your deck." if not controls.touch() else "Rain. Hood up, keep paddling; watch the wind behind it.")
+			note_label.text = _said("rain") + Partner.rain_note(_partner != null, controls.touch())
 	if _chart:
 		_chart.blind = Fog.blind(_fog)
 	if Fog.blind(_fog):
