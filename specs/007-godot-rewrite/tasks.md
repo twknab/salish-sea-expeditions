@@ -459,6 +459,10 @@
 
 - [x] T014dm On a phone the ferry drew "Lopez Island" inside its see-through top panel, where it read as part of the panel. Place names now stay off any control in `PlaceLabels.avoid`, wherever it is that frame. The ferry registers its top panel and each card, the float plan its day panel and each card. The fixed `keep_out` rectangles the water scene uses are unchanged.
 
+## Slice 100 — the go/no-go table, whole again
+
+- [x] T014dn The "To measure" paragraph in `spec.md` had been inserted inside the go/no-go table, which cut its last two rows (memory, and touch strokes landing) out of it: rendered, they read as stray text with pipes. The paragraph now follows the table, and the table has all four measures again.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
