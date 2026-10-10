@@ -81,10 +81,10 @@ water as a graph (slack water marked on it, and the verdict naming a turn that f
 ferry and its wake, the tide and the moment it turns, the wind, rips heard as well as seen and kelp, the stream drawn on the chart beside the
 course the boat is really making good, a ferry angle to hold the line across it and slack water to
 wait for when it runs faster than a boat can paddle, the shore's eddies to work up inside and the
-eddy line that rolls a boat crossed flat, a draw stroke to raft up alongside your partner, the bail-outs when the wind is up (wait it out in a lee, raft up and ride it steady, or push on with a word on how), fog on the
+eddy line that rolls a boat crossed flat, a draw stroke to raft up alongside your partner, the bail-outs when the wind is up (wait it out in a lee, raft up and ride it steady, or push on with a word on how), a squall to raft up in, fog on the
 first-light launch with the compass to steer by, wildlife from seals to a pod of killer whales with
 the whale-watch fleet holding off it, a capsize and the rescue, the light going when the day was
-planned too long, the September squall, the white light after dark — and camp ashore with the shore walk and the night, where the boat sleeps above
+planned too long, the September squall, the white light after dark — and camp ashore with the shore walk (the tide pools' manners, and a rock lifted and set back as it lay) and the night, where the boat sleeps above
 the tide or is found by it, the food is hung or lost to the raccoons, and Posey's water is drunk,
 rationed or fetched at the cost of the morning's ebb. Then the take-out with the call ashore that closes the float plan, the ferry home in the
 evening light, and the debrief: each day as it went, the score, the seamanship calls kept and
