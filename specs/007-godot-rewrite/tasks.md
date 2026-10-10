@@ -451,6 +451,10 @@
 
 - [x] T014dk On a phone, the packing screen's gear rows clipped the end of a long line, which is where the weight is: "Sleeping bag & pad · 2", "Chart & compass · 0.3". On a narrow screen a row now wraps to two lines instead (`Button.autowrap_mode`), and a non-breaking space keeps the number and "kg" together. Desktop rows are unchanged.
 
+## Slice 98 — the place names, on screen
+
+- [x] T014dl Place names floated over the land could sit half off the screen or under the Title, Sound and Music chips; on a phone the plan showed "eden Island" cut off under them. A name now shows only when the whole of it fits on the screen below the chips (`PlaceLabels.TOP_BAND`). The nearer-wins overlap rule is unchanged. All 36 stations pass the sweep.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

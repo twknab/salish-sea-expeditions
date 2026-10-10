@@ -4,6 +4,7 @@ class_name PlaceLabels
 extends Control
 
 var reach := 16000.0
+const TOP_BAND := 46.0  # the Title / Sound / Music chips: a name never sits under them
 var keep_out: Array[Rect2] = []  # screen rects the names stay off: the HUD's lines, the chart in the deck bag
 var _points: Dictionary = {}  # id -> Vector3
 var _labels: Dictionary = {}  # id -> Label
@@ -27,6 +28,7 @@ func update(cam: Camera3D) -> void:
 	var order: Array = _labels.keys()
 	order.sort_custom(func(a: String, b: String) -> bool: return _points[a].distance_to(cam.global_position) < _points[b].distance_to(cam.global_position))
 	var taken: Array[Rect2] = keep_out.duplicate()
+	var screen := get_viewport_rect().grow_individual(0.0, -TOP_BAND, 0.0, 0.0)  # whole names only, below the chips
 	for id in order:
 		var w: Vector3 = _points[id]
 		var l: Label = _labels[id]
@@ -34,6 +36,7 @@ func update(cam: Camera3D) -> void:
 		if show:
 			var at := cam.unproject_position(w) - l.size * 0.5
 			var rect := Rect2(at, l.size).grow(2.0)
+			show = screen.encloses(rect)
 			for t in taken:
 				if t.intersects(rect):
 					show = false
