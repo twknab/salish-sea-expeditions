@@ -391,6 +391,16 @@ func _init() -> void:
 	var turned := Partner.station_for(Vector3.ZERO, Basis(Vector3.UP, PI / 2.0))
 	check(absf(turned.length() - st.length()) < 1e-3 and not turned.is_equal_approx(st), "the station turns with the boat")
 	var presets := [{ "id": "a", "skin": "tan", "hair": "dark", "style": "short" }, { "id": "b", "skin": "deep", "hair": "black", "style": "crop" }]
+	var mate := Partner.new()
+	var closes := [mate.drew(1), mate.drew(1), mate.drew(1)]
+	check(closes == [false, false, true] and mate.rafted(), "three draws toward the partner raft the boats up")
+	check(Partner.station_for(Vector3.ZERO, Basis.IDENTITY, mate.gap).length() < 1.6, "rafted up, the partner sits about a metre and a half off, hulls touching")
+	var away := Partner.new()
+	check(not away.drew(-1) and away.gap == 1.0, "a draw away from the partner leaves them on station")
+	check(mate.rafts == 1 and not mate.drew(1) and mate.rafts == 1, "a raft is counted once, and drawing on while rafted adds none")
+	check(Partner.rafts_line(1) == "rafted up once" and Partner.rafts_line(3) == "rafted up 3 times" and Partner.rafts_line(0) == "", "the debrief names the day's rafts, and says nothing of a day without one")
+	mate.free()
+	away.free()
 	check(Partner.pick_preset(presets, { "skin": "tan", "hair": "dark", "style": "short" }).id == "b", "the partner is not dressed as the player")
 	var paddle := Paddler.greenland_paddle()
 	check(paddle.get_aabb().size.x > 2.1 and paddle.get_aabb().size.z < 0.1, "Greenland paddle is long and narrow")
