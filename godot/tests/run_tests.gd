@@ -234,6 +234,19 @@ func _init() -> void:
 	# The partner speaks at the moments that matter, in a few words, and not when there is nothing to say.
 	check(PartnerVoice.line("ferry") != "" and PartnerVoice.line("nothing") == "" and PartnerVoice.said("Mina", "nothing") == "", "silent when there is nothing to say")
 	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")
+	# Kayak School's own-motion drills, measured from the boat alone.
+	var se := { "t": 0.0 }
+	for i in 30:
+		SchoolDrill.measure("edge", se, 0.1, 0.0, 0.0, 0.8, 0.0, Vector3.ZERO)
+	check(is_equal_approx(SchoolDrill.measure("edge", se, 0.1, 0.0, 0.0, 0.8, 0.0, Vector3.ZERO), 31.0 / 30.0) and SchoolDrill.measure("edge", { "t": 1.0 }, 0.1, 0.0, 0.0, 0.2, 0.0, Vector3.ZERO) < 1.0 / 3.0, "an edge held three seconds is the drill; let go and it drains")
+	var sd := { "origin": Vector3.ZERO, "right": Vector3.RIGHT, "h0": 0.0 }
+	check(SchoolDrill.measure("draw", sd, 0.1, 0.1, 0.0, 0.0, 0.0, Vector3(2.0, 0.0, 0.0)) >= 1.0 and SchoolDrill.measure("draw", sd, 0.1, 0.5, 0.0, 0.0, 0.0, Vector3(2.0, 0.0, 0.0)) == 0.0, "two metres sideways with the bow kept is the draw; a turned bow is not")
+	var sw := { "prev": 0.0, "turned": 0.0 }
+	for i in 10:
+		SchoolDrill.measure("sweep", sw, 0.1, (i + 1) * PI / 10.0, 0.0, 0.6, 0.0, Vector3.ZERO)
+	check(is_equal_approx(float(sw.turned), PI) and SchoolDrill.measure("sweep", { "prev": 0.0, "turned": 0.0 }, 0.1, 1.0, 0.0, 0.0, 0.0, Vector3.ZERO) == 0.0, "half a turn on an edge is the sweep; a flat turn counts nothing")
+	check(SchoolDrill.measure("compass", { "t": 0.0, "target": 90.0 }, 1.0, deg_to_rad(95.0), 1.0, 0.0, 0.0, Vector3.ZERO) > 0.0 and SchoolDrill.measure("compass", { "t": 0.0, "target": 90.0 }, 1.0, deg_to_rad(120.0), 1.0, 0.0, 0.0, Vector3.ZERO) == 0.0, "the bearing is held within ten degrees, under way")
+	check(SchoolDrill.measure("forward", { "count": 3 }, 0.1, 0.0, 0.0, 0.0, 0.0, Vector3.ZERO) == 0.5 and SchoolDrill.measure("rescue", {}, 0.1, 0.0, 0.0, 0.0, 0.0, Vector3.ZERO) == 0.0, "strokes are counted; the drills with water in them are not measured here")
 	check(Partner.rain_note(true, false).contains("Shift+A/D") and Partner.rain_note(true, true).contains("double-tap") and not Partner.rain_note(false, false).contains("raft"), "the squall says how to raft up when there is someone to raft with")
 	check(PartnerVoice.line("eddyline_edged") != "" and PartnerVoice.line("eddyline_edged") != PartnerVoice.line("eddyline"), "the partner has a word for an eddy line crossed well, not only for one that trips the boat")
 	for ev in PartnerVoice.LINES.keys():
