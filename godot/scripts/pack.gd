@@ -58,7 +58,8 @@ func _ready() -> void:
 		b.custom_minimum_size = Vector2(0, 38)
 		b.add_theme_font_size_override("font_size", 12)
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		b.clip_text = true
+		b.clip_text = not _narrow  # on a phone the row wraps to two lines instead of losing the weight off its end
+		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if _narrow else TextServer.AUTOWRAP_OFF
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var id: String = str(g.id)
 		b.pressed.connect(func() -> void: _choose(id))
@@ -122,7 +123,7 @@ func _refresh() -> void:
 		var where := Packing.zone_of(_packing, id)
 		var mark := "▸ " if id == _chosen else ("● " if where != "" else "○ ")
 		var b: Button = _rows[id]
-		b.text = "%s%s · %s kg%s" % [mark, g.name, str(g.massKg), ("" if where == "" or _narrow else " · " + str(Packing.ZONE_NAME[where]).to_lower())]
+		b.text = "%s%s · %s\u00a0kg%s" % [mark, g.name, str(g.massKg), ("" if where == "" or _narrow else " · " + str(Packing.ZONE_NAME[where]).to_lower())]
 		b.modulate = Color(1, 1, 1, 1.0 if (where != "" or id == _chosen) else 0.75)
 	var a := Packing.assess(_packing, _gear)
 	var line := "%.1f kg aboard · %s" % [float(a.total), Packing.trim_words(a)]

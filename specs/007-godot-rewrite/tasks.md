@@ -447,6 +447,10 @@
 
 - [x] T014dj On a phone, the night in the cove ran off the right edge of the screen: its three buttons (Back, Walk the shore, Tomorrow’s float plan) set the card's width, and the text and the last button were cut off. A card's buttons now sit in an `HFlowContainer` (`UIKit.card`), which wraps them onto a second row when they do not fit, as the outfitting presets already did. Desktop cards are unchanged. All 36 stations pass the sweep.
 
+## Slice 97 — the pack list, on a phone
+
+- [x] T014dk On a phone, the packing screen's gear rows clipped the end of a long line, which is where the weight is: "Sleeping bag & pad · 2", "Chart & compass · 0.3". On a narrow screen a row now wraps to two lines instead (`Button.autowrap_mode`), and a non-breaking space keeps the number and "kg" together. Desktop rows are unchanged.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
