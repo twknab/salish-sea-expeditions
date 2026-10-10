@@ -4,7 +4,8 @@
 ## tilt edges the boat. Good paddling is steady and near-silent — the coaching is about rhythm.
 ##
 ## Desktop: W or ↑ paddles, A/D (← →) lean to steer, S/↓ backs off, Z/C sweep, Shift+A/D draw, J/L brace, Q/E edge.
-## Phone: hold anywhere on the water; slide the thumb left or right to lean; slide it up to back off.
+## Phone: hold anywhere on the water; slide the thumb left or right to lean; slide it up to back off;
+## double-tap one side of the water to draw toward it.
 class_name Controls
 extends Control
 
@@ -21,6 +22,7 @@ const TAP := 0.22           # a press released this fast is a tap, not a hold
 const FLICK := 70.0         # pixels sideways within TAP: a sweep
 const STEER_PX := 90.0      # pixels of thumb travel for a full lean
 const REVERSE_PX := 70.0    # pixels of upward travel to switch to backing off
+const DOUBLE_TAP := 0.28    # seconds a tap waits for a second on the same side: two make a draw
 
 var _hips_index := -1
 var _edge := 0.0
@@ -36,6 +38,8 @@ var _next_stroke := 0.0
 var _side := -1
 var _cadence_glow := 0.0
 var _flash_msg_t := 0.0
+var _tap_wait := -1.0       # a tap waiting to see whether a second makes it a draw; < 0 none
+var _tap_x := 0.0
 var tilt_enabled := false   # the phone's tilt edges the boat (an option; see App.save.tilt)
 var steer := 0.0            # -1 left .. 1 right, what the lean is asking for
 var last := {}              # the last forward stroke's grading, for coaching
@@ -131,9 +135,16 @@ func _up(i: int, p: Vector2) -> void:
 		stroke.emit(side, 0.9, "sweep")
 		_say("Sweep", true)
 	elif dur < TAP:
-		# A tap is one arm stroke. The lesson is in the label.
-		_emit_forward(0.45, false)
-		_say("Hold, don’t tap — paddling is a rhythm")
+		# Two quick taps on one side are a draw toward it; one tap, once the wait is over, is an arm stroke.
+		var centre: float = (zones()["water"] as Rect2).get_center().x
+		var side := StrokeMath.double_tap_side(_tap_x, p.x, centre) if _tap_wait > 0.0 else 0
+		if side != 0:
+			_tap_wait = -1.0
+			stroke.emit(side, 1.0, "draw")
+			_say("Draw — the boat slides toward the blade", true)
+		else:
+			_tap_wait = DOUBLE_TAP
+			_tap_x = p.x
 
 func _set_edge_from(x: float) -> void:
 	var h: Rect2 = zones()["hips"]
@@ -202,6 +213,12 @@ func _process(delta: float) -> void:
 				_edge = v
 				edge_changed.emit(_edge)
 				queue_redraw()
+	if _tap_wait > 0.0:
+		_tap_wait -= delta
+		if _tap_wait <= 0.0:
+			# A tap is one arm stroke. The lesson is in the label.
+			_emit_forward(0.45, false)
+			_say("Hold, don’t tap — paddling is a rhythm")
 	if _flash_msg_t > 0.0:
 		_flash_msg_t -= delta
 		_label.modulate.a = clampf(_flash_msg_t / 0.6, 0.0, 1.0)

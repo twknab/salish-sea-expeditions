@@ -54,3 +54,8 @@ static func righting(roll: float) -> float:
 ## Over, and staying over: past the point of no return by a margin.
 static func capsized(roll: float) -> bool:
 	return absf(roll) > NO_RETURN_ROLL + 0.1
+
+## Two taps make a draw when both land on the same side of the water: -1 left, 1 right, 0 not.
+static func double_tap_side(x1: float, x2: float, centre: float) -> int:
+	var a := signf(x1 - centre)
+	return int(a) if a != 0.0 and a == signf(x2 - centre) else 0

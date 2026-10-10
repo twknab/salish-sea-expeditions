@@ -471,6 +471,10 @@
 
 - [x] T014dp The boat can now be moved sideways. A draw plants the blade out to the side and pulls it in to the hull, sliding the boat toward it: the stroke that closes on a partner to raft up, or brings the boat in beside a dock (`Kayak.draw`). Shift+A or Shift+D draws, and the paddler reaches out and pulls in. The sideways push and the keel's resistance are shared constants (`StrokeMath.DRAW_DV`, `KEEL_DRAG`, `draw_drift`): one draw carries the boat about a quarter metre. Measured headless on the water, four draws moved it 0.88 m sideways and 0.01 m forward. The camp script's header also stops saying the camp returns to the title. Touch and a Kayak School drill come next.
 
+## Slice 103 — the draw, on a phone and in Kayak School
+
+- [x] T014dq On a phone, two quick taps on one side of the water now draw toward it (`StrokeMath.double_tap_side`). A single tap waits 0.28 s to see whether a second follows, then is the arm stroke it always was. Kayak School gains a tenth drill before the rescue: slide two metres sideways without turning the bow more than fifteen degrees, with a keyboard line and a touch line like the others. Measured headless, ten draws finish the drill and hand over to the rescue. `?scene=school&drill=draw` opens it, and the stations sweep includes it.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

@@ -722,6 +722,8 @@ func _start_drill(i: int) -> void:
 		var target_deg := fposmod(FerryGlide.course_made_good(-kayak.global_basis.z, Vector3.ZERO) + 70.0, 360.0)
 		s_target_set(target_deg)
 		note_label.text = "%s\n%s\nGoal: steer %03d° and hold it for twelve seconds, under way.%s" % [d.title, d.text, int(round(target_deg)), keys]
+	elif d.id == "draw":  # sideways from where the boat sits now, the bow held where it points
+		_drill_state.merge({ "origin": kayak.global_position, "right": kayak.global_basis.x, "h0": kayak.heading })
 	elif d.id == "ferry" or d.id == "eddyline":  # the line is where the bow points now; the stream runs across it from the left
 		_drill_state.merge(DrillWater.start(d.id, kayak.global_position, -kayak.global_basis.z))
 		_compass.target = deg_to_rad(float(_drill_state.line))
@@ -766,6 +768,9 @@ func _drill_progress(delta: float) -> void:
 					kayak.kick(1.0)
 				note_label.text = CrossingWatch.line_note(edged, dir, controls.touch()) + ("\n%d of 2 edged crossings" % s.count if edged else "")
 			p = s.count / 2.0
+		"draw":
+			var slid := absf((kayak.global_position - (s.origin as Vector3)).dot(s.right))
+			p = slid / 2.0 if absf(angle_difference(float(s.h0), kayak.heading)) < deg_to_rad(15.0) else 0.0
 		"sweep":
 			var dh := angle_difference(s.prev, kayak.heading)
 			s.prev = kayak.heading
