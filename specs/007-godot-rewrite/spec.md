@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-06
 
-**Status**: Experiment — ninety-nine slices merged (see "What exists today" below and
+**Status**: Experiment — one hundred and one slices merged (see "What exists today" below and
 tasks.md); go/no-go pending the mobile Safari measurement from the Cloud Run URL (see research.md
 and the table at the end)
 
@@ -116,13 +116,13 @@ ETags, so the first-frame row is measured on that, and a second visit revalidate
 | -------------------------------- | --------------------- | --------------------------- |
 | Time to first frame on cellular  | under 8 s             | over 15 s                   |
 | Frame rate in the sea scene      | 50+ fps steady        | under 30 fps or thermal dip |
+| Memory (Safari tab survives)     | no reloads in 10 min  | tab reloads                 |
+| Touch strokes land as intended   | 9 of 10               | fewer                       |
 
 To measure: open the demo (or the Cloud Run URL) with `?perf=1` on the phone, then `?scene=trip&perf=1`.
 A line at the foot of the screen reads the frames per second now and the worst of the last ten
 seconds, the frame time, the time from the page starting to load to the first frame, the engine's
 memory, and the device; the same line is printed to the console at ten seconds.
-| Memory (Safari tab survives)     | no reloads in 10 min  | tab reloads                 |
-| Touch strokes land as intended   | 9 of 10               | fewer                       |
 
 If no-go, the lessons (true 3D water, buoyancy, procedural paddler) are ported back into the
 three.js studio on `main`, which already renders real 3D.

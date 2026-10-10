@@ -33,7 +33,7 @@ func update(cam: Camera3D) -> void:
 	for c in avoid:
 		if (c as Control).is_visible_in_tree():
 			taken.append((c as Control).get_global_rect())
-	var screen := get_viewport_rect().grow_individual(0.0, -TOP_BAND, 0.0, 0.0)  # whole names only, below the chips
+	var screen := PlaceLabels.room(get_viewport_rect())
 	for id in order:
 		var w: Vector3 = _points[id]
 		var l: Label = _labels[id]
@@ -41,12 +41,22 @@ func update(cam: Camera3D) -> void:
 		if show:
 			var at := cam.unproject_position(w) - l.size * 0.5
 			var rect := Rect2(at, l.size).grow(2.0)
-			show = screen.encloses(rect)
-			for t in taken:
-				if t.intersects(rect):
-					show = false
-					break
+			show = PlaceLabels.placeable(rect, screen, taken)
 			if show:
 				l.position = at
 				taken.append(rect)
 		l.visible = show
+
+## Where a name may sit on a screen of this size: all of it, below the chips.
+static func room(view: Rect2) -> Rect2:
+	return view.grow_individual(0.0, -TOP_BAND, 0.0, 0.0)
+
+## A name's rect can show when the whole of it is in `room` and it overlaps nothing already
+## `taken`: a nearer name, a fixed keep-out, or a panel or card it must stay off.
+static func placeable(rect: Rect2, room_rect: Rect2, taken: Array[Rect2]) -> bool:
+	if not room_rect.encloses(rect):
+		return false
+	for t in taken:
+		if t.intersects(rect):
+			return false
+	return true
