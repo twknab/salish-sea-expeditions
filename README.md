@@ -81,7 +81,7 @@ water as a graph (slack water marked on it, and the verdict naming a turn that f
 ferry and its wake, the tide and the moment it turns, the wind, rips heard as well as seen and kelp, the stream drawn on the chart beside the
 course the boat is really making good, a ferry angle to hold the line across it and slack water to
 wait for when it runs faster than a boat can paddle, the shore's eddies to work up inside and the
-eddy line that rolls a boat crossed flat, the bail-outs when the wind is up, fog on the
+eddy line that rolls a boat crossed flat, a draw stroke to raft up alongside your partner, the bail-outs when the wind is up, fog on the
 first-light launch with the compass to steer by, wildlife from seals to a pod of killer whales with
 the whale-watch fleet holding off it, a capsize and the rescue, the light going when the day was
 planned too long, the September squall, the white light after dark — and camp ashore with the shore walk and the night, where the boat sleeps above

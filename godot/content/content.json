@@ -3138,6 +3138,14 @@
    ]
   },
   {
+   "id": "raft",
+   "term": "Rafting up",
+   "text": "Two or more kayaks side by side, each paddler holding the other boat’s deck. Together they are far steadier than either alone: the place to eat, drink, fix gear, check a chart or wait out a squall. A draw stroke brings you alongside.",
+   "sourceIds": [
+    "aca"
+   ]
+  },
+  {
    "id": "windtide",
    "term": "Wind against tide",
    "text": "When the wind blows against the way the stream runs, the waves shorten and steepen. The same wind with the stream lies the sea down.",

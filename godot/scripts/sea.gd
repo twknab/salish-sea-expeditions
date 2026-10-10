@@ -853,6 +853,9 @@ func _on_stroke(side: int, q: float, kind: String) -> void:
 		"draw":
 			kayak.draw(side)
 			Sound.dip(0.5)
+			if _partner and mode == "trip" and _partner.drew(side):  # drawn alongside: rafted up
+				note_label.text = _said("raft") + "Rafted up: the boats side by side, a hand on each other's deck. The steadiest place on the water to eat, drink, fix something or wait out a squall. Paddle on to break it."
+				_note_hold = NOTE_HOLD
 		"reverse":
 			kayak.reverse(side)
 			Sound.dip(0.6)
