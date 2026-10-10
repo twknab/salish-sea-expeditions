@@ -61,6 +61,7 @@ var _ferry_moved := false       # paddled on while the ferry closed from the hor
 var _ferry_verdicts: Array = []  # "held" or "crossed", one per ferry pass this leg, for the record
 const KELP_REACH := 70.0        # metres from a kelp sighting's centre the bed extends
 var _waits_today := 0           # times the wind was waited out in a lee
+var _blows := Vector2i.ZERO     # the wind-is-up card today: times it went up (x), times pushed on through it (y)
 const ROUGH := 0.5              # sea state at which the bail-outs are offered
 const RIP_KICK_EVERY := 3.2    # seconds between beam waves in a rip at full strength
 ## Sightings on the leg: what, which species of the field guide it is, where, and how close you
@@ -529,7 +530,7 @@ func _record_day() -> void:
 	var entry := {
 		"leg": Leg.index(), "metres": Leg.length_m(_route), "launchHour": launch, "arrivedHour": _hour,
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
-		"swims": _swims_today, "waits": _waits_today, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
+		"swims": _swims_today, "waits": _waits_today, "blows": _blows.x, "pushes": _blows.y, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
 		"streamS": _cross.stream_s, "onLineS": _cross.on_line_s, "maxKn": snappedf(_cross.max_kn, 0.1), "maxAt": _cross.max_at, "eddy": _cross.eddy_said, "linesEdged": _cross.lines_edged, "rafts": _partner.rafts if _partner else 0, "linesTripped": _cross.lines_tripped,
 		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
@@ -550,6 +551,7 @@ func _record_day() -> void:
 ## tuck into the nearest lee and let the afternoon blow through. Nobody has to make it in one push.
 func _offer_bailouts(state: float) -> void:
 	_weather_asked = true
+	_blows.x += 1
 	var here := kayak.global_position
 	var w := Tides.wind(_day, _hour)
 	var nearest := ""
@@ -569,13 +571,19 @@ func _offer_bailouts(state: float) -> void:
 	var opener := "%s: %d knots from %03d° and the sea is standing up%s. The float plan's bail-outs:\n%s"
 	var body := _said("rough") + (opener + "\n\nNobody has to make it in one push. In a lee the afternoon wind blows through in an hour or two.") % [str(_route.get("channel", "San Juan Channel")), int(round(float(w.kn))), int(round(float(w.fromDeg))), " against the stream" if Tides.wind_against_tide(_day, _hour) else "", "\n".join(lines)]
 	var l := _lesson("bailouts")
-	var actions: Array = [["Push on", _clear_card, false], ["Wait it out · %s" % nearest, func() -> void: _wait_in_lee(nearest), true]]
+	var actions: Array = [["Push on", _on_pushed, false], ["Wait it out · %s" % nearest, func() -> void: _wait_in_lee(nearest), true]]
 	if _partner:  # the third answer to a blow: two boats held together are steadier than either
 		actions.insert(1, ["Raft up with %s" % str(_partner.preset.get("name", "your partner")), func() -> void: _clear_card(); _partner.raft_now(); _on_rafted(), false])
 	_show(UIKit.card("The wind is up", body, App.sources_line(["uscg", "aca"]) if l.get("text", "") == "" else App.sources_line(l.get("sourceIds", [])), actions, "Sea state %d%% · %s" % [int(round(state * 100.0)), Leg.clock(_hour)]))
 
+func _on_pushed() -> void:
+	_blows.y += 1
+	_clear_card()
+	note_label.text = _said("push") + "Pushing on: stay within a shout, take the waves off the bow rather than on the beam, brace on the steep faces."
+	_note_hold = NOTE_HOLD
+
 func _on_rafted() -> void:
-	note_label.text = _said("raft") + "Rafted up: the boats side by side, a hand on each other's deck. The steadiest place on the water to eat, drink, fix something or wait out a squall. Paddle on to break it."
+	note_label.text = _said("raft") + "Rafted up, side by side: the steadiest place on the water to eat, drink or wait out a squall. Paddle on to break it."
 	_note_hold = NOTE_HOLD
 
 ## Time waited ashore or in an eddy: the clock moves, the water is read again, and the day's record

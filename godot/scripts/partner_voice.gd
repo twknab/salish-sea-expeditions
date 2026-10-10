@@ -20,6 +20,7 @@ const LINES := {
 	"eddy": "In close. Feel it ease?",
 	"eddyline": "Edge it — lean with the water!",
 	"raft": "Got your deck. Breathe.",
+	"push": "Right. Stay close — I’ll call the big ones.",
 	"eddyline_edged": "That’s it. You rode it over.",
 }
 
