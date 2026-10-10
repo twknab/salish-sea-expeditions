@@ -26,6 +26,14 @@ func _init() -> void:
 	check(small < big, "calmer sea state is lower")
 	var nrm := Waves.normal(1.0, 1.0, 0.5, 0.5)
 	check(nrm.y > 0.6, "normal points mostly up")
+	# Place names: whole, below the chips, and off anything already taken (slices 98 and 99).
+	var room := PlaceLabels.room(Rect2(0, 0, 390, 844))
+	var no_taken: Array[Rect2] = []
+	check(PlaceLabels.placeable(Rect2(100, 300, 90, 18), room, no_taken), "a name clear of everything shows")
+	check(not PlaceLabels.placeable(Rect2(10, 20, 90, 18), room, no_taken), "a name under the Title / Sound / Music chips stays hidden")
+	check(not PlaceLabels.placeable(Rect2(340, 300, 90, 18), room, no_taken), "a name half off the screen stays hidden")
+	var panel: Array[Rect2] = [Rect2(14, 40, 360, 110)]
+	check(not PlaceLabels.placeable(Rect2(100, 120, 90, 18), room, panel) and PlaceLabels.placeable(Rect2(100, 160, 90, 18), room, panel), "a name stays off a panel it would read as part of, and shows just below it")
 	# Hull: stems close, fullest near midships, keel below the sheer, stems meet the sheer.
 	check(Hull.half_beam(0.0) < 1e-6 and Hull.half_beam(1.0) < 1e-6, "stems close")
 	check(Hull.half_beam(0.5) > 0.25, "beam near midships")
