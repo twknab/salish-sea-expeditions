@@ -845,6 +845,9 @@ func _on_stroke(side: int, q: float, kind: String) -> void:
 		"sweep":
 			kayak.sweep(side)
 			Sound.splash(0.7)
+		"draw":
+			kayak.draw(side)
+			Sound.dip(0.5)
 		"reverse":
 			kayak.reverse(side)
 			Sound.dip(0.6)

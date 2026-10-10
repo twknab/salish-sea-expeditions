@@ -3,7 +3,7 @@
 ## a quick flick is a sweep; two thumbs down, or J/L, is a brace; the hips bar, Q/E, or the phone's
 ## tilt edges the boat. Good paddling is steady and near-silent — the coaching is about rhythm.
 ##
-## Desktop: W or ↑ paddles, A/D (← →) lean to steer, S/↓ backs off, Z/C sweep, J/L brace, Q/E edge.
+## Desktop: W or ↑ paddles, A/D (← →) lean to steer, S/↓ backs off, Z/C sweep, Shift+A/D draw, J/L brace, Q/E edge.
 ## Phone: hold anywhere on the water; slide the thumb left or right to lean; slide it up to back off.
 class_name Controls
 extends Control
@@ -222,8 +222,16 @@ func _unhandled_input(ev: InputEvent) -> void:
 	match ev.keycode:
 		KEY_W, KEY_UP: _key_paddle = on
 		KEY_S, KEY_DOWN: _key_reverse = on
-		KEY_A, KEY_LEFT: _key_steer = -1.0 if on else (0.0 if _key_steer < 0.0 else _key_steer)
-		KEY_D, KEY_RIGHT: _key_steer = 1.0 if on else (0.0 if _key_steer > 0.0 else _key_steer)
+		KEY_A, KEY_LEFT:
+			if on and ev.shift_pressed:
+				stroke.emit(-1, 1.0, "draw"); _say("Draw left — the boat slides toward the blade", true)
+			else:
+				_key_steer = -1.0 if on else (0.0 if _key_steer < 0.0 else _key_steer)
+		KEY_D, KEY_RIGHT:
+			if on and ev.shift_pressed:
+				stroke.emit(1, 1.0, "draw"); _say("Draw right — the boat slides toward the blade", true)
+			else:
+				_key_steer = 1.0 if on else (0.0 if _key_steer > 0.0 else _key_steer)
 		KEY_Z:
 			if on:
 				stroke.emit(-1, 0.9, "sweep"); _say("Sweep left — the bow swings right", true)

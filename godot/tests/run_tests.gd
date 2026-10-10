@@ -34,6 +34,10 @@ func _init() -> void:
 	check(not PlaceLabels.placeable(Rect2(340, 300, 90, 18), room, no_taken), "a name half off the screen stays hidden")
 	var panel: Array[Rect2] = [Rect2(14, 40, 360, 110)]
 	check(not PlaceLabels.placeable(Rect2(100, 120, 90, 18), room, panel) and PlaceLabels.placeable(Rect2(100, 160, 90, 18), room, panel), "a name stays off a panel it would read as part of, and shows just below it")
+	# The draw stroke: one stroke slides the boat about a quarter metre toward the blade, the keel resisting.
+	var drift := StrokeMath.draw_drift(StrokeMath.DRAW_DV, StrokeMath.KEEL_DRAG)
+	check(drift > 0.2 and drift < 0.4, "one draw moves the boat a quarter metre or so sideways, got %.2f m" % drift)
+	check(StrokeMath.draw_drift(StrokeMath.DRAW_DV, StrokeMath.KEEL_DRAG * 0.6) > drift, "a slack, half-built hull slips further than an assembled one")
 	# Hull: stems close, fullest near midships, keel below the sheer, stems meet the sheer.
 	check(Hull.half_beam(0.0) < 1e-6 and Hull.half_beam(1.0) < 1e-6, "stems close")
 	check(Hull.half_beam(0.5) > 0.25, "beam near midships")

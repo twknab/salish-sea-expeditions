@@ -6,6 +6,13 @@ extends RefCounted
 const GOOD_STROKE := 0.6
 const MAX_SPEED := 2.4  # m/s, a hard sprint
 const STROKE_DV := 0.34 # m/s per full-quality stroke at rest
+const DRAW_DV := 0.6     # m/s sideways from one draw stroke: the blade planted out to the side, pulled in to the hull
+const KEEL_DRAG := 2.2   # per second: how fast the keel line kills sideways slip on an assembled boat
+
+## How far one draw carries the boat sideways before the keel stops it: the slip decays as e^(-kt),
+## so the whole of it comes to dv / k.
+static func draw_drift(dv: float, keel_drag: float) -> float:
+	return dv / keel_drag
 
 static func rotation_quality(reach: float, smoothness: float, exit_at_hip: bool) -> float:
 	var q := 0.15 + 0.45 * clampf(reach, 0.0, 1.0) + 0.25 * clampf(smoothness, 0.0, 1.0)

@@ -467,6 +467,10 @@
 
 - [x] T014do The decision of whether a place name can show moves out of `PlaceLabels.update` into two pure functions: `room` (the screen below the chips) and `placeable` (the whole name in the room, overlapping nothing already taken). The headless tests now check what slices 98 and 99 relied on screenshots for: a clear name shows; a name under the chips or half off the screen stays hidden; a name stays off a panel and shows just below it.
 
+## Slice 102 — the draw stroke
+
+- [x] T014dp The boat can now be moved sideways. A draw plants the blade out to the side and pulls it in to the hull, sliding the boat toward it: the stroke that closes on a partner to raft up, or brings the boat in beside a dock (`Kayak.draw`). Shift+A or Shift+D draws, and the paddler reaches out and pulls in. The sideways push and the keel's resistance are shared constants (`StrokeMath.DRAW_DV`, `KEEL_DRAG`, `draw_drift`): one draw carries the boat about a quarter metre. Measured headless on the water, four draws moved it 0.88 m sideways and 0.01 m forward. The camp script's header also stops saying the camp returns to the title. Touch and a Kayak School drill come next.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
