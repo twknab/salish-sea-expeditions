@@ -499,6 +499,10 @@
 
 - [x] T014dw Choosing "Push on" at the wind-is-up card used to close it in silence. Now the partner answers ("Right. Stay close — I’ll call the big ones.") and the note says how to go on in it: stay within a shout, take the waves off the bow rather than on the beam, brace on the steep faces. The raft's note is shortened to two lines so neither runs into the line below it.
 
+## Slice 110 — README catch-up
+
+- [x] T014dx The README's tour of the Godot build names the three answers to a blow (wait in a lee, raft up, push on), the seamanship call for letting the wind blow through, and the rafts in each day's record.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

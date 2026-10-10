@@ -81,14 +81,14 @@ water as a graph (slack water marked on it, and the verdict naming a turn that f
 ferry and its wake, the tide and the moment it turns, the wind, rips heard as well as seen and kelp, the stream drawn on the chart beside the
 course the boat is really making good, a ferry angle to hold the line across it and slack water to
 wait for when it runs faster than a boat can paddle, the shore's eddies to work up inside and the
-eddy line that rolls a boat crossed flat, a draw stroke to raft up alongside your partner, the bail-outs when the wind is up, fog on the
+eddy line that rolls a boat crossed flat, a draw stroke to raft up alongside your partner, the bail-outs when the wind is up (wait it out in a lee, raft up and ride it steady, or push on with a word on how), fog on the
 first-light launch with the compass to steer by, wildlife from seals to a pod of killer whales with
 the whale-watch fleet holding off it, a capsize and the rescue, the light going when the day was
 planned too long, the September squall, the white light after dark — and camp ashore with the shore walk and the night, where the boat sleeps above
 the tide or is found by it, the food is hung or lost to the raccoons, and Posey's water is drunk,
 rationed or fetched at the cost of the morning's ebb. Then the take-out with the call ashore that closes the float plan, the ferry home in the
 evening light, and the debrief: each day as it went, the score, the seamanship calls kept and
-missed (a stream crossed on the line and the eddy lines crossed on an edge among them), the hardest water each day met and the eddy lines crossed, the field notes on the chart of the whole expedition, with the other day offered to paddle
+missed (a stream crossed on the line, the eddy lines crossed on an edge and the wind let blow through among them), the hardest water each day met, the eddy lines crossed and the rafts made, the field notes on the chart of the whole expedition, with the other day offered to paddle
 it again. The field guide carries the species and the words on the water, from slack to the
 white light, each with its source. Pause anywhere; About carries the
 acknowledgment. Content is exported from `src/content`

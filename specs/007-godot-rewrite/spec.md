@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-06
 
-**Status**: Experiment — one hundred and nine slices merged (see "What exists today" below and
+**Status**: Experiment — one hundred and ten slices merged (see "What exists today" below and
 tasks.md); go/no-go pending the mobile Safari measurement from the Cloud Run URL (see research.md
 and the table at the end)
 
