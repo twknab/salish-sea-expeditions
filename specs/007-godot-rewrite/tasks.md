@@ -479,6 +479,10 @@
 
 - [x] T014dr On the water the partner held a fixed station two boat lengths off, so the new draw stroke had nobody to come alongside. Now each draw toward the partner closes a share of the station (`Partner.drew`, `gap`), and three draws raft the boats up, hulls touching. The partner says "Got your deck. Breathe.", and a note says what a raft is for and that paddling on breaks it (the station opens again at `SPREAD` once the boat is under way). Measured headless on a trip: the boats went from 9.6 m to 1.7 m apart. The field guide's words on the water gain Rafting up.
 
+## Slice 105 — the rafts, remembered
+
+- [x] T014ds Each day's record counts the times the boats rafted up (`Partner.rafts`, record field `rafts`). A raft is counted once however long it lasts, and drawing on while rafted adds none. The debrief's Each day names them ("rafted up once", "twice", "3 times"), and says nothing of a day without one. The demo debrief shows one on day two.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

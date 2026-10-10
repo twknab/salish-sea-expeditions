@@ -397,6 +397,8 @@ func _init() -> void:
 	check(Partner.station_for(Vector3.ZERO, Basis.IDENTITY, mate.gap).length() < 1.6, "rafted up, the partner sits about a metre and a half off, hulls touching")
 	var away := Partner.new()
 	check(not away.drew(-1) and away.gap == 1.0, "a draw away from the partner leaves them on station")
+	check(mate.rafts == 1 and not mate.drew(1) and mate.rafts == 1, "a raft is counted once, and drawing on while rafted adds none")
+	check(Partner.rafts_line(1) == "rafted up once" and Partner.rafts_line(3) == "rafted up 3 times" and Partner.rafts_line(0) == "", "the debrief names the day's rafts, and says nothing of a day without one")
 	mate.free()
 	away.free()
 	check(Partner.pick_preset(presets, { "skin": "tan", "hair": "dark", "style": "short" }).id == "b", "the partner is not dressed as the player")

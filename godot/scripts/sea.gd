@@ -529,7 +529,7 @@ func _record_day() -> void:
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
 		"swims": _swims_today, "waits": _waits_today, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
-		"streamS": _cross.stream_s, "onLineS": _cross.on_line_s, "maxKn": snappedf(_cross.max_kn, 0.1), "maxAt": _cross.max_at, "eddy": _cross.eddy_said, "linesEdged": _cross.lines_edged, "linesTripped": _cross.lines_tripped,
+		"streamS": _cross.stream_s, "onLineS": _cross.on_line_s, "maxKn": snappedf(_cross.max_kn, 0.1), "maxAt": _cross.max_at, "eddy": _cross.eddy_said, "linesEdged": _cross.lines_edged, "rafts": _partner.rafts if _partner else 0, "linesTripped": _cross.lines_tripped,
 		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
 		"notes": _notes.duplicate(), "noteAt": _note_at.duplicate(),
 		"lateStart": float(App.save.get("lateStart", 0.0)),

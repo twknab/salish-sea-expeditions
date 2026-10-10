@@ -19,6 +19,7 @@ var _side := 1
 var _stroke_t := 0.0
 var _last := Vector3.ZERO
 var gap := 1.0  # the share of the station kept: 1 at two boat lengths, RAFT_GAP rafted up alongside
+var rafts := 0  # times the boats rafted up on this leg, for the record
 
 ## Where the partner belongs for a player at `pos` facing along `basis`, `gap` of the way out.
 static func station_for(pos: Vector3, basis: Basis, share := 1.0) -> Vector3:
@@ -50,7 +51,15 @@ func drew(side: int) -> bool:
 	if side <= 0 or rafted():
 		return false
 	gap = maxf(RAFT_GAP, gap - DRAW_IN)
+	if rafted():
+		rafts += 1
 	return rafted()
+
+## The debrief's words for a day's rafts, or nothing on a day without one.
+static func rafts_line(n: int) -> String:
+	if n <= 0:
+		return ""
+	return "rafted up %s" % ("once" if n == 1 else ("twice" if n == 2 else "%d times" % n))
 
 func rafted() -> bool:
 	return gap <= RAFT_GAP + 0.001
