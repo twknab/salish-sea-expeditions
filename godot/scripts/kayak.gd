@@ -210,7 +210,7 @@ func _physics_process(delta: float) -> void:
 	var v := linear_velocity
 	var v_f := v.dot(fwd)
 	var v_s := v.dot(right)
-	apply_central_force(-right * v_s * mass * 2.2 * (0.6 + 0.4 * assembly))
+	apply_central_force(-right * v_s * mass * StrokeMath.KEEL_DRAG * (0.6 + 0.4 * assembly))
 	if assembly < 0.999:
 		apply_torque(Vector3.UP * (1.0 - assembly) * sin(sea_time * 0.9) * 10.0)  # a slack skin flexes and the boat wanders
 	apply_central_force(-fwd * v_f * absf(v_f) * mass * (0.12 + 0.05 * absf(trim.pitch)))  # a boat out of trim pushes water
@@ -287,6 +287,13 @@ func sweep(side: int) -> void:
 	apply_central_impulse(-global_basis.z * 0.06 * mass)
 	_paddler.begin_stroke(side, "sweep")
 	stroke_done.emit(side, 1.0, "sweep")
+
+## A draw: the blade planted out to the side and pulled in to the hull moves the boat sideways
+## toward it, the way you close on a partner to raft up or come in beside a dock.
+func draw(side: int) -> void:
+	apply_central_impulse(global_basis.x * float(side) * StrokeMath.DRAW_DV * mass)
+	_paddler.begin_stroke(side, "draw")
+	stroke_done.emit(side, 1.0, "draw")
 
 func reverse(side: int) -> void:
 	apply_central_impulse(global_basis.z * 0.25 * mass)

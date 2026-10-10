@@ -6,6 +6,13 @@ extends RefCounted
 const GOOD_STROKE := 0.6
 const MAX_SPEED := 2.4  # m/s, a hard sprint
 const STROKE_DV := 0.34 # m/s per full-quality stroke at rest
+const DRAW_DV := 0.6     # m/s sideways from one draw stroke: the blade planted out to the side, pulled in to the hull
+const KEEL_DRAG := 2.2   # per second: how fast the keel line kills sideways slip on an assembled boat
+
+## How far one draw carries the boat sideways before the keel stops it: the slip decays as e^(-kt),
+## so the whole of it comes to dv / k.
+static func draw_drift(dv: float, keel_drag: float) -> float:
+	return dv / keel_drag
 
 static func rotation_quality(reach: float, smoothness: float, exit_at_hip: bool) -> float:
 	var q := 0.15 + 0.45 * clampf(reach, 0.0, 1.0) + 0.25 * clampf(smoothness, 0.0, 1.0)
@@ -47,3 +54,8 @@ static func righting(roll: float) -> float:
 ## Over, and staying over: past the point of no return by a margin.
 static func capsized(roll: float) -> bool:
 	return absf(roll) > NO_RETURN_ROLL + 0.1
+
+## Two taps make a draw when both land on the same side of the water: -1 left, 1 right, 0 not.
+static func double_tap_side(x1: float, x2: float, centre: float) -> int:
+	var a := signf(x1 - centre)
+	return int(a) if a != 0.0 and a == signf(x2 - centre) else 0

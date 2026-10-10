@@ -1,6 +1,6 @@
 ## Camp on Jones Island: the boat is up the beach, the evening comes on while you make camp, and
 ## each step — above the tide, the pad, the raccoons, drying out, the night — is a card. Then
-## tomorrow's float plan, which for now returns you to the title with the day saved.
+## tomorrow's float plan for the next leg, or the ferry home after the last (`App.advance_leg`).
 extends Node3D
 
 var _terrain: Terrain

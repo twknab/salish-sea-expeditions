@@ -19,6 +19,7 @@ const STATIONS = [
   ['school-compass', '?scene=school&drill=compass'],
   ['school-ferry', '?scene=school&drill=ferry'],
   ['school-eddyline', '?scene=school&drill=eddyline'],
+  ['school-draw', '?scene=school&drill=draw'],
   ['pack', '?scene=pack&pack=ideal'],
   ['plan', '?scene=plan&step=1'],
   ['trip', '?scene=trip'],

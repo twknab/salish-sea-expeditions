@@ -744,6 +744,15 @@
    "touch": "hold to paddle; drag the hips bar to edge; slide your thumb left or right to turn back"
   },
   {
+   "id": "draw",
+   "title": "Draw stroke: move sideways",
+   "skill": "sweep",
+   "text": "Reach the blade out to the side, square to the boat, and pull the water in to the hull. The boat slides toward the blade without turning: the stroke that brings you alongside a partner to raft up, or in beside a dock. Slice the blade out and do it again.",
+   "goal": "Slide two metres sideways without turning the bow more than fifteen degrees",
+   "keys": "Shift+A to draw left, Shift+D to draw right",
+   "touch": "double-tap one side of the water to draw toward it"
+  },
+  {
    "id": "rescue",
    "title": "Wet exit and paddle-float re-entry",
    "skill": "rescue",

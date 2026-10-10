@@ -147,6 +147,9 @@ func advance(delta: float, edge: float) -> void:
 	if _kind == "sweep":
 		travel *= 1.5
 		dip *= 0.5
+	elif _kind == "draw":
+		travel = 0.0  # the blade goes out to the side and comes straight back in
+		dip *= 1.35
 	if p >= 1.0:
 		travel = 0.0; dip = 0.0
 	_paddle.rotation = Vector3(0.0, _side * travel, dip)

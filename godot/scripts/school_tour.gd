@@ -35,5 +35,5 @@ static func build(content: Dictionary, anchor: Callable, sources: Callable) -> A
 	for pp in content.get("paddleParts", []):
 		var v: Array = paddle_views.get(pp.id, [1.6, 1.0, 0.5])
 		tour.append({ "kind": "paddle", "kicker": "The paddle", "title": pp.name, "text": pp.text, "source": sources.call(pp.sourceIds), "anchor": anchor.call(pp.id), "dist": v[0], "az": v[1], "el": v[2] })
-	tour.append({ "kind": "drills", "kicker": "Calm water", "title": "Now paddle it", "text": "Nine short drills: forward and reverse strokes, edging, the sweep turn, the low brace, a compass bearing, a ferry angle, an eddy line crossed on an edge, and the rescue. Everything later builds on these.", "source": "", "anchor": Vector3(0, 0.3, 0), "dist": 6.0, "az": 0.2, "el": 0.5 })
+	tour.append({ "kind": "drills", "kicker": "Calm water", "title": "Now paddle it", "text": "Ten short drills: forward and reverse strokes, edging, the sweep turn, the low brace, a compass bearing, a ferry angle, an eddy line on an edge, the draw, and the rescue. Everything later builds on these.", "source": "", "anchor": Vector3(0, 0.3, 0), "dist": 6.0, "az": 0.2, "el": 0.5 })
 	return tour

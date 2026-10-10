@@ -34,6 +34,12 @@ func _init() -> void:
 	check(not PlaceLabels.placeable(Rect2(340, 300, 90, 18), room, no_taken), "a name half off the screen stays hidden")
 	var panel: Array[Rect2] = [Rect2(14, 40, 360, 110)]
 	check(not PlaceLabels.placeable(Rect2(100, 120, 90, 18), room, panel) and PlaceLabels.placeable(Rect2(100, 160, 90, 18), room, panel), "a name stays off a panel it would read as part of, and shows just below it")
+	# The draw stroke: one stroke slides the boat about a quarter metre toward the blade, the keel resisting.
+	var drift := StrokeMath.draw_drift(StrokeMath.DRAW_DV, StrokeMath.KEEL_DRAG)
+	check(drift > 0.2 and drift < 0.4, "one draw moves the boat a quarter metre or so sideways, got %.2f m" % drift)
+	check(StrokeMath.draw_drift(StrokeMath.DRAW_DV, StrokeMath.KEEL_DRAG * 0.6) > drift, "a slack, half-built hull slips further than an assembled one")
+	check(StrokeMath.double_tap_side(100.0, 120.0, 195.0) == -1 and StrokeMath.double_tap_side(300.0, 280.0, 195.0) == 1, "two taps on one side of the water draw toward that side")
+	check(StrokeMath.double_tap_side(100.0, 300.0, 195.0) == 0, "taps on opposite sides are not a draw")
 	# Hull: stems close, fullest near midships, keel below the sheer, stems meet the sheer.
 	check(Hull.half_beam(0.0) < 1e-6 and Hull.half_beam(1.0) < 1e-6, "stems close")
 	check(Hull.half_beam(0.5) > 0.25, "beam near midships")
@@ -283,12 +289,12 @@ func _init() -> void:
 						missing += 1
 						printerr("unknown source ", sid, " in ", key)
 		check(missing == 0, "all sourceIds resolve")
-		check(c.drills.size() == 9 and c.drills[0].id == "forward" and c.drills[5].id == "compass" and c.drills[6].id == "ferry" and c.drills[7].id == "eddyline" and c.drills[8].id == "rescue", "nine drills, forward first, the compass, the ferry angle and the eddy line before the rescue, the rescue last")
+		check(c.drills.size() == 10 and c.drills[0].id == "forward" and c.drills[5].id == "compass" and c.drills[6].id == "ferry" and c.drills[7].id == "eddyline" and c.drills[8].id == "draw" and c.drills[9].id == "rescue", "ten drills, forward first, the compass, the ferry angle, the eddy line and the draw before the rescue, the rescue last")
 		var tour := SchoolTour.build(c, func(_id: String) -> Vector3: return Vector3.UP, func(sids: Array) -> String: return ",".join(sids))
 		var stops: int = c.kayakParts.size() + c.bodyPoints.size() + c.paddleParts.size() + 2
 		check(tour.size() == stops and tour[0].kind == "intro" and tour[-1].kind == "drills", "the school tour walks every part, the body and the paddle, from the intro to the drills")
 		check(tour.all(func(t: Dictionary) -> bool: return t.has("anchor") and t.has("dist") and float(t.dist) > 1.0), "every stop of the tour has somewhere for the camera to look from")
-		check(str(tour[-1].text).begins_with("Nine short drills") and c.drills.size() == 9, "the tour counts the drills there are")
+		check(str(tour[-1].text).begins_with("Ten short drills") and c.drills.size() == 10, "the tour counts the drills there are")
 	# IK: the elbow keeps both bone lengths and bends toward the pole.
 	var sh := Vector3(0.2, 1.4, 0)
 	var hand := Vector3(0.45, 1.1, 0.3)
