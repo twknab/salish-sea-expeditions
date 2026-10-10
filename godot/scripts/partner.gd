@@ -61,6 +61,12 @@ static func rafts_line(n: int) -> String:
 		return ""
 	return "rafted up %s" % ("once" if n == 1 else ("twice" if n == 2 else "%d times" % n))
 
+## Rafted up at once: the card's choice in a blow, the partner coming alongside rather than you drawing in.
+func raft_now() -> void:
+	if not rafted():
+		gap = RAFT_GAP
+		rafts += 1
+
 func rafted() -> bool:
 	return gap <= RAFT_GAP + 0.001
 

@@ -487,6 +487,10 @@
 
 - [x] T014dt The raft's note called it the steadiest place on the water, and now it is. Rafted up, the kayak holds and rights its roll three times as hard (`StrokeMath.RAFT_HOLD`) and cannot go over while a hand is on the other boat (`Kayak.rafted`, set each frame from the partner). Measured headless with the same kick, the boat rolled 40° alone and 15° rafted. The wind's drift now reads the keel's resistance from `StrokeMath.KEEL_DRAG` too, not a second copy of the number.
 
+## Slice 107 — raft up in a blow
+
+- [x] T014du The bail-outs card, up when the afternoon southerly stands against the ebb, now offers a third way through it: "Raft up with <partner>". The partner comes alongside at once (`Partner.raft_now()`, counted once in the day's rafts), the boats hold steady as in slice 106, and the note says so. Paddling on breaks the raft as before. The stream's ferry and eddy notes now wait while another note still holds the line, so the raft's note is not replaced by them the moment the card closes.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

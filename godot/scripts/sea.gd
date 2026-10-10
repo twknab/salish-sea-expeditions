@@ -421,6 +421,8 @@ func _leg(delta: float) -> void:
 		_note_hold = NOTE_HOLD
 	elif said == "slack":
 		_offer_slack(cur.length() / FerryGlide.KN)
+	elif said in ["eddy", "ferry"] and _note_hold > 0.0:  # a note still holding the line keeps it; ask again next frame
+		_cross.set(said + "_said", false)
 	elif said == "eddy":
 		note_label.text = _said("eddy") + CrossingWatch.eddy_note(controls.touch())
 		_note_hold = NOTE_HOLD
@@ -567,10 +569,14 @@ func _offer_bailouts(state: float) -> void:
 	var opener := "%s: %d knots from %03d° and the sea is standing up%s. The float plan's bail-outs:\n%s"
 	var body := _said("rough") + (opener + "\n\nNobody has to make it in one push. In a lee the afternoon wind blows through in an hour or two.") % [str(_route.get("channel", "San Juan Channel")), int(round(float(w.kn))), int(round(float(w.fromDeg))), " against the stream" if Tides.wind_against_tide(_day, _hour) else "", "\n".join(lines)]
 	var l := _lesson("bailouts")
-	_show(UIKit.card("The wind is up", body, App.sources_line(["uscg", "aca"]) if l.get("text", "") == "" else App.sources_line(l.get("sourceIds", [])), [
-		["Push on", _clear_card, false],
-		["Wait it out · %s" % nearest, func() -> void: _wait_in_lee(nearest), true],
-	], "Sea state %d%% · %s" % [int(round(state * 100.0)), Leg.clock(_hour)]))
+	var actions: Array = [["Push on", _clear_card, false], ["Wait it out · %s" % nearest, func() -> void: _wait_in_lee(nearest), true]]
+	if _partner:  # the third answer to a blow: two boats held together are steadier than either
+		actions.insert(1, ["Raft up with %s" % str(_partner.preset.get("name", "your partner")), func() -> void: _clear_card(); _partner.raft_now(); _on_rafted(), false])
+	_show(UIKit.card("The wind is up", body, App.sources_line(["uscg", "aca"]) if l.get("text", "") == "" else App.sources_line(l.get("sourceIds", [])), actions, "Sea state %d%% · %s" % [int(round(state * 100.0)), Leg.clock(_hour)]))
+
+func _on_rafted() -> void:
+	note_label.text = _said("raft") + "Rafted up: the boats side by side, a hand on each other's deck. The steadiest place on the water to eat, drink, fix something or wait out a squall. Paddle on to break it."
+	_note_hold = NOTE_HOLD
 
 ## Time waited ashore or in an eddy: the clock moves, the water is read again, and the day's record
 ## keeps the judgment.
@@ -855,8 +861,7 @@ func _on_stroke(side: int, q: float, kind: String) -> void:
 			kayak.draw(side)
 			Sound.dip(0.5)
 			if _partner and mode == "trip" and _partner.drew(side):  # drawn alongside: rafted up
-				note_label.text = _said("raft") + "Rafted up: the boats side by side, a hand on each other's deck. The steadiest place on the water to eat, drink, fix something or wait out a squall. Paddle on to break it."
-				_note_hold = NOTE_HOLD
+				_on_rafted()
 		"reverse":
 			kayak.reverse(side)
 			Sound.dip(0.6)
