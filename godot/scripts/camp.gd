@@ -20,6 +20,7 @@ var _tent: MeshInstance3D
 var _leg: Dictionary = {}
 var _walk := -1            # index into the shore walk, -1 when not walking
 var _walked := false
+var _rock := ""            # the tide pool's rock: "" not met yet, "lift" or "leave"
 var _cam: Camera3D
 var _glows := 0            # bioluminescence sparked tonight, for the night card's own line
 var _day: Dictionary = {}  # the authored day, for the night's high water
@@ -108,10 +109,10 @@ func _ready() -> void:
 			t.timeout.connect(func() -> void: _glow(_shore - _inland * 7.0 + _along * randf_range(-3.0, 4.0)))
 			add_child(t)
 			t.start()
-	if App._url_param("walk") == "1":  # `?scene=camp&walk=1` opens on the shore, for checks
+	if App._url_param("walk") != "":  # `?scene=camp&walk=1` opens on the shore, for checks (`&walk=3` on its third find)
 		_step = 1
 		_pitch()
-		_walk = 0
+		_walk = maxi(0, int(App._url_param("walk")) - 1)
 		_show_walk()
 		return
 	_show()
@@ -399,13 +400,43 @@ func _show_walk() -> void:
 		text += "\n\n%s." % where
 	var last := _walk >= shore.size() - 1
 	var actions: Array = [["Back to camp" if last else "Next", func() -> void: _walk += 1; _show_walk(), true]]
+	var sources: Array = sp.get("sourceIds", [])
+	var groups := shore.map(func(id: Variant) -> String: return str(_species(str(id)).get("group", "")))
+	if _rock == "" and _walk == TidePool.first_pool(groups) and str(_leg.get("camp", {}).get("kind", "camp")) != "takeout":
+		var manners := _lesson("tidepools")  # the pools' manners, where the pools begin, and a rock to try them on
+		text += "\n\n%s: %s" % [str(manners.get("title", "")), str(manners.get("text", ""))]
+		sources = sources + Array(manners.get("sourceIds", []))
+		actions = [["Leave the rock", func() -> void: _show_rock("leave"), false], ["Lift the rock, set it back", func() -> void: _show_rock("lift"), true]]
 	# The tide the walk really has: what the table says is standing on the shore now, and when it is lowest.
 	var now_h := Tides.height_m(_day, _hour)
 	var low := Tides.next_low(_day, _hour)
 	if _walk == 0 and now_h > float(low.h) + 0.8:
 		text += "\n\nThe water stands at %.1f m and the pools are still under it; the low is %.1f m at %s. This walk is what that low uncovers." % [now_h, float(low.h), Leg.clock(fmod(float(low.hour), 24.0))]
-	_card = UIKit.card(sp.get("common", "On the shore"), text, App.sources_line(sp.get("sourceIds", [])), actions, "The shore · tide %.1f m, low %.1f m at %s · %d of %d" % [now_h, float(low.h), Leg.clock(fmod(float(low.hour), 24.0)), _walk + 1, shore.size()])
+	_card = UIKit.card(sp.get("common", "On the shore"), text, App.sources_line(sources), actions, "The shore · tide %.1f m, low %.1f m at %s · %d of %d" % [now_h, float(low.h), Leg.clock(fmod(float(low.hour), 24.0)), _walk + 1, shore.size()])
 	_ui.add_child(_card)
+
+## The tide pool's rock: lifted and set back (and who was under it), or left as it lay.
+func _show_rock(choice: String) -> void:
+	_rock = choice
+	if _card:
+		_card.queue_free()
+	var r := TidePool.rock(choice)
+	var find := _species(str(r.find))
+	if not find.is_empty():
+		var seen: Array = App.save.get("seen", [])
+		if not seen.has(find.id):
+			seen.append(find.id)
+			App.save.seen = seen
+			App.persist()
+	var text: String = r.text + ("\n\n%s — %s" % [find.common, str(find.get("facts", [""]).back())] if not find.is_empty() else "")
+	_card = UIKit.card(str(r.title), text, App.sources_line(find.get("sourceIds", ["eopugetsound"])), [["Next", func() -> void: _walk += 1; _show_walk(), true]], "The shore · the tide pools")
+	_ui.add_child(_card)
+
+func _lesson(id: String) -> Dictionary:
+	for l in App.content.get("lessons", []):
+		if l.id == id:
+			return l
+	return {}
 
 func _species(id: String) -> Dictionary:
 	for sp in App.content.get("species", []):

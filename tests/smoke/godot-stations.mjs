@@ -39,6 +39,7 @@ const STATIONS = [
   ['camp-floated', '?scene=camp&step=4&boat=edge'],
   ['camp-raccoons', '?scene=camp&step=2&food=tent'],
   ['camp-water', '?scene=camp&leg=1&step=1&water=fill'],
+  ['camp-pools', '?scene=camp&walk=3'],
   ['takeout', '?scene=camp&leg=2&step=1'],
   ['takeout-close', '?scene=camp&leg=2&step=3&close=forgot'],
   ['debrief', '?scene=debrief&demo=1'],

@@ -519,6 +519,10 @@
 
 - [x] T014eb The debrief's Each day now says when the paddler pushed on into the wind ("pushed on into the wind once", "twice" as "2 times"), beside the existing "waited out the wind". The demo's day two has two blows, one waited out and one pushed through, so its seamanship call shows missed.
 
+## Slice 115 — the tide pools' manners, and a rock
+
+- [x] T014ec The evening shore walk now reaches the tide pools properly. At the first animal of the intertidal (the ochre sea star, on Jones and on Posey) the card carries the tide-pool manners from the lessons (look, one wet finger, never pull an animal off, turn any rock you lift back as it was) and asks about a rock: "Lift the rock, set it back" finds a small Giant Pacific octopus in its den and puts it in the field guide, while "Leave the rock" says why leaving it is just as good. The take-out's float has no rock. `TidePool` (pure, tested) holds where the pools begin and the rock's two answers. `?scene=camp&walk=3` opens the walk on that card, and the stations sweep checks it (`camp-pools`). Part of T020's tide pools.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
