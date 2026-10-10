@@ -75,6 +75,7 @@ func _ready() -> void:
 	frame.add_theme_stylebox_override("panel", UIKit.panel_style(0.45, 16))
 	frame.add_child(_head)
 	_ui.add_child(frame)
+	_labels.avoid.append(frame)  # the panel is see-through: a name under it reads as part of it
 	_ui.add_child(UIKit.spacer())
 	var at := App._url_param("step")  # `?scene=plan&step=1` opens on a step, for checks
 	if at != "":
@@ -96,6 +97,7 @@ func _show() -> void:
 	if s.get("id", "") == "tide":
 		_add_graph()
 	_ui.add_child(_card)
+	_labels.avoid.append(_card)
 
 ## The tide step carries the day's water as a graph: choose the launch on it, and the plan, the
 ## chart's light and the leg itself follow the hour.

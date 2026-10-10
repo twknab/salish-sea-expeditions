@@ -230,6 +230,7 @@ func _build_ui() -> void:
 	# A quiet panel behind the top block: from a chart's height the land under it is pale.
 	var frame := PanelContainer.new()
 	frame.add_theme_stylebox_override("panel", UIKit.panel_style(0.45, 16))
+	_labels.avoid.append(frame)  # the panel is see-through: a name under it reads as part of it
 	frame.add_child(top)
 	_ui.add_child(frame)
 	_ui.add_child(UIKit.spacer())
@@ -245,6 +246,7 @@ func _show_card(title: String, text: String, source: String, kicker: String) -> 
 		actions.append(["Walk off in Friday Harbor", func() -> void: App.next(), true])
 	_card = UIKit.card(title, text, source, actions, kicker)
 	_ui.add_child(_card)
+	_labels.avoid.append(_card)
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:

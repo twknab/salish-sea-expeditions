@@ -455,6 +455,10 @@
 
 - [x] T014dl Place names floated over the land could sit half off the screen or under the Title, Sound and Music chips; on a phone the plan showed "eden Island" cut off under them. A name now shows only when the whole of it fits on the screen below the chips (`PlaceLabels.TOP_BAND`). The nearer-wins overlap rule is unchanged. All 36 stations pass the sweep.
 
+## Slice 99 — the place names, clear of the panels
+
+- [x] T014dm On a phone the ferry drew "Lopez Island" inside its see-through top panel, where it read as part of the panel. Place names now stay off any control in `PlaceLabels.avoid`, wherever it is that frame. The ferry registers its top panel and each card, the float plan its day panel and each card. The fixed `keep_out` rectangles the water scene uses are unchanged.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
