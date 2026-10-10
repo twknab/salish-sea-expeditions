@@ -491,6 +491,10 @@
 
 - [x] T014du The bail-outs card, up when the afternoon southerly stands against the ebb, now offers a third way through it: "Raft up with <partner>". The partner comes alongside at once (`Partner.raft_now()`, counted once in the day's rafts), the boats hold steady as in slice 106, and the note says so. Paddling on breaks the raft as before. The stream's ferry and eddy notes now wait while another note still holds the line, so the raft's note is not replaced by them the moment the card closes.
 
+## Slice 108 — letting the wind blow through
+
+- [x] T014dv The day's record counts the times the wind-is-up card went up (`blows`) and the times the paddler pushed on into it (`pushes`). Seamanship reads them back as a new call, "Let the wind blow through": kept when every blow was waited out in a lee or rafted out, missed with "pushed on into it 1 of 3 times" when not, and absent on a day the wind never rose. The demo debrief's day two has a blow, waited out.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
