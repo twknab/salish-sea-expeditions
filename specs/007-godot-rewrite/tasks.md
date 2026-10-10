@@ -507,6 +507,14 @@
 
 - [x] T014dy The field guide's words on the water gain "Beam sea" (waves on the side of the boat, where a kayak rolls most), the term behind the push-on note's advice to take the waves off the bow. Sources: ACA, USCG.
 
+## Slice 112 — raft up in a squall
+
+- [x] T014dz With a partner along, the squall's note now says what rafting up is for and how to get there: "If it blows, raft up: Shift+A/D draws you alongside" (on a touchscreen, "double-tap a side to draw alongside"). Paddling alone, the note is unchanged. The copy moved into `Partner.rain_note`, with a test, which also keeps `sea.gd` under the linter's file length.
+
+## Slice 113 — the school's drills, measured where the tests can reach
+
+- [x] T014ea The six Kayak School drills that are only the boat's own motion (forward, reverse, edge, compass, draw, sweep) are measured by `SchoolDrill.measure`, a pure static, instead of inside the water scene. Five new tests paddle them headless: an edge held and let go, a draw with the bow kept and turned, a sweep on an edge and flat, a bearing held and missed, strokes counted. The drills with water or a capsize in them stay in `sea.gd`, which drops to 979 lines and has headroom again under the linter's 1000.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

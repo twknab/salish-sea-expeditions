@@ -471,7 +471,7 @@ func _leg(delta: float) -> void:
 		_rained = true
 		if not _rain_said and _note_hold <= 0.0:
 			_rain_said = true
-			note_label.text = _said("rain") + ("Rain. Hood up and keep paddling: the drops flatten the chop, and it is the wind behind the front that matters, not the water on your deck." if not controls.touch() else "Rain. Hood up, keep paddling; watch the wind behind it.")
+			note_label.text = _said("rain") + Partner.rain_note(_partner != null, controls.touch())
 	if _chart:
 		_chart.blind = Fog.blind(_fog)
 	if Fog.blind(_fog):
@@ -756,17 +756,9 @@ func _drill_progress(delta: float) -> void:
 	var d: Dictionary = _drills()[_drill]
 	var s := _drill_state
 	var p := 0.0
+	if SchoolDrill.PURE.has(d.id):  # the boat's own motion: strokes, an edge, a bearing, a slide, a turn
+		p = SchoolDrill.measure(d.id, s, delta, kayak.heading, kayak.speed, kayak.edge, controls.steer, kayak.global_position)
 	match d.id:
-		"forward": p = s.count / 6.0
-		"reverse": p = s.count / 4.0
-		"edge":
-			s.t = s.t + delta if absf(kayak.edge) > 0.6 else maxf(0.0, s.t - delta * 2.0)
-			p = s.t / 3.0
-		"compass":
-			var off := absf(angle_difference(deg_to_rad(float(s.get("target", 0.0))), kayak.heading))
-			var on_line := off < deg_to_rad(10.0) and kayak.speed > 0.4
-			s.t = s.t + delta if on_line else maxf(0.0, s.t - delta * 0.5)
-			p = s.t / 12.0
 		"ferry":
 			kayak.global_position += s.stream * delta  # the water carries the boat, whatever it points at
 			var cmg := FerryGlide.course_made_good(-kayak.global_basis.z * kayak.speed, s.stream) if kayak.speed > 0.4 else NAN
@@ -783,15 +775,6 @@ func _drill_progress(delta: float) -> void:
 					kayak.kick(1.0)
 				note_label.text = CrossingWatch.line_note(edged, dir, controls.touch()) + ("\n%d of 2 edged crossings" % s.count if edged else "")
 			p = s.count / 2.0
-		"draw":
-			var slid := absf((kayak.global_position - (s.origin as Vector3)).dot(s.right))
-			p = slid / 2.0 if absf(angle_difference(float(s.h0), kayak.heading)) < deg_to_rad(15.0) else 0.0
-		"sweep":
-			var dh := angle_difference(s.prev, kayak.heading)
-			s.prev = kayak.heading
-			if absf(kayak.edge) > 0.4 or absf(controls.steer) > 0.5:
-				s.turned += absf(dh)
-			p = s.turned / PI
 		"rescue":
 			if _capsize_in > 0.0:
 				_capsize_in -= delta
