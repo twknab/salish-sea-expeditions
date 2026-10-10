@@ -234,6 +234,9 @@ func _init() -> void:
 	# The partner speaks at the moments that matter, in a few words, and not when there is nothing to say.
 	check(PartnerVoice.line("ferry") != "" and PartnerVoice.line("nothing") == "" and PartnerVoice.said("Mina", "nothing") == "", "silent when there is nothing to say")
 	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")
+	# The tide pools: the manners where the pools begin, and a rock lifted and set back, or left.
+	check(TidePool.first_pool(["Trees & shore plants", "Intertidal & sea life", "Intertidal & sea life"]) == 1 and TidePool.first_pool(["Trees & shore plants"]) == -1, "the pools begin at the first animal of the intertidal")
+	check(str(TidePool.rock("lift").find) == "octopus" and str(TidePool.rock("lift").text).contains("back down the way it lay") and str(TidePool.rock("leave").find) == "" and str(TidePool.rock("leave").text).contains("dies in the sun"), "a lifted rock goes back as it lay; a left one keeps its shore alive")
 	# Kayak School's own-motion drills, measured from the boat alone.
 	var se := { "t": 0.0 }
 	for i in 30:
