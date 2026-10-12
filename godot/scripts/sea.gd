@@ -34,6 +34,7 @@ var _capsize_in := -1.0      # the rescue drill rolls the boat on its own after 
 var _since_start := 0.0
 var _pack: Dictionary = {}       # Packing.assess of the boat as packed, on a trip
 var _swims_today := 0           # capsizes on this leg, for the day's record
+var _rolls_today := 0           # and the ones rolled back up from, which are not swims
 var _weather_asked := false     # the wind-is-up card goes up once a leg
 var _fog := 0.0                 # Fog.amount of the hour (or 1 under `?fog=1`)
 var _fog_said := false          # the fog note goes up once a leg
@@ -535,7 +536,7 @@ func _record_day() -> void:
 	var entry := {
 		"leg": Leg.index(), "metres": Leg.length_m(_route), "launchHour": launch, "arrivedHour": _hour,
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
-		"swims": _swims_today, "waits": _waits_today, "blows": _blows.x, "pushes": _blows.y, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
+		"swims": _swims_today, "rolls": _rolls_today, "waits": _waits_today, "blows": _blows.x, "pushes": _blows.y, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
 		"streamS": _cross.stream_s, "onLineS": _cross.on_line_s, "maxKn": snappedf(_cross.max_kn, 0.1), "maxAt": _cross.max_at, "eddy": _cross.eddy_said, "linesEdged": _cross.lines_edged, "rafts": _partner.rafts if _partner else 0, "linesTripped": _cross.lines_tripped,
 		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
@@ -905,6 +906,7 @@ func _roll() -> void:
 		_swimming = false
 		controls.visible = true
 		note_label.text = Roll.outcome(true, learned)
+		_rolls_today += 1
 		_note_hold = NOTE_HOLD
 		return
 	_show(UIKit.card("It stays over", Roll.outcome(false, learned), App.sources_line(["aca"]), [["Wet exit", _swim, true]], "Over · %s" % Leg.clock(_hour)))

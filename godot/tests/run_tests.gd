@@ -279,6 +279,8 @@ func _init() -> void:
 	var blow_call: Dictionary = blown.filter(func(c: Dictionary) -> bool: return str(c.label) == "Let the wind blow through").front()
 	check(not bool(blow_call.ok) and str(blow_call.note) == "pushed on into it 1 of 3 times", "a blow is a call, missed when the boat pushed on into it")
 	check(Seamanship.kept(Seamanship.calls([{"verdict": "good", "blows": 1}])) == 4 and not Seamanship.calls([{"verdict": "good"}]).any(func(c: Dictionary) -> bool: return str(c.label).begins_with("Let the wind")), "kept when it was waited or rafted out, and absent on a calm day")
+	var rolled: Dictionary = Seamanship.calls([{"verdict": "good", "rolls": 1}]).back()
+	check(bool(rolled.ok) and str(rolled.note) == "no swims; over and rolled back up once", "a roll is not a swim, and the upright call says so")
 	check(Seamanship.calls([]).is_empty(), "no days, no calls")
 	var quiet := Seamanship.calls([{"verdict": "good"}])
 	check(quiet.size() == 3 and Seamanship.kept(quiet) == 3, "a clean day with nothing met keeps the launch, the daylight and the boat")

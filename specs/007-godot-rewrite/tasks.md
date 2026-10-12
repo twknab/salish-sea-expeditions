@@ -539,6 +539,10 @@
 
 - [x] T014eg Going over on a trip no longer goes straight to the swim. The first card is the roll (the content's roll lesson, unused until now): "Roll up" or "Wet exit". A paddler who learned the brace drill's hip snap in Kayak School comes up in anything short of a steep sea (`Roll.STEEP`, sea state 0.7), in seconds, with no swim counted and no time lost. Without the hip snap, or in a steep sea, the card says why it stayed over, and the wet exit leads into the rescue as before, where the swim is counted. Checked headless both ways. `Roll` is pure and tested.
 
+## Slice 120 — the rolls, remembered
+
+- [x] T014eh Each day's record counts the rolls (`rolls`), kept apart from the swims. The debrief's Each day says "rolled back up once", and the seamanship call "Stayed upright" stays kept with "no swims; over and rolled back up once": a roll is going over and coming back, not a swim. The demo's day two has one.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
