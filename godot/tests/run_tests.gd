@@ -234,6 +234,9 @@ func _init() -> void:
 	# The partner speaks at the moments that matter, in a few words, and not when there is nothing to say.
 	check(PartnerVoice.line("ferry") != "" and PartnerVoice.line("nothing") == "" and PartnerVoice.said("Mina", "nothing") == "", "silent when there is nothing to say")
 	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")
+	# Kelp is a harbour: the stream slows through a bed, and a boat stopped deep in one is held.
+	check(Kelp.held(0.8, 0.1) and not Kelp.held(0.8, 1.0) and not Kelp.held(0.2, 0.0), "held only stopped, and only deep in the bed")
+	check(Kelp.carry(0.0, 1.0) == 1.0 and is_equal_approx(Kelp.carry(1.0, 1.0), 0.5) and Kelp.carry(0.8, 0.1) < 0.1, "open water carries in full, the bed's heart half, and a stalk over the deck almost nothing")
 	# The tide pools: the manners where the pools begin, and a rock lifted and set back, or left.
 	check(TidePool.first_pool(["Trees & shore plants", "Intertidal & sea life", "Intertidal & sea life"]) == 1 and TidePool.first_pool(["Trees & shore plants"]) == -1, "the pools begin at the first animal of the intertidal")
 	check(str(TidePool.rock("lift").find) == "octopus" and str(TidePool.rock("lift").text).contains("back down the way it lay") and str(TidePool.rock("leave").find) == "" and str(TidePool.rock("leave").text).contains("dies in the sun"), "a lifted rock goes back as it lay; a left one keeps its shore alive")

@@ -57,6 +57,7 @@ var _thirsty_said := false
 var _dark := false              # the light went before the landing, for the record
 var _fog_off_m := -1.0          # how far off the planned line the boat was when it lifted
 var _kelp_said := false         # the kelp's one line, the first time the boat is in it
+var _kelp_held := false         # the line for resting in it, the first time the boat stops there
 var _ferry_moved := false       # paddled on while the ferry closed from the horn to the wake
 var _ferry_verdicts: Array = []  # "held" or "crossed", one per ferry pass this leg, for the record
 const KELP_REACH := 70.0        # metres from a kelp sighting's centre the bed extends
@@ -490,7 +491,11 @@ func _leg(delta: float) -> void:
 			_kick_t = RIP_KICK_EVERY
 			kayak.kick(0.7 + 0.8 * state)  # up to a wave that will put an unbraced boat over
 			Sound.hull_slap(0.4 + 0.4 * state)
-	var drift := cur * delta * (1.0 + _groove * (GROOVE_HOURS_PER_SEC * 3600.0 - 1.0) * 0.25)
+	if Kelp.held(kelp, kayak.speed) and not _kelp_held and _note_hold <= 0.0:
+		_kelp_held = true
+		note_label.text = "Kelp is a harbour: a stalk over the deck, and the stream goes by without you. Paddle on to let it go."
+		_note_hold = NOTE_HOLD
+	var drift := cur * Kelp.carry(kelp, kayak.speed) * delta * (1.0 + _groove * (GROOVE_HOURS_PER_SEC * 3600.0 - 1.0) * 0.25)
 	var landing := here + drift * 4.0
 	if terrain.height_at(landing.x, landing.z) < -0.5:
 		kayak.global_position += drift
