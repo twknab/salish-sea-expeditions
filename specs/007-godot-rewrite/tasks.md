@@ -612,6 +612,10 @@
 
 - [x] T014ey Each day's record keeps how many essentials were left on the beach at packing (`missing`), and Seamanship reads it back as a call: "Carried the essentials", kept with "pump, float, radio and the rest, every day", missed with "2 left on the beach". The demo's first day shows it kept.
 
+## Slice 138 — no light, no being seen
+
+- [x] T014ez A headlamp left on the beach now matters after dark: your boat shows no white light, and the night note says so. With a partner, it tells you to stay on their quarter, inside their light; alone, that nothing on the water can see you. A packed light reads as before.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
