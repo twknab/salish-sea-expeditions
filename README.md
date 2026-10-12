@@ -76,15 +76,15 @@ STATIC_DIR=build/web node server/server.mjs                      # serve it on :
 The game is a three-day sea-kayak expedition on the real islands, on a settled July day or a
 September spring tide with the first autumn southerly behind it: the opening (title,
 acknowledgment, outfitting, the ferry from Anacortes, the boat assembled on the beach, Kayak School
-with its ten drills, a bearing held on the compass, a stream crossed on a ferry angle, an eddy line crossed on an edge and a draw stroke among them, packing the boat), then for each day a float plan on the chart (its miles and first course read off it, as the chart gives them) with the day's
+with its ten drills, a bearing held on the compass, a stream crossed on a ferry angle, an eddy line crossed on an edge and a draw stroke among them, packing the boat), then for each day a float plan on the chart (its miles and first course read off it, as the chart gives them, and the wind as the VHF's weather channel forecasts it) with the day's
 water as a graph (slack water marked on it, and the verdict naming a turn that falls inside the leg), the leg on the water with a partner who speaks at the moments that matter — the
-ferry and its wake, the tide and the moment it turns, the wind, rips heard as well as seen and kelp (a harbour to rest in, out of the stream), the stream drawn on the chart beside the
+ferry (heard on the radio first) and its wake, the tide and the moment it turns, the wind, rips heard as well as seen and kelp (a harbour to rest in, out of the stream), the stream drawn on the chart beside the
 course the boat is really making good, a ferry angle to hold the line across it and slack water to
 wait for when it runs faster than a boat can paddle, the shore's eddies to work up inside and the
 eddy line that rolls a boat crossed flat, a draw stroke to raft up alongside your partner, the bail-outs when the wind is up (wait it out in a lee, raft up and ride it steady, or push on with a word on how), a squall to raft up in, fog on the
 first-light launch with the compass to steer by, wildlife from seals to a pod of killer whales with
 the whale-watch fleet holding off it, a capsize with the roll first and the rescue after, the partner going over and the T-rescue yours to give, the light going when the day was
-planned too long, the September squall, the white light after dark — and camp ashore with the shore walk (the tide pools' manners, and a rock lifted and set back as it lay) and the night, where the boat sleeps above
+planned too long, the September squall, the white light after dark — and camp ashore with the shore walk (the tide pools' manners, and a rock lifted and set back as it lay), the night, and a morning that leaves no trace, where the boat sleeps above
 the tide or is found by it, the food is hung or lost to the raccoons, and Posey's water is drunk,
 rationed or fetched at the cost of the morning's ebb. Then the take-out with the call ashore that closes the float plan, the ferry home in the
 evening light, and the debrief: each day as it went, the score, the seamanship calls kept and

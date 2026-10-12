@@ -296,6 +296,8 @@ func _init() -> void:
 	var slow: Dictionary = Seamanship.calls([{"verdict": "good", "reachS": 200.0}]).filter(func(c: Dictionary) -> bool: return str(c.label) == "Got to a swimmer fast").front()
 	check(bool(reached.ok) and str(reached.note) == "alongside in 40 s" and not bool(slow.ok) and str(slow.note).begins_with("4 minutes"), "reaching a swimmer is a call, kept inside a minute and a half")
 	check(not Seamanship.calls([{"verdict": "good"}]).any(func(c: Dictionary) -> bool: return str(c.label).begins_with("Got to")), "no swimmer, no call")
+	var carried: Array = Seamanship.calls([{"verdict": "good", "missing": 0}, {"verdict": "good", "missing": 2}]).filter(func(c: Dictionary) -> bool: return str(c.label) == "Carried the essentials")
+	check(carried.size() == 1 and not bool(carried[0].ok) and str(carried[0].note) == "2 left on the beach" and Seamanship.kept(Seamanship.calls([{"verdict": "good", "missing": 0}])) == 4, "the essentials are a call, missed by what was left on the beach")
 	check(Seamanship.calls([]).is_empty(), "no days, no calls")
 	var quiet := Seamanship.calls([{"verdict": "good"}])
 	check(quiet.size() == 3 and Seamanship.kept(quiet) == 3, "a clean day with nothing met keeps the launch, the daylight and the boat")
