@@ -547,6 +547,10 @@
 
 - [x] T014ei The table of what is met on each day's water (species, where, which way it faces, how close it notices you) moved out of the water scene into `Sightings.ALL`. `sea.gd` drops from 998 to 972 lines. A new content test checks every sighting is a field-guide species on one of the three days.
 
+## Slice 122 — the brace's hips are the roll's
+
+- [x] T014ej Finishing Kayak School's brace drill now says what it taught beyond the brace: the content's hip-snap lesson ("A sharp knee lift that rolls the boat back under you…"), and that on a trip the same snap is the roll (slice 119). The next drill waits six seconds instead of one so the note can be read.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

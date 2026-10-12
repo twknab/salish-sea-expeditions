@@ -789,9 +789,9 @@ func _drill_progress(delta: float) -> void:
 			App.save.drills = done
 			App.persist()
 		var next_i := _drills().find(d) + 1
-		note_label.text = "Nicely done."
+		note_label.text = "Nicely done." + (" %s: %s On a trip, the same snap is the roll." % [App.lesson("hipSnap").title, App.lesson("hipSnap").text] if d.id == "brace" else "")  # the brace's hips are the roll's
 		if next_i < _drills().size():
-			get_tree().create_timer(1.0).timeout.connect(func() -> void: _start_drill(next_i))
+			get_tree().create_timer(6.0 if d.id == "brace" else 1.0).timeout.connect(func() -> void: _start_drill(next_i))  # time to read the hip snap
 		else:
 			_finish_school()
 
