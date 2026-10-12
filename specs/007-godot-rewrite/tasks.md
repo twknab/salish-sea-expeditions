@@ -572,6 +572,10 @@
 
 - [x] T014eo The README's tour names kelp as a harbour, the roll, the partner's capsize and the T-rescue you give, the chart's miles and course on the float plan, and the swimmer-reached call.
 
+## Slice 128 — a swimmer beside the boat
+
+- [x] T014ep While the partner is over, the paddler figure leaves the upturned boat and a swimmer floats beside the cockpit: a head and the shoulders of a lifejacket at the surface, in the partner's own skin, hair and jacket colours, riding the same swell (`Partner.swimmer`). The jacket's colour is what you see first, which is the point of a bright one. Back in the boat after the T-rescue, the figure returns.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

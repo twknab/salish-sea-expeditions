@@ -21,6 +21,8 @@ var kayak: Kayak
 var _side := 1
 var _stroke_t := 0.0
 var _last := Vector3.ZERO
+var _look: Dictionary = {}
+var _swimmer: Node3D  # the head and the lifejacket beside the upturned boat, while over
 var gap := 1.0  # the share of the station kept: 1 at two boat lengths, RAFT_GAP rafted up alongside
 var rafts := 0  # times the boats rafted up on this leg, for the record
 var over := false        # the partner is in the water beside an upturned boat
@@ -42,6 +44,7 @@ static func pick_preset(presets: Array, mine: Dictionary) -> Dictionary:
 	return presets[0] if not presets.is_empty() else {}
 
 func setup(look: Dictionary, skin: Dictionary, at: Vector3, heading_rad: float) -> void:
+	_look = look
 	kayak = Kayak.new()
 	kayak.freeze = true
 	kayak.paddler_look = look
@@ -83,6 +86,9 @@ func follow(player: Kayak, sea: Node, delta: float) -> void:  # the Seascape, un
 	if over:  # in the water, holding the upturned boat: it stays where it went over, riding the swell
 		over_s += delta
 		kayak.global_position.y = sea.height_at(kayak.global_position.x, kayak.global_position.z) + 0.1
+		if _swimmer:  # beside the cockpit, a hand on the boat, riding the same swell
+			var at := kayak.global_position + kayak.global_basis.x * 0.7
+			_swimmer.global_position = Vector3(at.x, sea.height_at(at.x, at.z), at.z)
 		return
 	if player.speed > 0.6:
 		gap = minf(1.0, gap + SPREAD * delta)  # paddling on: the raft breaks and the station opens again
@@ -124,11 +130,18 @@ func go_over() -> void:
 	swims += 1
 	gap = 1.0
 	kayak.rotation.z = PI  # rolled about the keel line: the hull up, the paddler in the water beside it
+	kayak.set_paddler_visible(false)
+	_swimmer = swimmer(Color(_look.get("skin", Color("c9a07a"))), Color(_look.get("pfd", Color("f2d016"))), Color(_look.get("hair", Color("4a3626"))))
+	add_child(_swimmer)
 
 ## Back in their boat, after the T-rescue you gave.
 func righted() -> void:
 	over = false
 	over_s = 0.0
+	kayak.set_paddler_visible(true)
+	if _swimmer:
+		_swimmer.queue_free()
+		_swimmer = null
 	rescues_given += 1
 	kayak.rotation.z = 0.0
 
@@ -153,4 +166,23 @@ static func reached_note(seconds: float) -> String:
 	if seconds <= REACHED_FAST:
 		return "alongside in %d s" % int(round(seconds))
 	return "%d minutes before you were alongside; nine-degree water takes the strength in about ten" % int(ceil(seconds / 60.0))
+
+## A paddler in the water: a head and the shoulders of a lifejacket at the surface, which is what
+## a swimmer beside a boat looks like from a cockpit. The jacket's colour is what finds them.
+static func swimmer(skin: Color, pfd: Color, hair: Color) -> Node3D:
+	var n := Node3D.new()
+	n.name = "Swimmer"
+	var parts := [[SphereMesh.new(), skin, Vector3(0.0, 0.17, 0.0), Vector3(0.2, 0.24, 0.2)], [SphereMesh.new(), hair, Vector3(0.0, 0.23, 0.02), Vector3(0.21, 0.14, 0.21)], [CapsuleMesh.new(), pfd, Vector3(0.0, 0.0, 0.0), Vector3(0.48, 0.2, 0.3)]]
+	for p in parts:
+		var mi := MeshInstance3D.new()
+		mi.mesh = p[0]
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = p[1]
+		mi.material_override = mat
+		mi.position = p[2]
+		mi.scale = p[3]
+		if p[0] is CapsuleMesh:
+			mi.rotation.z = PI / 2.0  # lying across the surface, shoulders up
+		n.add_child(mi)
+	return n
 
