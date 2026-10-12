@@ -66,7 +66,14 @@ func _ready() -> void:
 	_kayak.position = Vector3(boat_at.x, maxf(_terrain.height_at(boat_at.x, boat_at.z), 0.3) + 0.25, boat_at.z)
 	_kayak.rotation = Vector3(0.0, atan2(-along.x, -along.z) + deg_to_rad(20.0), deg_to_rad(8.0))
 	add_child(_kayak)
-	_kayak.set_paddler_visible(false)  # the boat is empty on the beach; its paddler is making camp
+	_kayak.set_paddler_visible(false)  # the boat is empty on the beach; its paddler is making camp, here beside it
+	var me := Paddler.new()
+	me.standing = true
+	me.dress = 3  # just landed: still in the paddling layers and the lifejacket, which is how you know who it is
+	var me_at := boat_at - along * 1.6 + inland * 1.8
+	me.position = Vector3(me_at.x, maxf(_terrain.height_at(me_at.x, me_at.z), 0.3), me_at.z)
+	me.rotation.y = atan2(-inland.x, -inland.z)  # facing down the beach, toward the water and the camera
+	add_child(me)
 	var boat_param := App._url_param("boat")  # `?scene=camp&boat=grass` leaves the boat there, for checks
 	_spot = boat_param if boat_param != "" else str(App.save.get("haulout", "edge"))
 	var food_param := App._url_param("food")  # `?scene=camp&food=tent&step=4`: the raccoons' night, for checks

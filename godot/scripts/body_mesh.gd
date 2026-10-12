@@ -65,19 +65,16 @@ func build(parent: Node3D, palette: Dictionary, dress: int, legs: bool) -> void:
 		for s in ["l", "r"]:
 			_blob(JOINTS["shoulder_" + s] * Vector3(0.78, 1.0, 1.0) + Vector3(0, 0.02, 0), Vector3(0.09, 0.05, 0.12), palette.pfd, "chest")
 	_tube("neck", "head", [[0.052, 0.05], [0.058, 0.055]], palette.gasket if dress >= 2 else skin, 12, "chest", "head")
-	# Head: skull, chin, nose, ears, eyes; cap and sunglasses on the water, hair otherwise.
+	# Head: skull, chin, nose, ears, eyes, the paddler's own hair, and sunglasses on the water.
 	_blob(JOINTS.head + Vector3(0, 0.125, 0.0), Vector3(0.092, 0.118, 0.104), skin, "head")
 	_blob(JOINTS.head + Vector3(0, 0.06, 0.025), Vector3(0.072, 0.07, 0.078), skin, "head")
 	_blob(JOINTS.head + Vector3(0, 0.1, 0.1), Vector3(0.014, 0.018, 0.018), skin, "head")
 	for s in [-1.0, 1.0]:
 		_blob(JOINTS.head + Vector3(s * 0.092, 0.11, -0.005), Vector3(0.012, 0.022, 0.016), skin, "head")
 		_blob(JOINTS.head + Vector3(s * 0.036, 0.135, 0.088), Vector3(0.011, 0.011, 0.007), Color(0.08, 0.07, 0.06), "head")
-	if dress >= 4:
+	if dress >= 4:  # sunglasses on the water; the hair stays the paddler's own, so you know who is in the boat
 		_blob(JOINTS.head + Vector3(0, 0.137, 0.09), Vector3(0.082, 0.018, 0.022), palette.gasket, "head")
-		_blob(JOINTS.head + Vector3(0, 0.175, -0.003), Vector3(0.097, 0.085, 0.108), palette.cap, "head")
-		_blob(JOINTS.head + Vector3(0, 0.168, 0.085), Vector3(0.095, 0.01, 0.06), palette.cap, "head")
-	else:
-		_hair(palette, skin)
+	_hair(palette, skin)
 	# Arms: shoulder ball, upper arm, elbow, forearm tapering to the wrist gasket, a hand.
 	for s in ["l", "r"]:
 		_blob(JOINTS["shoulder_" + s], Vector3(0.062, 0.062, 0.062), palette.pfd if pfd else suit, "upper_arm_" + s)

@@ -576,6 +576,10 @@
 
 - [x] T014ep While the partner is over, the paddler figure leaves the upturned boat and a swimmer floats beside the cockpit: a head and the shoulders of a lifejacket at the surface, in the partner's own skin, hair and jacket colours, riding the same swell (`Partner.swimmer`). The jacket's colour is what you see first, which is the point of a bright one. Back in the boat after the T-rescue, the figure returns.
 
+## Slice 129 — your paddler, all the way through
+
+- [x] T014eq Bug: the paddler you pick on the outfitting screen seemed to vanish later. Two causes. On the water the figure wore a dark skull cap that hid the hair and the hairstyle, the two things that most tell one paddler from another, so only the lifejacket colour carried over. At camp nobody was drawn at all, only the empty boat. Now the water keeps the sunglasses and shows the paddler's own hair and style, and at camp the paddler stands on the beach by the boat, still in the lifejacket. Checked in the browser by picking Ayla (red hair, long, teal jacket) and opening Kayak School, the trip and camp after the save had synced. (The save itself was never lost: it reaches the browser's storage a few seconds after a change, slower in a headless test.)
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
