@@ -234,8 +234,13 @@ func _init() -> void:
 	# The partner speaks at the moments that matter, in a few words, and not when there is nothing to say.
 	check(PartnerVoice.line("ferry") != "" and PartnerVoice.line("nothing") == "" and PartnerVoice.said("Mina", "nothing") == "", "silent when there is nothing to say")
 	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")
+	var chart_leg := { "waypoints": [[0.0, 0.0], [0.0, -1852.0], [1852.0, -1852.0]] }
+	check(Leg.chart_line(chart_leg) == "On the chart: 2.0 nautical miles, the first course 000° true." and Leg.chart_line({}) == "", "the chart line gives the miles and the first course true")
+	# The partner can go over too, once a leg in a steep sea, and the rescue is yours to give.
+	check(Partner.goes_over(0.5, 30.0, 0) and not Partner.goes_over(0.5, 10.0, 0) and not Partner.goes_over(0.3, 60.0, 0) and not Partner.goes_over(0.5, 30.0, 1), "a steep sea for long enough, once a leg")
+	check(Partner.given_steps("Mina").size() == 3 and str(Partner.given_steps("Mina")[0].text).contains("Mina's bow") and Partner.given_line(1, "Mina") == "gave Mina a T-rescue" and Partner.given_line(0, "Mina") == "", "three steps to give the T-rescue, and the debrief's words for it")
 	# The roll: the hip snap learned brings the boat up in all but a steep sea; without it, the swim.
-	check(Roll.comes_up(true, 0.3) and not Roll.comes_up(true, 0.8) and not Roll.comes_up(false, 0.1), "the roll is the brace's hip snap, and a steep sea beats it")
+	check(Roll.comes_up(true, 0.3) and not Roll.comes_up(true, 0.6) and not Roll.comes_up(false, 0.1), "the roll is the brace's hip snap, and a steep sea beats it")
 	check(Roll.outcome(true, true).begins_with("Up") and Roll.outcome(false, false).contains("hip snap") and Roll.outcome(false, true).contains("knocks the blade"), "the roll says why it failed")
 	# Kelp is a harbour: the stream slows through a bed, and a boat stopped deep in one is held.
 	check(Kelp.held(0.8, 0.1) and not Kelp.held(0.8, 1.0) and not Kelp.held(0.2, 0.0), "held only stopped, and only deep in the bed")
@@ -279,6 +284,8 @@ func _init() -> void:
 	var blow_call: Dictionary = blown.filter(func(c: Dictionary) -> bool: return str(c.label) == "Let the wind blow through").front()
 	check(not bool(blow_call.ok) and str(blow_call.note) == "pushed on into it 1 of 3 times", "a blow is a call, missed when the boat pushed on into it")
 	check(Seamanship.kept(Seamanship.calls([{"verdict": "good", "blows": 1}])) == 4 and not Seamanship.calls([{"verdict": "good"}]).any(func(c: Dictionary) -> bool: return str(c.label).begins_with("Let the wind")), "kept when it was waited or rafted out, and absent on a calm day")
+	var rolled: Dictionary = Seamanship.calls([{"verdict": "good", "rolls": 1}]).back()
+	check(bool(rolled.ok) and str(rolled.note) == "no swims; over and rolled back up once", "a roll is not a swim, and the upright call says so")
 	check(Seamanship.calls([]).is_empty(), "no days, no calls")
 	var quiet := Seamanship.calls([{"verdict": "good"}])
 	check(quiet.size() == 3 and Seamanship.kept(quiet) == 3, "a clean day with nothing met keeps the launch, the daylight and the boat")
@@ -316,6 +323,8 @@ func _init() -> void:
 						missing += 1
 						printerr("unknown source ", sid, " in ", key)
 		check(missing == 0, "all sourceIds resolve")
+		var species_ids: Array = c.species.map(func(sp: Dictionary) -> String: return str(sp.id))
+		check(Sightings.ALL.all(func(sg: Dictionary) -> bool: return species_ids.has(str(sg.species))) and Sightings.ALL.all(func(sg: Dictionary) -> bool: return [0, 1, 2].has(int(sg.leg))), "every sighting is a field-guide species, on one of the three days")
 		check(c.drills.size() == 10 and c.drills[0].id == "forward" and c.drills[5].id == "compass" and c.drills[6].id == "ferry" and c.drills[7].id == "eddyline" and c.drills[8].id == "draw" and c.drills[9].id == "rescue", "ten drills, forward first, the compass, the ferry angle, the eddy line and the draw before the rescue, the rescue last")
 		var tour := SchoolTour.build(c, func(_id: String) -> Vector3: return Vector3.UP, func(sids: Array) -> String: return ",".join(sids))
 		var stops: int = c.kayakParts.size() + c.bodyPoints.size() + c.paddleParts.size() + 2

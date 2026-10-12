@@ -5,7 +5,7 @@ extends RefCounted
 ## the brace has it in calm and moderate water; in a steep sea, or without the snap, the boat stays
 ## over and it is the swim. Pure, so the tests can capsize.
 
-const STEEP := 0.7   # sea state past which even a practised roll fails, more often than not
+const STEEP := 0.55  # the drawn sea's state (0.10 calm to 0.70 its roughest) past which even a practised roll fails
 
 ## True when the roll brings the boat up: the hip snap learned, and the sea not too steep.
 static func comes_up(learned: bool, sea_state: float) -> bool:

@@ -36,6 +36,7 @@ static func calls(days: Array) -> Array:
 	var lines_edged := 0
 	var lines_tripped := 0
 	var blows := 0
+	var rolls := 0
 	var pushes := 0
 	for d in days:
 		var sv := FerryGlide.held(float(d.get("streamS", 0.0)), float(d.get("onLineS", 0.0)))
@@ -56,6 +57,7 @@ static func calls(days: Array) -> Array:
 		if bool(d.get("dark", false)):
 			dark += 1
 		swims += int(d.get("swims", 0))
+		rolls += int(d.get("rolls", 0))
 		lines_edged += int(d.get("linesEdged", 0))
 		lines_tripped += int(d.get("linesTripped", 0))
 		blows += int(d.get("blows", 0))
@@ -99,7 +101,7 @@ static func calls(days: Array) -> Array:
 		out.append({ "label": "Gave wildlife its room", "ok": close == 0, "note": "every time" if close == 0 else ("too close %s" % ("once" if close == 1 else "%d times" % close)) })
 	if not plans.is_empty():
 		out.append({ "label": "Closed the float plan", "ok": not plans.has("forgot") and not plans.has("late"), "note": "never closed — a boat went out looking for you" if plans.has("forgot") else ("closed late, with the phone already in someone's hand" if plans.has("late") else "from the float, before the boat was out") })
-	out.append({ "label": "Stayed upright", "ok": swims == 0, "note": "no swims" if swims == 0 else ("in the water %s, and back in the boat" % ("once" if swims == 1 else "%d times" % swims)) })
+	out.append({ "label": "Stayed upright", "ok": swims == 0, "note": ("no swims" + ("; over and rolled back up %s" % ("once" if rolls == 1 else "%d times" % rolls) if rolls > 0 else "")) if swims == 0 else ("in the water %s, and back in the boat" % ("once" if swims == 1 else "%d times" % swims)) })
 	return out
 
 static func kept(list: Array) -> int:

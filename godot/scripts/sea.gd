@@ -34,6 +34,9 @@ var _capsize_in := -1.0      # the rescue drill rolls the boat on its own after 
 var _since_start := 0.0
 var _pack: Dictionary = {}       # Packing.assess of the boat as packed, on a trip
 var _swims_today := 0           # capsizes on this leg, for the day's record
+var _rolls_today := 0           # and the ones rolled back up from, which are not swims
+var _rough_s := 0.0             # seconds in a steep sea out of a raft: the partner's capsize waits on it
+var _given := -1                # the card of the T-rescue you are giving the partner, -1 when not
 var _weather_asked := false     # the wind-is-up card goes up once a leg
 var _fog := 0.0                 # Fog.amount of the hour (or 1 under `?fog=1`)
 var _fog_said := false          # the fog note goes up once a leg
@@ -65,32 +68,6 @@ var _waits_today := 0           # times the wind was waited out in a lee
 var _blows := Vector2i.ZERO     # the wind-is-up card today: times it went up (x), times pushed on through it (y)
 const ROUGH := 0.5              # sea state at which the bail-outs are offered
 const RIP_KICK_EVERY := 3.2    # seconds between beam waves in a rip at full strength
-## Sightings on the leg: what, which species of the field guide it is, where, and how close you
-## must come to notice it. Positions checked against the terrain: seals and kelp on the islet by
-## Yellow Island, the heron in the Labs' shallows, the eagle on Point Caution, the porpoise mid-channel.
-const SIGHTINGS := [
-	{ "leg": 0, "kind": "heron", "species": "heron", "at": Vector3(560.0, 0.0, -1300.0), "face": Vector3(-1, 0, 0), "radius": 220.0 },
-	{ "leg": 0, "kind": "eagle", "species": "baldEagle", "at": Vector3(260.0, 0.0, -2600.0), "face": Vector3(1, 0, 0), "radius": 320.0 },
-	{ "leg": 0, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-300.0, 0.0, -4200.0), "face": Vector3(0, 0, -1), "radius": 420.0 },
-	{ "leg": 0, "kind": "kelp", "species": "bullKelp", "at": Vector3(-900.0, 0.0, -6250.0), "face": Vector3(0, 0, -1), "radius": 200.0 },
-	{ "leg": 0, "kind": "seals", "species": "harbourSeal", "at": Vector3(-1100.0, 0.0, -6330.0), "face": Vector3(0, 0, 1), "radius": 260.0 },
-	# Day two: seals on the rocks at Spieden's south-east tip, a porpoise working Spieden Channel, kelp
-	# off Davison Head and the eagle on the head itself.
-	{ "leg": 1, "kind": "seals", "species": "harbourSeal", "at": Vector3(-6760.0, 0.0, -10920.0), "face": Vector3(0, 0, 1), "radius": 300.0 },
-	{ "leg": 1, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-7600.0, 0.0, -10450.0), "face": Vector3(-1, 0, 0), "radius": 420.0 },
-	# A pod of Bigg's killer whales working Spieden Channel east on the flood, well out from the shore: the card comes up at
-	# 1.4 km, the law's thousand yards is the line, and the sighting counts as given room or not in the debrief.
-	{ "leg": 1, "kind": "orcas", "species": "biggsOrca", "at": Vector3(-8300.0, 0.0, -10700.0), "face": Vector3(1, 0, 0), "radius": 1400.0 },
-	{ "leg": 1, "kind": "kelp", "species": "bullKelp", "at": Vector3(-9300.0, 0.0, -10080.0), "face": Vector3(-1, 0, 0), "radius": 200.0 },
-	{ "leg": 1, "kind": "eagle", "species": "baldEagle", "at": Vector3(-9600.0, 0.0, -9930.0), "face": Vector3(0, 0, -1), "radius": 320.0 },
-	# Day three, home: the porpoise again in the channel's narrows, seals on the islet by Yellow, the heron at the Labs.
-	# The pod again on the way home, working the channel west on the ebb this time, and the eagle on Jones's south point.
-	{ "leg": 2, "kind": "orcas", "species": "biggsOrca", "at": Vector3(-7400.0, 0.0, -10560.0), "face": Vector3(-1, 0, 0), "radius": 1400.0 },
-	{ "leg": 2, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-6200.0, 0.0, -10450.0), "face": Vector3(1, 0, 0), "radius": 420.0 },
-	{ "leg": 2, "kind": "eagle", "species": "baldEagle", "at": Vector3(-2300.0, 0.0, -8900.0), "face": Vector3(0, 0, 1), "radius": 320.0 },
-	{ "leg": 2, "kind": "seals", "species": "harbourSeal", "at": Vector3(-1100.0, 0.0, -6330.0), "face": Vector3(0, 0, 1), "radius": 260.0 },
-	{ "leg": 2, "kind": "heron", "species": "heron", "at": Vector3(560.0, 0.0, -1300.0), "face": Vector3(-1, 0, 0), "radius": 220.0 },
-]
 var _sightings: Array = []   # [{conf, node, seen}]
 const GROOVE_AFTER := 6.0       # seconds of steady holding before the day starts to pass
 const GROOVE_SPEED := 28.0      # extra metres per second over the ground, in the groove
@@ -276,7 +253,7 @@ func _ready() -> void:
 
 ## Put the animals and the kelp where they live, on the shore or the water the terrain says is there.
 func _spawn_sightings() -> void:
-	for conf in SIGHTINGS:
+	for conf in Sightings.ALL:
 		if int(conf.get("leg", 0)) != Leg.index():
 			continue
 		var at: Vector3 = conf.at
@@ -535,7 +512,7 @@ func _record_day() -> void:
 	var entry := {
 		"leg": Leg.index(), "metres": Leg.length_m(_route), "launchHour": launch, "arrivedHour": _hour,
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
-		"swims": _swims_today, "waits": _waits_today, "blows": _blows.x, "pushes": _blows.y, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
+		"swims": _swims_today, "rolls": _rolls_today, "rescuesGiven": _partner.rescues_given if _partner else 0, "waits": _waits_today, "blows": _blows.x, "pushes": _blows.y, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
 		"streamS": _cross.stream_s, "onLineS": _cross.on_line_s, "maxKn": snappedf(_cross.max_kn, 0.1), "maxAt": _cross.max_at, "eddy": _cross.eddy_said, "linesEdged": _cross.lines_edged, "rafts": _partner.rafts if _partner else 0, "linesTripped": _cross.lines_tripped,
 		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
@@ -659,6 +636,15 @@ func _process(delta: float) -> void:
 	if _partner and mode == "trip" and not _arrived:
 		_partner.follow(kayak, sea, delta)
 		kayak.rafted = _partner.rafted()
+		_rough_s = _rough_s + delta if sea.sea_state >= Partner.OVER_STATE and _card == null and not _swimming and not _partner.rafted() else 0.0
+		if Partner.goes_over(sea.sea_state, _rough_s, _partner.swims) or (App._url_param("over") == "1" and _since_start > 3.0 and _partner.swims == 0):  # their turn in the water, and yours to give the rescue (`&over=1` for checks)
+			_partner.go_over()
+			Sound.splash(0.8)
+			note_label.text = _said("over") + "%s is over, holding the upturned boat. Paddle to their bow." % str(_partner.preset.get("name", "Your partner"))
+			_note_hold = NOTE_HOLD
+		elif _partner.over and _given < 0 and kayak.global_position.distance_to(_partner.kayak.global_position) < Partner.REACH_M:
+			_given = 0
+			_show_given()
 		if _chart and not _chart.blind:  # in fog the chart keeps the last fix
 			_chart.boat = kayak.global_position
 			_chart.heading = kayak.heading
@@ -814,9 +800,9 @@ func _drill_progress(delta: float) -> void:
 			App.save.drills = done
 			App.persist()
 		var next_i := _drills().find(d) + 1
-		note_label.text = "Nicely done."
+		note_label.text = "Nicely done." + (" %s: %s On a trip, the same snap is the roll." % [App.lesson("hipSnap").title, App.lesson("hipSnap").text] if d.id == "brace" else "")  # the brace's hips are the roll's
 		if next_i < _drills().size():
-			get_tree().create_timer(1.0).timeout.connect(func() -> void: _start_drill(next_i))
+			get_tree().create_timer(6.0 if d.id == "brace" else 1.0).timeout.connect(func() -> void: _start_drill(next_i))  # time to read the hip snap
 		else:
 			_finish_school()
 
@@ -905,6 +891,7 @@ func _roll() -> void:
 		_swimming = false
 		controls.visible = true
 		note_label.text = Roll.outcome(true, learned)
+		_rolls_today += 1
 		_note_hold = NOTE_HOLD
 		return
 	_show(UIKit.card("It stays over", Roll.outcome(false, learned), App.sources_line(["aca"]), [["Wet exit", _swim, true]], "Over · %s" % Leg.clock(_hour)))
@@ -939,6 +926,20 @@ func _show_rescue() -> void:
 	if _rescue_steps[_rescue_step] == "pumpOut" and not solo and not _pack.get("enables", []).has("pumpOut"):
 		text = "The pump is on the beach at Friday Harbor. Bail with a sponge and a hat: twice as long with a boat full of nine-degree water. " + text
 	_show(UIKit.card(l.get("title", ""), text, App.sources_line(l.get("sourceIds", [])), actions, kicker))
+
+## Giving the T-rescue, a card a step, and the partner back in their boat at the end.
+func _show_given() -> void:
+	var steps := Partner.given_steps(str(_partner.preset.get("name", "your partner")))
+	var last := _given >= steps.size() - 1
+	_show(UIKit.card(str(steps[_given].title), str(steps[_given].text), App.sources_line(["aca"]), [["Back in the boat" if last else "Next", func() -> void:
+		_given = -2 if last else _given + 1
+		if last:
+			_clear_card()
+			_partner.righted()
+			_hour += 0.1
+			note_label.text = _said("given") + "Six minutes, and both boats upright. Paddle together until the shivering stops."
+		else:
+			_show_given(), true]], "T-rescue · yours to give · %d of %d" % [_given + 1, steps.size()]))
 
 func _righted() -> void:
 	_clear_card()

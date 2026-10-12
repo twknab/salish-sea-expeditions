@@ -93,7 +93,15 @@ func _show() -> void:
 	else:
 		actions.append(["Launch", func() -> void: App.next(), true])
 	var s: Dictionary = _steps[_step] if _step < _steps.size() else { "title": "The plan", "text": "", "sourceIds": [] }
-	_card = UIKit.card(s.get("title", ""), s.get("text", ""), App.sources_line(s.get("sourceIds", [])), actions, "Float plan · day %d · %d of %d" % [Leg.index() + 1, _step + 1, _steps.size()])
+	var text: String = s.get("text", "")
+	var sources: Array = s.get("sourceIds", [])
+	if s.get("id", "") == "route":  # the numbers on the chart, and on the first day how to read them
+		text += "\n\n" + Leg.chart_line(_leg)
+		if Leg.index() == 0:
+			var l := App.lesson("chartReading")
+			text += "\n\n%s: %s" % [l.title, l.text]
+			sources = sources + Array(l.sourceIds)
+	_card = UIKit.card(s.get("title", ""), text, App.sources_line(sources), actions, "Float plan · day %d · %d of %d" % [Leg.index() + 1, _step + 1, _steps.size()])
 	if s.get("id", "") == "tide":
 		_add_graph()
 	_ui.add_child(_card)

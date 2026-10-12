@@ -21,6 +21,8 @@ const LINES := {
 	"eddyline": "Edge it — lean with the water!",
 	"raft": "Got your deck. Breathe.",
 	"push": "Right. Stay close — I’ll call the big ones.",
+	"over": "I’m over! Come to my bow!",
+	"given": "Thanks. Cold. Let’s keep paddling.",
 	"eddyline_edged": "That’s it. You rode it over.",
 }
 

@@ -25,8 +25,8 @@ func _ready() -> void:
 		save = {
 			"days": [
 				{ "leg": 0, "metres": 11200.0, "launchHour": 9.5, "arrivedHour": 12.1, "verdict": "good", "swims": 0, "respectful": 2, "boatSpot": "edge", "boatVerdict": "floated", "foodVerdict": "taken" },
-				{ "leg": 1, "metres": 9600.0, "launchHour": 10.0, "arrivedHour": 13.4, "verdict": "fair", "swims": 1, "respectful": 1, "violations": 1, "ferryHeld": 1, "streamS": 420.0, "onLineS": 200.0, "maxKn": 3.2, "maxAt": "in the narrows of Spieden Channel",
-					"eddy": true, "linesEdged": 2, "linesTripped": 1, "rafts": 1, "blows": 2, "waits": 1, "pushes": 1, "boatVerdict": "dry", "dark": true, "waterVerdict": "thirsty" },
+				{ "leg": 1, "metres": 9600.0, "launchHour": 10.0, "arrivedHour": 13.4, "verdict": "fair", "swims": 1, "rolls": 1, "respectful": 1, "violations": 1, "ferryHeld": 1, "streamS": 420.0, "onLineS": 200.0, "maxKn": 3.2, "maxAt": "in the narrows of Spieden Channel",
+					"eddy": true, "linesEdged": 2, "linesTripped": 1, "rafts": 1, "rescuesGiven": 1, "blows": 2, "waits": 1, "pushes": 1, "boatVerdict": "dry", "dark": true, "waterVerdict": "thirsty" },
 				{ "leg": 2, "metres": 18500.0, "launchHour": 6.0, "arrivedHour": 11.2, "verdict": "good", "fog": true, "fogInHour": 6.0, "fogOffM": 260.0, "thirsty": true, "floatPlan": "forgot", "notes": [
 					"Mina: “On my quarter. Count with me — one, two…”  Fog. The islands are gone and the chart has no fix; the compass does. Hold 130°, count your strokes, keep a paddle length off.",
 					"A long blast in the fog, to the north: a vessel under way, somewhere in the channel. Stop paddling and listen.",
@@ -141,6 +141,9 @@ func _days(col: VBoxContainer, legs: Array, save: Dictionary) -> void:
 		var line := "Day %d · %s · launched %s on a %s window · landed %s" % [i + 1, str(legs[i].get("title", "")), Leg.clock(float(d.get("launchHour", 9.0))), verdict, Leg.clock(float(d.get("arrivedHour", 17.0)))]
 		if swims > 0:
 			line += " · in the water %s" % ("once" if swims == 1 else "%d times" % swims)
+		var rolls := int(d.get("rolls", 0))
+		if rolls > 0:
+			line += " · rolled back up %s" % ("once" if rolls == 1 else "%d times" % rolls)
 		var waits := int(d.get("waits", 0))
 		if waits > 0:
 			line += " · waited out the wind %s" % ("once" if waits == 1 else "%d times" % waits)
@@ -157,6 +160,8 @@ func _days(col: VBoxContainer, legs: Array, save: Dictionary) -> void:
 		var eddy_lines := CrossingWatch.lines_line(int(d.get("linesEdged", 0)), int(d.get("linesTripped", 0)))
 		if eddy_lines != "":
 			line += " · " + eddy_lines
+		if int(d.get("rescuesGiven", 0)) > 0:
+			line += " · " + Partner.given_line(int(d.get("rescuesGiven", 0)), "your partner")
 		if Partner.rafts_line(int(d.get("rafts", 0))) != "":
 			line += " · " + Partner.rafts_line(int(d.get("rafts", 0)))
 		match str(d.get("boatVerdict", "")):

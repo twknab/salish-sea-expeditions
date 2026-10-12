@@ -91,6 +91,13 @@ static func length_m(leg: Dictionary) -> float:
 		s += w[i].distance_to(w[i - 1])
 	return s
 
+## The leg as the chart gives it: its length in nautical miles and the first course in degrees true.
+static func chart_line(leg: Dictionary) -> String:
+	var w := waypoints(leg)
+	if w.size() < 2:
+		return ""
+	return "On the chart: %.1f nautical miles, the first course %03d° true." % [length_m(leg) / 1852.0, int(round(bearing_deg(w[0], w[1]))) % 360]
+
 static func hours_at_touring_pace(leg: Dictionary) -> float:
 	return length_m(leg) / (TOURING_KNOTS * 1852.0)
 

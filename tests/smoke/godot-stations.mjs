@@ -33,6 +33,7 @@ const STATIONS = [
   ['trip-dark', '?scene=trip&day=september&hour=20&near=jones'],
   ['trip-squall', '?scene=trip&day=september&hour=14&near=jones'],
   ['trip-capsize', '?scene=trip&capsize=1'],
+  ['trip-over', '?scene=trip&over=1'],
   ['trip-fog', '?scene=trip&leg=2&launch=6&near=ferry&fog=1'],
   ['trip-fog-lifts', '?scene=trip&leg=2&launch=6&fog=lift'],
   ['camp-night', '?scene=camp&step=4&glow=1'],
