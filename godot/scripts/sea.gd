@@ -346,13 +346,15 @@ func _leg(delta: float) -> void:
 	sea.apply_hour(_hour)
 	# The white light: shown after dark and in fog, on both boats, as the kit list said it would be.
 	var lights := sea.night > 0.3 or Fog.blind(_fog)
-	for k in [kayak, _partner.kayak if _partner else null]:
-		if k: k.set_light(lights)
+	var own_light: bool = mode != "trip" or _pack.get("enables", []).has("light")  # a headlamp left on the beach is no light at all
+	kayak.set_light(lights and own_light)
+	if _partner:
+		_partner.kayak.set_light(lights)
 	_note_hold = maxf(0.0, _note_hold - delta)
 	if sea.night > 0.3 and not _dark_said and _note_hold <= 0.0:
 		_dark_said = true
 		_dark = true
-		note_label.text = _said("dark") + ("Night on the water. The white light goes on, the shore is a shape, and the landing is by compass and the sound of the beach." if not controls.touch() else "Night on the water: light on, land by compass.")
+		note_label.text = _said("dark") + DarkWater.note(own_light, str(_partner.preset.get("name", "")) if _partner else "", controls.touch())
 	# The current carries the boat over the ground, in the groove and out of it (scaled with its hours).
 	_flow = Leg.flow_at(_route, here)
 	var factor: float = _flow.factor
