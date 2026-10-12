@@ -584,6 +584,18 @@
 
 - [x] T014er Bug: on the outfitting screen, "Your boat" (the page after "Pick your paddler") showed whoever was in the save when the screen opened, not the paddler just picked. The boat's figure was built once with the screen. `Kayak.refresh_paddler()` now redresses it from the save whenever the boat page shows. Checked in the browser by picking Ayla and turning to "Your boat".
 
+## Slice 131 — leave no trace
+
+- [x] T014es Each camp now ends with a morning before the next float plan: the light cuts to 07:00, the tent is struck, and the card carries the content's Leave No Trace lesson, unused until now (durable surfaces, pack out what you pack in, leave the island as you found it). After a raccoon night it adds that what they scattered up the bank goes out too. The take-out, which is not a camp, goes straight on as before.
+
+## Slice 132 — re-entry without a float
+
+- [x] T014et Kayak School's solo rescue drill now ends with the content's "Re-entry without a float" lesson, unused until now: a belly-down scramble onto the back deck works in calm water with practice and is much harder in waves, which is why the float earns its place.
+
+## Slice 133 — the paddle float, and a card that fits
+
+- [x] T014eu The packing screen's "Still on the beach" card now carries the content's paddle-float lesson when the float is one of the things left behind: it turns the paddle into an outrigger for climbing back in alone. The card also sat half off the bottom of a desktop window, its title a list of every missing item. It is now centred whatever its size, titled with the count ("10 essentials"), with the names in its body. Checked on desktop and phone.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

@@ -11,6 +11,7 @@ var _diagram: PackDiagram
 var _rows: Dictionary = {}    # id → Button
 var _trim: Label
 var _card: PanelContainer
+var _card_box: CenterContainer  # holds the card in the middle of the screen, whatever its size
 var _ui: VBoxContainer
 var _narrow := false   # a phone: the rows keep to the name and the weight, the diagram says where
 
@@ -138,23 +139,31 @@ func _done() -> void:
 	if a.missing.size() == 0:
 		App.next()
 		return
-	if _card:
-		_card.queue_free()
+	if _card_box:
+		_card_box.queue_free()
 	var names: Array[String] = []
 	for id in a.missing:
 		names.append(str(_gear_of(id).name))
 	var l := App.lesson("essentials")
-	_card = UIKit.card("Still on the beach: %s" % ", ".join(names), str(l.get("text", "")) + " What you leave here, you paddle without.", App.sources_line(l.get("sourceIds", [])), [
+	var body := "%s.\n\n%s What you leave here, you paddle without." % [", ".join(names), str(l.get("text", ""))]
+	var sources: Array = l.get("sourceIds", [])
+	if a.missing.has("paddleFloat"):  # the one piece whose absence is only felt upside down
+		var pf := App.lesson("paddleFloat")
+		body += "\n\n%s: %s" % [pf.title, pf.text]
+		sources = sources + Array(pf.sourceIds)
+	_card = UIKit.card("Still on the beach: %d essential%s" % [names.size(), "" if names.size() == 1 else "s"], body, App.sources_line(sources), [
 		["Leave them", func() -> void: App.next(), false],
 		["Pack them", func() -> void:
 			var ideal := Packing.suggested(_gear)
 			for id in a.missing:
 				_packing = Packing.place(_packing, id, Packing.zone_of(ideal, id))
-			_card.queue_free()
+			_card_box.queue_free()
+			_card_box = null
 			_card = null
 			_refresh(), true],
 	], "Carry the essentials")
-	_card.set_anchors_preset(Control.PRESET_CENTER)
-	_card.custom_minimum_size = Vector2(340, 0)
-	_card.position = Vector2(25, 260)
-	add_child(_card)
+	_card.custom_minimum_size = Vector2(minf(560.0, get_viewport_rect().size.x - 40.0), 0)
+	_card_box = CenterContainer.new()
+	_card_box.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_card_box.add_child(_card)
+	add_child(_card_box)

@@ -926,7 +926,7 @@ func _righted() -> void:
 	controls.visible = true
 	if _rescue_steps == SOLO_STEPS:
 		_drill_state.count = 1  # the drill is done: back in and pumped dry
-		note_label.text = "Back in the boat and dry. Alone, that is the paddle float; with a partner it is the T-rescue, and faster."
+		note_label.text = "Back in the boat and dry. Alone, that is the paddle float; with a partner it is the T-rescue, and faster.\n%s: %s" % [App.lesson("noFloat").title, App.lesson("noFloat").text]
 		return
 	_hour += 0.15
 	note_label.text = "Nine minutes in the water with a partner alongside. Paddle to warm up, and make the next landing the bail-out if the shivering does not stop."

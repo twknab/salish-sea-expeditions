@@ -223,7 +223,8 @@ func _show() -> void:
 	if _step < _steps.size() - 1:
 		actions.append(["Next", func() -> void: _step += 1; _hour_target = _night_hour() if _step == _steps.size() - 1 else _hour0 + 1.1 * _step; _show(), true])
 	else:
-		actions.append(["The ferry home" if Leg.is_last() else "Tomorrow’s float plan", func() -> void: _leave(), true])
+		var camp_kind := str(_leg.get("camp", {}).get("kind", "camp")) != "takeout"
+		actions.append(["Morning" if camp_kind else ("The ferry home" if Leg.is_last() else "Tomorrow’s float plan"), _show_morning if camp_kind else _leave, true])
 	var s: Dictionary = _steps[_step] if _step < _steps.size() else { "title": "Camp", "text": "", "sourceIds": [] }
 	var body: String = s.get("text", "")
 	if Leg.is_last() and _step == _steps.size() - 1:
@@ -253,6 +254,22 @@ func _show() -> void:
 	_card = UIKit.card(s.get("title", ""), body, App.sources_line(s.get("sourceIds", [])), actions, "%s · %s · %d of %d" % [_leg.get("camp", {}).get("name", "Camp"), Leg.clock(_hour), _step + 1, _steps.size()])
 	_ui.add_child(_card)
 	_spot_choices()
+
+## The morning: the camp packed out and left as it was found, before the boat goes back in.
+func _show_morning() -> void:
+	if _card:
+		_card.queue_free()
+	_hour = 7.0  # a cut to the next morning's light: the light model reads one day's hours, so the night is not walked through
+	_hour_target = 7.0
+	_sea.apply_hour(_hour)
+	if _tent:
+		_tent.visible = false  # struck and packed: the pad is bare
+	var l := App.lesson("lnt")
+	var text := "Everything back in the hatches, the tent pad brushed over, the fire ring as it was. %s" % str(l.text)
+	if _has_step("food") and not FoodStore.leaves_clean(_food):
+		text += "\n\nWhat the raccoons scattered up the bank goes out too: wrappers, the oatmeal bag, the lid they worked off."
+	_card = UIKit.card(str(l.title), text, App.sources_line(l.sourceIds), [["The ferry home" if Leg.is_last() else "Tomorrow’s float plan", func() -> void: _leave(), true]], "%s · morning" % str(_leg.get("title", "Camp")))
+	_ui.add_child(_card)
 
 ## Leaving camp: a night out, and a camp left as found, for the record; the take-out is neither.
 func _leave() -> void:
