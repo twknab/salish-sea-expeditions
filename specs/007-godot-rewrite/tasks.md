@@ -543,6 +543,10 @@
 
 - [x] T014eh Each day's record counts the rolls (`rolls`), kept apart from the swims. The debrief's Each day says "rolled back up once", and the seamanship call "Stayed upright" stays kept with "no swims; over and rolled back up once": a roll is going over and coming back, not a swim. The demo's day two has one.
 
+## Slice 121 — the sightings, as data
+
+- [x] T014ei The table of what is met on each day's water (species, where, which way it faces, how close it notices you) moved out of the water scene into `Sightings.ALL`. `sea.gd` drops from 998 to 972 lines. A new content test checks every sighting is a field-guide species on one of the three days.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

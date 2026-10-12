@@ -318,6 +318,8 @@ func _init() -> void:
 						missing += 1
 						printerr("unknown source ", sid, " in ", key)
 		check(missing == 0, "all sourceIds resolve")
+		var species_ids: Array = c.species.map(func(sp: Dictionary) -> String: return str(sp.id))
+		check(Sightings.ALL.all(func(sg: Dictionary) -> bool: return species_ids.has(str(sg.species))) and Sightings.ALL.all(func(sg: Dictionary) -> bool: return [0, 1, 2].has(int(sg.leg))), "every sighting is a field-guide species, on one of the three days")
 		check(c.drills.size() == 10 and c.drills[0].id == "forward" and c.drills[5].id == "compass" and c.drills[6].id == "ferry" and c.drills[7].id == "eddyline" and c.drills[8].id == "draw" and c.drills[9].id == "rescue", "ten drills, forward first, the compass, the ferry angle, the eddy line and the draw before the rescue, the rescue last")
 		var tour := SchoolTour.build(c, func(_id: String) -> Vector3: return Vector3.UP, func(sids: Array) -> String: return ",".join(sids))
 		var stops: int = c.kayakParts.size() + c.bodyPoints.size() + c.paddleParts.size() + 2

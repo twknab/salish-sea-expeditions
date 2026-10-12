@@ -66,32 +66,6 @@ var _waits_today := 0           # times the wind was waited out in a lee
 var _blows := Vector2i.ZERO     # the wind-is-up card today: times it went up (x), times pushed on through it (y)
 const ROUGH := 0.5              # sea state at which the bail-outs are offered
 const RIP_KICK_EVERY := 3.2    # seconds between beam waves in a rip at full strength
-## Sightings on the leg: what, which species of the field guide it is, where, and how close you
-## must come to notice it. Positions checked against the terrain: seals and kelp on the islet by
-## Yellow Island, the heron in the Labs' shallows, the eagle on Point Caution, the porpoise mid-channel.
-const SIGHTINGS := [
-	{ "leg": 0, "kind": "heron", "species": "heron", "at": Vector3(560.0, 0.0, -1300.0), "face": Vector3(-1, 0, 0), "radius": 220.0 },
-	{ "leg": 0, "kind": "eagle", "species": "baldEagle", "at": Vector3(260.0, 0.0, -2600.0), "face": Vector3(1, 0, 0), "radius": 320.0 },
-	{ "leg": 0, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-300.0, 0.0, -4200.0), "face": Vector3(0, 0, -1), "radius": 420.0 },
-	{ "leg": 0, "kind": "kelp", "species": "bullKelp", "at": Vector3(-900.0, 0.0, -6250.0), "face": Vector3(0, 0, -1), "radius": 200.0 },
-	{ "leg": 0, "kind": "seals", "species": "harbourSeal", "at": Vector3(-1100.0, 0.0, -6330.0), "face": Vector3(0, 0, 1), "radius": 260.0 },
-	# Day two: seals on the rocks at Spieden's south-east tip, a porpoise working Spieden Channel, kelp
-	# off Davison Head and the eagle on the head itself.
-	{ "leg": 1, "kind": "seals", "species": "harbourSeal", "at": Vector3(-6760.0, 0.0, -10920.0), "face": Vector3(0, 0, 1), "radius": 300.0 },
-	{ "leg": 1, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-7600.0, 0.0, -10450.0), "face": Vector3(-1, 0, 0), "radius": 420.0 },
-	# A pod of Bigg's killer whales working Spieden Channel east on the flood, well out from the shore: the card comes up at
-	# 1.4 km, the law's thousand yards is the line, and the sighting counts as given room or not in the debrief.
-	{ "leg": 1, "kind": "orcas", "species": "biggsOrca", "at": Vector3(-8300.0, 0.0, -10700.0), "face": Vector3(1, 0, 0), "radius": 1400.0 },
-	{ "leg": 1, "kind": "kelp", "species": "bullKelp", "at": Vector3(-9300.0, 0.0, -10080.0), "face": Vector3(-1, 0, 0), "radius": 200.0 },
-	{ "leg": 1, "kind": "eagle", "species": "baldEagle", "at": Vector3(-9600.0, 0.0, -9930.0), "face": Vector3(0, 0, -1), "radius": 320.0 },
-	# Day three, home: the porpoise again in the channel's narrows, seals on the islet by Yellow, the heron at the Labs.
-	# The pod again on the way home, working the channel west on the ebb this time, and the eagle on Jones's south point.
-	{ "leg": 2, "kind": "orcas", "species": "biggsOrca", "at": Vector3(-7400.0, 0.0, -10560.0), "face": Vector3(-1, 0, 0), "radius": 1400.0 },
-	{ "leg": 2, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-6200.0, 0.0, -10450.0), "face": Vector3(1, 0, 0), "radius": 420.0 },
-	{ "leg": 2, "kind": "eagle", "species": "baldEagle", "at": Vector3(-2300.0, 0.0, -8900.0), "face": Vector3(0, 0, 1), "radius": 320.0 },
-	{ "leg": 2, "kind": "seals", "species": "harbourSeal", "at": Vector3(-1100.0, 0.0, -6330.0), "face": Vector3(0, 0, 1), "radius": 260.0 },
-	{ "leg": 2, "kind": "heron", "species": "heron", "at": Vector3(560.0, 0.0, -1300.0), "face": Vector3(-1, 0, 0), "radius": 220.0 },
-]
 var _sightings: Array = []   # [{conf, node, seen}]
 const GROOVE_AFTER := 6.0       # seconds of steady holding before the day starts to pass
 const GROOVE_SPEED := 28.0      # extra metres per second over the ground, in the groove
@@ -277,7 +251,7 @@ func _ready() -> void:
 
 ## Put the animals and the kelp where they live, on the shore or the water the terrain says is there.
 func _spawn_sightings() -> void:
-	for conf in SIGHTINGS:
+	for conf in Sightings.ALL:
 		if int(conf.get("leg", 0)) != Leg.index():
 			continue
 		var at: Vector3 = conf.at
