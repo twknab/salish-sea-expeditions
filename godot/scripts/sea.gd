@@ -121,31 +121,15 @@ func _ready() -> void:
 	controls.steer_changed.connect(func(v: float) -> void: kayak.steer = v)
 	_ui = UIKit.page($UI, 48, 24)
 	for l: Label in [speed_label, note_label]:  # read against fog-grey as well as blue water
-		l.add_theme_color_override("font_outline_color", Color(0.03, 0.06, 0.08, 0.7))
-		l.add_theme_constant_override("outline_size", 4)
+		SeaHud.outline(l)
 	if not controls.touch():
 		note_label.size.x = 640.0  # a desktop window has the width: the opening line stays on one line, clear of the destination
 	heading_label.visible = false
-	_compass = Compass.new()
-	_compass.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	var top := 222.0 if controls.touch() else 40.0  # under the note and the trip lines on a phone, beside them on a desktop
-	_compass.offset_left = -112; _compass.offset_right = -14; _compass.offset_top = top; _compass.offset_bottom = top + 118
+	_compass = SeaHud.compass(controls.touch())
 	hud.add_child(_compass)
-	_places = PlaceLabels.new()
-	_places.reach = 8000.0  # the landings ahead show as you come up the channel without crowding the horizon
-	# The names stay off the HUD: the speed, the note and the destination lines at the top left, the
-	# compass at the top right, and the chart tile below them (a phone's HUD is taller and wider).
-	if controls.touch():
-		_places.keep_out = [Rect2(0, 0, 4000, 420), Rect2(0, 420, 180, 160)]
-	else:
-		_places.keep_out = [Rect2(0, 0, 700, 170), Rect2(0, 170, 180, 160), Rect2(1180, 0, 400, 140)]
+	_places = SeaHud.place_labels(terrain, controls.touch())
 	$UI.add_child(_places)
 	$UI.move_child(_places, 0)
-	for p in terrain.meta.get("places", []):
-		if p.id in ["anacortes", "thatcher", "harney", "wasp", "sanJuanChannel", "fridayHarbor"]:
-			continue
-		var w := terrain.place(p.id)
-		_places.add_place(p.id, p.name, Vector3(w.x, maxf(terrain.height_at(w.x, w.z), 0.0) + 12.0, w.z), 12)
 	match mode:
 		"ambient":
 			controls.visible = false
@@ -178,16 +162,9 @@ func _ready() -> void:
 			if App._url_param("hour") != "":  # `?scene=trip&hour=20`: the clock set, for checks
 				_hour = clampf(float(App._url_param("hour")), 0.0, 26.0)
 			sea.apply_hour(_hour)
-			_set_label = UIKit.label("", 12, UIKit.MIST, controls.touch())  # wraps on a phone
-			_set_label.position = Vector2(20, 172)
-			_set_label.size = Vector2(350, 40) if controls.touch() else Vector2(520, 20)
+			_set_label = SeaHud.set_line(controls.touch())
+			_dest_label = SeaHud.dest_line()
 			hud.add_child(_set_label)
-			_dest_label = UIKit.label("", 13, UIKit.FOAM, false, true)
-			for l: Label in [_set_label, _dest_label]:
-				l.add_theme_color_override("font_outline_color", Color(0.03, 0.06, 0.08, 0.7))
-				l.add_theme_constant_override("outline_size", 4)
-			_dest_label.position = Vector2(20, 150)
-			_dest_label.size = Vector2(360, 24)
 			hud.add_child(_dest_label)
 			# The boat as it was packed: the trim is physics, and the gear left behind is gone.
 			var pack_param := App._url_param("pack")  # `?pack=bow` opens with everything in the bow, for checks

@@ -560,6 +560,10 @@
 - [x] T014el The partner can go over too. After about 25 seconds in a steep sea (the drawn sea's state 0.45, about where the bail-outs card goes up), out of a raft and with no card up, the partner capsizes once a leg: "I'm over! Come to my bow!" Their boat floats hull up where it went over. Paddle within four metres and the T-rescue is yours to give, in three cards from the rescuer's side: to the bow, drain it over your deck, hold it while they climb in. Each day's record counts the rescues given (`rescuesGiven`) and the debrief names them. `?scene=trip&over=1` puts the partner over for checks, and the stations sweep checks it (`trip-over`). Checked headless from a natural capsize at 15:00 through all three cards.
 - [x] The roll's "steep sea" from slice 119 was measured against a scale the drawn sea never reaches (it runs 0.10 to 0.70), so a practised roll could never fail. `Roll.STEEP` is now 0.55 on that scale.
 
+## Slice 125 — the HUD, built apart
+
+- [x] T014em The water scene's heads-up pieces (the compass, the place names and where they keep out of the way, the set-and-drift and destination lines, and the dark rim that makes a line read against fog) are built by `SeaHud`, not inline in `sea.gd`'s `_ready`. `sea.gd` drops from 997 to 974 lines. Checked unchanged on desktop and phone, and the stations sweep passes.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
