@@ -150,3 +150,8 @@ func docked() -> bool:
 
 func distance_to_boat(pos: Vector3) -> float:
 	return Vector2(pos.x - global_position.x, pos.z - global_position.z).length()
+
+## The ferry card's words: what to do as it comes, and, with a VHF aboard, that you heard it first.
+static func card_text(heard: bool) -> String:
+	return ("The VHF heard it first: the ferry calling its position to the other traffic. " if heard else "") + "Hold your position and let it pass well ahead — it cannot stop or turn for you, and it is faster than it looks. When it has gone by, cross its wake at right angles, bow into the waves."
+
