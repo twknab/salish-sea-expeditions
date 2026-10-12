@@ -37,6 +37,7 @@ static func calls(days: Array) -> Array:
 	var lines_tripped := 0
 	var blows := 0
 	var rolls := 0
+	var missing := -1
 	var reaches: Array = []
 	var pushes := 0
 	for d in days:
@@ -59,6 +60,8 @@ static func calls(days: Array) -> Array:
 			dark += 1
 		swims += int(d.get("swims", 0))
 		rolls += int(d.get("rolls", 0))
+		if d.has("missing"):
+			missing = maxi(missing, int(d.get("missing", 0)))
 		if float(d.get("reachS", -1.0)) >= 0.0:
 			reaches.append(float(d.get("reachS", -1.0)))
 		lines_edged += int(d.get("linesEdged", 0))
@@ -87,6 +90,8 @@ static func calls(days: Array) -> Array:
 		out.append({ "label": "Kept the food out of reach", "ok": taken == 0 and worked == 0, "note": "the raccoons had the breakfast" if taken > 0 else ("they worked the hatch and left marks in the skin" if worked > 0 else "hung, and nothing came of the raccoons") })
 	if not waters.is_empty():
 		out.append({ "label": "Kept water for the paddle", "ok": not waters.has("thirsty"), "note": "the long day home was paddled thirsty" if waters.has("thirsty") else ("an hour to the tap at Roche Harbor, and full bottles" if waters.has("late") else "rationed, and enough") })
+	if missing >= 0:  # the boat as it was packed, the worst day of it
+		out.append({ "label": "Carried the essentials", "ok": missing == 0, "note": "pump, float, radio and the rest, every day" if missing == 0 else "%s left on the beach" % ("one" if missing == 1 else "%d" % missing) })
 	out.append({ "label": "Landed in daylight", "ok": dark == 0, "note": "every landing" if dark == 0 else ("%s in the dark" % ("one landing" if dark == 1 else "%d landings" % dark)) })
 	if ferries > 0:
 		out.append({ "label": "Held for the ferry", "ok": ferries_held == ferries, "note": "%d of %d times" % [ferries_held, ferries] })

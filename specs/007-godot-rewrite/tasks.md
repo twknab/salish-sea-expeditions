@@ -608,6 +608,10 @@
 
 - [x] T014ex The README's tour names the VHF's forecast on the float plan, the ferry heard on the radio, and the morning that leaves no trace.
 
+## Slice 137 — carried the essentials
+
+- [x] T014ey Each day's record keeps how many essentials were left on the beach at packing (`missing`), and Seamanship reads it back as a call: "Carried the essentials", kept with "pump, float, radio and the rest, every day", missed with "2 left on the beach". The demo's first day shows it kept.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
