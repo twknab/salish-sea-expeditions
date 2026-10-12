@@ -173,11 +173,6 @@ func _process(delta: float) -> void:
 		_bar.value = clampf(_held / Assembly.NEEDED_HOLD, 0.0, 1.3) * 100.0
 		_bar.modulate = Color(UIKit.SUN) if _held >= Assembly.NEEDED_HOLD * 0.8 and _held <= Assembly.NEEDED_HOLD * 1.25 else Color(1, 1, 1)
 
-func _lesson(id: String) -> Dictionary:
-	for l in App.content.get("lessons", []):
-		if l.id == id:
-			return l
-	return { "title": id, "text": "", "sourceIds": [] }
 
 func _show() -> void:
 	if _card:
@@ -195,7 +190,7 @@ func _show() -> void:
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 10)
 	if lesson_id != "" and not _retry:
-		var l := _lesson(lesson_id)
+		var l := App.lesson(lesson_id)
 		v.add_child(UIKit.label(str(l.title), 13, UIKit.SUN, true, true))
 		v.add_child(UIKit.label(str(l.text), 12, UIKit.MIST))
 		v.add_child(UIKit.label(App.sources_line(l.get("sourceIds", [])), 11, UIKit.MIST))

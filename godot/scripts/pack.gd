@@ -33,7 +33,7 @@ func _ready() -> void:
 	_ui = UIKit.page(self, 52, 16)
 	_ui.add_child(UIKit.kicker("On the float · Friday Harbor"))
 	_ui.add_child(UIKit.label("Pack for the night", 22, UIKit.FOAM, true, true))
-	var lesson := _lesson("trim")
+	var lesson := App.lesson("trim")
 	_ui.add_child(UIKit.label("%s %s" % [lesson.get("title", ""), lesson.get("text", "")], 12, UIKit.MIST))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 12)
@@ -82,11 +82,6 @@ func _ready() -> void:
 	_ui.add_child(actions)
 	_refresh()
 
-func _lesson(id: String) -> Dictionary:
-	for l in App.content.get("lessons", []):
-		if l.id == id:
-			return l
-	return { "title": id, "text": "", "sourceIds": [] }
 
 func _gear_of(id: String) -> Dictionary:
 	for g in _gear:
@@ -148,7 +143,7 @@ func _done() -> void:
 	var names: Array[String] = []
 	for id in a.missing:
 		names.append(str(_gear_of(id).name))
-	var l := _lesson("essentials")
+	var l := App.lesson("essentials")
 	_card = UIKit.card("Still on the beach: %s" % ", ".join(names), str(l.get("text", "")) + " What you leave here, you paddle without.", App.sources_line(l.get("sourceIds", [])), [
 		["Leave them", func() -> void: App.next(), false],
 		["Pack them", func() -> void:

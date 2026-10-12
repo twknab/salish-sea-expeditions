@@ -531,6 +531,10 @@
 
 - [x] T014ee The kelp lesson the content has carried since the Phaser build ("Drape a stalk over your deck and you can rest without drifting") is now true on the water. A bull kelp bed slows the stream through it, by half at its heart, and a boat stopped deep in one is held: measured headless off Yellow Island, 0.02 m of drift in 300 frames in the bed against 1.01 m in open water nearby. The first time the boat rests there the note says so: "Kelp is a harbour: a stalk over the deck, and the stream goes by without you." `Kelp` (pure, tested) holds the depth and pace that count as held, and what the stream still carries.
 
+## Slice 118 — one lesson lookup
+
+- [x] T014ef Four scenes (assembly, packing, the water, camp) each carried their own copy of the lesson lookup; it is now `App.lesson(id)`, once. `sea.gd` is back to 979 lines, which leaves room for the roll. The source-line example in `app.gd`'s comment no longer names a brand.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

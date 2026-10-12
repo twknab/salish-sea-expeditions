@@ -575,7 +575,7 @@ func _offer_bailouts(state: float) -> void:
 			nearest = nm
 	var opener := "%s: %d knots from %03d° and the sea is standing up%s. The float plan's bail-outs:\n%s"
 	var body := _said("rough") + (opener + "\n\nNobody has to make it in one push. In a lee the afternoon wind blows through in an hour or two.") % [str(_route.get("channel", "San Juan Channel")), int(round(float(w.kn))), int(round(float(w.fromDeg))), " against the stream" if Tides.wind_against_tide(_day, _hour) else "", "\n".join(lines)]
-	var l := _lesson("bailouts")
+	var l := App.lesson("bailouts")
 	var actions: Array = [["Push on", _on_pushed, false], ["Wait it out · %s" % nearest, func() -> void: _wait_in_lee(nearest), true]]
 	if _partner:  # the third answer to a blow: two boats held together are steadier than either
 		actions.insert(1, ["Raft up with %s" % str(_partner.preset.get("name", "your partner")), func() -> void: _clear_card(); _partner.raft_now(); _on_rafted(), false])
@@ -901,15 +901,10 @@ func _on_capsized() -> void:
 	_rescue_step = 0
 	_show_rescue()
 
-func _lesson(id: String) -> Dictionary:
-	for l in App.content.get("lessons", []):
-		if l.id == id:
-			return l
-	return { "title": id, "text": "", "sourceIds": [] }
 
 func _show_rescue() -> void:
 	_clear_card()
-	var l := _lesson(_rescue_steps[_rescue_step])
+	var l := App.lesson(_rescue_steps[_rescue_step])
 	var last := _rescue_step >= _rescue_steps.size() - 1
 	var actions: Array = [[("Back in the boat" if last else "Next"), func() -> void:
 		if last:
