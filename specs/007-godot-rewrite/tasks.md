@@ -604,6 +604,10 @@
 
 - [x] T014ew With a VHF packed, the ferry card begins with the radio: "The VHF heard it first: the ferry calling its position to the other traffic." Without one, the card is as before. The card's words moved to `Traffic.card_text`, with a test.
 
+## Slice 136 — README catch-up
+
+- [x] T014ex The README's tour names the VHF's forecast on the float plan, the ferry heard on the radio, and the morning that leaves no trace.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
