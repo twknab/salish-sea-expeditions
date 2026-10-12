@@ -568,6 +568,10 @@
 
 - [x] T014en When the partner goes over, the time they spend in the water before you are alongside is kept (`Partner.reach_s`, the record's `reachS`). Seamanship reads it back as a new call, "Got to a swimmer fast": kept inside a minute and a half ("alongside in 40 s"), missed past it with the reason ("4 minutes before you were alongside; nine-degree water takes the strength in about ten"), and absent on a day nobody went over. The demo's day two reaches the partner in 48 s.
 
+## Slice 127 — README catch-up
+
+- [x] T014eo The README's tour names kelp as a harbour, the roll, the partner's capsize and the T-rescue you give, the chart's miles and course on the float plan, and the swimmer-reached call.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
