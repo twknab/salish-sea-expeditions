@@ -951,7 +951,7 @@ func _watch_traffic(delta: float) -> void:
 		_fog_signal_t = 0.0
 	if d < Traffic.WARN_M and not _traffic.warned:
 		_traffic.warned = true
-		_show(UIKit.card("Ferry in the channel", _said("ferry") + "Hold your position and let it pass well ahead — it cannot stop or turn for you, and it is faster than it looks. When it has gone by, cross its wake at right angles, bow into the waves.", App.sources_line(["colregs", "wsf"]), [["Holding", _clear_card, true]], "Traffic"))
+		_show(UIKit.card("Ferry in the channel", _said("ferry") + Traffic.card_text(_pack.get("enables", []).has("radio")), App.sources_line(["colregs", "wsf"]), [["Holding", _clear_card, true]], "Traffic"))
 		var met := int(App.save.get("ferriesMet", 0))
 		App.save.ferriesMet = met + 1
 		App.persist()

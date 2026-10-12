@@ -596,6 +596,14 @@
 
 - [x] T014eu The packing screen's "Still on the beach" card now carries the content's paddle-float lesson when the float is one of the things left behind: it turns the paddle into an outrigger for climbing back in alone. The card also sat half off the bottom of a desktop window, its title a list of every missing item. It is now centred whatever its size, titled with the count ("10 essentials"), with the names in its body. Checked on desktop and phone.
 
+## Slice 134 — the forecast on the VHF
+
+- [x] T014ev The float plan's tide card now reads the wind off the radio, under the graph: "On the VHF's weather channel: wind S 10 knots at launch, building to S 14 knots by 15:00. Plan to be in a lee before then." It follows the launch as you drag it, and only advises a lee for a wind of 12 knots or more. If the VHF was left on the beach at packing, it says so instead: no radio, no forecast. `Forecast` (pure, tested) samples the authored day's wind across the leg's hours. New credit: NOAA Weather Radio (National Weather Service); new glossary term: Weather channel.
+
+## Slice 135 — the ferry, heard first
+
+- [x] T014ew With a VHF packed, the ferry card begins with the radio: "The VHF heard it first: the ferry calling its position to the other traffic." Without one, the card is as before. The card's words moved to `Traffic.card_text`, with a test.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

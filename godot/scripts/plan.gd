@@ -95,6 +95,8 @@ func _show() -> void:
 	var s: Dictionary = _steps[_step] if _step < _steps.size() else { "title": "The plan", "text": "", "sourceIds": [] }
 	var text: String = s.get("text", "")
 	var sources: Array = s.get("sourceIds", [])
+	if s.get("id", "") == "tide":  # the wind comes as the radio gives it, under the graph, and follows the launch
+		sources = sources + ["nws-nwr"]
 	if s.get("id", "") == "route":  # the numbers on the chart, and on the first day how to read them
 		text += "\n\n" + Leg.chart_line(_leg)
 		if Leg.index() == 0:
@@ -137,7 +139,10 @@ func _on_launch(h: float) -> void:
 		var fog_line := Fog.plan_line(_leg, h)
 		if Leg.earliest_launch() > Leg.EARLIEST_LAUNCH + 0.01:
 			fog_line = ("The first hour is the water run to Roche Harbor: nothing launches before %s." % Leg.clock(Leg.earliest_launch())) + ("\n" + fog_line if fog_line != "" else "")
-		_verdict.text = Tides.verdict_line(_day, h, Leg.hours_at_touring_pace(_leg), str(_leg.get("favours", "flood"))) + ("\n" + fog_line if fog_line != "" else "")
+		var gear: Array = App.content.get("gear", [])
+		var radio: bool = Packing.assess(App.save.get("packing", Packing.suggested(gear)), gear).enables.has("radio")
+		var forecast := Forecast.line(_day, h, h + Leg.hours_at_touring_pace(_leg) + 1.0, radio)
+		_verdict.text = Tides.verdict_line(_day, h, Leg.hours_at_touring_pace(_leg), str(_leg.get("favours", "flood"))) + ("\n" + fog_line if fog_line != "" else "") + "\n" + forecast
 
 func _refresh_head() -> void:
 	var h := Leg.launch_hour()

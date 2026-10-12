@@ -2782,6 +2782,13 @@
    "licence": "Facts cited"
   },
   {
+   "id": "nws-nwr",
+   "title": "NOAA Weather Radio All Hazards",
+   "author": "NOAA National Weather Service",
+   "url": "https://www.weather.gov/nwr/",
+   "licence": "Public domain (US Government)"
+  },
+  {
    "id": "uscg",
    "title": "Boating safety and navigation rules (Rule 9, narrow channels)",
    "author": "U.S. Coast Guard",
@@ -3160,6 +3167,15 @@
    "text": "Waves coming at the side of the boat. A kayak rolls most and is easiest to capsize with the sea on its beam, so in a steep chop take the waves a little off the bow or the stern, keep the paddle moving, and brace on the steep faces.",
    "sourceIds": [
     "aca",
+    "uscg"
+   ]
+  },
+  {
+   "id": "wx",
+   "term": "Weather channel",
+   "text": "A marine VHF receives NOAA Weather Radio on its WX channels: the forecast for the water, read around the clock. Listen before launching and again at midday; an afternoon wind is usually in the morning forecast.",
+   "sourceIds": [
+    "nws-nwr",
     "uscg"
    ]
   },
