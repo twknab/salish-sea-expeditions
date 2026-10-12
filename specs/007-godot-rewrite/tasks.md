@@ -616,6 +616,14 @@
 
 - [x] T014ez A headlamp left on the beach now matters after dark: your boat shows no white light, and the night note says so. With a partner, it tells you to stay on their quarter, inside their light; alone, that nothing on the water can see you. A packed light reads as before.
 
+## Slice 139 — no chart in the fog
+
+- [x] T014fa A chart and compass left on the beach now matters in fog: the destination line reads "no compass" instead of a bearing to steer, and the fog note says so. With a partner, stay on their stern, because the bearing is in that boat; alone, keep the swell on one side, go slowly and stop for a long blast. A packed chart and compass reads as before.
+
+## Slice 140 — the first-aid kit, and the tarp
+
+- [x] T014fb The first camp card now says when the first-aid kit stayed on the beach: the blister from the paddle shaft goes untaped. With no tent packed, the camp draws the low grey tarp over the paddles that the card already describes, not an orange tent. New station `camp-unpacked` (`?scene=camp&step=1&pack=none`).
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

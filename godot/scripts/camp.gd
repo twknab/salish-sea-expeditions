@@ -190,20 +190,22 @@ func _shore_point(cove: Vector3) -> Dictionary:
 				break
 	return best
 
-## The tent goes up on the pad once that step is reached, and stays.
+## The tent goes up on the pad once that step is reached, and stays. With no tent in the boat it is
+## the tarp over the paddles the card describes: low, grey, and open at the ends.
 func _pitch() -> void:
 	if _tent:
 		return
+	var tent := _enables().has("shelter")
 	_tent = MeshInstance3D.new()
 	var pm := PrismMesh.new()
-	pm.size = Vector3(2.3, 1.25, 2.7)
+	pm.size = Vector3(2.3, 1.25, 2.7) if tent else Vector3(2.8, 0.7, 2.2)
 	_tent.mesh = pm
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color("d9893a")
+	mat.albedo_color = Color("d9893a") if tent else Color("6b7468")
 	mat.roughness = 0.9
 	_tent.material_override = mat
 	var at := _shore + _inland * 9.0 - along_or_zero() * 4.0
-	_tent.position = Vector3(at.x, maxf(_terrain.height_at(at.x, at.z), 0.5) + 0.62, at.z)
+	_tent.position = Vector3(at.x, maxf(_terrain.height_at(at.x, at.z), 0.5) + pm.size.y * 0.5, at.z)
 	_tent.rotation.y = atan2(_along.x, _along.z)
 	add_child(_tent)
 
@@ -304,13 +306,12 @@ func _leave() -> void:
 ## What was left on the beach at Friday Harbor is felt here, on the card where it would have been
 ## used: the packing screen said so, and the camp keeps its word.
 func _left_behind(step_id: String, first_evening: bool) -> String:
-	# A save with no packing (older, or a day paddled again from the title) is the suggested layout, as on the water.
-	var gear: Array = App.content.get("gear", [])
-	var layout: Dictionary = Packing.empty() if App._url_param("pack") == "none" else App.save.get("packing", Packing.suggested(gear))  # `?pack=none`: nothing came, for checks
-	var enables: Array = Packing.assess(layout, gear).get("enables", [])
+	var enables := _enables()
 	var lines: Array[String] = []
 	if first_evening and not enables.has("light"):
 		lines.append("No headlamp: the evening chores take twice as long in the dark.")
+	if first_evening and not enables.has("firstAid"):
+		lines.append("No first-aid kit: the blister the shaft raised today goes untaped, and stays raw.")
 	match step_id:
 		"pitch", "land":
 			if not enables.has("shelter"):
@@ -328,6 +329,13 @@ func _left_behind(step_id: String, first_evening: bool) -> String:
 			if not enables.has("sleep"):
 				lines.append("No sleeping bag: a night in every layer you own, awake for most of it.")
 	return "" if lines.is_empty() else "\n\n" + "\n".join(lines)
+
+## What the packed gear makes possible here. A save with no packing (older, or a day paddled again
+## from the title) is the suggested layout, as on the water.
+func _enables() -> Array:
+	var gear: Array = App.content.get("gear", [])
+	var layout: Dictionary = Packing.empty() if App._url_param("pack") == "none" else App.save.get("packing", Packing.suggested(gear))  # `?pack=none`: nothing came, for checks
+	return Packing.assess(layout, gear).get("enables", [])
 
 func _has_step(id: String) -> bool:
 	for s in _steps:
