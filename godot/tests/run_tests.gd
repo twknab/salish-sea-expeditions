@@ -239,6 +239,11 @@ func _init() -> void:
 	# The partner can go over too, once a leg in a steep sea, and the rescue is yours to give.
 	check(Partner.goes_over(0.5, 30.0, 0) and not Partner.goes_over(0.5, 10.0, 0) and not Partner.goes_over(0.3, 60.0, 0) and not Partner.goes_over(0.5, 30.0, 1), "a steep sea for long enough, once a leg")
 	check(Partner.given_steps("Mina").size() == 3 and str(Partner.given_steps("Mina")[0].text).contains("Mina's bow") and Partner.given_line(1, "Mina") == "gave Mina a T-rescue" and Partner.given_line(0, "Mina") == "", "three steps to give the T-rescue, and the debrief's words for it")
+	# The forecast on the VHF: the wind at launch and what it builds to; no radio, no forecast.
+	var wday := { "wind": [{ "t": 540, "kn": 5.0, "fromDeg": 180.0 }, { "t": 900, "kn": 14.0, "fromDeg": 200.0 }] }
+	check(Forecast.point(180.0) == "S" and Forecast.point(350.0) == "N" and Forecast.point(225.0) == "SW", "eight points of the compass")
+	check(Forecast.line(wday, 9.0, 15.0, true).contains("building to S 14 knots by 15:00") and Forecast.line(wday, 9.0, 10.0, true).contains("no more than") and Forecast.line(wday, 9.0, 15.0, false).contains("on the beach"), "the forecast names the build and its hour, or that the radio stayed behind")
+	check(Forecast.line(wday, 9.0, 15.0, true).contains("in a lee") and not Forecast.line(wday, 9.0, 12.0, true).contains("in a lee"), "a lee is advised only for a wind worth planning around")
 	# The roll: the hip snap learned brings the boat up in all but a steep sea; without it, the swim.
 	check(Roll.comes_up(true, 0.3) and not Roll.comes_up(true, 0.6) and not Roll.comes_up(false, 0.1), "the roll is the brace's hip snap, and a steep sea beats it")
 	check(Roll.outcome(true, true).begins_with("Up") and Roll.outcome(false, false).contains("hip snap") and Roll.outcome(false, true).contains("knocks the blade"), "the roll says why it failed")
