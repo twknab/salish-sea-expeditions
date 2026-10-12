@@ -564,6 +564,10 @@
 
 - [x] T014em The water scene's heads-up pieces (the compass, the place names and where they keep out of the way, the set-and-drift and destination lines, and the dark rim that makes a line read against fog) are built by `SeaHud`, not inline in `sea.gd`'s `_ready`. `sea.gd` drops from 997 to 974 lines. Checked unchanged on desktop and phone, and the stations sweep passes.
 
+## Slice 126 — reaching a swimmer fast
+
+- [x] T014en When the partner goes over, the time they spend in the water before you are alongside is kept (`Partner.reach_s`, the record's `reachS`). Seamanship reads it back as a new call, "Got to a swimmer fast": kept inside a minute and a half ("alongside in 40 s"), missed past it with the reason ("4 minutes before you were alongside; nine-degree water takes the strength in about ten"), and absent on a day nobody went over. The demo's day two reaches the partner in 48 s.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

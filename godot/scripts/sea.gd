@@ -489,7 +489,7 @@ func _record_day() -> void:
 	var entry := {
 		"leg": Leg.index(), "metres": Leg.length_m(_route), "launchHour": launch, "arrivedHour": _hour,
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
-		"swims": _swims_today, "rolls": _rolls_today, "rescuesGiven": _partner.rescues_given if _partner else 0, "waits": _waits_today, "blows": _blows.x, "pushes": _blows.y, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
+		"swims": _swims_today, "rolls": _rolls_today, "rescuesGiven": _partner.rescues_given if _partner else 0, "reachS": _partner.reach_s if _partner else -1.0, "waits": _waits_today, "blows": _blows.x, "pushes": _blows.y, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
 		"streamS": _cross.stream_s, "onLineS": _cross.on_line_s, "maxKn": snappedf(_cross.max_kn, 0.1), "maxAt": _cross.max_at, "eddy": _cross.eddy_said, "linesEdged": _cross.lines_edged, "rafts": _partner.rafts if _partner else 0, "linesTripped": _cross.lines_tripped,
 		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
@@ -621,6 +621,7 @@ func _process(delta: float) -> void:
 			_note_hold = NOTE_HOLD
 		elif _partner.over and _given < 0 and kayak.global_position.distance_to(_partner.kayak.global_position) < Partner.REACH_M:
 			_given = 0
+			_partner.reach_s = _partner.over_s
 			_show_given()
 		if _chart and not _chart.blind:  # in fog the chart keeps the last fix
 			_chart.boat = kayak.global_position

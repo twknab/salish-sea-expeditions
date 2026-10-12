@@ -26,6 +26,8 @@ var rafts := 0  # times the boats rafted up on this leg, for the record
 var over := false        # the partner is in the water beside an upturned boat
 var swims := 0           # times the partner went over on this leg
 var rescues_given := 0   # T-rescues the player gave on this leg, for the record
+var over_s := 0.0        # seconds in the water so far, since going over
+var reach_s := -1.0      # how long the player took to get alongside, -1 until they did
 
 ## Where the partner belongs for a player at `pos` facing along `basis`, `gap` of the way out.
 static func station_for(pos: Vector3, basis: Basis, share := 1.0) -> Vector3:
@@ -79,6 +81,7 @@ func rafted() -> bool:
 ## Follow the player: close on the station, face their way, ride the same water, stroke in time.
 func follow(player: Kayak, sea: Node, delta: float) -> void:  # the Seascape, untyped so this script loads without the autoloads it reads
 	if over:  # in the water, holding the upturned boat: it stays where it went over, riding the swell
+		over_s += delta
 		kayak.global_position.y = sea.height_at(kayak.global_position.x, kayak.global_position.z) + 0.1
 		return
 	if player.speed > 0.6:
@@ -125,6 +128,7 @@ func go_over() -> void:
 ## Back in their boat, after the T-rescue you gave.
 func righted() -> void:
 	over = false
+	over_s = 0.0
 	rescues_given += 1
 	kayak.rotation.z = 0.0
 
@@ -142,4 +146,11 @@ static func given_line(n: int, name: String) -> String:
 	if n <= 0:
 		return ""
 	return "gave %s a T-rescue%s" % [name, "" if n == 1 else " %d times" % n]
+
+## How quickly a swimmer was reached, as a seamanship call's note: kept within REACHED_FAST seconds.
+const REACHED_FAST := 90.0
+static func reached_note(seconds: float) -> String:
+	if seconds <= REACHED_FAST:
+		return "alongside in %d s" % int(round(seconds))
+	return "%d minutes before you were alongside; nine-degree water takes the strength in about ten" % int(ceil(seconds / 60.0))
 
