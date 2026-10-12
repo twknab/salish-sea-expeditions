@@ -234,6 +234,8 @@ func _init() -> void:
 	# The partner speaks at the moments that matter, in a few words, and not when there is nothing to say.
 	check(PartnerVoice.line("ferry") != "" and PartnerVoice.line("nothing") == "" and PartnerVoice.said("Mina", "nothing") == "", "silent when there is nothing to say")
 	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")
+	var chart_leg := { "waypoints": [[0.0, 0.0], [0.0, -1852.0], [1852.0, -1852.0]] }
+	check(Leg.chart_line(chart_leg) == "On the chart: 2.0 nautical miles, the first course 000° true." and Leg.chart_line({}) == "", "the chart line gives the miles and the first course true")
 	# The roll: the hip snap learned brings the boat up in all but a steep sea; without it, the swim.
 	check(Roll.comes_up(true, 0.3) and not Roll.comes_up(true, 0.8) and not Roll.comes_up(false, 0.1), "the roll is the brace's hip snap, and a steep sea beats it")
 	check(Roll.outcome(true, true).begins_with("Up") and Roll.outcome(false, false).contains("hip snap") and Roll.outcome(false, true).contains("knocks the blade"), "the roll says why it failed")

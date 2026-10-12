@@ -551,6 +551,10 @@
 
 - [x] T014ej Finishing Kayak School's brace drill now says what it taught beyond the brace: the content's hip-snap lesson ("A sharp knee lift that rolls the boat back under you…"), and that on a trip the same snap is the roll (slice 119). The next drill waits six seconds instead of one so the note can be read.
 
+## Slice 123 — reading the chart
+
+- [x] T014ek Every day's route card in the float plan gives the leg as the chart does: "On the chart: 6.0 nautical miles, the first course 351° true" (`Leg.chart_line`, tested). On the first day it also carries the content's chart-reading lesson, unused until now: nautical miles as a minute of latitude, true bearings off the compass rose, depths in the water. Checked on desktop and on a phone, where the card still fits.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
