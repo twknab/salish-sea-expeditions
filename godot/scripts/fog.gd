@@ -37,3 +37,20 @@ static func plan_line(leg: Dictionary, launch_hour: float) -> String:
 		return ""
 	var f: Dictionary = leg.get("fog")
 	return "Fog at launch, burning off from %s: compass, a light, and your partner in sight." % Leg.clock(float(f.get("until", 0.0)))
+
+## The note when the fog closes in. Without the chart and compass there is no bearing to hold:
+## the partner's is the one to follow, and alone the swell is all the reference there is.
+static func note(brg: float, has_chart: bool, partner: String, touch: bool) -> String:
+	if has_chart:
+		if touch:  # three lines is the phone's room
+			return "Fog. The chart has no fix; the compass does. Hold %03d°, and stop for a long blast." % int(round(brg))
+		return "Fog. The islands are gone and the chart has no fix; the compass does. Hold %03d°, count your strokes, keep a paddle length off. A long blast is a vessel under way: stop and listen." % int(round(brg))
+	if partner != "":
+		return "Fog, and your chart and compass are on the beach. Stay on %s's stern: the bearing is in that boat now." % partner
+	if touch:
+		return "Fog, and no compass. Keep the swell on one side, and stop for a long blast."
+	return "Fog, and your chart and compass are on the beach: there is no bearing to hold. Keep the swell on the same side, go slowly, and stop for a long blast."
+
+## The bearing part of the HUD's destination line in fog.
+static func steer(brg: float, has_chart: bool) -> String:
+	return "steer %03d°" % int(round(brg)) if has_chart else "no compass"

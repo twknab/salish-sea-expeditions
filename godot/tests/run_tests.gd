@@ -246,6 +246,7 @@ func _init() -> void:
 	check(Forecast.line(wday, 9.0, 15.0, true).contains("in a lee") and not Forecast.line(wday, 9.0, 12.0, true).contains("in a lee"), "a lee is advised only for a wind worth planning around")
 	check(Traffic.card_text(true).begins_with("The VHF heard it first") and not Traffic.card_text(false).contains("VHF") and Traffic.card_text(false).contains("right angles"), "the ferry is heard on the radio first, when there is a radio")
 	check(DarkWater.note(true, "Mina", false).contains("white light goes on") and DarkWater.note(false, "Mina", false).contains("Mina's quarter") and DarkWater.note(false, "", true).contains("nothing on the water can see you"), "a boat without its light stays close to one that has it")
+	check(Fog.note(200.0, true, "Mina", false).contains("Hold 200°") and Fog.note(200.0, false, "Mina", false).contains("Mina's stern") and not Fog.note(200.0, false, "", true).contains("°") and Fog.steer(5.0, false) == "no compass", "no chart and compass in the fog: no bearing, so follow the partner or the swell")
 	# The roll: the hip snap learned brings the boat up in all but a steep sea; without it, the swim.
 	check(Roll.comes_up(true, 0.3) and not Roll.comes_up(true, 0.6) and not Roll.comes_up(false, 0.1), "the roll is the brace's hip snap, and a steep sea beats it")
 	check(Roll.outcome(true, true).begins_with("Up") and Roll.outcome(false, false).contains("hip snap") and Roll.outcome(false, true).contains("knocks the blade"), "the roll says why it failed")

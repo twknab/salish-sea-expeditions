@@ -435,10 +435,8 @@ func _leg(delta: float) -> void:
 		_fogged = true
 		if not _fog_said:
 			_fog_said = true
-			if controls.touch():  # three lines is the phone's room
-				note_label.text = _said("fog") + "Fog. The chart has no fix; the compass does. Hold %03d°, and stop for a long blast." % int(round(brg))
-			else:
-				note_label.text = _said("fog") + "Fog. The islands are gone and the chart has no fix; the compass does. Hold %03d°, count your strokes, keep a paddle length off. A long blast is a vessel under way: stop and listen." % int(round(brg))
+			var nav: bool = mode != "trip" or _pack.get("enables", []).has("navigation")
+			note_label.text = _said("fog") + Fog.note(brg, nav, str(_partner.preset.get("name", "")) if _partner else "", controls.touch())
 	sea.set_sea_state(lerpf(sea.sea_state, lerpf(0.10, 0.70, state), minf(1.0, delta * 0.3)))
 	kayak.sea_state = sea.sea_state
 	if factor > 1.15 and kayak.speed > 0.3:
@@ -461,7 +459,7 @@ func _leg(delta: float) -> void:
 		trim_note += " · slack hull"
 	_set_label.text = "%s: %s%s · wind %d kn from %03d°%s" % [str(_route.get("channel", "San Juan Channel")), Tides.describe(_day, _hour), rip, int(round(Tides.wind(_day, _hour).kn)), int(round(Tides.wind(_day, _hour).fromDeg)), trim_note]
 	if Fog.blind(_fog):
-		_dest_label.text = "%s · fog, %d m · steer %03d° · %s%s" % [Leg.cove_name(_route), int(Fog.visibility_m(_fog)), int(round(brg)), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
+		_dest_label.text = "%s · fog, %d m · %s · %s%s" % [Leg.cove_name(_route), int(Fog.visibility_m(_fog)), Fog.steer(brg, mode != "trip" or _pack.get("enables", []).has("navigation")), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
 	else:
 		_dest_label.text = "%s · %.1f km · %03d° · %s%s" % [Leg.cove_name(_route), dist / 1000.0, int(round(brg)), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
 	if dist < 220.0:
