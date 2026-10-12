@@ -560,6 +560,26 @@
 - [x] T014el The partner can go over too. After about 25 seconds in a steep sea (the drawn sea's state 0.45, about where the bail-outs card goes up), out of a raft and with no card up, the partner capsizes once a leg: "I'm over! Come to my bow!" Their boat floats hull up where it went over. Paddle within four metres and the T-rescue is yours to give, in three cards from the rescuer's side: to the bow, drain it over your deck, hold it while they climb in. Each day's record counts the rescues given (`rescuesGiven`) and the debrief names them. `?scene=trip&over=1` puts the partner over for checks, and the stations sweep checks it (`trip-over`). Checked headless from a natural capsize at 15:00 through all three cards.
 - [x] The roll's "steep sea" from slice 119 was measured against a scale the drawn sea never reaches (it runs 0.10 to 0.70), so a practised roll could never fail. `Roll.STEEP` is now 0.55 on that scale.
 
+## Slice 125 — the HUD, built apart
+
+- [x] T014em The water scene's heads-up pieces (the compass, the place names and where they keep out of the way, the set-and-drift and destination lines, and the dark rim that makes a line read against fog) are built by `SeaHud`, not inline in `sea.gd`'s `_ready`. `sea.gd` drops from 997 to 974 lines. Checked unchanged on desktop and phone, and the stations sweep passes.
+
+## Slice 126 — reaching a swimmer fast
+
+- [x] T014en When the partner goes over, the time they spend in the water before you are alongside is kept (`Partner.reach_s`, the record's `reachS`). Seamanship reads it back as a new call, "Got to a swimmer fast": kept inside a minute and a half ("alongside in 40 s"), missed past it with the reason ("4 minutes before you were alongside; nine-degree water takes the strength in about ten"), and absent on a day nobody went over. The demo's day two reaches the partner in 48 s.
+
+## Slice 127 — README catch-up
+
+- [x] T014eo The README's tour names kelp as a harbour, the roll, the partner's capsize and the T-rescue you give, the chart's miles and course on the float plan, and the swimmer-reached call.
+
+## Slice 128 — a swimmer beside the boat
+
+- [x] T014ep While the partner is over, the paddler figure leaves the upturned boat and a swimmer floats beside the cockpit: a head and the shoulders of a lifejacket at the surface, in the partner's own skin, hair and jacket colours, riding the same swell (`Partner.swimmer`). The jacket's colour is what you see first, which is the point of a bright one. Back in the boat after the T-rescue, the figure returns.
+
+## Slice 129 — your paddler, all the way through
+
+- [x] T014eq Bug: the paddler you pick on the outfitting screen seemed to vanish later. Two causes. On the water the figure wore a dark skull cap that hid the hair and the hairstyle, the two things that most tell one paddler from another, so only the lifejacket colour carried over. At camp nobody was drawn at all, only the empty boat. Now the water keeps the sunglasses and shows the paddler's own hair and style, and at camp the paddler stands on the beach by the boat, still in the lifejacket. Checked in the browser by picking Ayla (red hair, long, teal jacket) and opening Kayak School, the trip and camp after the save had synced. (The save itself was never lost: it reaches the browser's storage a few seconds after a change, slower in a headless test.)
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
