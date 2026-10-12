@@ -12,6 +12,9 @@ const CADENCE := 0.984                     # the player's stroke cadence (Contro
 const RAFT_GAP := 0.16                     # the station's share when rafted up: about a metre and a half between centrelines, hulls touching
 const DRAW_IN := 0.3                       # how much of the station one draw toward the partner closes
 const SPREAD := 0.15                       # per second, how fast the station opens again once the player paddles on
+const OVER_STATE := 0.45                   # the drawn sea (0.10 calm to 0.70 its roughest) steep enough to put the partner over: about where the bail-outs card goes up
+const OVER_AFTER := 25.0                   # seconds of it, out of a raft and with no card up, before it does (once a leg)
+const REACH_M := 4.0                       # how close your boat must come to theirs to start the T-rescue
 
 var preset: Dictionary = {}
 var kayak: Kayak
@@ -20,6 +23,9 @@ var _stroke_t := 0.0
 var _last := Vector3.ZERO
 var gap := 1.0  # the share of the station kept: 1 at two boat lengths, RAFT_GAP rafted up alongside
 var rafts := 0  # times the boats rafted up on this leg, for the record
+var over := false        # the partner is in the water beside an upturned boat
+var swims := 0           # times the partner went over on this leg
+var rescues_given := 0   # T-rescues the player gave on this leg, for the record
 
 ## Where the partner belongs for a player at `pos` facing along `basis`, `gap` of the way out.
 static func station_for(pos: Vector3, basis: Basis, share := 1.0) -> Vector3:
@@ -48,7 +54,7 @@ func setup(look: Dictionary, skin: Dictionary, at: Vector3, heading_rad: float) 
 
 ## A draw by the player: toward the partner (starboard), the boats close; true when that rafts them up.
 func drew(side: int) -> bool:
-	if side <= 0 or rafted():
+	if side <= 0 or rafted() or over:
 		return false
 	gap = maxf(RAFT_GAP, gap - DRAW_IN)
 	if rafted():
@@ -72,6 +78,9 @@ func rafted() -> bool:
 
 ## Follow the player: close on the station, face their way, ride the same water, stroke in time.
 func follow(player: Kayak, sea: Node, delta: float) -> void:  # the Seascape, untyped so this script loads without the autoloads it reads
+	if over:  # in the water, holding the upturned boat: it stays where it went over, riding the swell
+		kayak.global_position.y = sea.height_at(kayak.global_position.x, kayak.global_position.z) + 0.1
+		return
 	if player.speed > 0.6:
 		gap = minf(1.0, gap + SPREAD * delta)  # paddling on: the raft breaks and the station opens again
 	var want := station_for(player.global_position, player.global_basis, gap)
@@ -102,3 +111,35 @@ static func rain_note(partnered: bool, touch: bool) -> String:
 	if touch:
 		return "Rain. Hood up, keep paddling; watch the wind behind it."
 	return "Rain. Hood up and keep paddling: the drops flatten the chop, and it is the wind behind the front that matters, not the water on your deck."
+
+## True on the frame the partner goes over: a steep sea for long enough, the first time this leg.
+static func goes_over(state: float, rough_s: float, swims_so_far: int) -> bool:
+	return swims_so_far == 0 and state >= OVER_STATE and rough_s >= OVER_AFTER
+
+func go_over() -> void:
+	over = true
+	swims += 1
+	gap = 1.0
+	kayak.rotation.z = PI  # rolled about the keel line: the hull up, the paddler in the water beside it
+
+## Back in their boat, after the T-rescue you gave.
+func righted() -> void:
+	over = false
+	rescues_given += 1
+	kayak.rotation.z = 0.0
+
+## The rescuer's side of the T-rescue, in three cards: come to the bow, drain the boat over your
+## deck, hold it while they climb in.
+static func given_steps(name: String) -> Array:
+	return [
+		{ "title": "To the bow", "text": "Come in at right angles to %s's bow. They let go of their boat and hold yours: you are the steady one now. Talk to them; nine-degree water takes the breath first." % name },
+		{ "title": "Drain it over your deck", "text": "Lift their bow across your foredeck, upside down, and rock it so the cockpit empties. Then roll it upright, cockpit toward them, and slide it alongside yours, bow to stern." },
+		{ "title": "Hold it while they climb in", "text": "Lean across their deck with both hands on the cockpit rim, your weight on it. They come up from the side, legs in, and turn onto the seat. Skirt on, pump it dry, and paddle together while they warm up." },
+	]
+
+## The debrief's words for a day's rescues given, or nothing.
+static func given_line(n: int, name: String) -> String:
+	if n <= 0:
+		return ""
+	return "gave %s a T-rescue%s" % [name, "" if n == 1 else " %d times" % n]
+

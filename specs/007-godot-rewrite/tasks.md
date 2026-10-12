@@ -555,6 +555,11 @@
 
 - [x] T014ek Every day's route card in the float plan gives the leg as the chart does: "On the chart: 6.0 nautical miles, the first course 351° true" (`Leg.chart_line`, tested). On the first day it also carries the content's chart-reading lesson, unused until now: nautical miles as a minute of latitude, true bearings off the compass rose, depths in the water. Checked on desktop and on a phone, where the card still fits.
 
+## Slice 124 — the rescue you give
+
+- [x] T014el The partner can go over too. After about 25 seconds in a steep sea (the drawn sea's state 0.45, about where the bail-outs card goes up), out of a raft and with no card up, the partner capsizes once a leg: "I'm over! Come to my bow!" Their boat floats hull up where it went over. Paddle within four metres and the T-rescue is yours to give, in three cards from the rescuer's side: to the bow, drain it over your deck, hold it while they climb in. Each day's record counts the rescues given (`rescuesGiven`) and the debrief names them. `?scene=trip&over=1` puts the partner over for checks, and the stations sweep checks it (`trip-over`). Checked headless from a natural capsize at 15:00 through all three cards.
+- [x] The roll's "steep sea" from slice 119 was measured against a scale the drawn sea never reaches (it runs 0.10 to 0.70), so a practised roll could never fail. `Roll.STEEP` is now 0.55 on that scale.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

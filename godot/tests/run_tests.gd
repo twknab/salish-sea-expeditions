@@ -236,8 +236,11 @@ func _init() -> void:
 	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")
 	var chart_leg := { "waypoints": [[0.0, 0.0], [0.0, -1852.0], [1852.0, -1852.0]] }
 	check(Leg.chart_line(chart_leg) == "On the chart: 2.0 nautical miles, the first course 000° true." and Leg.chart_line({}) == "", "the chart line gives the miles and the first course true")
+	# The partner can go over too, once a leg in a steep sea, and the rescue is yours to give.
+	check(Partner.goes_over(0.5, 30.0, 0) and not Partner.goes_over(0.5, 10.0, 0) and not Partner.goes_over(0.3, 60.0, 0) and not Partner.goes_over(0.5, 30.0, 1), "a steep sea for long enough, once a leg")
+	check(Partner.given_steps("Mina").size() == 3 and str(Partner.given_steps("Mina")[0].text).contains("Mina's bow") and Partner.given_line(1, "Mina") == "gave Mina a T-rescue" and Partner.given_line(0, "Mina") == "", "three steps to give the T-rescue, and the debrief's words for it")
 	# The roll: the hip snap learned brings the boat up in all but a steep sea; without it, the swim.
-	check(Roll.comes_up(true, 0.3) and not Roll.comes_up(true, 0.8) and not Roll.comes_up(false, 0.1), "the roll is the brace's hip snap, and a steep sea beats it")
+	check(Roll.comes_up(true, 0.3) and not Roll.comes_up(true, 0.6) and not Roll.comes_up(false, 0.1), "the roll is the brace's hip snap, and a steep sea beats it")
 	check(Roll.outcome(true, true).begins_with("Up") and Roll.outcome(false, false).contains("hip snap") and Roll.outcome(false, true).contains("knocks the blade"), "the roll says why it failed")
 	# Kelp is a harbour: the stream slows through a bed, and a boat stopped deep in one is held.
 	check(Kelp.held(0.8, 0.1) and not Kelp.held(0.8, 1.0) and not Kelp.held(0.2, 0.0), "held only stopped, and only deep in the bed")

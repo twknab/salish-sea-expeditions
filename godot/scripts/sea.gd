@@ -35,6 +35,8 @@ var _since_start := 0.0
 var _pack: Dictionary = {}       # Packing.assess of the boat as packed, on a trip
 var _swims_today := 0           # capsizes on this leg, for the day's record
 var _rolls_today := 0           # and the ones rolled back up from, which are not swims
+var _rough_s := 0.0             # seconds in a steep sea out of a raft: the partner's capsize waits on it
+var _given := -1                # the card of the T-rescue you are giving the partner, -1 when not
 var _weather_asked := false     # the wind-is-up card goes up once a leg
 var _fog := 0.0                 # Fog.amount of the hour (or 1 under `?fog=1`)
 var _fog_said := false          # the fog note goes up once a leg
@@ -510,7 +512,7 @@ func _record_day() -> void:
 	var entry := {
 		"leg": Leg.index(), "metres": Leg.length_m(_route), "launchHour": launch, "arrivedHour": _hour,
 		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
-		"swims": _swims_today, "rolls": _rolls_today, "waits": _waits_today, "blows": _blows.x, "pushes": _blows.y, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
+		"swims": _swims_today, "rolls": _rolls_today, "rescuesGiven": _partner.rescues_given if _partner else 0, "waits": _waits_today, "blows": _blows.x, "pushes": _blows.y, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
 		"streamS": _cross.stream_s, "onLineS": _cross.on_line_s, "maxKn": snappedf(_cross.max_kn, 0.1), "maxAt": _cross.max_at, "eddy": _cross.eddy_said, "linesEdged": _cross.lines_edged, "rafts": _partner.rafts if _partner else 0, "linesTripped": _cross.lines_tripped,
 		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
@@ -634,6 +636,15 @@ func _process(delta: float) -> void:
 	if _partner and mode == "trip" and not _arrived:
 		_partner.follow(kayak, sea, delta)
 		kayak.rafted = _partner.rafted()
+		_rough_s = _rough_s + delta if sea.sea_state >= Partner.OVER_STATE and _card == null and not _swimming and not _partner.rafted() else 0.0
+		if Partner.goes_over(sea.sea_state, _rough_s, _partner.swims) or (App._url_param("over") == "1" and _since_start > 3.0 and _partner.swims == 0):  # their turn in the water, and yours to give the rescue (`&over=1` for checks)
+			_partner.go_over()
+			Sound.splash(0.8)
+			note_label.text = _said("over") + "%s is over, holding the upturned boat. Paddle to their bow." % str(_partner.preset.get("name", "Your partner"))
+			_note_hold = NOTE_HOLD
+		elif _partner.over and _given < 0 and kayak.global_position.distance_to(_partner.kayak.global_position) < Partner.REACH_M:
+			_given = 0
+			_show_given()
 		if _chart and not _chart.blind:  # in fog the chart keeps the last fix
 			_chart.boat = kayak.global_position
 			_chart.heading = kayak.heading
@@ -915,6 +926,20 @@ func _show_rescue() -> void:
 	if _rescue_steps[_rescue_step] == "pumpOut" and not solo and not _pack.get("enables", []).has("pumpOut"):
 		text = "The pump is on the beach at Friday Harbor. Bail with a sponge and a hat: twice as long with a boat full of nine-degree water. " + text
 	_show(UIKit.card(l.get("title", ""), text, App.sources_line(l.get("sourceIds", [])), actions, kicker))
+
+## Giving the T-rescue, a card a step, and the partner back in their boat at the end.
+func _show_given() -> void:
+	var steps := Partner.given_steps(str(_partner.preset.get("name", "your partner")))
+	var last := _given >= steps.size() - 1
+	_show(UIKit.card(str(steps[_given].title), str(steps[_given].text), App.sources_line(["aca"]), [["Back in the boat" if last else "Next", func() -> void:
+		_given = -2 if last else _given + 1
+		if last:
+			_clear_card()
+			_partner.righted()
+			_hour += 0.1
+			note_label.text = _said("given") + "Six minutes, and both boats upright. Paddle together until the shivering stops."
+		else:
+			_show_given(), true]], "T-rescue · yours to give · %d of %d" % [_given + 1, steps.size()]))
 
 func _righted() -> void:
 	_clear_card()
