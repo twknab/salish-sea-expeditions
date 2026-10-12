@@ -580,6 +580,10 @@
 
 - [x] T014eq Bug: the paddler you pick on the outfitting screen seemed to vanish later. Two causes. On the water the figure wore a dark skull cap that hid the hair and the hairstyle, the two things that most tell one paddler from another, so only the lifejacket colour carried over. At camp nobody was drawn at all, only the empty boat. Now the water keeps the sunglasses and shows the paddler's own hair and style, and at camp the paddler stands on the beach by the boat, still in the lifejacket. Checked in the browser by picking Ayla (red hair, long, teal jacket) and opening Kayak School, the trip and camp after the save had synced. (The save itself was never lost: it reaches the browser's storage a few seconds after a change, slower in a headless test.)
 
+## Slice 130 — the paddler you just picked, in the boat
+
+- [x] T014er Bug: on the outfitting screen, "Your boat" (the page after "Pick your paddler") showed whoever was in the save when the screen opened, not the paddler just picked. The boat's figure was built once with the screen. `Kayak.refresh_paddler()` now redresses it from the save whenever the boat page shows. Checked in the browser by picking Ayla and turning to "Your boat".
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

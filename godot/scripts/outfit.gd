@@ -161,6 +161,8 @@ func _show() -> void:
 		ch.queue_free()
 	var p: Dictionary = _pages[_page]
 	_kayak.visible = p.kind == "boat" or p.kind == "kit"
+	if _kayak.visible:
+		_kayak.refresh_paddler()  # whoever was picked on the page before, not whoever was saved when the screen opened
 	_figure.visible = p.kind == "layer" or p.kind == "who"
 	if p.kind == "layer" or p.kind == "who":
 		_figure.dress = p.level if p.kind == "layer" else 0

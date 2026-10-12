@@ -64,6 +64,12 @@ func _ready() -> void:
 	_paddler.position = Vector3(0.0, 0.16, 0.0)
 	add_child(_paddler)
 
+## Redress the paddler in the cockpit as the save now says: the outfitting screen calls it after a
+## new pick, so the boat shows the paddler just chosen, not the one there when the screen opened.
+func refresh_paddler() -> void:
+	if _paddler:
+		_paddler.build()
+
 ## (Re)build the hull mesh in the current colours; the scene calls it again after picking a skin.
 func build_hull() -> void:
 	if _hull_mesh:
