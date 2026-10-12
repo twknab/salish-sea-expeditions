@@ -403,7 +403,7 @@ func _show_walk() -> void:
 	var sources: Array = sp.get("sourceIds", [])
 	var groups := shore.map(func(id: Variant) -> String: return str(_species(str(id)).get("group", "")))
 	if _rock == "" and _walk == TidePool.first_pool(groups) and str(_leg.get("camp", {}).get("kind", "camp")) != "takeout":
-		var manners := _lesson("tidepools")  # the pools' manners, where the pools begin, and a rock to try them on
+		var manners := App.lesson("tidepools")  # the pools' manners, where the pools begin, and a rock to try them on
 		text += "\n\n%s: %s" % [str(manners.get("title", "")), str(manners.get("text", ""))]
 		sources = sources + Array(manners.get("sourceIds", []))
 		actions = [["Leave the rock", func() -> void: _show_rock("leave"), false], ["Lift the rock, set it back", func() -> void: _show_rock("lift"), true]]
@@ -432,11 +432,6 @@ func _show_rock(choice: String) -> void:
 	_card = UIKit.card(str(r.title), text, App.sources_line(find.get("sourceIds", ["eopugetsound"])), [["Next", func() -> void: _walk += 1; _show_walk(), true]], "The shore · the tide pools")
 	_ui.add_child(_card)
 
-func _lesson(id: String) -> Dictionary:
-	for l in App.content.get("lessons", []):
-		if l.id == id:
-			return l
-	return {}
 
 func _species(id: String) -> Dictionary:
 	for sp in App.content.get("species", []):

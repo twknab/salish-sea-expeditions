@@ -234,6 +234,9 @@ func _init() -> void:
 	# The partner speaks at the moments that matter, in a few words, and not when there is nothing to say.
 	check(PartnerVoice.line("ferry") != "" and PartnerVoice.line("nothing") == "" and PartnerVoice.said("Mina", "nothing") == "", "silent when there is nothing to say")
 	check(PartnerVoice.said("Mina", "ferry").begins_with("Mina: “") and PartnerVoice.said("Mina", "ferry").ends_with("”  "), "a line is the name and the words, then room for the note")
+	# The roll: the hip snap learned brings the boat up in all but a steep sea; without it, the swim.
+	check(Roll.comes_up(true, 0.3) and not Roll.comes_up(true, 0.8) and not Roll.comes_up(false, 0.1), "the roll is the brace's hip snap, and a steep sea beats it")
+	check(Roll.outcome(true, true).begins_with("Up") and Roll.outcome(false, false).contains("hip snap") and Roll.outcome(false, true).contains("knocks the blade"), "the roll says why it failed")
 	# Kelp is a harbour: the stream slows through a bed, and a boat stopped deep in one is held.
 	check(Kelp.held(0.8, 0.1) and not Kelp.held(0.8, 1.0) and not Kelp.held(0.2, 0.0), "held only stopped, and only deep in the bed")
 	check(Kelp.carry(0.0, 1.0) == 1.0 and is_equal_approx(Kelp.carry(1.0, 1.0), 0.5) and Kelp.carry(0.8, 0.1) < 0.1, "open water carries in full, the bed's heart half, and a stalk over the deck almost nothing")

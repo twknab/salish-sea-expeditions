@@ -121,7 +121,14 @@ func credit(id: String) -> Dictionary:
 			return c
 	return {}
 
-## "Source: American Canoe Association · TRAK Kayaks" for a card footer.
+## A lesson from the content by id, or a blank one titled with the id when there is none.
+func lesson(id: String) -> Dictionary:
+	for l in content.get("lessons", []):
+		if l.id == id:
+			return l
+	return { "title": id, "text": "", "sourceIds": [] }
+
+## "Source: American Canoe Association · NOAA CO-OPS" for a card footer.
 func sources_line(ids: Array) -> String:
 	var names: Array[String] = []
 	for id in ids:
