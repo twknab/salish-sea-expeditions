@@ -894,6 +894,23 @@ func _on_capsized() -> void:
 	_swimming = true
 	_groove = 0.0
 	controls.visible = false
+	var l := App.lesson("roll")  # the first answer to going over is to come back up
+	_show(UIKit.card(str(l.title), Roll.offer(str(l.text)), App.sources_line(l.sourceIds), [["Wet exit", _swim, false], ["Roll up", _roll, true]], "Over · %s" % Leg.clock(_hour)))
+
+func _roll() -> void:
+	var learned: bool = App.save.get("drills", []).has("brace")
+	if Roll.comes_up(learned, sea.sea_state):  # seconds, not the rescue's nine minutes: no swim, no lost time
+		_clear_card()
+		kayak.right()
+		_swimming = false
+		controls.visible = true
+		note_label.text = Roll.outcome(true, learned)
+		_note_hold = NOTE_HOLD
+		return
+	_show(UIKit.card("It stays over", Roll.outcome(false, learned), App.sources_line(["aca"]), [["Wet exit", _swim, true]], "Over · %s" % Leg.clock(_hour)))
+
+## Out of the boat: the swim is counted, and the rescue's cards begin.
+func _swim() -> void:
 	App.save.swims = int(App.save.get("swims", 0)) + 1
 	_swims_today += 1
 	App.persist()
