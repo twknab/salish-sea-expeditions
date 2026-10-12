@@ -527,6 +527,10 @@
 
 - [x] T014ed The README's tour names the squall as a time to raft up and the shore walk's tide-pool manners and rock.
 
+## Slice 117 — kelp is a harbour
+
+- [x] T014ee The kelp lesson the content has carried since the Phaser build ("Drape a stalk over your deck and you can rest without drifting") is now true on the water. A bull kelp bed slows the stream through it, by half at its heart, and a boat stopped deep in one is held: measured headless off Yellow Island, 0.02 m of drift in 300 frames in the bed against 1.01 m in open water nearby. The first time the boat rests there the note says so: "Kelp is a harbour: a stalk over the deck, and the stream goes by without you." `Kelp` (pure, tested) holds the depth and pace that count as held, and what the stream still carries.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
