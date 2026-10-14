@@ -22,3 +22,13 @@ static func outcome(up: bool, learned: bool) -> String:
 	if learned:
 		return "The sea knocks the blade off the surface and the boat stays over. Out you come: grab loop, push off, and keep hold of the boat."
 	return "Without the hip snap from Kayak School the blade pulls down instead of the hips pulling up. Out you come: grab loop, push off, and keep hold of the boat."
+
+## In a steep sea the paddle goes with the wave while you hold the boat. The split spare under the
+## deck lines is why that costs nothing; without it the partner chases the one paddle down. Empty in
+## a sea that lets you keep hold of both.
+static func paddle_line(sea_state: float, has_spare: bool, partner: String) -> String:
+	if sea_state < STEEP:
+		return ""
+	if has_spare:
+		return "The paddle went with the wave while you held the boat. The split spare comes off the deck lines: that is what it is for. "
+	return "The paddle went with the wave while you held the boat, and there is no spare under the deck lines. %s chases it down: three more minutes in the water. " % partner
