@@ -935,7 +935,7 @@ func _righted() -> void:
 		note_label.text = "Back in the boat and dry. Alone, that is the paddle float; with a partner it is the T-rescue, and faster.\n%s: %s" % [App.lesson("noFloat").title, App.lesson("noFloat").text]
 		return
 	_hour += 0.15
-	note_label.text = "Nine minutes in the water with a partner alongside. Paddle to warm up, and make the next landing the bail-out if the shivering does not stop."
+	note_label.text = Roll.righted_note(_pack.get("enables", []).has("warmth"))
 
 ## The ferry: a card as it comes within reach, a long blast as it closes, and its wake on the beam.
 func _watch_traffic(delta: float) -> void:

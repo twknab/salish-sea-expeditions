@@ -632,6 +632,10 @@
 
 - [x] T014fd The chart and compass left on the beach are gone from the screen as well as from the notes. The chart inset is not shown on the water at all, and in fog the compass dome goes too, because the dome is the deck compass. `?pack=none` now works on the water. New station `trip-fog-unpacked`.
 
+## Slice 143 — nothing dry to pull on
+
+- [x] T014fe Back in the boat after a swim, the note depends on the warm layers. If they were packed, the warm layer goes on over the wet one and you paddle to warm up. If they were left on the beach, the note sends you to the nearest landing, out of the wind. `Roll.righted_note()`, with a test.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
