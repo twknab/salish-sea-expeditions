@@ -248,6 +248,7 @@ func _init() -> void:
 	check(DarkWater.note(true, "Mina", false).contains("white light goes on") and DarkWater.note(false, "Mina", false).contains("Mina's quarter") and DarkWater.note(false, "", true).contains("nothing on the water can see you"), "a boat without its light stays close to one that has it")
 	check(Fog.note(200.0, true, "Mina", false).contains("Hold 200°") and Fog.note(200.0, false, "Mina", false).contains("Mina's stern") and not Fog.note(200.0, false, "", true).contains("°") and Fog.steer(5.0, false) == "no compass", "no chart and compass in the fog: no bearing, so follow the partner or the swell")
 	check(Roll.paddle_line(0.3, false, "Mina") == "" and Roll.paddle_line(0.6, true, "Mina").contains("split spare") and Roll.paddle_line(0.6, false, "Mina").contains("Mina chases it down"), "a paddle lost in a steep sea: the spare covers it, or the partner chases it")
+	check(Roll.righted_note(true).contains("warm layer on") and Roll.righted_note(false).contains("nearest landing"), "after a swim: the warm layers, or the nearest landing")
 	# The roll: the hip snap learned brings the boat up in all but a steep sea; without it, the swim.
 	check(Roll.comes_up(true, 0.3) and not Roll.comes_up(true, 0.6) and not Roll.comes_up(false, 0.1), "the roll is the brace's hip snap, and a steep sea beats it")
 	check(Roll.outcome(true, true).begins_with("Up") and Roll.outcome(false, false).contains("hip snap") and Roll.outcome(false, true).contains("knocks the blade"), "the roll says why it failed")

@@ -32,3 +32,10 @@ static func paddle_line(sea_state: float, has_spare: bool, partner: String) -> S
 	if has_spare:
 		return "The paddle went with the wave while you held the boat. The split spare comes off the deck lines: that is what it is for. "
 	return "The paddle went with the wave while you held the boat, and there is no spare under the deck lines. %s chases it down: three more minutes in the water. " % partner
+
+## Back in the boat after a swim with a partner. The warm layers are what turn shivering into a
+## paddle home; left on the beach, the nearest landing is the plan.
+static func righted_note(has_layers: bool) -> String:
+	if has_layers:
+		return "Back in after nine minutes in the water. Pull the warm layer on over the wet one, paddle to warm up, and land early if the shivering goes on."
+	return "Back in after nine minutes in the water, and the warm layers are on the beach. Paddle for the nearest landing and get out of the wind."

@@ -33,6 +33,7 @@ var _rescue_steps: Array = RESCUE_STEPS
 var _capsize_in := -1.0      # the rescue drill rolls the boat on its own after a moment
 var _since_start := 0.0
 var _pack: Dictionary = {}       # Packing.assess of the boat as packed, on a trip
+var _nav := true                 # the chart and compass came: without them the fog leaves no bearing
 var _swims_today := 0           # capsizes on this leg, for the day's record
 var _rolls_today := 0           # and the ones rolled back up from, which are not swims
 var _rough_s := 0.0             # seconds in a steep sea out of a raft: the partner's capsize waits on it
@@ -167,10 +168,11 @@ func _ready() -> void:
 			hud.add_child(_set_label)
 			hud.add_child(_dest_label)
 			# The boat as it was packed: the trim is physics, and the gear left behind is gone.
-			var pack_param := App._url_param("pack")  # `?pack=bow` opens with everything in the bow, for checks
+			var pack_param := App._url_param("pack")  # `?pack=bow` opens with everything in the bow, `none` with nothing, for checks
 			var gear: Array = App.content.get("gear", [])
-			var layout: Dictionary = Packing.lopsided(gear, "bowEnd") if pack_param == "bow" else (Packing.suggested(gear) if pack_param == "ideal" else App.save.get("packing", Packing.suggested(gear)))
+			var layout: Dictionary = Packing.lopsided(gear, "bowEnd") if pack_param == "bow" else (Packing.suggested(gear) if pack_param == "ideal" else (Packing.empty() if pack_param == "none" else App.save.get("packing", Packing.suggested(gear))))
 			_pack = Packing.assess(layout, gear)
+			_nav = _pack.get("enables", []).has("navigation")
 			kayak.set_trim(_pack)
 			_spawn_sightings()
 			# The ferry works the channel whatever day it is: leaving the landing behind you on day one,
@@ -201,6 +203,7 @@ func _ready() -> void:
 			_chart.dest = _dest
 			_chart.position = Vector2(20, 224 if controls.touch() else 200)
 			_chart.folded = controls.touch() or bool(App.save.get("chartFolded", false))
+			_chart.visible = _nav  # left on the beach, there is no chart to read
 			hud.add_child(_chart)
 			var start := CheckStarts.at(App._url_param("near"), App._url_param("close") == "1")  # starts for checks
 			if not start.is_empty():
@@ -332,6 +335,7 @@ func _leg(delta: float) -> void:
 	var dist := Vector2(_dest.x - here.x, _dest.z - here.z).length()
 	var brg := Leg.bearing_deg(here, _dest)
 	_compass.target = deg_to_rad(brg)
+	_compass.visible = _nav or not Fog.blind(_fog)  # the dome is the deck compass: on the beach, it is not here
 	# A steady hold settles into the groove: the boat makes ground over the chart and the clock runs.
 	var steady := controls.holding_for() > GROOVE_AFTER and absf(controls.steer) < 0.3 and kayak.speed > 0.4
 	_groove = move_toward(_groove, 1.0 if steady else 0.0, delta * (0.5 if steady else 1.5))
@@ -435,8 +439,7 @@ func _leg(delta: float) -> void:
 		_fogged = true
 		if not _fog_said:
 			_fog_said = true
-			var nav: bool = mode != "trip" or _pack.get("enables", []).has("navigation")
-			note_label.text = _said("fog") + Fog.note(brg, nav, str(_partner.preset.get("name", "")) if _partner else "", controls.touch())
+			note_label.text = _said("fog") + Fog.note(brg, _nav, str(_partner.preset.get("name", "")) if _partner else "", controls.touch())
 	sea.set_sea_state(lerpf(sea.sea_state, lerpf(0.10, 0.70, state), minf(1.0, delta * 0.3)))
 	kayak.sea_state = sea.sea_state
 	if factor > 1.15 and kayak.speed > 0.3:
@@ -459,7 +462,7 @@ func _leg(delta: float) -> void:
 		trim_note += " · slack hull"
 	_set_label.text = "%s: %s%s · wind %d kn from %03d°%s" % [str(_route.get("channel", "San Juan Channel")), Tides.describe(_day, _hour), rip, int(round(Tides.wind(_day, _hour).kn)), int(round(Tides.wind(_day, _hour).fromDeg)), trim_note]
 	if Fog.blind(_fog):
-		_dest_label.text = "%s · fog, %d m · %s · %s%s" % [Leg.cove_name(_route), int(Fog.visibility_m(_fog)), Fog.steer(brg, mode != "trip" or _pack.get("enables", []).has("navigation")), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
+		_dest_label.text = "%s · fog, %d m · %s · %s%s" % [Leg.cove_name(_route), int(Fog.visibility_m(_fog)), Fog.steer(brg, _nav), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
 	else:
 		_dest_label.text = "%s · %.1f km · %03d° · %s%s" % [Leg.cove_name(_route), dist / 1000.0, int(round(brg)), Leg.clock(_hour), " · in the groove" if _groove > 0.5 else ""]
 	if dist < 220.0:
@@ -932,7 +935,7 @@ func _righted() -> void:
 		note_label.text = "Back in the boat and dry. Alone, that is the paddle float; with a partner it is the T-rescue, and faster.\n%s: %s" % [App.lesson("noFloat").title, App.lesson("noFloat").text]
 		return
 	_hour += 0.15
-	note_label.text = "Nine minutes in the water with a partner alongside. Paddle to warm up, and make the next landing the bail-out if the shivering does not stop."
+	note_label.text = Roll.righted_note(_pack.get("enables", []).has("warmth"))
 
 ## The ferry: a card as it comes within reach, a long blast as it closes, and its wake on the beam.
 func _watch_traffic(delta: float) -> void:

@@ -628,6 +628,14 @@
 
 - [x] T014fc If you swim in a steep sea, the paddle goes with the wave while you hold the boat. With the spare packed, the split spare comes off the deck lines and nothing is lost. Without it, the partner chases the paddle down: the rescue card says so, and the clock loses three more minutes in the water. In a moderate sea you keep hold of both, and nothing changes. `Roll.paddle_line()`, with a test.
 
+## Slice 142 — no chart, no compass on deck
+
+- [x] T014fd The chart and compass left on the beach are gone from the screen as well as from the notes. The chart inset is not shown on the water at all, and in fog the compass dome goes too, because the dome is the deck compass. `?pack=none` now works on the water. New station `trip-fog-unpacked`.
+
+## Slice 143 — nothing dry to pull on
+
+- [x] T014fe Back in the boat after a swim, the note depends on the warm layers. If they were packed, the warm layer goes on over the wet one and you paddle to warm up. If they were left on the beach, the note sends you to the nearest landing, out of the wind. `Roll.righted_note()`, with a test.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
