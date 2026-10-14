@@ -900,7 +900,10 @@ func _show_rescue() -> void:
 	if _rescue_step == 0 and solo:
 		text = "Over you go, on purpose, in the harbour's flat water. " + text
 	if _rescue_step == 0 and not solo:
-		text = _said("capsize") + "You are in nine-degree water. %s is turning toward you. " % str(_partner.preset.get("name", "Your partner")) + text
+		var spare: bool = _pack.get("enables", []).has("spare")
+		var who := str(_partner.preset.get("name", "Your partner"))
+		text = _said("capsize") + "You are in nine-degree water. %s is turning toward you. " % who + Roll.paddle_line(sea.sea_state, spare, who) + text
+		_hour += 0.0 if spare or sea.sea_state < Roll.STEEP else 0.05  # the chase is time in nine-degree water
 	if _rescue_steps[_rescue_step] == "pumpOut" and not solo and not _pack.get("enables", []).has("pumpOut"):
 		text = "The pump is on the beach at Friday Harbor. Bail with a sponge and a hat: twice as long with a boat full of nine-degree water. " + text
 	_show(UIKit.card(l.get("title", ""), text, App.sources_line(l.get("sourceIds", [])), actions, kicker))

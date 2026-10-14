@@ -624,6 +624,10 @@
 
 - [x] T014fb The first camp card now says when the first-aid kit stayed on the beach: the blister from the paddle shaft goes untaped. With no tent packed, the camp draws the low grey tarp over the paddles that the card already describes, not an orange tent. New station `camp-unpacked` (`?scene=camp&step=1&pack=none`).
 
+## Slice 141 — the spare paddle
+
+- [x] T014fc If you swim in a steep sea, the paddle goes with the wave while you hold the boat. With the spare packed, the split spare comes off the deck lines and nothing is lost. Without it, the partner chases the paddle down: the rescue card says so, and the clock loses three more minutes in the water. In a moderate sea you keep hold of both, and nothing changes. `Roll.paddle_line()`, with a test.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
