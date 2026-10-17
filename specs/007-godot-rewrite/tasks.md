@@ -656,6 +656,10 @@
 
 - [x] T014fj The debrief's "Each day" line reads the two new records. A squall ridden out side by side is "rafted up through a squall" (otherwise still "paddled through a squall"), and a boat that showed no light when it needed one adds "no white light after dark".
 
+## Slice 149 — the deadhead
+
+- [x] T014fk A deadhead rides near each day's line: a waterlogged log floating on end, a hand of grey wood above the surface (`Deadhead`, placed 45% along the waypoints and 14 m to one side, checked to sit in deep water on all three legs). Inside 40 m the note says what it is and to give it room. A bow on it at paddling speed jars the boat (a kick and a hull slap) and says so; drifting onto it does not. The day's record keeps `logStruck`. Check start `?scene=trip&near=log`; new station `trip-log`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
