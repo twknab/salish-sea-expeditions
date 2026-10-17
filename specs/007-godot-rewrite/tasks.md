@@ -640,6 +640,10 @@
 
 - [x] T014ff The debrief gets a "Left on the beach" card when essentials stayed behind at Friday Harbor. It lists each one, in the kit list's order, with what the trip charges for it: the same consequences the water and the camp already enforce, gathered where the trip is read back. A content test makes sure every essential has a cost written for it. `?scene=debrief&demo=1&pack=none` shows the empty boat's account; new station `debrief-unpacked`.
 
+## Slice 145 — the words for the rescue and the fog
+
+- [x] T014fg The field guide's words on the water gain four the game already uses: wet exit, paddle float, deck lines (where the pump, chart, float and split spare ride) and dead reckoning (what the fog leaves you, and why the fix after it matters). Each is cited, like every glossary entry.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
