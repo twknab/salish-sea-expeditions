@@ -254,6 +254,8 @@ func _init() -> void:
 	var squall_kept := Seamanship.calls([{"verdict": "good", "rain": true, "rainRafted": true}])
 	var squall_missed := Seamanship.calls([{"verdict": "good", "rain": true}, {"verdict": "good", "rain": true, "rainRafted": true}])
 	check(squall_kept.size() == 4 and Seamanship.kept(squall_kept) == 4 and squall_missed.any(func(c: Dictionary) -> bool: return str(c.label) == "Rafted up in the squall" and not c.ok and str(c.note).contains("1 of 2")) and Seamanship.calls([{"verdict": "good"}]).size() == 3, "a squall is a call when one came: rafted up in it, or rode it apart")
+	var lit_calls := Seamanship.calls([{"verdict": "good", "light": "lit"}, {"verdict": "good", "light": "unlit"}])
+	check(Seamanship.kept(Seamanship.calls([{"verdict": "good", "light": "lit"}])) == 4 and lit_calls.any(func(c: Dictionary) -> bool: return str(c.label) == "Showed a white light" and not c.ok and str(c.note).contains("unseen once")), "the white light is a call when the dark or the fog came")
 	# The roll: the hip snap learned brings the boat up in all but a steep sea; without it, the swim.
 	check(Roll.comes_up(true, 0.3) and not Roll.comes_up(true, 0.6) and not Roll.comes_up(false, 0.1), "the roll is the brace's hip snap, and a steep sea beats it")
 	check(Roll.outcome(true, true).begins_with("Up") and Roll.outcome(false, false).contains("hip snap") and Roll.outcome(false, true).contains("knocks the blade"), "the roll says why it failed")

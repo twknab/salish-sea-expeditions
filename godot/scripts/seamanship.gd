@@ -41,7 +41,10 @@ static func calls(days: Array) -> Array:
 	var reaches: Array = []
 	var pushes := 0
 	var squalls := Vector2i()  # x: days it rained, y: of those, rafted up in it
+	var lights := Vector2i()   # x: days the dark or fog called for the white light, y: of those, shown
 	for d in days:
+		if str(d.get("light", "")) != "":
+			lights += Vector2i(1, 1 if str(d.get("light", "")) == "lit" else 0)
 		if bool(d.get("rain", false)):
 			squalls += Vector2i(1, 1 if bool(d.get("rainRafted", false)) else 0)
 		var sv := FerryGlide.held(float(d.get("streamS", 0.0)), float(d.get("onLineS", 0.0)))
@@ -108,6 +111,8 @@ static func calls(days: Array) -> Array:
 		out.append({ "label": "Held the line in fog", "ok": fogs_held == fogs, "note": "came out on the line" if fogs_held == fogs else "came out off the line — the stream had the boat while the islands were gone" })
 	if blows > 0:
 		out.append({ "label": "Let the wind blow through", "ok": pushes == 0, "note": "waited in a lee or rafted up, every time it rose" if pushes == 0 else "pushed on into it %d of %d times" % [pushes, blows] })
+	if lights.x > 0:
+		out.append({ "label": "Showed a white light", "ok": lights.y == lights.x, "note": "on deck after dark and in the fog" if lights.y == lights.x else "the headlamp stayed on the beach: unseen %s" % ("once" if lights.x - lights.y == 1 else "%d days" % (lights.x - lights.y)) })
 	if squalls.x > 0:
 		out.append({ "label": "Rafted up in the squall", "ok": squalls.y == squalls.x, "note": "side by side while it blew through" if squalls.y == squalls.x else "rode %s apart" % ("it" if squalls.x == 1 else "%d of %d squalls" % [squalls.x - squalls.y, squalls.x]) })
 	if not reaches.is_empty():

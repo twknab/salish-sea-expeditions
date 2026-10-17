@@ -648,6 +648,10 @@
 
 - [x] T014fh The partner's squall advice is now judged. Rafting up while it is raining is kept in the day's record (`rainRafted`). Seamanship gains "Rafted up in the squall": kept with "side by side while it blew through", missed with "rode it apart" (or how many squalls of how many). The call only appears on a trip that met rain. The demo's second day shows it kept.
 
+## Slice 147 — showed a white light
+
+- [x] T014fi Once the dark or the fog calls for the white light, the day's record keeps whether the boat showed one (`light`: "lit" or "unlit"). Seamanship gains "Showed a white light": kept with "on deck after dark and in the fog", missed with "the headlamp stayed on the beach: unseen once". The call only appears on a trip that met the dark or the fog. The demo's second day shows it kept.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
