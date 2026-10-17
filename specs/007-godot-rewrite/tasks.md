@@ -636,6 +636,10 @@
 
 - [x] T014fe Back in the boat after a swim, the note depends on the warm layers. If they were packed, the warm layer goes on over the wet one and you paddle to warm up. If they were left on the beach, the note sends you to the nearest landing, out of the wind. `Roll.righted_note()`, with a test.
 
+## Slice 144 — left on the beach
+
+- [x] T014ff The debrief gets a "Left on the beach" card when essentials stayed behind at Friday Harbor. It lists each one, in the kit list's order, with what the trip charges for it: the same consequences the water and the camp already enforce, gathered where the trip is read back. A content test makes sure every essential has a cost written for it. `?scene=debrief&demo=1&pack=none` shows the empty boat's account; new station `debrief-unpacked`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

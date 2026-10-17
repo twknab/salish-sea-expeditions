@@ -249,6 +249,8 @@ func _init() -> void:
 	check(Fog.note(200.0, true, "Mina", false).contains("Hold 200°") and Fog.note(200.0, false, "Mina", false).contains("Mina's stern") and not Fog.note(200.0, false, "", true).contains("°") and Fog.steer(5.0, false) == "no compass", "no chart and compass in the fog: no bearing, so follow the partner or the swell")
 	check(Roll.paddle_line(0.3, false, "Mina") == "" and Roll.paddle_line(0.6, true, "Mina").contains("split spare") and Roll.paddle_line(0.6, false, "Mina").contains("Mina chases it down"), "a paddle lost in a steep sea: the spare covers it, or the partner chases it")
 	check(Roll.righted_note(true).contains("warm layer on") and Roll.righted_note(false).contains("nearest landing"), "after a swim: the warm layers, or the nearest landing")
+	var lb_gear: Array = [{"id": "pump", "name": "Bilge pump"}, {"id": "tent", "name": "Tent"}, {"id": "chart", "name": "Chart & compass"}]
+	check(LeftBehind.lines(["chart", "pump"], lb_gear) == ["Bilge pump · " + str(LeftBehind.COST.pump), "Chart & compass · " + str(LeftBehind.COST.chart)] and LeftBehind.lines([], lb_gear).is_empty(), "the debrief reads back what stayed on the beach, in the kit list's order")
 	# The roll: the hip snap learned brings the boat up in all but a steep sea; without it, the swim.
 	check(Roll.comes_up(true, 0.3) and not Roll.comes_up(true, 0.6) and not Roll.comes_up(false, 0.1), "the roll is the brace's hip snap, and a steep sea beats it")
 	check(Roll.outcome(true, true).begins_with("Up") and Roll.outcome(false, false).contains("hip snap") and Roll.outcome(false, true).contains("knocks the blade"), "the roll says why it failed")
@@ -339,6 +341,8 @@ func _init() -> void:
 						missing += 1
 						printerr("unknown source ", sid, " in ", key)
 		check(missing == 0, "all sourceIds resolve")
+		var essentials: Array = c.gear.filter(func(g: Dictionary) -> bool: return bool(g.get("essential", false)))
+		check(essentials.all(func(g: Dictionary) -> bool: return LeftBehind.COST.has(str(g.id))), "every essential has its cost in the debrief")
 		var species_ids: Array = c.species.map(func(sp: Dictionary) -> String: return str(sp.id))
 		check(Sightings.ALL.all(func(sg: Dictionary) -> bool: return species_ids.has(str(sg.species))) and Sightings.ALL.all(func(sg: Dictionary) -> bool: return [0, 1, 2].has(int(sg.leg))), "every sighting is a field-guide species, on one of the three days")
 		check(c.drills.size() == 10 and c.drills[0].id == "forward" and c.drills[5].id == "compass" and c.drills[6].id == "ferry" and c.drills[7].id == "eddyline" and c.drills[8].id == "draw" and c.drills[9].id == "rescue", "ten drills, forward first, the compass, the ferry angle, the eddy line and the draw before the rescue, the rescue last")

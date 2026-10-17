@@ -54,6 +54,11 @@ func _ready() -> void:
 	var calls := Seamanship.calls(save.get("days", []))
 	if not calls.is_empty():
 		_section(col, "Seamanship · %d of %d calls" % [Seamanship.kept(calls), calls.size()], Seamanship.lines(calls))
+	var gear: Array = App.content.get("gear", [])
+	var layout: Dictionary = Packing.empty() if App._url_param("pack") == "none" else save.get("packing", Packing.suggested(gear))  # `&pack=none`: the empty boat's account, for checks
+	var left := LeftBehind.lines(Packing.assess(layout, gear).missing, gear)
+	if not left.is_empty():
+		_section(col, "Left on the beach · %d" % left.size(), left)
 	_field_notes(col, save)
 	var drills: Array = save.get("drills", [])
 	var names: Array = []

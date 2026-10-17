@@ -47,6 +47,7 @@ const STATIONS = [
   ['takeout-close', '?scene=camp&leg=2&step=3&close=forgot'],
   ['debrief', '?scene=debrief&demo=1'],
   ['debrief-chart', '?scene=debrief&demo=1&at=chart'],
+  ['debrief-unpacked', '?scene=debrief&demo=1&pack=none'],
   ['guide', '?scene=guide&at=credits'],
   ['guide-words', '?scene=guide&at=words'],
 ];
