@@ -652,6 +652,10 @@
 
 - [x] T014fi Once the dark or the fog calls for the white light, the day's record keeps whether the boat showed one (`light`: "lit" or "unlit"). Seamanship gains "Showed a white light": kept with "on deck after dark and in the fog", missed with "the headlamp stayed on the beach: unseen once". The call only appears on a trip that met the dark or the fog. The demo's second day shows it kept.
 
+## Slice 148 — the day's line tells the squall and the light
+
+- [x] T014fj The debrief's "Each day" line reads the two new records. A squall ridden out side by side is "rafted up through a squall" (otherwise still "paddled through a squall"), and a boat that showed no light when it needed one adds "no white light after dark".
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
