@@ -644,6 +644,10 @@
 
 - [x] T014fg The field guide's words on the water gain four the game already uses: wet exit, paddle float, deck lines (where the pump, chart, float and split spare ride) and dead reckoning (what the fog leaves you, and why the fix after it matters). Each is cited, like every glossary entry.
 
+## Slice 146 — rafted up in the squall
+
+- [x] T014fh The partner's squall advice is now judged. Rafting up while it is raining is kept in the day's record (`rainRafted`). Seamanship gains "Rafted up in the squall": kept with "side by side while it blew through", missed with "rode it apart" (or how many squalls of how many). The call only appears on a trip that met rain. The demo's second day shows it kept.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

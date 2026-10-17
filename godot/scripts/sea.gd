@@ -53,6 +53,7 @@ var _note_at: Array = []        # [[x, z]] where each was said, for the chart of
 var _last_note := ""
 const NOTES_KEPT := 24
 var _rained := false            # rain fell on the leg, for the record
+var _rain_rafted := false       # rafted up while it rained: the squall ridden out together
 var _rain_now := 0.0            # the rain of the hour, read before the sea state is set
 var _cross := CrossingWatch.new()  # the stream crossing: the line held, the ferry note, the slack card
 var _thirsty := false           # last night's water was drunk: the strokes are shorter today
@@ -495,7 +496,7 @@ func _record_day() -> void:
 		"swims": _swims_today, "rolls": _rolls_today, "rescuesGiven": _partner.rescues_given if _partner else 0, "reachS": _partner.reach_s if _partner else -1.0, "waits": _waits_today, "blows": _blows.x, "pushes": _blows.y, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
 		"streamS": _cross.stream_s, "onLineS": _cross.on_line_s, "maxKn": snappedf(_cross.max_kn, 0.1), "maxAt": _cross.max_at, "eddy": _cross.eddy_said, "linesEdged": _cross.lines_edged, "rafts": _partner.rafts if _partner else 0, "missing": Array(_pack.get("missing", [])).size(), "linesTripped": _cross.lines_tripped,
-		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
+		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained, "rainRafted": _rain_rafted,
 		"notes": _notes.duplicate(), "noteAt": _note_at.duplicate(),
 		"lateStart": float(App.save.get("lateStart", 0.0)),
 	}
@@ -545,6 +546,7 @@ func _on_pushed() -> void:
 	_note_hold = NOTE_HOLD
 
 func _on_rafted() -> void:
+	_rain_rafted = _rain_rafted or _rain_now > 0.3
 	note_label.text = _said("raft") + "Rafted up, side by side: the steadiest place on the water to eat, drink or wait out a squall. Paddle on to break it."
 	_note_hold = NOTE_HOLD
 
