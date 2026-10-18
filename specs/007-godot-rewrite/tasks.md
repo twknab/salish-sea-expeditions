@@ -853,6 +853,10 @@
 
 - [x] T014hh The four species this route never shows — the Southern Residents, the sea otter, the sunflower star, the western redcedar — say so in the field guide, instead of leaving a gap where the others say where to look.
 
+## Slice 198 — three words the game already says
+
+- [x] T014hi The words on the water gain sécurité (the ferry’s fog call), haul-out (the seals’ rock) and Be Whale Wise (the distances the field guide gives), each with its source.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
