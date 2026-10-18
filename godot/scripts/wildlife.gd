@@ -66,6 +66,8 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"seals": w._seals()
 		"heron": w._heron()
 		"eagle": w._eagle()
+		"peregrine": w._peregrine()
+		"oystercatcher": w._oystercatcher()
 		"kelp": w._kelp()
 		"porpoise": w._porpoise()
 		"orcas": w._orcas()
@@ -112,6 +114,31 @@ func _eagle() -> void:
 	_ball(perch, Vector3(0.09, 0.09, 0.1), Color(0.95, 0.95, 0.93), Vector3(0, 0.46, 0.12))
 	_cone(perch, 0.03, 0.09, Color(0.95, 0.75, 0.15), Vector3(0, 0.45, 0.24), Vector3(deg_to_rad(-90), 0, 0))
 	_ball(perch, Vector3(0.1, 0.03, 0.12), Color(0.95, 0.95, 0.93), Vector3(0, 0.0, -0.22))  # the white tail
+
+## A peregrine on the cliff's lip: slate back, pale barred breast, the dark hood and moustache, a
+## yellow cere. Small, and still, which is how they are seen at all.
+func _peregrine() -> void:
+	var perch := Node3D.new()
+	perch.position = Vector3(0, 0.05, 0)
+	add_child(perch)
+	_ball(perch, Vector3(0.13, 0.19, 0.2), Color(0.29, 0.33, 0.38), Vector3(0, 0.2, 0), Vector3(deg_to_rad(15), 0, 0))  # the slate back
+	_ball(perch, Vector3(0.1, 0.14, 0.06), Color(0.9, 0.87, 0.8), Vector3(0, 0.18, 0.12))                               # the pale breast
+	_ball(perch, Vector3(0.08, 0.08, 0.09), Color(0.12, 0.13, 0.15), Vector3(0, 0.42, 0.06))                            # the dark hood
+	_cone(perch, 0.025, 0.06, Color(0.95, 0.8, 0.2), Vector3(0, 0.41, 0.15), Vector3(deg_to_rad(-90), 0, 0))           # the yellow cere and bill
+	_ball(perch, Vector3(0.06, 0.02, 0.16), Color(0.25, 0.28, 0.32), Vector3(0, 0.06, -0.2))                            # the tail
+
+## A black oystercatcher at the tide line: all black, the long orange-red chisel of a bill, pale legs.
+## It works the rock for limpets, and bobs as it goes.
+func _oystercatcher() -> void:
+	var bird := Node3D.new()
+	bird.position = Vector3(0, 0.12, 0)
+	add_child(bird)
+	_ball(bird, Vector3(0.11, 0.1, 0.2), Color(0.06, 0.06, 0.07), Vector3(0, 0.12, 0))                                  # the black body
+	_ball(bird, Vector3(0.06, 0.06, 0.07), Color(0.06, 0.06, 0.07), Vector3(0, 0.24, 0.13))                              # the head
+	_cone(bird, 0.018, 0.16, Color(0.95, 0.35, 0.12), Vector3(0, 0.24, 0.24), Vector3(deg_to_rad(-95), 0, 0))           # the bill
+	_rod(bird, 0.012, 0.12, Color(0.9, 0.82, 0.72), Vector3(0.03, -0.02, 0))                                             # the pale legs
+	_rod(bird, 0.012, 0.12, Color(0.9, 0.82, 0.72), Vector3(-0.03, -0.02, 0))
+	_parts.append(bird)
 
 ## A bed of bull kelp: floats at the surface, stipes down into the dark, blades streaming.
 func _kelp() -> void:

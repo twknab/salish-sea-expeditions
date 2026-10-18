@@ -182,7 +182,7 @@ func _ready() -> void:
 			add_child(_log)
 			_log.setup(Deadhead.place(Leg.waypoints(_route)), kayak, sea)
 			_log.said.connect(func(text: String, hit: bool) -> void:
-				note_label.text = text
+				note_label.text = _said("deadhead_hit" if hit else "deadhead") + text
 				_note_hold = NOTE_HOLD
 				if hit:
 					kayak.kick(0.9)
@@ -250,8 +250,8 @@ func _spawn_sightings() -> void:
 			continue
 		var at: Vector3 = conf.at
 		var y := 0.0
-		if conf.kind == "eagle" or conf.kind == "seals":
-			y = maxf(terrain.height_at(at.x, at.z), 0.0) + (0.0 if conf.kind == "eagle" else 0.3)
+		if conf.kind in ["eagle", "seals", "peregrine", "oystercatcher"]:
+			y = maxf(terrain.height_at(at.x, at.z), 0.0) + (0.3 if conf.kind == "seals" else 0.0)
 		var node := Wildlife.make(conf.kind, Vector3(at.x, y, at.z), conf.face)
 		add_child(node)
 		_sightings.append({ "conf": conf, "node": node, "seen": false })
@@ -264,24 +264,12 @@ func _spawn_sightings() -> void:
 			add_child(boat)
 			var heading: Vector3 = conf.face
 			var keep := float(_species(conf.species).get("approachMetres", WhaleWatch.STANDOFF))  # the field guide's distance, the fleet's too
-			# Abeam on whichever side is water along the pod's whole pass; nearer if neither is.
-			var side := 1.0
-			var at_keep := keep
-			if not _water_along(node.global_position, heading, 1.0, keep):
-				side = -1.0
-				if not _water_along(node.global_position, heading, -1.0, keep):
-					side = 1.0
-					at_keep = WhaleWatch.STANDOFF
+			var ab := WhaleWatch.abeam(node.global_position, heading, keep, terrain)
+			var side := ab.x
+			var at_keep := ab.y
 			# The pod's walk starts 600 m back along its heading (Wildlife._process), so the boat starts there too.
 			boat.global_position = WhaleWatch.station_for(node.global_position - heading.normalized() * 600.0, heading, side, at_keep)
 			_watchers.append({ "boat": boat, "pod": node, "heading": heading, "keep": at_keep, "side": side, "seen": false })
-## True when the station abeam of the pod's line, over its whole walk, is on the water.
-func _water_along(origin: Vector3, heading: Vector3, side: float, keep: float) -> bool:
-	for along in [-600.0, -300.0, 0.0, 300.0, 600.0]:
-		var p := WhaleWatch.station_for(origin + heading.normalized() * along, heading, side, keep)
-		if terrain.height_at(p.x, p.z) > -0.5:
-			return false
-	return true
 
 ## Coming within reach of a sighting names it once, from the field guide, and keeps it in the save.
 func _watch_sightings() -> void:
@@ -305,8 +293,8 @@ func _watch_sightings() -> void:
 					note_label.text = "Too close: %d m is the distance. Let it come to you, or not." % keep
 			continue
 		var conf: Dictionary = s.conf
-		if kayak.global_position.distance_to(s.node.global_position) > float(conf.radius):
-			continue
+		if _card != null or kayak.global_position.distance_to(s.node.global_position) > float(conf.radius):
+			continue  # one card at a time: a second sighting in reach waits for the first to be noted
 		s.seen = true
 		s.close = false
 		var sp := _species(conf.species)
@@ -328,6 +316,7 @@ func _watch_sightings() -> void:
 			text += "\n\nKeep %d m off: let it come to you, or not." % approach
 		_show(UIKit.card(sp.get("common", conf.species), text, App.sources_line(sp.get("sourceIds", [])), [["Noted", _clear_card, true]], "Sighting · %s" % sp.get("group", "")))
 		Sound.gull()
+		return
 
 func _species(id: String) -> Dictionary:
 	for sp in App.content.get("species", []):
@@ -416,9 +405,15 @@ func _leg(delta: float) -> void:
 		_kelp_said = true
 		note_label.text = _said("kelp") + "In the kelp: the fronds grab the blade and the swell lies down. A kelp bed is a lee, and a slow one."
 	_rain_now = 1.0 if App._url_param("rain") == "1" else Tides.rain(_day, _hour)  # `?rain=1` for checks
-	var state := Tides.sea_state(_day, _hour, factor) * (1.0 - 0.6 * kelp) * (1.0 - 0.25 * _rain_now)  # rain lies the chop down a little
-	if state >= ROUGH and not _weather_asked and _card == null:
-		_offer_bailouts(state)
+	var clap := Clapotis.at(terrain, here)  # under a cliff the waves come back off the rock and stand the sea up
+	var open_state := Tides.sea_state(_day, _hour, factor) * (1.0 - 0.6 * kelp) * (1.0 - 0.25 * _rain_now)  # rain lies the chop down a little
+	var state := Clapotis.lift(open_state, clap)
+	if clap > 0.5 and state > 0.3 and not _cross.clap_said and _note_hold <= 0.0:
+		_cross.clap_said = true
+		note_label.text = _said("clap") + "Clapotis: off the cliff the waves come back and meet the ones coming in. No rhythm to brace to. Stand off a few boat lengths."
+		_note_hold = NOTE_HOLD
+	if open_state >= ROUGH and not _weather_asked and _card == null:  # the channel's weather, not the cliff's
+		_offer_bailouts(open_state)
 	var w := Tides.wind(_day, _hour)
 	kayak.wind = Windage.vector(float(w.kn), float(w.fromDeg))
 	# Fog: the leg's morning may start in it. The islands go, the chart loses its fix, the compass

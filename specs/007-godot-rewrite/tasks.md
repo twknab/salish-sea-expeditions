@@ -660,6 +660,35 @@
 
 - [x] T014fk A deadhead rides near each day's line: a waterlogged log floating on end, a hand of grey wood above the surface (`Deadhead`, placed 45% along the waypoints and 14 m to one side, checked to sit in deep water on all three legs). Inside 40 m the note says what it is and to give it room. A bow on it at paddling speed jars the boat (a kick and a hull slap) and says so; drifting onto it does not. The day's record keeps `logStruck`. Check start `?scene=trip&near=log`; new station `trip-log`.
 
+## Slice 150 — room in the water scene
+
+- [x] T014fl The water scene had reached 995 of the lint's 1000 lines. Where the whale-watch fleet holds abeam of a pod (the side that is water along the pod's whole pass, or the nearer standoff if neither is) now lives on `WhaleWatch.abeam()` beside `station_for`, and `sea.gd` drops to 983. No change on screen; the whale and fleet stations still pass.
+
+## Slice 151 — gave the deadheads room
+
+- [x] T014fm The deadhead is judged. Seamanship gains "Gave the deadheads room": kept with "saw the grey wood and went round", missed with "the bow found one once" (or how many times). The call appears once a day's record carries `logStruck`. A day that hit one adds "the bow found a deadhead" to its line. The demo's second day shows it kept.
+
+## Slice 152 — the word for the log
+
+- [x] T014fn "Deadhead" joins the field guide's words on the water: what it is, why a chop hides it, what it does to a bow at speed, and to give it room. Cited like every entry.
+
+## Slice 153 — clapotis under the cliffs
+
+- [x] T014fo Under a steep shore the waves come back off the rock. `Clapotis` reads the steepest land within 30 and 60 m of the boat (the terrain is a 48 m grid, so nearer only sees a smoothed shore) and lifts the sea state by up to two thirds hard under a cliff. A beach adds nothing. Once a leg, in a sea worth the word, the note says what it is and to stand off a few boat lengths. The bail-out card still reads the channel's own sea, not the cliff's. A survey of the map puts the steepest water under Spieden Island's south shore: check start `?scene=trip&leg=1&near=cliff&launch=15`, station `trip-cliff`. "Clapotis" joins the glossary.
+
+## Slice 154 — the partner calls the log and the cliff
+
+- [x] T014fp The partner has words for the deadhead ("Log! Off your bow — go round it."), for a bow that found one ("You okay? Check the hull for cracks.") and for the clapotis ("Out from the rock — it's bouncing back at us."), spoken ahead of each note as for every other event.
+
+## Slice 155 — the peregrine on Spieden's cliff, and one card at a time
+
+- [x] T014fq The field guide's peregrine falcon is now met on the water. It perches on the lip of Spieden Island's steep south shore, above the clapotis, with a slate back, pale breast, dark hood and yellow cere (`Wildlife._peregrine`), placed on the terrain like the eagle and seals.
+- [x] T014fr Fixed: two sightings coming into reach on the same frame used to show both cards one after the other, and the second overwrote the first, so the first was marked seen but never shown. Now only one sighting card shows at a time; the next waits until the first is noted. Station `trip-peregrine`.
+
+## Slice 156 — the black oystercatcher
+
+- [x] T014fs The field guide's black oystercatcher works the tide line beside the seals' rock on day one and again on the way home: all black, the long orange-red bill, pale legs (`Wildlife._oystercatcher`). With slice 155's fix, the kelp, the oystercatcher and the seals come up as cards one after another rather than over each other (checked headless). Station `trip-oystercatcher`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

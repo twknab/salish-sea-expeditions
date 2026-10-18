@@ -24,6 +24,9 @@ const LINES := {
 	"over": "I’m over! Come to my bow!",
 	"given": "Thanks. Cold. Let’s keep paddling.",
 	"eddyline_edged": "That’s it. You rode it over.",
+	"deadhead": "Log! Off your bow — go round it.",
+	"deadhead_hit": "You okay? Check the hull for cracks.",
+	"clap": "Out from the rock — it’s bouncing back at us.",
 }
 
 ## The partner's words for an event, by name, or empty when there are none.
