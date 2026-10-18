@@ -295,6 +295,7 @@ func _init() -> void:
 	var snd: Script = load("res://scripts/sound.gd")
 	check(snd.CALLS.values().all(func(c: String) -> bool: return snd.SFX.has(c) and FileAccess.file_exists("res://audio/%s.wav" % c)), "every call a sighting is heard with is a file the sea loads")
 	check(snd.SFX.all(func(n: String) -> bool: return FileAccess.file_exists("res://audio/%s.wav" % n)), "every effect the sea loads is on disk")
+	check(snd.voiced("heron") and snd.voiced("eagle") and snd.voiced("dalls") and snd.voiced("orcas") and not snd.voiced("madrona") and not snd.voiced("jellies"), "the guide offers a call for the heron, the eagle, the porpoise and the orca's blow, and none for a tree or a jelly")
 	check(["otter", "eagle", "porpoise"].all(func(e: String) -> bool: return PartnerVoice.line(e) != "") and PartnerVoice.line("oak") == "", "the partner points out the otter, the eagle and the porpoise, and leaves the oak alone")
 	check(PartnerVoice.line("eddyline_edged") != "" and PartnerVoice.line("eddyline_edged") != PartnerVoice.line("eddyline"), "the partner has a word for an eddy line crossed well, not only for one that trips the boat")
 	for ev in PartnerVoice.LINES.keys():

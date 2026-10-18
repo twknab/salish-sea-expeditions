@@ -1,5 +1,5 @@
 ## The field guide and the credits, from the title. Every species in the content by group, the ones
-## met on the water marked from the save; the words on the water; then every source the game cites (Principle VIII), with
+## met on the water marked from the save, and a Listen button for the ones with a call; the words on the water; then every source the game cites (Principle VIII), with
 ## its licence, and a way to open it. One scrolling page, so it reads the same on a phone.
 extends Control
 
@@ -38,6 +38,10 @@ func _ready() -> void:
 func _species(col: VBoxContainer) -> void:
 	var seen: Array = App.save.get("seen", [])
 	var species: Array = App.content.get("species", [])
+	var voice := {}  # species -> the sighting kind it is heard as
+	for conf in Sightings.ALL:
+		if Sound.voiced(conf.kind) and not voice.has(conf.species):
+			voice[conf.species] = conf.kind
 	var groups: Array = []
 	for sp in species:
 		if not groups.has(sp.group):
@@ -56,7 +60,9 @@ func _species(col: VBoxContainer) -> void:
 			var approach := int(sp.get("approachMetres", 0))
 			if approach > 0:
 				text += " Keep %d m off." % approach
-			var card := UIKit.card("%s%s" % [sp.common, "  · met" if met else ""], text, "%s · %s" % [sp.get("scientific", ""), App.sources_line(sp.get("sourceIds", []))], [], "")
+			var kind: String = voice.get(sp.id, "")
+			var listen: Array = [] if kind == "" else [["Listen", func() -> void: Sound.listen(kind), false]]
+			var card := UIKit.card("%s%s" % [sp.common, "  · met" if met else ""], text, "%s · %s" % [sp.get("scientific", ""), App.sources_line(sp.get("sourceIds", []))], listen, "")
 			col.add_child(card)
 
 ## The words the chart, the plan and the notes use, each in a sentence or two with its source. Returns

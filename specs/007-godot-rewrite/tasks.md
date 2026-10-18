@@ -813,6 +813,10 @@
 
 - [x] T014gx Which call a sighting card is heard with moves out of `sea.gd` into one table in `sound.gd` (`CALLS`, `Sound.sighted`), and the tests check every call and every effect the sea loads is a file on disk.
 
+## Slice 188 — listen in the field guide
+
+- [x] T014gy Every field-guide card for an animal the sea gives a voice gets a Listen button: the bird calls, the seals, sea lions and porpoise, and the whales’ blow (`Sound.voiced`, `Sound.listen`).
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

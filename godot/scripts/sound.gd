@@ -41,6 +41,19 @@ const CALLS := {
 	"oystercatcher": "piping", "kingfisher": "rattle", "peregrine": "kak", "guillemot": "whistle",
 	"heron": "croak", "otter": "chirp", "seals": "snort",
 }
+const OWN_VOICE := ["eagle", "sealions", "buoylion", "porpoise", "dalls"]
+const WHALES := ["orcas", "humpback", "minke"]  # heard on the water by their blow, as they come near (WhaleWatch)
+
+## Whether a sighting kind is heard at all — the field guide offers to play the ones that are.
+static func voiced(kind: String) -> bool:
+	return OWN_VOICE.has(kind) or CALLS.has(kind) or WHALES.has(kind)
+
+## The field guide's Listen: a whale's blow close by, or the call the card is heard with.
+func listen(kind: String) -> void:
+	if WHALES.has(kind):
+		blow(0.9)
+	else:
+		sighted(kind)
 
 func _ready() -> void:
 	for n in SFX:
