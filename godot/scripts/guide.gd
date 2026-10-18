@@ -42,6 +42,15 @@ func _species(col: VBoxContainer) -> void:
 	for conf in Sightings.ALL:
 		if Sound.voiced(conf.kind) and not voice.has(conf.species):
 			voice[conf.species] = conf.kind
+	var group_of := {}
+	for sp in species:
+		group_of[sp.id] = sp.group
+	var shores: Array = []  # what each day's end ashore shows; a camp with pools has the octopus under its rock
+	for leg in Leg.all():
+		var shore: Array = leg.get("shore", []).duplicate()
+		if TidePool.first_pool(shore.map(func(id: String) -> String: return str(group_of.get(id, "")))) >= 0 and str(leg.get("camp", {}).get("kind", "camp")) != "takeout":
+			shore.append("octopus")
+		shores.append(shore)
 	var groups: Array = []
 	for sp in species:
 		if not groups.has(sp.group):
@@ -63,9 +72,9 @@ func _species(col: VBoxContainer) -> void:
 			var kind: String = voice.get(sp.id, "")
 			var listen: Array = [] if kind == "" else [["Listen", func() -> void: Sound.listen(kind), false]]
 			if not met:
-				var look := Sightings.where_to_look(sp.id)
-				if look != "":
-					text += "\n" + look
+				for look in [Sightings.where_to_look(sp.id), Sightings.where_ashore(sp.id, shores)]:
+					if look != "":
+						text += "\n" + look
 			var card := UIKit.card("%s%s" % [sp.common, "  · met" if met else ""], text, "%s · %s" % [sp.get("scientific", ""), App.sources_line(sp.get("sourceIds", []))], listen, "")
 			col.add_child(card)
 

@@ -821,6 +821,10 @@
 
 - [x] T014gz A field-guide card for a species not yet met says where the water shows it — which days, and which trip when it keeps to a season (`Sightings.where_to_look`); tide-pool life says nothing, because the pools are ashore.
 
+## Slice 190 — where ashore
+
+- [x] T014ha The guide’s hint for a species not yet met also names the days that end on a shore showing it — the walks at Jones and Posey, the look under the float at the take-out — and the octopus under the rock wherever a camp has pools (`Sightings.where_ashore`).
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
