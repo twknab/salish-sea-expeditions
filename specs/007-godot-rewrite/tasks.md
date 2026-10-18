@@ -640,6 +640,26 @@
 
 - [x] T014ff The debrief gets a "Left on the beach" card when essentials stayed behind at Friday Harbor. It lists each one, in the kit list's order, with what the trip charges for it: the same consequences the water and the camp already enforce, gathered where the trip is read back. A content test makes sure every essential has a cost written for it. `?scene=debrief&demo=1&pack=none` shows the empty boat's account; new station `debrief-unpacked`.
 
+## Slice 145 — the words for the rescue and the fog
+
+- [x] T014fg The field guide's words on the water gain four the game already uses: wet exit, paddle float, deck lines (where the pump, chart, float and split spare ride) and dead reckoning (what the fog leaves you, and why the fix after it matters). Each is cited, like every glossary entry.
+
+## Slice 146 — rafted up in the squall
+
+- [x] T014fh The partner's squall advice is now judged. Rafting up while it is raining is kept in the day's record (`rainRafted`). Seamanship gains "Rafted up in the squall": kept with "side by side while it blew through", missed with "rode it apart" (or how many squalls of how many). The call only appears on a trip that met rain. The demo's second day shows it kept.
+
+## Slice 147 — showed a white light
+
+- [x] T014fi Once the dark or the fog calls for the white light, the day's record keeps whether the boat showed one (`light`: "lit" or "unlit"). Seamanship gains "Showed a white light": kept with "on deck after dark and in the fog", missed with "the headlamp stayed on the beach: unseen once". The call only appears on a trip that met the dark or the fog. The demo's second day shows it kept.
+
+## Slice 148 — the day's line tells the squall and the light
+
+- [x] T014fj The debrief's "Each day" line reads the two new records. A squall ridden out side by side is "rafted up through a squall" (otherwise still "paddled through a squall"), and a boat that showed no light when it needed one adds "no white light after dark".
+
+## Slice 149 — the deadhead
+
+- [x] T014fk A deadhead rides near each day's line: a waterlogged log floating on end, a hand of grey wood above the surface (`Deadhead`, placed 45% along the waypoints and 14 m to one side, checked to sit in deep water on all three legs). Inside 40 m the note says what it is and to give it room. A bow on it at paddling speed jars the boat (a kick and a hull slap) and says so; drifting onto it does not. The day's record keeps `logStruck`. Check start `?scene=trip&near=log`; new station `trip-log`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

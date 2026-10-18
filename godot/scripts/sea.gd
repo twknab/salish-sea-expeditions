@@ -53,6 +53,8 @@ var _note_at: Array = []        # [[x, z]] where each was said, for the chart of
 var _last_note := ""
 const NOTES_KEPT := 24
 var _rained := false            # rain fell on the leg, for the record
+var _rain_rafted := false       # rafted up while it rained: the squall ridden out together
+var _light_call := ""           # "lit" or "unlit" once the dark or the fog called for the white light
 var _rain_now := 0.0            # the rain of the hour, read before the sea state is set
 var _cross := CrossingWatch.new()  # the stream crossing: the line held, the ferry note, the slack card
 var _thirsty := false           # last night's water was drunk: the strokes are shorter today
@@ -70,6 +72,7 @@ var _blows := Vector2i.ZERO     # the wind-is-up card today: times it went up (x
 const ROUGH := 0.5              # sea state at which the bail-outs are offered
 const RIP_KICK_EVERY := 3.2    # seconds between beam waves in a rip at full strength
 var _sightings: Array = []   # [{conf, node, seen}]
+var _log: Deadhead           # the day's deadhead, near the line
 const GROOVE_AFTER := 6.0       # seconds of steady holding before the day starts to pass
 const GROOVE_SPEED := 28.0      # extra metres per second over the ground, in the groove
 const GROOVE_HOURS_PER_SEC := 1.0 / 50.0  # the clock in the groove: an hour in fifty seconds
@@ -175,6 +178,15 @@ func _ready() -> void:
 			_nav = _pack.get("enables", []).has("navigation")
 			kayak.set_trim(_pack)
 			_spawn_sightings()
+			_log = Deadhead.new()
+			add_child(_log)
+			_log.setup(Deadhead.place(Leg.waypoints(_route)), kayak, sea)
+			_log.said.connect(func(text: String, hit: bool) -> void:
+				note_label.text = text
+				_note_hold = NOTE_HOLD
+				if hit:
+					kayak.kick(0.9)
+					Sound.hull_slap(1.0))
 			# The ferry works the channel whatever day it is: leaving the landing behind you on day one,
 			# coming in to meet you on the way home.
 			# The partner: another preset, another skin, holding station off the starboard quarter.
@@ -352,6 +364,7 @@ func _leg(delta: float) -> void:
 	var lights := sea.night > 0.3 or Fog.blind(_fog)
 	var own_light: bool = mode != "trip" or _pack.get("enables", []).has("light")  # a headlamp left on the beach is no light at all
 	kayak.set_light(lights and own_light)
+	_light_call = ("lit" if own_light else "unlit") if lights and mode == "trip" else _light_call
 	if _partner:
 		_partner.kayak.set_light(lights)
 	_note_hold = maxf(0.0, _note_hold - delta)
@@ -495,7 +508,7 @@ func _record_day() -> void:
 		"swims": _swims_today, "rolls": _rolls_today, "rescuesGiven": _partner.rescues_given if _partner else 0, "reachS": _partner.reach_s if _partner else -1.0, "waits": _waits_today, "blows": _blows.x, "pushes": _blows.y, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
 		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
 		"streamS": _cross.stream_s, "onLineS": _cross.on_line_s, "maxKn": snappedf(_cross.max_kn, 0.1), "maxAt": _cross.max_at, "eddy": _cross.eddy_said, "linesEdged": _cross.lines_edged, "rafts": _partner.rafts if _partner else 0, "missing": Array(_pack.get("missing", [])).size(), "linesTripped": _cross.lines_tripped,
-		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained,
+		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained, "rainRafted": _rain_rafted, "light": _light_call, "logStruck": _log.struck if _log else 0,
 		"notes": _notes.duplicate(), "noteAt": _note_at.duplicate(),
 		"lateStart": float(App.save.get("lateStart", 0.0)),
 	}
@@ -545,6 +558,7 @@ func _on_pushed() -> void:
 	_note_hold = NOTE_HOLD
 
 func _on_rafted() -> void:
+	_rain_rafted = _rain_rafted or _rain_now > 0.3
 	note_label.text = _said("raft") + "Rafted up, side by side: the steadiest place on the water to eat, drink or wait out a squall. Paddle on to break it."
 	_note_hold = NOTE_HOLD
 
