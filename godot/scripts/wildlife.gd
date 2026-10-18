@@ -76,6 +76,7 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"dalls": w._porpoise(true)
 		"otter": w._otter()
 		"humpback": w._humpback()
+		"sealions": w._sealions()
 		"orcas": w._orcas()
 	return w
 
@@ -201,6 +202,23 @@ func _humpback() -> void:
 	_ball(fluke, Vector3(1.6, 0.13, 0.5), Color(0.85, 0.85, 0.83), Vector3(0, 0.05, 0.08), Vector3(deg_to_rad(80), 0, 0))  # the pale underside that names the animal
 	fluke.visible = false
 	_parts.append(fluke)
+
+## Steller sea lions hauled out on a low rock: big, tan to reddish, the blunt bear's head held up
+## on a thick neck, propped on the fore-flippers as seals never are. A bull and two cows.
+func _sealions() -> void:
+	for i in 3:
+		var big := i == 0
+		var a := Node3D.new()
+		a.position = Vector3(i * 1.6 - 1.6, 0.0, sin(i * 1.7) * 0.9)
+		a.rotation.y = 0.6 * (i - 1)
+		add_child(a)
+		var tan := Color(0.55, 0.42, 0.28) if big else Color(0.66, 0.53, 0.36)
+		var sz := 1.35 if big else 1.0
+		_ball(a, Vector3(0.45, 0.4, 1.2) * sz, tan, Vector3(0, 0.35 * sz, 0))                            # the body
+		_ball(a, Vector3(0.3, 0.35, 0.3) * sz, tan.darkened(0.05), Vector3(0, 0.8 * sz, 0.75 * sz))      # the thick neck
+		_ball(a, Vector3(0.2, 0.2, 0.26) * sz, tan.darkened(0.1), Vector3(0, 1.1 * sz, 0.95 * sz))       # the blunt head
+		_ball(a, Vector3(0.12, 0.05, 0.35) * sz, tan.darkened(0.25), Vector3(0.38 * sz, 0.12, 0.6 * sz))  # the fore-flippers, propped
+		_ball(a, Vector3(0.12, 0.05, 0.35) * sz, tan.darkened(0.25), Vector3(-0.38 * sz, 0.12, 0.6 * sz))
 
 ## A bed of bull kelp: floats at the surface, stipes down into the dark, blades streaming.
 func _kelp() -> void:

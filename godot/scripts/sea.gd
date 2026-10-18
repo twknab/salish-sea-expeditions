@@ -246,11 +246,11 @@ func _ready() -> void:
 ## Put the animals and the kelp where they live, on the shore or the water the terrain says is there.
 func _spawn_sightings() -> void:
 	for conf in Sightings.ALL:
-		if int(conf.get("leg", 0)) != Leg.index():
-			continue
+		if int(conf.get("leg", 0)) != Leg.index() or str(conf.get("day", App.chosen_day().get("id", ""))) != str(App.chosen_day().get("id", "")):
+			continue  # a sighting may keep to its season: `day` names the only day it is there
 		var at: Vector3 = conf.at
 		var y := 0.0
-		if conf.kind in ["eagle", "seals", "peregrine", "oystercatcher"]:
+		if conf.kind in ["eagle", "seals", "peregrine", "oystercatcher", "sealions"]:
 			y = maxf(terrain.height_at(at.x, at.z), 0.0) + (0.3 if conf.kind == "seals" else 0.0)
 		var node := Wildlife.make(conf.kind, Vector3(at.x, y, at.z), conf.face)
 		add_child(node)

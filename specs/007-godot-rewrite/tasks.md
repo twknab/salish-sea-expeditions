@@ -709,6 +709,10 @@
 
 - [x] T014fx The field guide's humpback travels north up San Juan Channel on day three, off to the east of the line home (`Wildlife._humpback`). Twelve metres of dark back rolls up three times to breathe, then the pale-undersided fluke lifts as it sounds, on a thirty-second cycle. Its blow carries like the orcas', loud alongside and faint at a kilometre. The card asks for the field guide's 91 m, and the "too close" rule applies. Check start `?scene=trip&leg=2&near=humpback&launch=9`, station `trip-humpback`.
 
+## Slice 162 — Steller sea lions, in their season
+
+- [x] T014fy A sighting can now keep to its season: an optional `day` names the only trip day it is there, and a content test checks that day exists. Steller sea lions, which the field guide says are here "mostly autumn to spring", haul out on the low rocks west of Spieden only on the September day: a big reddish bull and two tan cows, heads up on thick necks, propped on their fore-flippers (`Wildlife._sealions`). On the July day the rocks are bare (checked headless). Check start `?scene=trip&leg=1&day=september&near=sealions`, station `trip-sealions`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
