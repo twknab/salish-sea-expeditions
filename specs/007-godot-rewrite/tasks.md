@@ -817,6 +817,10 @@
 
 - [x] T014gy Every field-guide card for an animal the sea gives a voice gets a Listen button: the bird calls, the seals, sea lions and porpoise, and the whales’ blow (`Sound.voiced`, `Sound.listen`).
 
+## Slice 189 — where to look
+
+- [x] T014gz A field-guide card for a species not yet met says where the water shows it — which days, and which trip when it keeps to a season (`Sightings.where_to_look`); tide-pool life says nothing, because the pools are ashore.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

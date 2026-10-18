@@ -62,6 +62,10 @@ func _species(col: VBoxContainer) -> void:
 				text += " Keep %d m off." % approach
 			var kind: String = voice.get(sp.id, "")
 			var listen: Array = [] if kind == "" else [["Listen", func() -> void: Sound.listen(kind), false]]
+			if not met:
+				var look := Sightings.where_to_look(sp.id)
+				if look != "":
+					text += "\n" + look
 			var card := UIKit.card("%s%s" % [sp.common, "  · met" if met else ""], text, "%s · %s" % [sp.get("scientific", ""), App.sources_line(sp.get("sourceIds", []))], listen, "")
 			col.add_child(card)
 
