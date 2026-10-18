@@ -689,6 +689,10 @@
 
 - [x] T014fs The field guide's black oystercatcher works the tide line beside the seals' rock on day one and again on the way home: all black, the long orange-red bill, pale legs (`Wildlife._oystercatcher`). With slice 155's fix, the kelp, the oystercatcher and the seals come up as cards one after another rather than over each other (checked headless). Station `trip-oystercatcher`.
 
+## Slice 157 — the kingfisher on the piling
+
+- [x] T014ft The field guide's belted kingfisher watches the harbour from an old dock piling a few boat lengths up from the launch: blue-grey, the shaggy crest, the white collar, the dagger bill (`Wildlife._kingfisher`). Its reach is short (90 m), so the trip opens clean and the card comes up as you paddle past (checked headless).
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

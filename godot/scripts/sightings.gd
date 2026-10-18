@@ -4,6 +4,7 @@ extends RefCounted
 ## must come to notice it. Positions checked against the terrain: seals and kelp on the islet by
 ## Yellow Island, the heron in the Labs' shallows, the eagle on Point Caution, the porpoise mid-channel.
 const ALL := [
+	{ "leg": 0, "kind": "kingfisher", "species": "kingfisher", "at": Vector3(380.0, 0.0, -860.0), "face": Vector3(0, 0, 1), "radius": 90.0 },  # on an old piling a few boat lengths up the harbour, met paddling out
 	{ "leg": 0, "kind": "heron", "species": "heron", "at": Vector3(560.0, 0.0, -1300.0), "face": Vector3(-1, 0, 0), "radius": 220.0 },
 	{ "leg": 0, "kind": "eagle", "species": "baldEagle", "at": Vector3(260.0, 0.0, -2600.0), "face": Vector3(1, 0, 0), "radius": 320.0 },
 	{ "leg": 0, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-300.0, 0.0, -4200.0), "face": Vector3(0, 0, -1), "radius": 420.0 },

@@ -68,6 +68,7 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"eagle": w._eagle()
 		"peregrine": w._peregrine()
 		"oystercatcher": w._oystercatcher()
+		"kingfisher": w._kingfisher()
 		"kelp": w._kelp()
 		"porpoise": w._porpoise()
 		"orcas": w._orcas()
@@ -139,6 +140,19 @@ func _oystercatcher() -> void:
 	_rod(bird, 0.012, 0.12, Color(0.9, 0.82, 0.72), Vector3(0.03, -0.02, 0))                                             # the pale legs
 	_rod(bird, 0.012, 0.12, Color(0.9, 0.82, 0.72), Vector3(-0.03, -0.02, 0))
 	_parts.append(bird)
+
+## A belted kingfisher on an old dock piling in the harbour: blue-grey, the shaggy crest, the white
+## collar and the heavy dagger bill, watching the water below for small fish.
+func _kingfisher() -> void:
+	_rod(self, 0.16, 3.4, Color(0.3, 0.25, 0.2), Vector3(0, 0.2, 0))  # the piling, weathered, a hand of it green below the tide line
+	var bird := Node3D.new()
+	bird.position = Vector3(0, 1.92, 0)
+	add_child(bird)
+	_ball(bird, Vector3(0.09, 0.12, 0.13), Color(0.32, 0.45, 0.6), Vector3(0, 0.1, 0), Vector3(deg_to_rad(20), 0, 0))  # the blue-grey back
+	_ball(bird, Vector3(0.07, 0.05, 0.05), Color(0.95, 0.95, 0.93), Vector3(0, 0.15, 0.06))                            # the white collar
+	_ball(bird, Vector3(0.07, 0.08, 0.08), Color(0.3, 0.42, 0.58), Vector3(0, 0.24, 0.03))                             # the big head
+	_cone(bird, 0.04, 0.1, Color(0.3, 0.42, 0.58), Vector3(0, 0.33, -0.02), Vector3(deg_to_rad(-30), 0, 0))           # the shaggy crest
+	_cone(bird, 0.022, 0.12, Color(0.12, 0.12, 0.13), Vector3(0, 0.23, 0.14), Vector3(deg_to_rad(-90), 0, 0))         # the dagger bill
 
 ## A bed of bull kelp: floats at the surface, stipes down into the dark, blades streaming.
 func _kelp() -> void:
