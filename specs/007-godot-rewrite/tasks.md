@@ -729,6 +729,10 @@
 
 - [x] T014gc Moon jellies drift in the calm of Friday Harbor in summer (the July day): nine pale translucent bells with the four pink horseshoes showing through, each pulsing slowly on its own beat (`Wildlife._jellies`). They sit just under the surface film, because the sea shader is opaque and lets nothing deeper read. Check start `?scene=trip&near=jellies`, station `trip-jellies`.
 
+## Slice 167 — the madrona on Jones Island's bluff
+
+- [x] T014gd The field guide's Pacific madrona leans out over the water from the edge of Jones Island's sunny bluff, the one tree on these shores that is not a dark cone: a bright peeling orange-red trunk and twisting limbs under a broad rounded crown, scaled to stand as tall as the firs so the red reads from the water (`Wildlife._madrona`). Check start `?scene=trip&near=madrona`, station `trip-madrona`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

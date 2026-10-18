@@ -19,6 +19,7 @@ const AT := {
 	"sealions": [-9050.0, -9900.0, 0.0],         # the September sea lions hauled out 100 m ahead
 	"buoy": [860.0, -1260.0, 230.0],             # coming home into Friday Harbor, the red nun 130 m ahead
 	"jellies": [520.0, -985.0, 0.0],             # the July moon jellies a few metres ahead in the harbour
+	"madrona": [-1880.0, -9370.0, 215.0],       # off Jones Island, the madrona on the bluff 200 m ahead
 }
 
 ## [x, z, heading] for a start, or empty when the start is not a fixed one.

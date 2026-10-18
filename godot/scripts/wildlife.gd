@@ -80,6 +80,7 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"cormorants": w._cormorants()
 		"buoylion": w._buoylion()
 		"jellies": w._jellies()
+		"madrona": w._madrona()
 		"orcas": w._orcas()
 	return w
 
@@ -273,6 +274,21 @@ func _jellies() -> void:
 			var a := TAU * k / 4.0
 			_ball(j, Vector3(0.05, 0.02, 0.05), Color(0.85, 0.55, 0.7), Vector3(cos(a) * 0.08, 0.05, sin(a) * 0.08))
 		_parts.append(j)
+
+## A Pacific madrona leaning out over the water from a sunny bluff: the trunk and limbs a bright
+## peeling orange-red, twisting, and a broad rounded crown of glossy evergreen leaves. The only tree on
+## these shores that is not a dark cone.
+func _madrona() -> void:
+	scale = Vector3.ONE * 1.8  # as tall as the firs around it, so the red reads from the water
+	var bark := Color(0.78, 0.3, 0.14)
+	var trunk := _rod(self, 0.28, 5.0, bark, Vector3(0.6, 2.4, 0.0))
+	trunk.rotation.z = -0.35  # leaning out toward the light off the water
+	for k in 3:  # the twisting limbs
+		var limb := _rod(self, 0.12, 2.6, bark.lightened(0.1), Vector3(1.4 + k * 0.4, 4.6, (k - 1) * 0.7))
+		limb.rotation = Vector3((k - 1) * 0.5, 0, -0.7)
+	for c in 4:  # the broad, rounded crown
+		var a := TAU * c / 4.0
+		_ball(self, Vector3(1.6, 1.1, 1.6), Color(0.2, 0.36, 0.14), Vector3(2.0 + cos(a) * 1.0, 5.8 + (c % 2) * 0.4, sin(a) * 1.0))
 
 ## A bed of bull kelp: floats at the surface, stipes down into the dark, blades streaming.
 func _kelp() -> void:
