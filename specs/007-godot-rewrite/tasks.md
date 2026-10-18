@@ -841,6 +841,10 @@
 
 - [x] T014he An hour and a half after the launch the partner calls the first drink: on cold water nobody feels thirsty, so the habit is a mouthful every half hour. With the water left on the beach the note says so — the partner’s bottle shared, or nothing to the landing (`Drink`).
 
+## Slice 195 — listening with the sound off
+
+- [x] T014hf Pressing Listen in the field guide with the sound switched off says so, and points at the Sound chip, instead of doing nothing.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

@@ -4,6 +4,7 @@
 extends Control
 
 var _scroll: ScrollContainer
+var _hint: Label  # says so when Listen is pressed with the sound off
 ## The jump row's words for the longer group names.
 const SHORT := {"Marine mammals": "Mammals", "Intertidal & sea life": "Intertidal", "Kelp & seaweeds": "Seaweeds"}
 
@@ -23,6 +24,9 @@ func _ready() -> void:
 	jumps.add_theme_constant_override("h_separation", 8)
 	jumps.add_theme_constant_override("v_separation", 6)
 	v.add_child(jumps)
+	_hint = UIKit.label("The sound is off: the Sound chip at the top turns it on.", 12, UIKit.SUN)
+	_hint.visible = false
+	v.add_child(_hint)
 	_scroll = ScrollContainer.new()
 	_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -103,7 +107,7 @@ func _species(col: VBoxContainer) -> Dictionary:
 			if approach > 0:
 				text += " Keep %d m off." % approach
 			var kind: String = voice.get(sp.id, "")
-			var listen: Array = [] if kind == "" else [["Listen", func() -> void: Sound.listen(kind), false]]
+			var listen: Array = [] if kind == "" else [["Listen", func() -> void: _listen(kind), false]]
 			if not met:
 				for look in [Sightings.where_to_look(sp.id), Sightings.where_ashore(sp.id, shores)]:
 					if look != "":
@@ -111,6 +115,10 @@ func _species(col: VBoxContainer) -> Dictionary:
 			var card := UIKit.card("%s%s" % [sp.common, "  · met" if met else ""], text, "%s · %s" % [sp.get("scientific", ""), App.sources_line(sp.get("sourceIds", []))], listen, "")
 			col.add_child(card)
 	return anchors
+
+func _listen(kind: String) -> void:
+	_hint.visible = not bool(App.save.get("sound", true))
+	Sound.listen(kind)
 
 ## The words the chart, the plan and the notes use, each in a sentence or two with its source. Returns
 ## the section's heading, so a check can scroll to it.
