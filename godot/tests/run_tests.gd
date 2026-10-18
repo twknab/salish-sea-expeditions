@@ -266,6 +266,7 @@ func _init() -> void:
 	var nb := Vector2(0, 100)
 	check(Gillnet.crossed(Vector2(-5, 50), Vector2(5, 50), na, nb) and not Gillnet.crossed(Vector2(-5, 120), Vector2(5, 120), na, nb) and not Gillnet.crossed(Vector2(-5, 50), Vector2(-2, 50), na, nb) and is_equal_approx(Gillnet.distance(Vector2(30, 50), na, nb), 30.0) and is_equal_approx(Gillnet.distance(Vector2(0, 130), na, nb), 30.0), "over the net snags; round the end does not")
 	check(Seamanship.kept(Seamanship.calls([{"verdict": "good", "netSnagged": 0}])) == 4 and Seamanship.calls([{"verdict": "good", "netSnagged": 1}]).any(func(c: Dictionary) -> bool: return str(c.label) == "Went round the net" and not c.ok) and Seamanship.calls([{"verdict": "good", "netSnagged": -1}]).size() == 3, "the net is a call only on a day it was set")
+	check(Traffic.card_text(false, true).contains("red and green together") and not Traffic.card_text(false, false).contains("masthead"), "after dark the ferry card teaches its lights")
 	# The roll: the hip snap learned brings the boat up in all but a steep sea; without it, the swim.
 	check(Roll.comes_up(true, 0.3) and not Roll.comes_up(true, 0.6) and not Roll.comes_up(false, 0.1), "the roll is the brace's hip snap, and a steep sea beats it")
 	check(Roll.outcome(true, true).begins_with("Up") and Roll.outcome(false, false).contains("hip snap") and Roll.outcome(false, true).contains("knocks the blade"), "the roll says why it failed")

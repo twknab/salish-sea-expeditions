@@ -370,6 +370,8 @@ func _leg(delta: float) -> void:
 	_light_call = ("lit" if own_light else "unlit") if lights and mode == "trip" else _light_call
 	if _partner:
 		_partner.kayak.set_light(lights)
+	if _traffic:
+		_traffic.set_lights(lights)
 	_note_hold = maxf(0.0, _note_hold - delta)
 	if sea.night > 0.3 and not _dark_said and _note_hold <= 0.0:
 		_dark_said = true
@@ -947,7 +949,7 @@ func _watch_traffic(delta: float) -> void:
 		_fog_signal_t = 0.0
 	if d < Traffic.WARN_M and not _traffic.warned:
 		_traffic.warned = true
-		_show(UIKit.card("Ferry in the channel", _said("ferry") + Traffic.card_text(_pack.get("enables", []).has("radio")), App.sources_line(["colregs", "wsf"]), [["Holding", _clear_card, true]], "Traffic"))
+		_show(UIKit.card("Ferry in the channel", _said("ferry") + Traffic.card_text(_pack.get("enables", []).has("radio"), sea.night > 0.3), App.sources_line(["colregs", "wsf"]), [["Holding", _clear_card, true]], "Traffic"))
 		var met := int(App.save.get("ferriesMet", 0))
 		App.save.ferriesMet = met + 1
 		App.persist()

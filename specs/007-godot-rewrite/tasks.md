@@ -761,6 +761,10 @@
 
 - [x] T014gk A content test now makes sure every species in the field guide is met somewhere in the game: a sighting on the water, a shore walk at camp, or the cove's glow. The few the trip honestly would not meet (Southern Resident orcas, sea otter, giant Pacific octopus, sunflower star, western red cedar) are named in the test, so a new species cannot be added to the guide unmet without someone deciding it should be.
 
+## Slice 175 — the ferry's lights
+
+- [x] T014gl After dark and in fog the ferry shows its navigation lights (`FerryModel.set_lights`): white masthead lights high fore and aft, red to port, green to starboard, unshaded so they carry across the water. The ferry card after dark teaches reading them: the masthead lights high up, red on its port side and green on its starboard, and "see red and green together and it is coming straight at you". It still fits on a phone. Station `trip-ferry-night`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
