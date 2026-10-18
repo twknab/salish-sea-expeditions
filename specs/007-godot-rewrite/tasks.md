@@ -668,6 +668,10 @@
 
 - [x] T014fm The deadhead is judged. Seamanship gains "Gave the deadheads room": kept with "saw the grey wood and went round", missed with "the bow found one once" (or how many times). The call appears once a day's record carries `logStruck`. A day that hit one adds "the bow found a deadhead" to its line. The demo's second day shows it kept.
 
+## Slice 152 — the word for the log
+
+- [x] T014fn "Deadhead" joins the field guide's words on the water: what it is, why a chop hides it, what it does to a bow at speed, and to give it room. Cited like every entry.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
