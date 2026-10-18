@@ -47,6 +47,7 @@ const STATIONS = [
   ['trip-lionsmane', '?scene=trip&leg=1&near=lionsmane'],
   ['trip-minke', '?scene=trip&leg=1&near=minke'],
   ['trip-gillnet', '?scene=trip&leg=1&day=september&near=gillnet'],
+  ['trip-ferry-night', '?scene=trip&near=ferry&day=september&hour=20.6'],
   ['trip-fog', '?scene=trip&leg=2&launch=6&near=ferry&fog=1'],
   ['trip-fog-lifts', '?scene=trip&leg=2&launch=6&fog=lift'],
   ['trip-fog-unpacked', '?scene=trip&leg=2&launch=6&fog=1&pack=none'],

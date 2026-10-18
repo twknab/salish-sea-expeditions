@@ -27,6 +27,12 @@ const LINES := {
 	"deadhead": "Log! Off your bow — go round it.",
 	"deadhead_hit": "You okay? Check the hull for cracks.",
 	"clap": "Out from the rock — it’s bouncing back at us.",
+	"humpback": "Listen — there. Hear that blow?",
+	"minke": "Did you see that? Small, quick. Minke.",
+	"lionsmane": "Hands out of the water — that one stings.",
+	"sealions": "Hear them? Give the rock a wide berth.",
+	"buoylion": "He’s not moving for us. Go round.",
+	"dalls": "Look at them go — rooster tails!",
 }
 
 ## The partner's words for an event, by name, or empty when there are none.

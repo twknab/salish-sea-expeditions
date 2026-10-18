@@ -61,3 +61,28 @@ func _ready() -> void:
 	buoy.mesh = tm; buoy.material_override = _m(Color("e0532f"), 0.6)
 	buoy.position = Vector3(-BEAM * 0.39 + 0.1, 11.9, -LENGTH * 0.3); buoy.rotation = Vector3(0, 0, PI / 2.0)
 	add_child(buoy)
+
+var _lights: Node3D
+
+## Masthead lights, white, high up fore and aft; the red sidelight to port and the green to
+## starboard; drawn unshaded so they carry across the dark water. Built the first time it is dark.
+func set_lights(on: bool) -> void:
+	if _lights == null:
+		if not on:
+			return
+		_lights = Node3D.new()
+		add_child(_lights)
+		for spec in [[Color(1, 0.97, 0.88), Vector3(0, 16.5, -LENGTH * 0.3)], [Color(1, 0.97, 0.88), Vector3(0, 18.0, LENGTH * 0.3)], [Color(0.95, 0.15, 0.1), Vector3(-BEAM * 0.5, 10.6, 0)], [Color(0.15, 0.95, 0.35), Vector3(BEAM * 0.5, 10.6, 0)]]:
+			var bulb := MeshInstance3D.new()
+			var sm := SphereMesh.new()
+			sm.radius = 0.6
+			sm.height = 1.2
+			bulb.mesh = sm
+			var mat := StandardMaterial3D.new()
+			mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			mat.albedo_color = spec[0]
+			bulb.material_override = mat
+			bulb.position = spec[1]
+			_lights.add_child(bulb)
+	_lights.visible = on
+

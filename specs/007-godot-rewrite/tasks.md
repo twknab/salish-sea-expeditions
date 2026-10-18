@@ -757,6 +757,38 @@
 
 - [x] T014gj The net is judged. The day's record keeps `netSnagged`: -1 on days no net was set, otherwise how many times the boat went over the corks. Seamanship gains "Went round the net": kept with "round the end buoy, clear of the corks", missed with "over the corks once, and the skeg in the mesh". It appears only on a trip that met the net. A day that went over adds "caught in a gillnet" to its debrief line.
 
+## Slice 174 — every species has a place
+
+- [x] T014gk A content test now makes sure every species in the field guide is met somewhere in the game: a sighting on the water, a shore walk at camp, or the cove's glow. The few the trip honestly would not meet (Southern Resident orcas, sea otter, giant Pacific octopus, sunflower star, western red cedar) are named in the test, so a new species cannot be added to the guide unmet without someone deciding it should be.
+
+## Slice 175 — the ferry's lights
+
+- [x] T014gl After dark and in fog the ferry shows its navigation lights (`FerryModel.set_lights`): white masthead lights high fore and aft, red to port, green to starboard, unshaded so they carry across the water. The ferry card after dark teaches reading them: the masthead lights high up, red on its port side and green on its starboard, and "see red and green together and it is coming straight at you". It still fits on a phone. Station `trip-ferry-night`.
+
+## Slice 176 — the sea lions are heard
+
+- [x] T014gm The field guide says sea lions are often heard before they are seen, and now they are. A synthesized run of hoarse barks (`sealion.wav`: a buzzy fundamental near 300 Hz with a rough flutter and breath) plays when the California sea lion on the harbour buoy comes into reach. The same sound slowed into a deeper roar plays for the Steller sea lions on their rocks. The recipe is the last in `tools/synth-audio.mjs`, so its draws on the shared seeded noise leave every existing sound byte-for-byte the same.
+
+## Slice 177 — the oystercatcher pipes, the kingfisher rattles
+
+- [x] T014gn The two birds the field guide describes by their call are now heard when they come into reach. The black oystercatcher gives a quick run of loud clear pipes near 3 kHz (`piping.wav`), and the belted kingfisher gives its dry rattle, a fast train of woody clicks (`rattle.wav`). Both recipes are appended at the end of the synth tool, so no existing sound changes.
+
+## Slice 178 — the peregrine calls from the cliff
+
+- [x] T014go The peregrine on Spieden's cliff is heard as well as seen: its harsh, repeated "kak-kak-kak", short nasal bursts near 1.8 kHz (`kak.wav`), when it comes into reach. The bird calls now come through one `Sound.bird(call)`.
+
+## Slice 179 — the sécurité call in the fog
+
+- [x] T014gp With a VHF packed, the ferry in fog is heard on the radio before its horn. The long-blast note now opens with the ferry's sécurité call giving its position; without a radio there is only the horn. The note moved into `Traffic.fog_note()` with a test, and the water scene's version of it went with it.
+
+## Slice 180 — the partner's word on a sighting
+
+- [x] T014gq The partner used to speak up only for the orcas' card. Now any sighting the partner has a word for opens with it: the humpback's blow, a quick minke, a lion's mane ("Hands out of the water — that one stings"), the sea lions on rock and buoy, the Dall's porpoise's rooster tails, and the seals and kelp they already had lines for. A tree gets no remark. One `_said(kind)` serves every card.
+
+## Slice 181 — the guillemots whistle
+
+- [x] T014gr The pigeon guillemots off Jones Island are heard: a thin, high, wheezy whistle that rises and trills (`whistle.wav`), appended last in the synth tool like the other new calls.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

@@ -266,6 +266,9 @@ func _init() -> void:
 	var nb := Vector2(0, 100)
 	check(Gillnet.crossed(Vector2(-5, 50), Vector2(5, 50), na, nb) and not Gillnet.crossed(Vector2(-5, 120), Vector2(5, 120), na, nb) and not Gillnet.crossed(Vector2(-5, 50), Vector2(-2, 50), na, nb) and is_equal_approx(Gillnet.distance(Vector2(30, 50), na, nb), 30.0) and is_equal_approx(Gillnet.distance(Vector2(0, 130), na, nb), 30.0), "over the net snags; round the end does not")
 	check(Seamanship.kept(Seamanship.calls([{"verdict": "good", "netSnagged": 0}])) == 4 and Seamanship.calls([{"verdict": "good", "netSnagged": 1}]).any(func(c: Dictionary) -> bool: return str(c.label) == "Went round the net" and not c.ok) and Seamanship.calls([{"verdict": "good", "netSnagged": -1}]).size() == 3, "the net is a call only on a day it was set")
+	check(Traffic.card_text(false, true).contains("red and green together") and not Traffic.card_text(false, false).contains("masthead"), "after dark the ferry card teaches its lights")
+	check(Traffic.fog_note("off the bow", false, true).begins_with("The VHF has it too") and not Traffic.fog_note("off the bow", true, false).contains("VHF") and Traffic.fog_note("off the bow", true, false).contains("off the bow"), "in fog the radio hears the ferry before the horn, when there is a radio")
+	check(["humpback", "minke", "lionsmane", "sealions", "buoylion", "dalls"].all(func(e: String) -> bool: return PartnerVoice.line(e) != "") and PartnerVoice.line("kelp") != "" and PartnerVoice.line("madrona") == "", "the partner speaks up for the animals worth a word, and stays quiet for a tree")
 	# The roll: the hip snap learned brings the boat up in all but a steep sea; without it, the swim.
 	check(Roll.comes_up(true, 0.3) and not Roll.comes_up(true, 0.6) and not Roll.comes_up(false, 0.1), "the roll is the brace's hip snap, and a steep sea beats it")
 	check(Roll.outcome(true, true).begins_with("Up") and Roll.outcome(false, false).contains("hip snap") and Roll.outcome(false, true).contains("knocks the blade"), "the roll says why it failed")
@@ -359,6 +362,21 @@ func _init() -> void:
 		var essentials: Array = c.gear.filter(func(g: Dictionary) -> bool: return bool(g.get("essential", false)))
 		check(essentials.all(func(g: Dictionary) -> bool: return LeftBehind.COST.has(str(g.id))), "every essential has its cost in the debrief")
 		var species_ids: Array = c.species.map(func(sp: Dictionary) -> String: return str(sp.id))
+		# Every field-guide species is met somewhere: on the water, on a shore walk, or in the cove's glow.
+		# The rare ones are named, so a new species cannot slip into the guide unmet without a decision.
+		var met_ids := {}
+		for sg in Sightings.ALL:
+			met_ids[str(sg.species)] = true
+		var legs_f := FileAccess.open("res://content/legs.json", FileAccess.READ)
+		for lg in JSON.parse_string(legs_f.get_as_text()).legs:
+			for sid in lg.get("shore", []):
+				met_ids[str(sid)] = true
+		met_ids["bioluminescence"] = true
+		var rare := ["southernResident", "seaOtter", "octopus", "sunflowerStar", "redCedar"]
+		var unmet: Array = c.species.filter(func(sp: Dictionary) -> bool: return not met_ids.has(str(sp.id)) and not rare.has(str(sp.id)))
+		for sp in unmet:
+			printerr("never met: ", sp.id)
+		check(unmet.is_empty(), "every field-guide species is met on the trip, or named as one of the rare")
 		var day_ids: Array = c.tripDays.map(func(td: Dictionary) -> String: return str(td.id))
 		check(Sightings.ALL.all(func(sg: Dictionary) -> bool: return not sg.has("day") or day_ids.has(str(sg.day))), "a seasonal sighting names a day the trip can be paddled on")
 		check(Sightings.ALL.all(func(sg: Dictionary) -> bool: return species_ids.has(str(sg.species))) and Sightings.ALL.all(func(sg: Dictionary) -> bool: return [0, 1, 2].has(int(sg.leg))), "every sighting is a field-guide species, on one of the three days")

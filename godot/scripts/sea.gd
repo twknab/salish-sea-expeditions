@@ -321,7 +321,11 @@ func _watch_sightings() -> void:
 			App.persist()
 		if conf.kind == "eagle":
 			Sound.eagle()
-		var text: String = (_said("orcas") if conf.kind == "orcas" else "") + str(sp.get("blurb", ""))
+		elif conf.kind in ["sealions", "buoylion"]:
+			Sound.sealion(conf.kind == "sealions")
+		elif conf.kind in ["oystercatcher", "kingfisher", "peregrine", "guillemot"]:
+			Sound.bird({"oystercatcher": "piping", "kingfisher": "rattle", "peregrine": "kak", "guillemot": "whistle"}[conf.kind])
+		var text: String = _said(conf.kind) + str(sp.get("blurb", ""))  # the partner's word, when they have one for it
 		var facts: Array = sp.get("facts", [])
 		if not facts.is_empty():
 			text += "\n\n" + str(facts[0])
@@ -370,6 +374,8 @@ func _leg(delta: float) -> void:
 	_light_call = ("lit" if own_light else "unlit") if lights and mode == "trip" else _light_call
 	if _partner:
 		_partner.kayak.set_light(lights)
+	if _traffic:
+		_traffic.set_lights(lights)
 	_note_hold = maxf(0.0, _note_hold - delta)
 	if sea.night > 0.3 and not _dark_said and _note_hold <= 0.0:
 		_dark_said = true
@@ -942,12 +948,12 @@ func _watch_traffic(delta: float) -> void:
 			Sound.horn(d > Traffic.HORN_M)
 			if not _traffic.warned:
 				var where := Traffic.bearing_words(kayak.global_position, _traffic.global_position)
-				note_label.text = ("A long blast in the fog, %s: a vessel under way. Stop and listen; keep to the edge of the lane." if controls.touch() else "A long blast in the fog, %s: a vessel under way, somewhere in the channel. Stop paddling and listen. Keep to the edge of the lane until it has passed.") % where
+				note_label.text = Traffic.fog_note(where, controls.touch(), _pack.get("enables", []).has("radio"))
 	else:
 		_fog_signal_t = 0.0
 	if d < Traffic.WARN_M and not _traffic.warned:
 		_traffic.warned = true
-		_show(UIKit.card("Ferry in the channel", _said("ferry") + Traffic.card_text(_pack.get("enables", []).has("radio")), App.sources_line(["colregs", "wsf"]), [["Holding", _clear_card, true]], "Traffic"))
+		_show(UIKit.card("Ferry in the channel", _said("ferry") + Traffic.card_text(_pack.get("enables", []).has("radio"), sea.night > 0.3), App.sources_line(["colregs", "wsf"]), [["Holding", _clear_card, true]], "Traffic"))
 		var met := int(App.save.get("ferriesMet", 0))
 		App.save.ferriesMet = met + 1
 		App.persist()

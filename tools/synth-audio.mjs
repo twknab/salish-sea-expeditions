@@ -174,3 +174,68 @@ for (let k = 0; k < 2; k++) {
   const x = SR * 0.5; for (let i = 0; i < x; i++) { const a = i / x; out[len - x + i] = out[len - x + i] * (1 - a) + out[i] * a; }
   wav('rip_loop', out);
 }
+// (Last, so its draws on the shared noise do not shift any sound before it.)
+// Sea lions: a run of hoarse barks from the rock or the buoy — a buzzy fundamental near 300 Hz with a
+// rough flutter and breath in it. The Steller's deeper roar is the same sound played slower.
+{
+  const len = Math.floor(SR * 1.5), out = new Float32Array(len); const l = lp(1800);
+  const barks = [0.0, 0.32, 0.62, 1.0];
+  for (const t0 of barks) for (let i = Math.floor(t0 * SR); i < len; i++) {
+    const t = i / SR - t0; if (t > 0.2) break;
+    const f = 310 - 60 * t / 0.2;
+    const buzz = Math.sin(2 * Math.PI * f * t) + 0.6 * Math.sin(2 * Math.PI * 2 * f * t) + 0.35 * Math.sin(2 * Math.PI * 3 * f * t);
+    const flutter = 0.6 + 0.4 * Math.sin(2 * Math.PI * 38 * t);
+    out[i] += (buzz * 0.22 + l(rnd()) * 0.25) * flutter * Math.sin(Math.PI * t / 0.2);
+  }
+  wav('sealion', out);
+}
+// Black oystercatcher: loud, piercing piping — a quick run of clear whistles near 3 kHz, falling at the end.
+{
+  const len = Math.floor(SR * 1.2), out = new Float32Array(len);
+  const pips = [0.0, 0.12, 0.24, 0.36, 0.5, 0.66];
+  pips.forEach((t0, k) => {
+    for (let i = Math.floor(t0 * SR); i < len; i++) {
+      const t = i / SR - t0; if (t > 0.08) break;
+      const f = 3100 - k * 90 + 300 * t / 0.08;
+      out[i] += Math.sin(2 * Math.PI * f * t) * Math.sin(Math.PI * t / 0.08) * 0.3;
+    }
+  });
+  wav('piping', out);
+}
+// Belted kingfisher: a dry, loud rattle — a fast train of clicks with a woody buzz, rising then dropping.
+{
+  const len = Math.floor(SR * 1.1), out = new Float32Array(len); const h = hp(1200);
+  for (let k = 0; k < 26; k++) {
+    const t0 = k * 0.034;
+    for (let i = Math.floor(t0 * SR); i < len; i++) {
+      const t = i / SR - t0; if (t > 0.022) break;
+      const f = 2200 + 500 * Math.sin(Math.PI * k / 26);
+      out[i] += (Math.sin(2 * Math.PI * f * t) * 0.25 + h(rnd()) * 0.35) * Math.exp(-t * 140);
+    }
+  }
+  wav('rattle', out);
+}
+// Peregrine falcon: the harsh, repeated "kak-kak-kak" from the cliff — short nasal bursts near 1.8 kHz.
+{
+  const len = Math.floor(SR * 1.2), out = new Float32Array(len); const l = lp(4000);
+  for (let k = 0; k < 7; k++) {
+    const t0 = k * 0.15;
+    for (let i = Math.floor(t0 * SR); i < len; i++) {
+      const t = i / SR - t0; if (t > 0.07) break;
+      const f = 1800 + 200 * Math.sin(Math.PI * t / 0.07);
+      const nasal = Math.sin(2 * Math.PI * f * t) + 0.7 * Math.sin(2 * Math.PI * 2 * f * t) + 0.4 * Math.sin(2 * Math.PI * 3 * f * t);
+      out[i] += (nasal * 0.16 + l(rnd()) * 0.12) * Math.sin(Math.PI * t / 0.07);
+    }
+  }
+  wav('kak', out);
+}
+// Pigeon guillemot: a thin, high, wheezy whistle that rises and trills, from birds on the water.
+{
+  const len = Math.floor(SR * 1.1), out = new Float32Array(len); const h = hp(2500);
+  for (let i = 0; i < Math.floor(SR * 0.9); i++) {
+    const t = i / SR;
+    const f = 3300 + 900 * t + 260 * Math.sin(2 * Math.PI * 22 * t);
+    out[i] = (Math.sin(2 * Math.PI * f * t) * 0.22 + h(rnd()) * 0.06) * Math.sin(Math.PI * t / 0.9);
+  }
+  wav('whistle', out);
+}
