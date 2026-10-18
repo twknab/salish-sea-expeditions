@@ -260,7 +260,7 @@ func _spawn_sightings() -> void:
 		var node := Wildlife.make(conf.kind, Vector3(at.x, y, at.z), conf.face)
 		add_child(node)
 		_sightings.append({ "conf": conf, "node": node, "seen": false })
-		if conf.kind in ["orcas", "humpback"]:
+		if conf.kind in ["orcas", "humpback", "minke"]:
 			# The blow carries: loud alongside, a breath on the wind at a kilometre, nothing beyond.
 			node.breathed.connect(func() -> void: Sound.blow(1.0 - clampf(kayak.global_position.distance_to(node.global_position) / 1200.0, 0.0, 1.0)))
 		if conf.kind == "orcas" and mode == "trip":

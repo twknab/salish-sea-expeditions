@@ -76,6 +76,7 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"dalls": w._porpoise(true)
 		"otter": w._otter()
 		"humpback": w._humpback()
+		"minke": w._minke()
 		"sealions": w._sealions()
 		"cormorants": w._cormorants()
 		"buoylion": w._buoylion()
@@ -313,6 +314,23 @@ func _oak() -> void:
 		var a := TAU * c / 6.0
 		_ball(self, Vector3(1.5, 1.1, 1.5), Color(0.3, 0.36, 0.16), Vector3(cos(a) * 1.7, 4.3 + (c % 2) * 0.5, sin(a) * 1.7))
 
+## A minke, alone and quick: seven metres of sleek dark grey with a pointed head, the curved fin
+## showing at the same moment as the blowhole, and the white band on each flipper. It rides the same
+## surfacing cycle as the humpback but never shows its fluke. Parts: the body, then an empty fluke.
+func _minke() -> void:
+	var body := Node3D.new()
+	add_child(body)
+	_ball(body, Vector3(0.75, 0.6, 3.5), Color(0.22, 0.25, 0.28), Vector3.ZERO)
+	_cone(body, 0.06, 0.9, Color(0.2, 0.23, 0.26), Vector3(0, 0.0, 3.6), Vector3(deg_to_rad(90), 0, 0))     # the pointed head
+	_cone(body, 0.22, 0.5, Color(0.2, 0.23, 0.26), Vector3(0, 0.62, -1.2), Vector3(deg_to_rad(-25), 0, 0))  # the curved fin
+	for side in [1.0, -1.0]:
+		_ball(body, Vector3(0.28, 0.05, 0.9), Color(0.22, 0.25, 0.28), Vector3(0.75 * side, -0.35, 1.0))
+		_ball(body, Vector3(0.29, 0.055, 0.22), Color(0.95, 0.95, 0.95), Vector3(0.78 * side, -0.33, 1.1))  # the white flipper band
+	_parts.append(body)
+	var no_fluke := Node3D.new()  # a minke slips under without lifting its fluke: an empty part in the fluke's place
+	add_child(no_fluke)
+	_parts.append(no_fluke)
+
 ## A bed of bull kelp: floats at the surface, stipes down into the dark, blades streaming.
 func _kelp() -> void:
 	var rng := RandomNumberGenerator.new()
@@ -407,7 +425,7 @@ func _process(delta: float) -> void:
 			for i in range(_parts.size()):
 				var b := _parts[i]
 				b.rotation.y = 0.2 * ((i % 3) - 1) + 0.25 * sin(_t * 0.6 + i * 0.7)
-		"humpback":
+		"humpback", "minke":
 			# Thirty seconds a cycle: three rolls to breathe, the fluke up, then down for the rest.
 			var body := _parts[0]
 			var fluke := _parts[1]

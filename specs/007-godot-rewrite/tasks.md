@@ -741,6 +741,10 @@
 
 - [x] T014gf The field guide's Garry oak stands alone in the dry meadow above the seals' rock on day one and on the way home (`Wildlife._oak`): a short, thick, gnarled trunk, crooked limbs spreading out more than up, and a lumpy rounded crown over gold grass. It reads from the water as the one rounded shape among the firs. The western red cedar is left for later: its damp north-facing slope near the route is Jones Island's north cove, where its card would land on top of the arrival.
 
+## Slice 170 — a minke over the banks
+
+- [x] T014gg A minke whale works alone over the west end of Spieden Channel on day two (`Wildlife._minke`): seven metres of sleek dark grey with a pointed head, a curved fin, and the white band on each flipper. It rides the humpback's surfacing cycle but never lifts a fluke, and its blow carries like the other whales'. Its card follows the orcas' when both are in reach (checked headless). Check start `?scene=trip&leg=1&near=minke`, station `trip-minke`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
