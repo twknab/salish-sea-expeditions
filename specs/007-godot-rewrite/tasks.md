@@ -749,6 +749,10 @@
 
 - [x] T014gh The cove's bioluminescence was in the field guide but never counted as met, though the night card shows it and a tap stirs it. Now the first spark, from the night's own glow or the paddler's hand, is kept in the save like any other meeting, and the field guide's "met on the water" count includes it (checked headless).
 
+## Slice 172 — a gillnet across the line
+
+- [x] T014gi On the September day (the fall salmon openings) a gillnet is set across day two's line (`Gillnet`): 350 m of corks on the surface, with an orange end buoy carrying a pole and flag at each end, the net hanging below. Within 60 m the note says what it is and to go round an end, never over. A boat that crosses the cork line between the buoys has the net take its skeg: it stops dead, and the note says to back off, go round, and that a fisher's net is a livelihood. Going round an end is fine. The geometry is pure and tested. "Gillnet" joins the glossary. Check start `?scene=trip&leg=1&day=september&near=gillnet`, station `trip-gillnet`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

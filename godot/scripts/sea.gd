@@ -181,6 +181,14 @@ func _ready() -> void:
 			_log = Deadhead.new()
 			add_child(_log)
 			_log.setup(Deadhead.place(Leg.waypoints(_route)), kayak, sea)
+			if Leg.index() == 1 and str(App.chosen_day().get("id", "")) == Gillnet.DAY:  # salmon season: a net across day two's line
+				var net := Gillnet.new()
+				add_child(net)
+				net.setup(kayak, sea)
+				net.said.connect(func(text: String, snag: bool) -> void:
+					note_label.text = text
+					if snag:
+						kayak.linear_velocity *= 0.1)
 			if Leg.index() == 0 or Leg.is_last():  # the harbour's channel mark, out on day one and in on the last
 				var buoy := NavBuoy.new()
 				add_child(buoy)
