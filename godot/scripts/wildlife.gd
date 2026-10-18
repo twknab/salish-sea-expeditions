@@ -77,6 +77,10 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"otter": w._otter()
 		"humpback": w._humpback()
 		"sealions": w._sealions()
+		"cormorants": w._cormorants()
+		"buoylion": w._buoylion()
+		"jellies": w._jellies()
+		"madrona": w._madrona()
 		"orcas": w._orcas()
 	return w
 
@@ -220,6 +224,72 @@ func _sealions() -> void:
 		_ball(a, Vector3(0.12, 0.05, 0.35) * sz, tan.darkened(0.25), Vector3(0.38 * sz, 0.12, 0.6 * sz))  # the fore-flippers, propped
 		_ball(a, Vector3(0.12, 0.05, 0.35) * sz, tan.darkened(0.25), Vector3(-0.38 * sz, 0.12, 0.6 * sz))
 
+## Pelagic cormorants on the cliff's ledges in the nesting season: slim, glossy black and upright on
+## thin necks, the white flank patch of the breeding season, and one standing with its wings held open
+## to dry, as they do after a dive.
+func _cormorants() -> void:
+	for i in 4:
+		var b := Node3D.new()
+		b.position = Vector3(i * 0.7 - 1.05, (i % 2) * 0.6, 0.0)
+		add_child(b)
+		var black := Color(0.05, 0.07, 0.06)
+		_ball(b, Vector3(0.1, 0.2, 0.09), black, Vector3(0, 0.2, 0))                                         # the upright body
+		_ball(b, Vector3(0.04, 0.05, 0.03), Color(0.92, 0.92, 0.9), Vector3(0.08, 0.14, 0.0))                 # the white flank patch
+		_rod(b, 0.025, 0.22, black, Vector3(0, 0.48, 0.02))                                                   # the thin neck
+		_ball(b, Vector3(0.04, 0.04, 0.06), black, Vector3(0, 0.6, 0.05))
+		_cone(b, 0.012, 0.07, Color(0.2, 0.18, 0.15), Vector3(0, 0.6, 0.12), Vector3(deg_to_rad(-90), 0, 0))
+		if i == 2:  # drying: the wings held open
+			_ball(b, Vector3(0.28, 0.14, 0.02), black, Vector3(0.24, 0.3, -0.02))
+			_ball(b, Vector3(0.28, 0.14, 0.02), black, Vector3(-0.24, 0.3, -0.02))
+
+## A California sea lion sprawled across the top of the harbour's red nun, as they do on every
+## buoy that will hold them: sleek, dark brown, the crest on a male's head, flippers hanging over.
+func _buoylion() -> void:
+	var a := Node3D.new()
+	a.position = Vector3(0, 1.25, 0)
+	a.rotation.z = 0.25
+	add_child(a)
+	var brown := Color(0.22, 0.15, 0.1)
+	_ball(a, Vector3(0.32, 0.26, 0.95), brown, Vector3(0, 0.2, 0))
+	_ball(a, Vector3(0.16, 0.16, 0.22), brown.darkened(0.05), Vector3(0, 0.42, 0.85))     # the head
+	_ball(a, Vector3(0.06, 0.05, 0.08), brown.lightened(0.15), Vector3(0, 0.56, 0.82))    # the male's crest
+	_ball(a, Vector3(0.1, 0.04, 0.32), brown.darkened(0.2), Vector3(0.38, 0.0, 0.35), Vector3(0, 0, 0.8))   # a flipper over the side
+	_ball(a, Vector3(0.1, 0.04, 0.3), brown.darkened(0.2), Vector3(0, -0.05, -0.95))      # the hind flippers
+
+## Moon jellies drifting just under the harbour's surface in summer: pale translucent bells with the
+## four horseshoes showing through, pulsing slowly. The bell breaks the surface film, so they read from
+## the boat as the water itself never lets anything below it read.
+func _jellies() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	for i in 9:
+		var j := Node3D.new()
+		j.position = Vector3(rng.randf_range(-6.0, 6.0), -0.06, rng.randf_range(-6.0, 6.0))
+		add_child(j)
+		var bell := _ball(j, Vector3(0.22, 0.09, 0.22), Color(0.88, 0.92, 0.96), Vector3.ZERO)
+		var m := bell.material_override as StandardMaterial3D
+		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		m.albedo_color.a = 0.55
+		for k in 4:  # the four horseshoes
+			var a := TAU * k / 4.0
+			_ball(j, Vector3(0.05, 0.02, 0.05), Color(0.85, 0.55, 0.7), Vector3(cos(a) * 0.08, 0.05, sin(a) * 0.08))
+		_parts.append(j)
+
+## A Pacific madrona leaning out over the water from a sunny bluff: the trunk and limbs a bright
+## peeling orange-red, twisting, and a broad rounded crown of glossy evergreen leaves. The only tree on
+## these shores that is not a dark cone.
+func _madrona() -> void:
+	scale = Vector3.ONE * 1.8  # as tall as the firs around it, so the red reads from the water
+	var bark := Color(0.78, 0.3, 0.14)
+	var trunk := _rod(self, 0.28, 5.0, bark, Vector3(0.6, 2.4, 0.0))
+	trunk.rotation.z = -0.35  # leaning out toward the light off the water
+	for k in 3:  # the twisting limbs
+		var limb := _rod(self, 0.12, 2.6, bark.lightened(0.1), Vector3(1.4 + k * 0.4, 4.6, (k - 1) * 0.7))
+		limb.rotation = Vector3((k - 1) * 0.5, 0, -0.7)
+	for c in 4:  # the broad, rounded crown
+		var a := TAU * c / 4.0
+		_ball(self, Vector3(1.6, 1.1, 1.6), Color(0.2, 0.36, 0.14), Vector3(2.0 + cos(a) * 1.0, 5.8 + (c % 2) * 0.4, sin(a) * 1.0))
+
 ## A bed of bull kelp: floats at the surface, stipes down into the dark, blades streaming.
 func _kelp() -> void:
 	var rng := RandomNumberGenerator.new()
@@ -332,6 +402,10 @@ func _process(delta: float) -> void:
 			var f := clampf(1.0 - absf(cyc - 14.0) / 2.0, 0.0, 1.0)
 			fluke.visible = f > 0.0
 			fluke.position = Vector3(0, -1.5 + 3.2 * f, body.position.z - 5.5)
+		"jellies":
+			for i in range(_parts.size()):
+				var pulse := 1.0 + 0.12 * sin(_t * 1.6 + i * 1.3)  # a slow pulse, each bell on its own beat
+				_parts[i].scale = Vector3(pulse, 2.0 - pulse, pulse)
 		"porpoise", "dalls":
 			# A slow circuit, breaking the surface in an arc every few seconds.
 			var body := _parts[0]

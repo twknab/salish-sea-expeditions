@@ -3264,6 +3264,14 @@
    ]
   },
   {
+   "id": "redright",
+   "term": "Red, right, returning",
+   "text": "In US waters the red channel marks stay on your right as you come in from sea, and the green on your left; heading out, the other way about. A kayak keeps to the edge of the channel the marks make, out of the way of the vessels that need its deep water.",
+   "sourceIds": [
+    "uscg"
+   ]
+  },
+  {
    "id": "whitelight",
    "term": "The white light",
    "text": "A vessel under oars keeps a white light ready at hand — a torch or a lantern — and shows it in time to prevent collision, after dark and in poor visibility. On a kayak that is a light carried on deck where it can be seen all round.",

@@ -181,6 +181,11 @@ func _ready() -> void:
 			_log = Deadhead.new()
 			add_child(_log)
 			_log.setup(Deadhead.place(Leg.waypoints(_route)), kayak, sea)
+			if Leg.index() == 0 or Leg.is_last():  # the harbour's channel mark, out on day one and in on the last
+				var buoy := NavBuoy.new()
+				add_child(buoy)
+				buoy.setup(kayak, sea, Leg.is_last())
+				buoy.said.connect(func(text: String) -> void: note_label.text = text)
 			_log.said.connect(func(text: String, hit: bool) -> void:
 				note_label.text = _said("deadhead_hit" if hit else "deadhead") + text
 				_note_hold = NOTE_HOLD
@@ -250,7 +255,7 @@ func _spawn_sightings() -> void:
 			continue  # a sighting may keep to its season: `day` names the only day it is there
 		var at: Vector3 = conf.at
 		var y := 0.0
-		if conf.kind in ["eagle", "seals", "peregrine", "oystercatcher", "sealions"]:
+		if conf.kind in ["eagle", "seals", "peregrine", "oystercatcher", "sealions", "cormorants", "madrona"]:
 			y = maxf(terrain.height_at(at.x, at.z), 0.0) + (0.3 if conf.kind == "seals" else 0.0)
 		var node := Wildlife.make(conf.kind, Vector3(at.x, y, at.z), conf.face)
 		add_child(node)
@@ -477,45 +482,12 @@ func _leg(delta: float) -> void:
 		_arrived = true
 		_groove = 0.0
 		App.save.arrivedHour = _hour
-		_record_day()
+		DayRecord.keep(self)
 		App.persist()
 		controls.visible = false
 		Sound.gull()
 		var land_card: Dictionary = _route.get("landing", {})
 		_show(UIKit.card(land_card.get("title", "Landing"), "%s%s The day is done at %s." % [_said("landing"), land_card.get("text", ""), Leg.clock(_hour)], App.sources_line(land_card.get("sourceIds", [])), [["Land and make camp", func() -> void: App.next(), true]], "Landing · day %d" % (Leg.index() + 1)))
-
-## The day for the debrief: the launch and its verdict, the landing, the swims, and the wildlife
-## given room or not. One entry per leg; paddling a day again replaces its entry.
-func _record_day() -> void:
-	var respectful := 0
-	var violations := 0
-	for s in _sightings:
-		if not s.seen or int(_species(s.conf.species).get("approachMetres", 0)) <= 0:
-			continue
-		if bool(s.get("close", false)):
-			violations += 1
-		else:
-			respectful += 1
-	var launch := Leg.launch_hour()
-	var entry := {
-		"leg": Leg.index(), "metres": Leg.length_m(_route), "launchHour": launch, "arrivedHour": _hour,
-		"verdict": str(Tides.judge(_day, launch, Leg.hours_at_touring_pace(_route), str(_route.get("favours", "flood"))).verdict),
-		"swims": _swims_today, "rolls": _rolls_today, "rescuesGiven": _partner.rescues_given if _partner else 0, "reachS": _partner.reach_s if _partner else -1.0, "waits": _waits_today, "blows": _blows.x, "pushes": _blows.y, "slackWaited": _cross.slack == 2, "respectful": respectful, "violations": violations,
-		"ferryHeld": _ferry_verdicts.count("held"), "ferryCrossed": _ferry_verdicts.count("crossed"),
-		"streamS": _cross.stream_s, "onLineS": _cross.on_line_s, "maxKn": snappedf(_cross.max_kn, 0.1), "maxAt": _cross.max_at, "eddy": _cross.eddy_said, "linesEdged": _cross.lines_edged, "rafts": _partner.rafts if _partner else 0, "missing": Array(_pack.get("missing", [])).size(), "linesTripped": _cross.lines_tripped,
-		"fog": _fogged, "fogInHour": _fog_in_hour, "fogOffM": _fog_off_m, "dark": _dark, "thirsty": _thirsty, "rain": _rained, "rainRafted": _rain_rafted, "light": _light_call, "logStruck": _log.struck if _log else 0,
-		"notes": _notes.duplicate(), "noteAt": _note_at.duplicate(),
-		"lateStart": float(App.save.get("lateStart", 0.0)),
-	}
-	App.save.erase("lateStart")  # the water run and the thirst are this day's; tomorrow starts fresh
-	App.save.erase("effort")
-	var days: Array = App.save.get("days", [])
-	var kept: Array = []
-	for d in days:
-		if int(d.get("leg", -1)) != Leg.index():
-			kept.append(d)
-	kept.append(entry)
-	App.save.days = kept
 
 ## The wind is up: the float plan's bail-outs, with their distances, and the choice — push on, or
 ## tuck into the nearest lee and let the afternoon blow through. Nobody has to make it in one push.

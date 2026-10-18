@@ -713,6 +713,26 @@
 
 - [x] T014fy A sighting can now keep to its season: an optional `day` names the only trip day it is there, and a content test checks that day exists. Steller sea lions, which the field guide says are here "mostly autumn to spring", haul out on the low rocks west of Spieden only on the September day: a big reddish bull and two tan cows, heads up on thick necks, propped on their fore-flippers (`Wildlife._sealions`). On the July day the rocks are bare (checked headless). Check start `?scene=trip&leg=1&day=september&near=sealions`, station `trip-sealions`.
 
+## Slice 163 — cormorants nesting on the cliff
+
+- [x] T014fz Pelagic cormorants nest on Spieden's south cliff ledges in their season (the field guide says April to August, so the July day only), beside the peregrine (`Wildlife._cormorants`). Four slim, glossy black birds stand upright on thin necks, with the breeding season's white flank patch, and one holds its wings open to dry. Their card follows the peregrine's at the cliff.
+
+## Slice 164 — red, right, returning
+
+- [x] T014ga A red nun buoy marks the channel into Friday Harbor, just to the right of the line home (`NavBuoy`), on day one going out and on the last day coming in. Within 70 m the note teaches the rule the right way round for the direction: coming in, the reds stay on your right; going out, on your left; keep to the channel's edge (both checked headless). On the September day a California sea lion is sprawled across it, as they are on every buoy that will hold them (`Wildlife._buoylion`, seasonal like the Steller sea lions). "Red, right, returning" joins the glossary. Check start `?scene=trip&leg=2&day=september&near=buoy&launch=9`, station `trip-buoy`.
+
+## Slice 165 — the day's record leaves the water scene
+
+- [x] T014gb Making room again: `sea.gd` had reached 995 lines. The day's record for the debrief (the launch and its verdict, the landing, the swims, the wildlife given room, and the rest of the record's 38 fields) is now built by `DayRecord.keep(sea)`, and the water scene drops to 962 lines. No change in behaviour: an arrival checked headless still records the day with every field.
+
+## Slice 166 — moon jellies in the harbour
+
+- [x] T014gc Moon jellies drift in the calm of Friday Harbor in summer (the July day): nine pale translucent bells with the four pink horseshoes showing through, each pulsing slowly on its own beat (`Wildlife._jellies`). They sit just under the surface film, because the sea shader is opaque and lets nothing deeper read. Check start `?scene=trip&near=jellies`, station `trip-jellies`.
+
+## Slice 167 — the madrona on Jones Island's bluff
+
+- [x] T014gd The field guide's Pacific madrona leans out over the water from the edge of Jones Island's sunny bluff, the one tree on these shores that is not a dark cone: a bright peeling orange-red trunk and twisting limbs under a broad rounded crown, scaled to stand as tall as the firs so the red reads from the water (`Wildlife._madrona`). Check start `?scene=trip&near=madrona`, station `trip-madrona`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
