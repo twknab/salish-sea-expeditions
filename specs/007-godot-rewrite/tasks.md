@@ -660,6 +660,10 @@
 
 - [x] T014fk A deadhead rides near each day's line: a waterlogged log floating on end, a hand of grey wood above the surface (`Deadhead`, placed 45% along the waypoints and 14 m to one side, checked to sit in deep water on all three legs). Inside 40 m the note says what it is and to give it room. A bow on it at paddling speed jars the boat (a kick and a hull slap) and says so; drifting onto it does not. The day's record keeps `logStruck`. Check start `?scene=trip&near=log`; new station `trip-log`.
 
+## Slice 150 — room in the water scene
+
+- [x] T014fl The water scene had reached 995 of the lint's 1000 lines. Where the whale-watch fleet holds abeam of a pod (the side that is water along the pod's whole pass, or the nearer standoff if neither is) now lives on `WhaleWatch.abeam()` beside `station_for`, and `sea.gd` drops to 983. No change on screen; the whale and fleet stations still pass.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

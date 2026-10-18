@@ -264,24 +264,12 @@ func _spawn_sightings() -> void:
 			add_child(boat)
 			var heading: Vector3 = conf.face
 			var keep := float(_species(conf.species).get("approachMetres", WhaleWatch.STANDOFF))  # the field guide's distance, the fleet's too
-			# Abeam on whichever side is water along the pod's whole pass; nearer if neither is.
-			var side := 1.0
-			var at_keep := keep
-			if not _water_along(node.global_position, heading, 1.0, keep):
-				side = -1.0
-				if not _water_along(node.global_position, heading, -1.0, keep):
-					side = 1.0
-					at_keep = WhaleWatch.STANDOFF
+			var ab := WhaleWatch.abeam(node.global_position, heading, keep, terrain)
+			var side := ab.x
+			var at_keep := ab.y
 			# The pod's walk starts 600 m back along its heading (Wildlife._process), so the boat starts there too.
 			boat.global_position = WhaleWatch.station_for(node.global_position - heading.normalized() * 600.0, heading, side, at_keep)
 			_watchers.append({ "boat": boat, "pod": node, "heading": heading, "keep": at_keep, "side": side, "seen": false })
-## True when the station abeam of the pod's line, over its whole walk, is on the water.
-func _water_along(origin: Vector3, heading: Vector3, side: float, keep: float) -> bool:
-	for along in [-600.0, -300.0, 0.0, 300.0, 600.0]:
-		var p := WhaleWatch.station_for(origin + heading.normalized() * along, heading, side, keep)
-		if terrain.height_at(p.x, p.z) > -0.5:
-			return false
-	return true
 
 ## Coming within reach of a sighting names it once, from the field guide, and keeps it in the save.
 func _watch_sightings() -> void:

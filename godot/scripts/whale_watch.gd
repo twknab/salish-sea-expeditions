@@ -16,6 +16,21 @@ static func station_for(pod_pos: Vector3, heading: Vector3, side := 1.0, standof
 	var abeam := Vector3(-h.z, 0.0, h.x) * side
 	return Vector3(pod_pos.x, 0.0, pod_pos.z) + abeam * maxf(50.0, standoff)
 
+## Which side of the pod's line the fleet holds, and how far off: abeam on whichever side is water
+## along the pod's whole pass (600 m either way), nearer if neither is. Returns (side, standoff).
+static func abeam(origin: Vector3, heading: Vector3, keep: float, terrain: Terrain) -> Vector2:
+	for side in [1.0, -1.0]:
+		if _water_along(origin, heading, side, keep, terrain):
+			return Vector2(side, keep)
+	return Vector2(1.0, STANDOFF)
+
+static func _water_along(origin: Vector3, heading: Vector3, side: float, keep: float, terrain: Terrain) -> bool:
+	for along in [-600.0, -300.0, 0.0, 300.0, 600.0]:
+		var p := station_for(origin + heading.normalized() * along, heading, side, keep)
+		if terrain.height_at(p.x, p.z) > -0.5:
+			return false
+	return true
+
 static func _m(c: Color, rough := 0.6) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
 	m.albedo_color = c
