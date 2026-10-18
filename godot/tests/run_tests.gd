@@ -303,6 +303,10 @@ func _init() -> void:
 	check(Sightings.where_to_look("octopus") == "", "nothing on the water for what lives in the pools")
 	check(Drink.note(true, "Mina", false).contains("half hour") and Drink.note(false, "Mina", false).contains("Mina passes") and Drink.note(false, "", false).contains("Nothing to drink"), "the first drink: the habit with water, a shared bottle or nothing without")
 	check(Drink.note(true, "", true).length() < 60 and PartnerVoice.line("drink") != "", "the drink note is short on a phone, and the partner calls it")
+	var help := HelpText.sections(["Forward stroke", "Brace"])
+	var keys: String = help.filter(func(x: Dictionary) -> bool: return x.title == "Paddling on a keyboard")[0].body
+	check(["W or ↑", "A / D", "S or ↓", "Z / C", "Shift + A / D", "J, L or Space", "Q / E", "M —", "P or Escape"].all(func(k: String) -> bool: return keys.contains(k)), "Help names every key the controls read")
+	check(help.size() >= 8 and help.all(func(x: Dictionary) -> bool: return str(x.title) != "" and str(x.body).length() > 80) and str(help[3].body).contains("· Brace"), "Help has its sections, each with something to say, and lists the drills")
 	check(["otter", "eagle", "porpoise"].all(func(e: String) -> bool: return PartnerVoice.line(e) != "") and PartnerVoice.line("oak") == "", "the partner points out the otter, the eagle and the porpoise, and leaves the oak alone")
 	check(PartnerVoice.line("eddyline_edged") != "" and PartnerVoice.line("eddyline_edged") != PartnerVoice.line("eddyline"), "the partner has a word for an eddy line crossed well, not only for one that trips the boat")
 	for ev in PartnerVoice.LINES.keys():
