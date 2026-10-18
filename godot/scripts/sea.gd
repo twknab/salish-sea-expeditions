@@ -321,6 +321,8 @@ func _watch_sightings() -> void:
 			App.persist()
 		if conf.kind == "eagle":
 			Sound.eagle()
+		elif conf.kind in ["porpoise", "dalls"]:
+			Sound.puff()
 		elif conf.kind in ["sealions", "buoylion"]:
 			Sound.sealion(conf.kind == "sealions")
 		elif conf.kind in ["oystercatcher", "kingfisher", "peregrine", "guillemot", "heron", "otter"]:

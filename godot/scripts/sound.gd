@@ -128,6 +128,10 @@ func blow(near: float) -> void:
 		return
 	_play("blow", lerpf(-34.0, -10.0, clampf(near, 0.0, 1.0)), randf_range(0.92, 1.08))
 
+## A porpoise surfacing: the orca's blow, small, quick and quiet — the sharp "puff" that gives it its name.
+func puff() -> void:
+	_play("blow", -24.0, randf_range(1.7, 1.9))
+
 func eagle() -> void:
 	_play("eagle", -16.0, randf_range(0.95, 1.05))
 

@@ -801,6 +801,10 @@
 
 - [x] T014gu The river otter is heard when its card comes up: short, bird-like chirps and a breathy huff (`chirp.wav`), appended last in the synth tool.
 
+## Slice 185 — the porpoise puffs
+
+- [x] T014gv Harbour and Dall’s porpoise cards are heard: the orca’s blow, pitched up and quiet, as the sharp “puff” the partner already tells you to listen for.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
