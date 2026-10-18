@@ -239,3 +239,14 @@ for (let k = 0; k < 2; k++) {
   }
   wav('whistle', out);
 }
+// Great blue heron: a deep, hoarse "frahnk" — a rough low croak, given when the bird is put up off the shore.
+{
+  const len = Math.floor(SR * 1.0), out = new Float32Array(len); const l = lp(1800);
+  for (let i = 0; i < Math.floor(SR * 0.55); i++) {
+    const t = i / SR;
+    const f = 240 - 70 * t / 0.55;
+    const buzz = Math.max(0, Math.sin(2 * Math.PI * f * t)) ** 4;  // a rough glottal pulse train
+    out[i] = (buzz * 0.6 + l(rnd()) * 0.25 * buzz + Math.sin(2 * Math.PI * 3 * f * t) * 0.08) * Math.sin(Math.PI * Math.min(1, t / 0.55)) * 0.55;
+  }
+  wav('croak', out);
+}

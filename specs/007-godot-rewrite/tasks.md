@@ -793,6 +793,10 @@
 
 - [x] T014gs The partner has a word on the river otter, bald eagle and harbour porpoise cards (an otter at its meal, the white head on the snag, the single puff), and stays quiet for the trees.
 
+## Slice 183 — the heron croaks
+
+- [x] T014gt The great blue heron is heard when its card comes up: a deep, hoarse “frahnk” croak (`croak.wav`), appended last in the synth tool so the earlier sounds keep their noise.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
