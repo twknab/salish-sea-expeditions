@@ -857,6 +857,14 @@
 
 - [x] T014hi The words on the water gain sécurité (the ferry’s fog call), haul-out (the seals’ rock) and Be Whale Wise (the distances the field guide gives), each with its source.
 
+## Slice 199 — Help
+
+- [x] T014hj A Help page from the title (`Help · how to play`, `?scene=help`): how the expedition runs, paddling on a keyboard and on a phone (the phone's section first on a touchscreen), Kayak School and its drills by name, finding your way, cards and notes and the partner, sound and pausing, the field guide, and safety. The text is pure (`HelpText`), and the tests hold it to every key the controls read.
+
+## Slice 200 — a dev Skip, to scope ahead
+
+- [x] T014hk Dev mode (`?dev=1`, or `window.SSE_DEV = true` on the page) puts a Skip chip at the left edge of every screen. In Kayak School it leaves the tour for the drills, then passes the drill in hand; on a trip it sets the boat down at the cove (through the physics server, or the rigid body's next step puts it back), so the landing and the day's record run as usual; at camp it moves to the next day; elsewhere it opens the next screen. Never on in a production page.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
@@ -864,9 +872,12 @@
 
 ## Slice 3 — port (only on go)
 
-- [ ] T016 Port src/sim modules with tests
-- [ ] T017 Content export to JSON and a loader
-- [ ] T018 Kayak School scene
-- [ ] T019 Crossing with partner, tides and currents
-- [ ] T020 Wildlife, rescue, camp, tide pools, debrief, field guide, Help, About
-- [ ] T021 Soundscape
+Built slice by slice above rather than as one port after the go/no-go; the measurement (T014, T015)
+is still owed.
+
+- [x] T016 Port src/sim modules with tests — `waves.gd`, `hull.gd`, `stroke_math.gd`, `tides.gd` and the other pure `class_name` scripts, held by `tests/run_tests.gd`
+- [x] T017 Content export to JSON and a loader — `tools/export-content.mjs` → `godot/content/content.json`, read by `App`; `Leg` merges in `legs.json`
+- [x] T018 Kayak School scene — the tour and the ten drills (`SchoolTour`, `SchoolDrill`, `sea.gd`)
+- [x] T019 Crossing with partner, tides and currents — `CrossingWatch`, `Tides`, `FerryGlide`, `Partner`, three legs
+- [x] T020 Wildlife, rescue, camp, tide pools, debrief, field guide, Help, About — Help in slice 199
+- [x] T021 Soundscape — `Sound`: loops, synthesized one-shots and calls, four pieces

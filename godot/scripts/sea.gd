@@ -18,6 +18,7 @@ var _dest := Vector3.ZERO      # the cove, on a trip
 var _hour := Leg.LAUNCH_HOUR   # the day's clock, on a trip
 var _groove := 0.0             # 0..1: a steady cadence has settled and the miles pass
 var _arrived := false
+var _dev_pass := false      # dev mode's Skip: the drill in hand counts as met
 var _dest_label: Label
 var _route: Dictionary = {}
 var _chart: ChartTile
@@ -761,6 +762,9 @@ func _drill_progress(delta: float) -> void:
 			elif not kayak.wobbling():
 				s.braced_now = false
 			p = s.count / 3.0
+	if _dev_pass:
+		_dev_pass = false
+		p = 1.0
 	_drill_bar.value = clampf(p, 0.0, 1.0) * 100.0
 	if p >= 1.0:
 		_drill = -1
@@ -778,6 +782,22 @@ func _drill_progress(delta: float) -> void:
 			get_tree().create_timer(6.0 if d.id == "brace" else 1.0).timeout.connect(func() -> void: _start_drill(next_i))  # time to read the hip snap
 		else:
 			_finish_school()
+
+## Dev mode's Skip (`App.dev_skip`): pass the drill in hand, leave the tour for the drills, or set
+## the boat down at the cove; false when there is nothing here to skip and the next screen should come.
+func dev_skip() -> bool:
+	if mode == "school" and _drill >= 0:
+		_dev_pass = true
+	elif mode == "school" and _drill_bar == null:
+		_start_drills()
+	elif mode == "trip" and not _arrived:
+		var at := kayak.global_transform
+		at.origin = Vector3(_dest.x, at.origin.y, _dest.z)
+		PhysicsServer3D.body_set_state(kayak.get_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM, at)  # a rigid body's own state, or the next step puts it back
+		kayak.global_transform = at
+	else:
+		return false
+	return true
 
 func _finish_school() -> void:
 	controls.visible = false

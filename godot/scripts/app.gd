@@ -18,6 +18,7 @@ const SCENES := {
 	"plan": "res://scenes/plan.tscn",
 	"camp": "res://scenes/camp.tscn",
 	"guide": "res://scenes/guide.tscn",
+	"help": "res://scenes/help.tscn",
 	"debrief": "res://scenes/debrief.tscn",
 }
 
@@ -35,6 +36,10 @@ var _perf_min_fps := 1000.0
 var _first_frame_ms := -1.0
 var _perf_said := false
 var _pause_layer: CanvasLayer   # the pause card, over everything, alive while the tree is paused
+## Dev mode (`?dev=1`, or the page setting `window.SSE_DEV`): a Skip chip on every screen that moves
+## past whatever is in the way — a drill, the tour, a crossing, a screen — to scope ahead. Never on
+## in a production page.
+var dev := false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS  # the chips and the pause card work while the tree is paused
@@ -100,6 +105,22 @@ func _ready() -> void:
 		_perf.offset_left = 12
 		_perf.offset_right = 392
 		_home.add_child(_perf)
+	dev = _url_param("dev") == "1" or (OS.has_feature("web") and bool(JavaScriptBridge.eval("window.SSE_DEV === true")))
+	if dev:
+		var skip := UIKit.button("Skip ›", false)
+		skip.custom_minimum_size = Vector2(84, 34)
+		skip.add_theme_font_size_override("font_size", 12)
+		skip.add_theme_color_override("font_color", UIKit.SUN)
+		var dark: StyleBoxFlat = skip.get_theme_stylebox("normal").duplicate()
+		dark.bg_color = Color(0.0, 0.0, 0.0, 0.6)  # legible over the sky and the water alike
+		skip.add_theme_stylebox_override("normal", dark)
+		skip.set_anchors_preset(Control.PRESET_CENTER_LEFT)  # clear of the chips, the notes, the compass, the chart and the cards
+		skip.offset_left = 12
+		skip.offset_right = 96
+		skip.offset_top = -17
+		skip.offset_bottom = 17
+		skip.pressed.connect(dev_skip)
+		_home.add_child(skip)
 	var want := _url_param("scene")
 	if want != "" and SCENES.has(want):
 		call_deferred("go", want)
@@ -143,7 +164,7 @@ func go(name: String) -> void:
 		sea_mode = name
 	elif name == "title":
 		sea_mode = "ambient"
-	if name != "title" and name != "guide" and name != "debrief":
+	if not name in ["title", "guide", "help", "debrief"]:
 		save.stage = name
 		persist()
 	Sound.mood({ "title": "title", "acknowledgment": "title", "outfit": "calm", "ferry": "ferry", "assemble": "calm", "school": "dawn", "pack": "calm", "plan": "calm", "trip": "drive", "camp": "night", "debrief": "drive" }.get(name, "calm"))
@@ -277,6 +298,19 @@ func _chip(text: String, x: float) -> Button:
 	c.position = Vector2(x, 10)
 	_home.add_child(c)
 	return c
+
+## Dev mode's Skip: the screen gets first say (a drill passes, the tour gives way to the drills, the
+## boat is set down at the cove), and otherwise the next screen in the flow.
+func dev_skip() -> void:
+	var scene := get_tree().current_scene
+	if scene and scene.has_method("dev_skip") and scene.dev_skip():
+		return
+	if current == "camp":
+		advance_leg()
+	elif current in ["guide", "help", "debrief"]:
+		go("title")
+	else:
+		next()
 
 func next() -> void:
 	var i := FLOW.find(current)

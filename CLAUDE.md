@@ -92,6 +92,11 @@ with `npx vite preview --port 4173` running, for a single screenshot.
   `?pack=bow|ideal` packs the boat for a check (everything in the bow, or the suggested layout). The
   expedition is `godot/content/legs.json` (geometry, from `tools/geo/leg_routes.py`) merged with the
   legs in `src/content/expedition.js` (teaching) by `Leg`; `?leg=1` opens day two, `?leg=2` day three.
+- `?scene=help` is the Help page (`HelpText` holds its words). `?dev=1` (or `window.SSE_DEV = true` set by the page
+  before the engine starts, as the demo page does) shows a Skip chip on every screen: the drill in hand passes,
+  the tour gives way to the drills, the boat is set down at the cove, camp moves to the next day, anything else
+  opens the next screen (`App.dev_skip`, a scene's own `dev_skip()` first). A rigid body moved from a script needs
+  `PhysicsServer3D.body_set_state(…, BODY_STATE_TRANSFORM, …)` too, or its next step puts it back.
 - `?perf=1` on any screen shows the go/no-go numbers (fps, worst fps, frame time, time to first frame,
   memory, device) at the foot of the screen and prints them once at ten seconds.
 - `tests/smoke/godot-stations.mjs` opens every station from its check URL in a fresh page and fails on any
