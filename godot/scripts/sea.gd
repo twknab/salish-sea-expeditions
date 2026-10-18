@@ -109,10 +109,10 @@ func _ready() -> void:
 	move_child(sea, 0)
 	_route = Leg.current()
 	if mode == "trip":
-		kayak.global_position = Leg.start(_route) + Vector3(0.0, 0.1, 0.0)
+		kayak.place(Leg.start(_route) + Vector3(0.0, 0.1, 0.0))
 		kayak.rotation.y = -deg_to_rad(Leg.heading_deg(_route))  # heading = -yaw (see Kayak.heading)
 	else:
-		kayak.global_position = terrain.place("fridayHarbor") + HARBOUR_SPAWN
+		kayak.place(terrain.place("fridayHarbor") + HARBOUR_SPAWN)
 		kayak.rotation.y = -deg_to_rad(HARBOUR_HEADING)
 	terrain.focus = kayak.global_position
 	var sk := App.skin()
@@ -236,11 +236,11 @@ func _ready() -> void:
 			hud.add_child(_chart)
 			var start := CheckStarts.at(App._url_param("near"), App._url_param("close") == "1")  # starts for checks
 			if not start.is_empty():
-				kayak.global_position = Vector3(float(start[0]), 0.1, float(start[1]))
+				kayak.place(Vector3(float(start[0]), 0.1, float(start[1])))
 				kayak.rotation.y = -deg_to_rad(float(start[2]))
 			match App._url_param("near"):
 				"jones", "posey", "home":
-					kayak.global_position = _dest + Vector3(0.0, 0.1, -900.0)  # 900 m north of the cove
+					kayak.place(_dest + Vector3(0.0, 0.1, -900.0))  # 900 m north of the cove
 					kayak.rotation.y = PI  # heading south, into the cove
 				"ferry":  # `?scene=trip&near=ferry`: the ferry 600 m ahead, coming up the channel
 					_traffic.place_near(kayak.global_position, 600.0)
@@ -249,7 +249,7 @@ func _ready() -> void:
 						var w: Dictionary = _watchers[0]
 						var b: Vector3 = w.boat.global_position
 						var h: Vector3 = Vector3(w.heading).normalized()
-						kayak.global_position = Vector3(b.x, 0.1, b.z) - h * 60.0  # the boat walks with the pod, away from here
+						kayak.place(Vector3(b.x, 0.1, b.z) - h * 60.0)  # the boat walks with the pod, away from here
 						kayak.rotation = Vector3(0.0, atan2(-h.x, -h.z), 0.0)  # the bow (-z) along the pod's heading, the boat on it
 			if App._url_param("hdg") != "":  # `&hdg=0`: the bow on a bearing, for checks
 				kayak.rotation.y = -deg_to_rad(float(App._url_param("hdg")))
@@ -356,7 +356,7 @@ func _leg(delta: float) -> void:
 		var fwd := -kayak.global_basis.z
 		var ahead := here + fwd * 60.0
 		if terrain.height_at(ahead.x, ahead.z) < -0.5:
-			kayak.global_position += fwd * GROOVE_SPEED * _groove * delta
+			kayak.shift(fwd * GROOVE_SPEED * _groove * delta)
 		_hour += GROOVE_HOURS_PER_SEC * _groove * delta
 	else:
 		_hour += delta / 3600.0 * 12.0  # out of the groove the day still passes, twelve times real
@@ -480,7 +480,7 @@ func _leg(delta: float) -> void:
 	var drift := cur * Kelp.carry(kelp, kayak.speed) * delta * (1.0 + _groove * (GROOVE_HOURS_PER_SEC * 3600.0 - 1.0) * 0.25)
 	var landing := here + drift * 4.0
 	if terrain.height_at(landing.x, landing.z) < -0.5:
-		kayak.global_position += drift
+		kayak.shift(drift)
 	var rip := " · ×%.1f %s" % [factor, str(_flow.name)] if factor > 1.15 else ""
 	var trim_note := " · " + Packing.trim_words(_pack) if Packing.handling_penalty(_pack) > 0.2 else ""
 	if kayak.assembly < 0.7:
@@ -725,13 +725,13 @@ func _drill_progress(delta: float) -> void:
 		p = SchoolDrill.measure(d.id, s, delta, kayak.heading, kayak.speed, kayak.edge, controls.steer, kayak.global_position)
 	match d.id:
 		"ferry":
-			kayak.global_position += s.stream * delta  # the water carries the boat, whatever it points at
+			kayak.shift(s.stream * delta)  # the water carries the boat, whatever it points at
 			var cmg := FerryGlide.course_made_good(-kayak.global_basis.z * kayak.speed, s.stream) if kayak.speed > 0.4 else NAN
 			s.t = s.t + delta if FerryGlide.off_line(cmg, float(s.line)) < 10.0 and not is_nan(cmg) else maxf(0.0, s.t - delta * 0.5)
 			p = s.t / 12.0
 			note_label.text = "%s\n%s\nGoal: %s." % [d.title, str(d.text) if is_nan(cmg) else "The line is the mark, %03d°. Making good %03d°." % [int(s.line), int(round(cmg))], d.goal]  # the lesson while still, numbers under way
 		"eddyline":
-			kayak.global_position += DrillWater.carry(d.id, s, kayak.global_position) * delta  # still water this side, the stream beyond
+			kayak.shift(DrillWater.carry(d.id, s, kayak.global_position) * delta)  # still water this side, the stream beyond
 			var dir := DrillWater.crossed(s, kayak.global_position)
 			if dir != 0:
 				var edged := CrossingWatch.line_edged(kayak.edge, kayak.global_basis.x, s.stream, dir)
@@ -791,10 +791,7 @@ func dev_skip() -> bool:
 	elif mode == "school" and _drill_bar == null:
 		_start_drills()
 	elif mode == "trip" and not _arrived:
-		var at := kayak.global_transform
-		at.origin = Vector3(_dest.x, at.origin.y, _dest.z)
-		PhysicsServer3D.body_set_state(kayak.get_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM, at)  # a rigid body's own state, or the next step puts it back
-		kayak.global_transform = at
+		kayak.place(Vector3(_dest.x, kayak.global_position.y, _dest.z))
 	else:
 		return false
 	return true

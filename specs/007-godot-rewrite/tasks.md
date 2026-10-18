@@ -865,6 +865,10 @@
 
 - [x] T014hk Dev mode (`?dev=1`, or `window.SSE_DEV = true` on the page) puts a Skip chip at the left edge of every screen. In Kayak School it leaves the tour for the drills, then passes the drill in hand; on a trip it sets the boat down at the cove (through the physics server, or the rigid body's next step puts it back), so the landing and the day's record run as usual; at camp it moves to the next day; elsewhere it opens the next screen. Never on in a production page.
 
+## Slice 201 — the boat moves when you paddle
+
+- [x] T014hl Paddling barely moved the boat, for two reasons. The hull carried a linear damp of 0.35 (plus the project's 0.1 added on top), which held a steady cadence of good strokes to 0.8 kn; it is 0.05 now, replacing the default, with the hull's own v² drag doing the work, and a stroke is worth 0.42 m/s — a good cadence settles near 2.5 kn, an arm-stroke cadence slower (`StrokeMath.cruise_speed`, tested both ways). And every move made from a script — the groove's miles, the tidal drift, the drill streams, the check starts, Skip — went through `global_position`, which on the web build the rigid body's next physics step undid; they all go through `Kayak.shift` / `Kayak.place` now, which set the physics server's state too.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

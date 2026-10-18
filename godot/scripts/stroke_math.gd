@@ -5,7 +5,7 @@ extends RefCounted
 
 const GOOD_STROKE := 0.6
 const MAX_SPEED := 2.4  # m/s, a hard sprint
-const STROKE_DV := 0.34 # m/s per full-quality stroke at rest
+const STROKE_DV := 0.42 # m/s per full-quality stroke at rest: about 3 knots held at a steady rotation cadence, a touring pace
 const DRAW_DV := 0.6     # m/s sideways from one draw stroke: the blade planted out to the side, pulled in to the hull
 const KEEL_DRAG := 2.2   # per second: how fast the keel line kills sideways slip on an assembled boat
 const RAFT_HOLD := 3.0   # rafted up: how much more the roll is held and righted with a hand on the other boat
@@ -22,6 +22,13 @@ static func rotation_quality(reach: float, smoothness: float, exit_at_hip: bool)
 	return clampf(q, 0.0, 1.0)
 
 ## Forward impulse for a stroke of quality q: an arm stroke still moves the boat, just less.
+## The speed a steady cadence of strokes of quality q settles at, against the hull's drag (Kayak:
+## the v² term and its small linear damp): where what a stroke adds equals what the water takes
+## back between strokes. A touring cadence of good strokes should hold close to three knots.
+static func cruise_speed(q: float, cadence: float, linear_damp: float, quad_drag: float) -> float:
+	var per_s := stroke_speed_gain(q) / cadence
+	return (-linear_damp + sqrt(linear_damp * linear_damp + 4.0 * quad_drag * per_s)) / (2.0 * quad_drag)
+
 static func stroke_speed_gain(q: float) -> float:
 	return STROKE_DV * (0.35 + 0.65 * q)
 
