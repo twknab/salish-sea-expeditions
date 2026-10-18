@@ -323,6 +323,8 @@ func _watch_sightings() -> void:
 			Sound.eagle()
 		elif conf.kind in ["sealions", "buoylion"]:
 			Sound.sealion(conf.kind == "sealions")
+		elif conf.kind in ["oystercatcher", "kingfisher"]:
+			Sound.bird("piping" if conf.kind == "oystercatcher" else "rattle")
 		var text: String = (_said("orcas") if conf.kind == "orcas" else "") + str(sp.get("blurb", ""))
 		var facts: Array = sp.get("facts", [])
 		if not facts.is_empty():

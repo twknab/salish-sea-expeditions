@@ -769,6 +769,10 @@
 
 - [x] T014gm The field guide says sea lions are often heard before they are seen, and now they are. A synthesized run of hoarse barks (`sealion.wav`: a buzzy fundamental near 300 Hz with a rough flutter and breath) plays when the California sea lion on the harbour buoy comes into reach. The same sound slowed into a deeper roar plays for the Steller sea lions on their rocks. The recipe is the last in `tools/synth-audio.mjs`, so its draws on the shared seeded noise leave every existing sound byte-for-byte the same.
 
+## Slice 177 — the oystercatcher pipes, the kingfisher rattles
+
+- [x] T014gn The two birds the field guide describes by their call are now heard when they come into reach. The black oystercatcher gives a quick run of loud clear pipes near 3 kHz (`piping.wav`), and the belted kingfisher gives its dry rattle, a fast train of woody clicks (`rattle.wav`). Both recipes are appended at the end of the synth tool, so no existing sound changes.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

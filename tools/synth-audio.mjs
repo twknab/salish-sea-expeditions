@@ -189,3 +189,29 @@ for (let k = 0; k < 2; k++) {
   }
   wav('sealion', out);
 }
+// Black oystercatcher: loud, piercing piping — a quick run of clear whistles near 3 kHz, falling at the end.
+{
+  const len = Math.floor(SR * 1.2), out = new Float32Array(len);
+  const pips = [0.0, 0.12, 0.24, 0.36, 0.5, 0.66];
+  pips.forEach((t0, k) => {
+    for (let i = Math.floor(t0 * SR); i < len; i++) {
+      const t = i / SR - t0; if (t > 0.08) break;
+      const f = 3100 - k * 90 + 300 * t / 0.08;
+      out[i] += Math.sin(2 * Math.PI * f * t) * Math.sin(Math.PI * t / 0.08) * 0.3;
+    }
+  });
+  wav('piping', out);
+}
+// Belted kingfisher: a dry, loud rattle — a fast train of clicks with a woody buzz, rising then dropping.
+{
+  const len = Math.floor(SR * 1.1), out = new Float32Array(len); const h = hp(1200);
+  for (let k = 0; k < 26; k++) {
+    const t0 = k * 0.034;
+    for (let i = Math.floor(t0 * SR); i < len; i++) {
+      const t = i / SR - t0; if (t > 0.022) break;
+      const f = 2200 + 500 * Math.sin(Math.PI * k / 26);
+      out[i] += (Math.sin(2 * Math.PI * f * t) * 0.25 + h(rnd()) * 0.35) * Math.exp(-t * 140);
+    }
+  }
+  wav('rattle', out);
+}
