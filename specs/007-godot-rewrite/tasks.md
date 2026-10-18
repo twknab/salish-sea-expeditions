@@ -785,6 +785,10 @@
 
 - [x] T014gq The partner used to speak up only for the orcas' card. Now any sighting the partner has a word for opens with it: the humpback's blow, a quick minke, a lion's mane ("Hands out of the water — that one stings"), the sea lions on rock and buoy, the Dall's porpoise's rooster tails, and the seals and kelp they already had lines for. A tree gets no remark. One `_said(kind)` serves every card.
 
+## Slice 181 — the guillemots whistle
+
+- [x] T014gr The pigeon guillemots off Jones Island are heard: a thin, high, wheezy whistle that rises and trills (`whistle.wav`), appended last in the synth tool like the other new calls.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

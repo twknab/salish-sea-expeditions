@@ -229,3 +229,13 @@ for (let k = 0; k < 2; k++) {
   }
   wav('kak', out);
 }
+// Pigeon guillemot: a thin, high, wheezy whistle that rises and trills, from birds on the water.
+{
+  const len = Math.floor(SR * 1.1), out = new Float32Array(len); const h = hp(2500);
+  for (let i = 0; i < Math.floor(SR * 0.9); i++) {
+    const t = i / SR;
+    const f = 3300 + 900 * t + 260 * Math.sin(2 * Math.PI * 22 * t);
+    out[i] = (Math.sin(2 * Math.PI * f * t) * 0.22 + h(rnd()) * 0.06) * Math.sin(Math.PI * t / 0.9);
+  }
+  wav('whistle', out);
+}
