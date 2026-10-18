@@ -745,6 +745,10 @@
 
 - [x] T014gg A minke whale works alone over the west end of Spieden Channel on day two (`Wildlife._minke`): seven metres of sleek dark grey with a pointed head, a curved fin, and the white band on each flipper. It rides the humpback's surfacing cycle but never lifts a fluke, and its blow carries like the other whales'. Its card follows the orcas' when both are in reach (checked headless). Check start `?scene=trip&leg=1&near=minke`, station `trip-minke`.
 
+## Slice 171 — the glow counts as met
+
+- [x] T014gh The cove's bioluminescence was in the field guide but never counted as met, though the night card shows it and a tap stirs it. Now the first spark, from the night's own glow or the paddler's hand, is kept in the save like any other meeting, and the field guide's "met on the water" count includes it (checked headless).
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
