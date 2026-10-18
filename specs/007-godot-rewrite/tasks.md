@@ -680,6 +680,11 @@
 
 - [x] T014fp The partner has words for the deadhead ("Log! Off your bow — go round it."), for a bow that found one ("You okay? Check the hull for cracks.") and for the clapotis ("Out from the rock — it's bouncing back at us."), spoken ahead of each note as for every other event.
 
+## Slice 155 — the peregrine on Spieden's cliff, and one card at a time
+
+- [x] T014fq The field guide's peregrine falcon is now met on the water. It perches on the lip of Spieden Island's steep south shore, above the clapotis, with a slate back, pale breast, dark hood and yellow cere (`Wildlife._peregrine`), placed on the terrain like the eagle and seals.
+- [x] T014fr Fixed: two sightings coming into reach on the same frame used to show both cards one after the other, and the second overwrote the first, so the first was marked seen but never shown. Now only one sighting card shows at a time; the next waits until the first is noted. Station `trip-peregrine`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

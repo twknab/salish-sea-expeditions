@@ -250,8 +250,8 @@ func _spawn_sightings() -> void:
 			continue
 		var at: Vector3 = conf.at
 		var y := 0.0
-		if conf.kind == "eagle" or conf.kind == "seals":
-			y = maxf(terrain.height_at(at.x, at.z), 0.0) + (0.0 if conf.kind == "eagle" else 0.3)
+		if conf.kind in ["eagle", "seals", "peregrine"]:
+			y = maxf(terrain.height_at(at.x, at.z), 0.0) + (0.3 if conf.kind == "seals" else 0.0)
 		var node := Wildlife.make(conf.kind, Vector3(at.x, y, at.z), conf.face)
 		add_child(node)
 		_sightings.append({ "conf": conf, "node": node, "seen": false })
@@ -293,8 +293,8 @@ func _watch_sightings() -> void:
 					note_label.text = "Too close: %d m is the distance. Let it come to you, or not." % keep
 			continue
 		var conf: Dictionary = s.conf
-		if kayak.global_position.distance_to(s.node.global_position) > float(conf.radius):
-			continue
+		if _card != null or kayak.global_position.distance_to(s.node.global_position) > float(conf.radius):
+			continue  # one card at a time: a second sighting in reach waits for the first to be noted
 		s.seen = true
 		s.close = false
 		var sp := _species(conf.species)
@@ -316,6 +316,7 @@ func _watch_sightings() -> void:
 			text += "\n\nKeep %d m off: let it come to you, or not." % approach
 		_show(UIKit.card(sp.get("common", conf.species), text, App.sources_line(sp.get("sourceIds", [])), [["Noted", _clear_card, true]], "Sighting · %s" % sp.get("group", "")))
 		Sound.gull()
+		return
 
 func _species(id: String) -> Dictionary:
 	for sp in App.content.get("species", []):

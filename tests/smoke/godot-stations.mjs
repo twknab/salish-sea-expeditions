@@ -36,6 +36,7 @@ const STATIONS = [
   ['trip-over', '?scene=trip&over=1'],
   ['trip-log', '?scene=trip&near=log'],
   ['trip-cliff', '?scene=trip&leg=1&near=cliff&launch=15'],
+  ['trip-peregrine', '?scene=trip&leg=1&near=cliff'],
   ['trip-fog', '?scene=trip&leg=2&launch=6&near=ferry&fog=1'],
   ['trip-fog-lifts', '?scene=trip&leg=2&launch=6&fog=lift'],
   ['trip-fog-unpacked', '?scene=trip&leg=2&launch=6&fog=1&pack=none'],
