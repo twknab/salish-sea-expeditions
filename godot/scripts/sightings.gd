@@ -77,3 +77,9 @@ static func _days(days: Array) -> String:
 	const WORDS := ["one", "two", "three"]
 	var names: Array = days.map(func(d: int) -> String: return WORDS[d])
 	return ("day %s" % names[0]) if names.size() == 1 else ("days %s and %s" % [", ".join(names.slice(0, -1)), names[-1]])
+
+## When a met species was met, from the save's record of it: "Met on day two of the September trip."
+static func met_line(rec: Dictionary) -> String:
+	if rec.is_empty():
+		return ""
+	return "Met on %s of the %s trip." % [_days([int(rec.get("leg", 0))]), str(rec.get("day", "july")).capitalize()]

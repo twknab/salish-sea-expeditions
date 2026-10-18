@@ -352,11 +352,7 @@ func _night_hour() -> float:
 ## A hand, a paddle or a tap in the cove at night: the dinoflagellates light where the water moves.
 func _glow(at: Vector3) -> void:
 	_glows += 1
-	var seen: Array = App.save.get("seen", [])
-	if not seen.has("bioluminescence"):  # the first spark is a meeting, kept in the field guide like any other
-		seen.append("bioluminescence")
-		App.save.seen = seen
-		App.persist()
+	App.meet("bioluminescence")  # the first spark is a meeting, kept in the field guide like any other
 	var p := CPUParticles3D.new()
 	p.one_shot = true
 	p.explosiveness = 0.9
@@ -423,11 +419,8 @@ func _show_walk() -> void:
 		_show()
 		return
 	var sp := _species(str(shore[_walk]))
-	var seen: Array = App.save.get("seen", [])
-	if not sp.is_empty() and not seen.has(sp.id):
-		seen.append(sp.id)
-		App.save.seen = seen
-		App.persist()
+	if not sp.is_empty():
+		App.meet(sp.id)
 	var text: String = sp.get("blurb", "")
 	var facts: Array = sp.get("facts", [])
 	if not facts.is_empty():
@@ -460,11 +453,7 @@ func _show_rock(choice: String) -> void:
 	var r := TidePool.rock(choice)
 	var find := _species(str(r.find))
 	if not find.is_empty():
-		var seen: Array = App.save.get("seen", [])
-		if not seen.has(find.id):
-			seen.append(find.id)
-			App.save.seen = seen
-			App.persist()
+		App.meet(find.id)
 	var text: String = r.text + ("\n\n%s — %s" % [find.common, str(find.get("facts", [""]).back())] if not find.is_empty() else "")
 	_card = UIKit.card(str(r.title), text, App.sources_line(find.get("sourceIds", ["eopugetsound"])), [["Next", func() -> void: _walk += 1; _show_walk(), true]], "The shore · the tide pools")
 	_ui.add_child(_card)

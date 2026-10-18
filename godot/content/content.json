@@ -3286,6 +3286,31 @@
    "sourceIds": [
     "colregs"
    ]
+  },
+  {
+   "id": "securite",
+   "term": "Sécurité",
+   "text": "Said “say-cure-ee-tay” on the VHF: the call that opens a safety message. A ferry or a tug in fog or a narrow channel announces itself with it, where it is and where it is going, so that anyone listening — a kayak with a radio on deck — can keep clear.",
+   "sourceIds": [
+    "uscg"
+   ]
+  },
+  {
+   "id": "haulout",
+   "term": "Haul-out",
+   "text": "A rock or beach where seals or sea lions come out of the water to rest, warm up and nurse. A head coming up means you are close enough; a splash means you were too close, and the animal has lost its rest. Pass wide and keep paddling.",
+   "sourceIds": [
+    "noaa-mm",
+    "wdfw"
+   ]
+  },
+  {
+   "id": "whalewise",
+   "term": "Be Whale Wise",
+   "text": "The guidelines the United States and Canada share for meeting marine mammals on the water: a set distance to keep from each kind, paddles quiet, never in an animal’s path and never between it and the shore. The field guide gives each one’s distance.",
+   "sourceIds": [
+    "bewhalewise"
+   ]
   }
  ],
  "skins": [

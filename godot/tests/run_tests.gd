@@ -299,6 +299,7 @@ func _init() -> void:
 	check(Sightings.where_to_look("stellerSeaLion") == "Look for it on the water: day two, on the September trip.", "the guide says the sea lions are a September day-two find")
 	check(Sightings.where_to_look("baldEagle") == "Look for it on the water: days one, two and three.", "the eagle is every day, on either trip")
 	check(Sightings.where_ashore("seaStar", [["seaStar"], ["madrona", "seaStar"], []]) == "Look for it ashore, at the end of days one and two." and Sightings.where_ashore("orca", [["seaStar"]]) == "", "the guide says which days end on a shore that shows it")
+	check(Sightings.met_line({"leg": 1, "day": "september"}) == "Met on day two of the September trip." and Sightings.met_line({}) == "", "the guide says when a species was met, and nothing for one met before the day was kept")
 	check(Sightings.where_to_look("octopus") == "", "nothing on the water for what lives in the pools")
 	check(Drink.note(true, "Mina", false).contains("half hour") and Drink.note(false, "Mina", false).contains("Mina passes") and Drink.note(false, "", false).contains("Nothing to drink"), "the first drink: the habit with water, a shared bottle or nothing without")
 	check(Drink.note(true, "", true).length() < 60 and PartnerVoice.line("drink") != "", "the drink note is short on a phone, and the partner calls it")

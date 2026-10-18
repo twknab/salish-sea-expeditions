@@ -1,11 +1,13 @@
-# PRE-MERGE (1 of 2): every pull request, and main after each merge. Tests, build, every scene in
-# headless Chromium, server check, audit, Terraform format and validation. "Post-merge deploy"
-# waits for this to pass on main.
+# PRE-MERGE: every pull request that touches the web app, the server or the infrastructure. Tests,
+# build, every scene in headless Chromium, server check, audit, Terraform format and validation.
+# Not on main after a merge (the pull request already ran it) and not on Godot-only or docs-only
+# changes: Actions minutes cost money, so nothing runs twice and nothing runs for a change it
+# cannot see. `workflow_dispatch` runs it by hand.
 name: Checks
 on:
-  push:
-    branches: [main]
   pull_request:
+    paths-ignore: [godot/**, specs/**, tests/smoke/godot-*.mjs, '**/*.md', .github/workflows/godot.yml]
+  workflow_dispatch: {}
 permissions:
   contents: read
 concurrency:
