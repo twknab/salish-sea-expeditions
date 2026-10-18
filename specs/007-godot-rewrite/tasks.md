@@ -829,6 +829,10 @@
 
 - [x] T014hb The field guide’s card for bioluminescent plankton, until it is met, says to look for it at the end of the days that end at a camp — the night in the cove.
 
+## Slice 192 — jump in the guide
+
+- [x] T014hc A row of small chips at the top of the field guide jumps to each group of species, the words on the water and the credits — two lines on a phone, one tap instead of a long scroll.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
