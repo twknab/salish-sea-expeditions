@@ -713,6 +713,10 @@
 
 - [x] T014fy A sighting can now keep to its season: an optional `day` names the only trip day it is there, and a content test checks that day exists. Steller sea lions, which the field guide says are here "mostly autumn to spring", haul out on the low rocks west of Spieden only on the September day: a big reddish bull and two tan cows, heads up on thick necks, propped on their fore-flippers (`Wildlife._sealions`). On the July day the rocks are bare (checked headless). Check start `?scene=trip&leg=1&day=september&near=sealions`, station `trip-sealions`.
 
+## Slice 163 — cormorants nesting on the cliff
+
+- [x] T014fz Pelagic cormorants nest on Spieden's south cliff ledges in their season (the field guide says April to August, so the July day only), beside the peregrine (`Wildlife._cormorants`). Four slim, glossy black birds stand upright on thin necks, with the breeding season's white flank patch, and one holds its wings open to dry. Their card follows the peregrine's at the cliff.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
