@@ -805,6 +805,10 @@
 
 - [x] T014gv Harbour and Dall’s porpoise cards are heard: the orca’s blow, pitched up and quiet, as the sharp “puff” the partner already tells you to listen for.
 
+## Slice 186 — the seals snort
+
+- [x] T014gw Harbour seals on their rock are heard when the card comes up: a wet nasal snort and a low growl (`snort.wav`), appended last in the synth tool.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

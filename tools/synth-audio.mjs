@@ -262,3 +262,15 @@ for (let k = 0; k < 2; k++) {
   for (let i = Math.floor(0.42 * SR); i < Math.floor(0.56 * SR); i++) { const t = i / SR - 0.42; out[i] += l(rnd()) * Math.sin(Math.PI * t / 0.14) * 0.3; }
   wav('chirp', out);
 }
+// Harbour seal on the haul-out: a wet nasal snort and a low growl — a seal telling its neighbour to shift.
+{
+  const len = Math.floor(SR * 1.0), out = new Float32Array(len); const l = lp(900), h = hp(600);
+  for (let i = 0; i < Math.floor(0.18 * SR); i++) { const t = i / SR; out[i] += h(rnd()) * Math.exp(-t * 18) * 0.45; }
+  for (let i = Math.floor(0.3 * SR); i < Math.floor(0.85 * SR); i++) {
+    const t = i / SR - 0.3;
+    const f = 95 + 15 * Math.sin(2 * Math.PI * 3 * t);
+    const growl = Math.max(0, Math.sin(2 * Math.PI * f * t)) ** 3 * (0.6 + 0.4 * Math.sin(2 * Math.PI * 24 * t));
+    out[i] += (growl * 0.5 + l(rnd()) * 0.2 * growl) * Math.sin(Math.PI * t / 0.55);
+  }
+  wav('snort', out);
+}
