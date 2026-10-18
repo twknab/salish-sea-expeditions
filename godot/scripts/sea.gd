@@ -73,6 +73,7 @@ const ROUGH := 0.5              # sea state at which the bail-outs are offered
 const RIP_KICK_EVERY := 3.2    # seconds between beam waves in a rip at full strength
 var _sightings: Array = []   # [{conf, node, seen}]
 var _log: Deadhead           # the day's deadhead, near the line
+var _net: Gillnet            # the September net across day two's line, when it is set
 const GROOVE_AFTER := 6.0       # seconds of steady holding before the day starts to pass
 const GROOVE_SPEED := 28.0      # extra metres per second over the ground, in the groove
 const GROOVE_HOURS_PER_SEC := 1.0 / 50.0  # the clock in the groove: an hour in fifty seconds
@@ -181,6 +182,14 @@ func _ready() -> void:
 			_log = Deadhead.new()
 			add_child(_log)
 			_log.setup(Deadhead.place(Leg.waypoints(_route)), kayak, sea)
+			if Leg.index() == 1 and str(App.chosen_day().get("id", "")) == Gillnet.DAY:  # salmon season: a net across day two's line
+				_net = Gillnet.new()
+				add_child(_net)
+				_net.setup(kayak, sea)
+				_net.said.connect(func(text: String, snag: bool) -> void:
+					note_label.text = text
+					if snag:
+						kayak.linear_velocity *= 0.1)
 			if Leg.index() == 0 or Leg.is_last():  # the harbour's channel mark, out on day one and in on the last
 				var buoy := NavBuoy.new()
 				add_child(buoy)
@@ -255,12 +264,12 @@ func _spawn_sightings() -> void:
 			continue  # a sighting may keep to its season: `day` names the only day it is there
 		var at: Vector3 = conf.at
 		var y := 0.0
-		if conf.kind in ["eagle", "seals", "peregrine", "oystercatcher", "sealions", "cormorants", "madrona"]:
+		if conf.kind in ["eagle", "seals", "peregrine", "oystercatcher", "sealions", "cormorants", "madrona", "oak"]:
 			y = maxf(terrain.height_at(at.x, at.z), 0.0) + (0.3 if conf.kind == "seals" else 0.0)
 		var node := Wildlife.make(conf.kind, Vector3(at.x, y, at.z), conf.face)
 		add_child(node)
 		_sightings.append({ "conf": conf, "node": node, "seen": false })
-		if conf.kind in ["orcas", "humpback"]:
+		if conf.kind in ["orcas", "humpback", "minke"]:
 			# The blow carries: loud alongside, a breath on the wind at a kilometre, nothing beyond.
 			node.breathed.connect(func() -> void: Sound.blow(1.0 - clampf(kayak.global_position.distance_to(node.global_position) / 1200.0, 0.0, 1.0)))
 		if conf.kind == "orcas" and mode == "trip":

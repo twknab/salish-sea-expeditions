@@ -189,6 +189,8 @@ func _days(col: VBoxContainer, legs: Array, save: Dictionary) -> void:
 			line += " · no white light after dark"
 		if int(d.get("logStruck", 0)) > 0:
 			line += " · the bow found a deadhead"
+		if int(d.get("netSnagged", -1)) > 0:
+			line += " · caught in a gillnet"
 		if bool(d.get("thirsty", false)):
 			line += " · paddled thirsty"
 		match str(d.get("floatPlan", "")):

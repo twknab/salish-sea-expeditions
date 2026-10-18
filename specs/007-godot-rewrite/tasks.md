@@ -733,6 +733,30 @@
 
 - [x] T014gd The field guide's Pacific madrona leans out over the water from the edge of Jones Island's sunny bluff, the one tree on these shores that is not a dark cone: a bright peeling orange-red trunk and twisting limbs under a broad rounded crown, scaled to stand as tall as the firs so the red reads from the water (`Wildlife._madrona`). Check start `?scene=trip&near=madrona`, station `trip-madrona`.
 
+## Slice 168 — the lion's mane and the fried egg
+
+- [x] T014ge The moon jelly's bell now serves the bigger jellies too (`_jellies(n, r, bell, centre)`). A pair of lion's mane jellies, red-brown with a gold heart, drift on day two's line through the channel in summer (the July day). Three fried egg jellies, pale with a yolk-yellow centre, are in the open water of day three's crossing in late summer and autumn (the September day). Check start `?scene=trip&leg=1&near=lionsmane`, station `trip-lionsmane`; the fried egg card was checked headless.
+
+## Slice 169 — a Garry oak in its meadow
+
+- [x] T014gf The field guide's Garry oak stands alone in the dry meadow above the seals' rock on day one and on the way home (`Wildlife._oak`): a short, thick, gnarled trunk, crooked limbs spreading out more than up, and a lumpy rounded crown over gold grass. It reads from the water as the one rounded shape among the firs. The western red cedar is left for later: its damp north-facing slope near the route is Jones Island's north cove, where its card would land on top of the arrival.
+
+## Slice 170 — a minke over the banks
+
+- [x] T014gg A minke whale works alone over the west end of Spieden Channel on day two (`Wildlife._minke`): seven metres of sleek dark grey with a pointed head, a curved fin, and the white band on each flipper. It rides the humpback's surfacing cycle but never lifts a fluke, and its blow carries like the other whales'. Its card follows the orcas' when both are in reach (checked headless). Check start `?scene=trip&leg=1&near=minke`, station `trip-minke`.
+
+## Slice 171 — the glow counts as met
+
+- [x] T014gh The cove's bioluminescence was in the field guide but never counted as met, though the night card shows it and a tap stirs it. Now the first spark, from the night's own glow or the paddler's hand, is kept in the save like any other meeting, and the field guide's "met on the water" count includes it (checked headless).
+
+## Slice 172 — a gillnet across the line
+
+- [x] T014gi On the September day (the fall salmon openings) a gillnet is set across day two's line (`Gillnet`): 350 m of corks on the surface, with an orange end buoy carrying a pole and flag at each end, the net hanging below. Within 60 m the note says what it is and to go round an end, never over. A boat that crosses the cork line between the buoys has the net take its skeg: it stops dead, and the note says to back off, go round, and that a fisher's net is a livelihood. Going round an end is fine. The geometry is pure and tested. "Gillnet" joins the glossary. Check start `?scene=trip&leg=1&day=september&near=gillnet`, station `trip-gillnet`.
+
+## Slice 173 — went round the net
+
+- [x] T014gj The net is judged. The day's record keeps `netSnagged`: -1 on days no net was set, otherwise how many times the boat went over the corks. Seamanship gains "Went round the net": kept with "round the end buoy, clear of the corks", missed with "over the corks once, and the skeg in the mesh". It appears only on a trip that met the net. A day that went over adds "caught in a gillnet" to its debrief line.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

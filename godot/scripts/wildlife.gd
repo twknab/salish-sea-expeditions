@@ -76,11 +76,15 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"dalls": w._porpoise(true)
 		"otter": w._otter()
 		"humpback": w._humpback()
+		"minke": w._minke()
 		"sealions": w._sealions()
 		"cormorants": w._cormorants()
 		"buoylion": w._buoylion()
 		"jellies": w._jellies()
+		"lionsmane": w._jellies(2, 0.75, Color(0.62, 0.3, 0.15), Color(0.8, 0.5, 0.25))
+		"friedegg": w._jellies(3, 0.45, Color(0.93, 0.92, 0.86), Color(0.95, 0.75, 0.2))
 		"madrona": w._madrona()
+		"oak": w._oak()
 		"orcas": w._orcas()
 	return w
 
@@ -259,20 +263,25 @@ func _buoylion() -> void:
 ## Moon jellies drifting just under the harbour's surface in summer: pale translucent bells with the
 ## four horseshoes showing through, pulsing slowly. The bell breaks the surface film, so they read from
 ## the boat as the water itself never lets anything below it read.
-func _jellies() -> void:
+## The same bell serves the bigger jellies: `n` of them, `r` the bell's radius, `bell` and `centre`
+## its colours (the lion's mane red-brown with a gold heart; the fried egg pale with its yolk).
+func _jellies(n := 9, r := 0.22, bell := Color(0.88, 0.92, 0.96), centre := Color(0.85, 0.55, 0.7)) -> void:
 	var rng := RandomNumberGenerator.new()
-	rng.seed = 7
-	for i in 9:
+	rng.seed = 7 + n
+	for i in n:
 		var j := Node3D.new()
 		j.position = Vector3(rng.randf_range(-6.0, 6.0), -0.06, rng.randf_range(-6.0, 6.0))
 		add_child(j)
-		var bell := _ball(j, Vector3(0.22, 0.09, 0.22), Color(0.88, 0.92, 0.96), Vector3.ZERO)
-		var m := bell.material_override as StandardMaterial3D
+		var b := _ball(j, Vector3(r, r * 0.4, r), bell, Vector3.ZERO)
+		var m := b.material_override as StandardMaterial3D
 		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		m.albedo_color.a = 0.55
-		for k in 4:  # the four horseshoes
-			var a := TAU * k / 4.0
-			_ball(j, Vector3(0.05, 0.02, 0.05), Color(0.85, 0.55, 0.7), Vector3(cos(a) * 0.08, 0.05, sin(a) * 0.08))
+		m.albedo_color.a = 0.6
+		if n == 9:  # the moon jelly's four horseshoes
+			for k in 4:
+				var a := TAU * k / 4.0
+				_ball(j, Vector3(0.05, 0.02, 0.05), centre, Vector3(cos(a) * 0.08, 0.05, sin(a) * 0.08))
+		else:  # one heart, the colour that names it
+			_ball(j, Vector3(r * 0.45, r * 0.2, r * 0.45), centre, Vector3(0, r * 0.25, 0))
 		_parts.append(j)
 
 ## A Pacific madrona leaning out over the water from a sunny bluff: the trunk and limbs a bright
@@ -289,6 +298,38 @@ func _madrona() -> void:
 	for c in 4:  # the broad, rounded crown
 		var a := TAU * c / 4.0
 		_ball(self, Vector3(1.6, 1.1, 1.6), Color(0.2, 0.36, 0.14), Vector3(2.0 + cos(a) * 1.0, 5.8 + (c % 2) * 0.4, sin(a) * 1.0))
+
+## A Garry oak alone in a dry meadow: a short, thick, gnarled dark trunk, crooked limbs spreading
+## wide rather than up, and a rounded, lumpy crown of deep olive green over gold summer grass.
+func _oak() -> void:
+	scale = Vector3.ONE * 1.6
+	var bark := Color(0.28, 0.24, 0.2)
+	_ball(self, Vector3(4.0, 0.08, 3.4), Color(0.72, 0.62, 0.3), Vector3(0, 0.05, 0))   # the meadow's dry gold grass around it
+	_rod(self, 0.45, 3.0, bark, Vector3(0, 1.5, 0))
+	for k in 4:  # crooked limbs, out more than up
+		var a := TAU * k / 4.0 + 0.4
+		var limb := _rod(self, 0.18, 2.4, bark, Vector3(cos(a) * 0.9, 3.1, sin(a) * 0.9))
+		limb.rotation = Vector3(sin(a) * 0.9, 0, -cos(a) * 0.9)
+	for c in 6:  # the lumpy, rounded crown
+		var a := TAU * c / 6.0
+		_ball(self, Vector3(1.5, 1.1, 1.5), Color(0.3, 0.36, 0.16), Vector3(cos(a) * 1.7, 4.3 + (c % 2) * 0.5, sin(a) * 1.7))
+
+## A minke, alone and quick: seven metres of sleek dark grey with a pointed head, the curved fin
+## showing at the same moment as the blowhole, and the white band on each flipper. It rides the same
+## surfacing cycle as the humpback but never shows its fluke. Parts: the body, then an empty fluke.
+func _minke() -> void:
+	var body := Node3D.new()
+	add_child(body)
+	_ball(body, Vector3(0.75, 0.6, 3.5), Color(0.22, 0.25, 0.28), Vector3.ZERO)
+	_cone(body, 0.06, 0.9, Color(0.2, 0.23, 0.26), Vector3(0, 0.0, 3.6), Vector3(deg_to_rad(90), 0, 0))     # the pointed head
+	_cone(body, 0.22, 0.5, Color(0.2, 0.23, 0.26), Vector3(0, 0.62, -1.2), Vector3(deg_to_rad(-25), 0, 0))  # the curved fin
+	for side in [1.0, -1.0]:
+		_ball(body, Vector3(0.28, 0.05, 0.9), Color(0.22, 0.25, 0.28), Vector3(0.75 * side, -0.35, 1.0))
+		_ball(body, Vector3(0.29, 0.055, 0.22), Color(0.95, 0.95, 0.95), Vector3(0.78 * side, -0.33, 1.1))  # the white flipper band
+	_parts.append(body)
+	var no_fluke := Node3D.new()  # a minke slips under without lifting its fluke: an empty part in the fluke's place
+	add_child(no_fluke)
+	_parts.append(no_fluke)
 
 ## A bed of bull kelp: floats at the surface, stipes down into the dark, blades streaming.
 func _kelp() -> void:
@@ -384,7 +425,7 @@ func _process(delta: float) -> void:
 			for i in range(_parts.size()):
 				var b := _parts[i]
 				b.rotation.y = 0.2 * ((i % 3) - 1) + 0.25 * sin(_t * 0.6 + i * 0.7)
-		"humpback":
+		"humpback", "minke":
 			# Thirty seconds a cycle: three rolls to breathe, the fluke up, then down for the rest.
 			var body := _parts[0]
 			var fluke := _parts[1]
@@ -402,7 +443,7 @@ func _process(delta: float) -> void:
 			var f := clampf(1.0 - absf(cyc - 14.0) / 2.0, 0.0, 1.0)
 			fluke.visible = f > 0.0
 			fluke.position = Vector3(0, -1.5 + 3.2 * f, body.position.z - 5.5)
-		"jellies":
+		"jellies", "lionsmane", "friedegg":
 			for i in range(_parts.size()):
 				var pulse := 1.0 + 0.12 * sin(_t * 1.6 + i * 1.3)  # a slow pulse, each bell on its own beat
 				_parts[i].scale = Vector3(pulse, 2.0 - pulse, pulse)

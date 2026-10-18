@@ -352,6 +352,11 @@ func _night_hour() -> float:
 ## A hand, a paddle or a tap in the cove at night: the dinoflagellates light where the water moves.
 func _glow(at: Vector3) -> void:
 	_glows += 1
+	var seen: Array = App.save.get("seen", [])
+	if not seen.has("bioluminescence"):  # the first spark is a meeting, kept in the field guide like any other
+		seen.append("bioluminescence")
+		App.save.seen = seen
+		App.persist()
 	var p := CPUParticles3D.new()
 	p.one_shot = true
 	p.explosiveness = 0.9
