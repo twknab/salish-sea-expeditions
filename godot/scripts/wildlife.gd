@@ -69,6 +69,8 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"peregrine": w._peregrine()
 		"oystercatcher": w._oystercatcher()
 		"kingfisher": w._kingfisher()
+		"guillemot": w._seabird(Color(0.06, 0.06, 0.07), Color(0.95, 0.95, 0.95), Color(0.06, 0.06, 0.07), 2)
+		"auklet": w._seabird(Color(0.25, 0.25, 0.27), Color(0.6, 0.6, 0.6), Color(0.9, 0.6, 0.25), 3)
 		"kelp": w._kelp()
 		"porpoise": w._porpoise()
 		"orcas": w._orcas()
@@ -153,6 +155,21 @@ func _kingfisher() -> void:
 	_ball(bird, Vector3(0.07, 0.08, 0.08), Color(0.3, 0.42, 0.58), Vector3(0, 0.24, 0.03))                             # the big head
 	_cone(bird, 0.04, 0.1, Color(0.3, 0.42, 0.58), Vector3(0, 0.33, -0.02), Vector3(deg_to_rad(-30), 0, 0))           # the shaggy crest
 	_cone(bird, 0.022, 0.12, Color(0.12, 0.12, 0.13), Vector3(0, 0.23, 0.14), Vector3(deg_to_rad(-90), 0, 0))         # the dagger bill
+
+## Seabirds sitting on the water, a few together, riding the swell low. One shape, coloured per
+## species: the pigeon guillemot black with its white wing patch, the rhinoceros auklet sooty with an
+## orange bill. `patch` paints the wing; `n` is how many sit together.
+func _seabird(body: Color, patch: Color, bill: Color, n: int) -> void:
+	for i in n:
+		var bird := Node3D.new()
+		bird.position = Vector3(i * 0.9 - (n - 1) * 0.45, 0.02, sin(i * 2.1) * 0.6)
+		add_child(bird)
+		_ball(bird, Vector3(0.12, 0.08, 0.2), body, Vector3(0, 0.04, 0))
+		_ball(bird, Vector3(0.05, 0.03, 0.08), patch, Vector3(0.08, 0.07, 0.0))   # the wing patch
+		_ball(bird, Vector3(0.05, 0.03, 0.08), patch, Vector3(-0.08, 0.07, 0.0))
+		_ball(bird, Vector3(0.06, 0.06, 0.06), body, Vector3(0, 0.14, 0.13))
+		_cone(bird, 0.015, 0.06, bill, Vector3(0, 0.14, 0.2), Vector3(deg_to_rad(-90), 0, 0))
+		_parts.append(bird)
 
 ## A bed of bull kelp: floats at the surface, stipes down into the dark, blades streaming.
 func _kelp() -> void:

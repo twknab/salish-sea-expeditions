@@ -7,6 +7,8 @@ const ALL := [
 	{ "leg": 0, "kind": "kingfisher", "species": "kingfisher", "at": Vector3(380.0, 0.0, -860.0), "face": Vector3(0, 0, 1), "radius": 90.0 },  # on an old piling a few boat lengths up the harbour, met paddling out
 	{ "leg": 0, "kind": "heron", "species": "heron", "at": Vector3(560.0, 0.0, -1300.0), "face": Vector3(-1, 0, 0), "radius": 220.0 },
 	{ "leg": 0, "kind": "eagle", "species": "baldEagle", "at": Vector3(260.0, 0.0, -2600.0), "face": Vector3(1, 0, 0), "radius": 320.0 },
+	{ "leg": 0, "kind": "auklet", "species": "rhinoAuklet", "at": Vector3(-200.0, 0.0, -3400.0), "face": Vector3(0, 0, -1), "radius": 260.0 },  # sitting out in the channel, diving as the boat comes
+	{ "leg": 0, "kind": "guillemot", "species": "pigeonGuillemot", "at": Vector3(-1900.0, 0.0, -9350.0), "face": Vector3(1, 0, 0), "radius": 220.0 },  # off the rocks below Jones Island
 	{ "leg": 0, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-300.0, 0.0, -4200.0), "face": Vector3(0, 0, -1), "radius": 420.0 },
 	{ "leg": 0, "kind": "kelp", "species": "bullKelp", "at": Vector3(-900.0, 0.0, -6250.0), "face": Vector3(0, 0, -1), "radius": 200.0 },
 	{ "leg": 0, "kind": "oystercatcher", "species": "oystercatcher", "at": Vector3(-1130.0, 0.0, -6360.0), "face": Vector3(1, 0, 0), "radius": 200.0 },  # working the tide line beside the seals' rock
