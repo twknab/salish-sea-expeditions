@@ -809,6 +809,10 @@
 
 - [x] T014gw Harbour seals on their rock are heard when the card comes up: a wet nasal snort and a low growl (`snort.wav`), appended last in the synth tool.
 
+## Slice 187 — every voice is on file
+
+- [x] T014gx Which call a sighting card is heard with moves out of `sea.gd` into one table in `sound.gd` (`CALLS`, `Sound.sighted`), and the tests check every call and every effect the sea loads is a file on disk.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

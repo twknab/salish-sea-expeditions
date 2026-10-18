@@ -33,8 +33,17 @@ var _cache: Dictionary = {}   # piece -> AudioStreamMP3
 var _http: HTTPRequest
 var _fetching := ""
 
+## Every effect file, by name under audio/.
+const SFX := ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull", "blow", "eagle", "sealion", "piping", "rattle", "kak", "whistle", "croak", "chirp", "snort", "engine_idle", "raccoons", "rain_loop", "rip_loop"]
+## The call a sighting card is heard with, by sighting kind; the eagle, the sea lions and the porpoise
+## have their own (`sighted`).
+const CALLS := {
+	"oystercatcher": "piping", "kingfisher": "rattle", "peregrine": "kak", "guillemot": "whistle",
+	"heron": "croak", "otter": "chirp", "seals": "snort",
+}
+
 func _ready() -> void:
-	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull", "blow", "eagle", "sealion", "piping", "rattle", "kak", "whistle", "croak", "chirp", "snort", "engine_idle", "raccoons", "rain_loop", "rip_loop"]:
+	for n in SFX:
 		var s := _load("res://audio/%s.wav" % n)
 		if s:
 			_streams[n] = s
@@ -129,20 +138,31 @@ func blow(near: float) -> void:
 	_play("blow", lerpf(-34.0, -10.0, clampf(near, 0.0, 1.0)), randf_range(0.92, 1.08))
 
 ## A porpoise surfacing: the orca's blow, small, quick and quiet — the sharp "puff" that gives it its name.
-func puff() -> void:
+func _puff() -> void:
 	_play("blow", -24.0, randf_range(1.7, 1.9))
 
-func eagle() -> void:
+## The voice that comes with a sighting card, or none for the quiet ones.
+func sighted(kind: String) -> void:
+	if kind == "eagle":
+		_eagle()
+	elif kind in ["sealions", "buoylion"]:
+		_sealion(kind == "sealions")
+	elif kind in ["porpoise", "dalls"]:
+		_puff()
+	elif CALLS.has(kind):
+		_bird(CALLS[kind])
+
+func _eagle() -> void:
 	_play("eagle", -16.0, randf_range(0.95, 1.05))
 
 ## A bird's call from the tide line, a piling or a cliff: "piping" (oystercatcher), "rattle"
 ## (kingfisher), "kak" (peregrine), "whistle" (guillemot), "croak" (heron) or
 ## "chirp" (otter), or the "snort" of a seal on its rock.
-func bird(call: String) -> void:
+func _bird(call: String) -> void:
 	_play(call, -17.0, randf_range(0.95, 1.05))
 
 ## Sea lions barking from a rock or a buoy; `deep` slows it into the Steller's roar.
-func sealion(deep := false) -> void:
+func _sealion(deep := false) -> void:
 	_play("sealion", -15.0, 0.62 if deep else randf_range(0.95, 1.05))
 
 func raccoons() -> void:

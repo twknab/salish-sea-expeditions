@@ -292,6 +292,9 @@ func _init() -> void:
 	check(SchoolDrill.measure("compass", { "t": 0.0, "target": 90.0 }, 1.0, deg_to_rad(95.0), 1.0, 0.0, 0.0, Vector3.ZERO) > 0.0 and SchoolDrill.measure("compass", { "t": 0.0, "target": 90.0 }, 1.0, deg_to_rad(120.0), 1.0, 0.0, 0.0, Vector3.ZERO) == 0.0, "the bearing is held within ten degrees, under way")
 	check(SchoolDrill.measure("forward", { "count": 3 }, 0.1, 0.0, 0.0, 0.0, 0.0, Vector3.ZERO) == 0.5 and SchoolDrill.measure("rescue", {}, 0.1, 0.0, 0.0, 0.0, 0.0, Vector3.ZERO) == 0.0, "strokes are counted; the drills with water in them are not measured here")
 	check(Partner.rain_note(true, false).contains("Shift+A/D") and Partner.rain_note(true, true).contains("double-tap") and not Partner.rain_note(false, false).contains("raft"), "the squall says how to raft up when there is someone to raft with")
+	var snd: Script = load("res://scripts/sound.gd")
+	check(snd.CALLS.values().all(func(c: String) -> bool: return snd.SFX.has(c) and FileAccess.file_exists("res://audio/%s.wav" % c)), "every call a sighting is heard with is a file the sea loads")
+	check(snd.SFX.all(func(n: String) -> bool: return FileAccess.file_exists("res://audio/%s.wav" % n)), "every effect the sea loads is on disk")
 	check(["otter", "eagle", "porpoise"].all(func(e: String) -> bool: return PartnerVoice.line(e) != "") and PartnerVoice.line("oak") == "", "the partner points out the otter, the eagle and the porpoise, and leaves the oak alone")
 	check(PartnerVoice.line("eddyline_edged") != "" and PartnerVoice.line("eddyline_edged") != PartnerVoice.line("eddyline"), "the partner has a word for an eddy line crossed well, not only for one that trips the boat")
 	for ev in PartnerVoice.LINES.keys():

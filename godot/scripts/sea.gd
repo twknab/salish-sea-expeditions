@@ -319,14 +319,7 @@ func _watch_sightings() -> void:
 			seen.append(conf.species)
 			App.save.seen = seen
 			App.persist()
-		if conf.kind == "eagle":
-			Sound.eagle()
-		elif conf.kind in ["porpoise", "dalls"]:
-			Sound.puff()
-		elif conf.kind in ["sealions", "buoylion"]:
-			Sound.sealion(conf.kind == "sealions")
-		elif conf.kind in ["oystercatcher", "kingfisher", "peregrine", "guillemot", "heron", "otter", "seals"]:
-			Sound.bird({"oystercatcher": "piping", "kingfisher": "rattle", "peregrine": "kak", "guillemot": "whistle", "heron": "croak", "otter": "chirp", "seals": "snort"}[conf.kind])
+		Sound.sighted(conf.kind)
 		var text: String = _said(conf.kind) + str(sp.get("blurb", ""))  # the partner's word, when they have one for it
 		var facts: Array = sp.get("facts", [])
 		if not facts.is_empty():
