@@ -697,6 +697,10 @@
 
 - [x] T014fu Two more of the field guide's birds are met on day one, sitting low on the water a few together (`Wildlife._seabird`, one shape coloured per species): rhinoceros auklets, sooty with an orange bill, out in mid-channel; and pigeon guillemots, black with the white wing patch, off the rocks below Jones Island. Check start `?scene=trip&near=auklets`, station `trip-auklets`; the guillemots' card was checked headless.
 
+## Slice 159 — Dall's porpoise in the narrows
+
+- [x] T014fv The field guide's Dall's porpoise runs through the deep, fast narrows of Spieden Channel on day two. It is the harbour porpoise's shape made stockier and black, with the bright white flank patches (`_porpoise(true)`), rolling on the same circuit. Its card was checked headless.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

@@ -73,6 +73,7 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"auklet": w._seabird(Color(0.25, 0.25, 0.27), Color(0.6, 0.6, 0.6), Color(0.9, 0.6, 0.25), 3)
 		"kelp": w._kelp()
 		"porpoise": w._porpoise()
+		"dalls": w._porpoise(true)
 		"orcas": w._orcas()
 	return w
 
@@ -187,11 +188,14 @@ func _kelp() -> void:
 			_parts.append(blade)
 
 ## A harbour porpoise: small, dark, rolling through the surface every few seconds and gone.
-func _porpoise() -> void:
+func _porpoise(dalls := false) -> void:
 	var body := Node3D.new()
 	add_child(body)
-	_ball(body, Vector3(0.22, 0.2, 0.8), Color(0.12, 0.13, 0.15), Vector3.ZERO)
-	_ball(body, Vector3(0.14, 0.1, 0.5), Color(0.75, 0.75, 0.75), Vector3(0, -0.1, 0.1))  # the pale belly
+	_ball(body, Vector3(0.22, 0.2, 0.8) * (1.15 if dalls else 1.0), Color(0.05, 0.05, 0.06) if dalls else Color(0.12, 0.13, 0.15), Vector3.ZERO)
+	if dalls:  # Dall's: stockier and black, with the bright white flank patches
+		_ball(body, Vector3(0.24, 0.14, 0.34), Color(0.96, 0.96, 0.96), Vector3(0, -0.04, 0.05))
+	else:
+		_ball(body, Vector3(0.14, 0.1, 0.5), Color(0.75, 0.75, 0.75), Vector3(0, -0.1, 0.1))  # the pale belly
 	_cone(body, 0.12, 0.22, Color(0.1, 0.11, 0.13), Vector3(0, 0.26, -0.05))              # the small triangular fin
 	_ball(body, Vector3(0.3, 0.03, 0.12), Color(0.12, 0.13, 0.15), Vector3(0, 0, -0.85))  # flukes
 	_parts.append(body)
@@ -262,7 +266,7 @@ func _process(delta: float) -> void:
 			for i in range(_parts.size()):
 				var b := _parts[i]
 				b.rotation.y = 0.2 * ((i % 3) - 1) + 0.25 * sin(_t * 0.6 + i * 0.7)
-		"porpoise":
+		"porpoise", "dalls":
 			# A slow circuit, breaking the surface in an arc every few seconds.
 			var body := _parts[0]
 			var cyc := fmod(_t, 7.0)

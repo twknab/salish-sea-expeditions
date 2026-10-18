@@ -20,6 +20,7 @@ const ALL := [
 	# A pod of Bigg's killer whales working Spieden Channel east on the flood, well out from the shore: the card comes up at
 	# 1.4 km, the law's thousand yards is the line, and the sighting counts as given room or not in the debrief.
 	{ "leg": 1, "kind": "peregrine", "species": "peregrine", "at": Vector3(-7420.0, 0.0, -11440.0), "face": Vector3(0, 0, 1), "radius": 260.0 },  # on the lip of Spieden's south cliff, above the clapotis
+	{ "leg": 1, "kind": "dalls", "species": "dallsPorpoise", "at": Vector3(-8600.0, 0.0, -10800.0), "face": Vector3(1, 0, 0), "radius": 380.0 },  # fast through the deep narrows of Spieden Channel
 	{ "leg": 1, "kind": "orcas", "species": "biggsOrca", "at": Vector3(-8300.0, 0.0, -10700.0), "face": Vector3(1, 0, 0), "radius": 1400.0 },
 	{ "leg": 1, "kind": "kelp", "species": "bullKelp", "at": Vector3(-9300.0, 0.0, -10080.0), "face": Vector3(-1, 0, 0), "radius": 200.0 },
 	{ "leg": 1, "kind": "eagle", "species": "baldEagle", "at": Vector3(-9600.0, 0.0, -9930.0), "face": Vector3(0, 0, -1), "radius": 320.0 },
