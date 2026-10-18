@@ -74,6 +74,7 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"kelp": w._kelp()
 		"porpoise": w._porpoise()
 		"dalls": w._porpoise(true)
+		"otter": w._otter()
 		"orcas": w._orcas()
 	return w
 
@@ -171,6 +172,17 @@ func _seabird(body: Color, patch: Color, bill: Color, n: int) -> void:
 		_ball(bird, Vector3(0.06, 0.06, 0.06), body, Vector3(0, 0.14, 0.13))
 		_cone(bird, 0.015, 0.06, bill, Vector3(0, 0.14, 0.2), Vector3(deg_to_rad(-90), 0, 0))
 		_parts.append(bird)
+
+## A river otter swimming low: a long dark-brown back, the flat head up, a thick tapering tail
+## trailing. In salt water off the islands, it is still a river otter.
+func _otter() -> void:
+	var body := Node3D.new()
+	add_child(body)
+	_ball(body, Vector3(0.14, 0.08, 0.5), Color(0.24, 0.17, 0.11), Vector3(0, 0.0, 0))                                  # the back
+	_ball(body, Vector3(0.09, 0.08, 0.11), Color(0.27, 0.2, 0.13), Vector3(0, 0.07, 0.5))                                # the head, held up
+	_ball(body, Vector3(0.04, 0.03, 0.04), Color(0.55, 0.5, 0.45), Vector3(0, 0.06, 0.6))                                # the pale muzzle
+	_cone(body, 0.05, 0.42, Color(0.22, 0.16, 0.1), Vector3(0, -0.01, -0.62), Vector3(deg_to_rad(90), 0, 0))            # the tail
+	_parts.append(body)
 
 ## A bed of bull kelp: floats at the surface, stipes down into the dark, blades streaming.
 func _kelp() -> void:

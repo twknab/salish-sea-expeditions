@@ -701,6 +701,10 @@
 
 - [x] T014fv The field guide's Dall's porpoise runs through the deep, fast narrows of Spieden Channel on day two. It is the harbour porpoise's shape made stockier and black, with the bright white flank patches (`_porpoise(true)`), rolling on the same circuit. Its card was checked headless.
 
+## Slice 160 — a river otter into Posey
+
+- [x] T014fw The field guide's river otter swims the last stretch in to Posey Island on day two, ahead of the boat: a long dark-brown back, the flat head held up, a pale muzzle, a thick tapering tail (`Wildlife._otter`). Its card comes up well before the landing (checked headless).
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

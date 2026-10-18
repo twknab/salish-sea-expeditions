@@ -22,6 +22,7 @@ const ALL := [
 	{ "leg": 1, "kind": "peregrine", "species": "peregrine", "at": Vector3(-7420.0, 0.0, -11440.0), "face": Vector3(0, 0, 1), "radius": 260.0 },  # on the lip of Spieden's south cliff, above the clapotis
 	{ "leg": 1, "kind": "dalls", "species": "dallsPorpoise", "at": Vector3(-8600.0, 0.0, -10800.0), "face": Vector3(1, 0, 0), "radius": 380.0 },  # fast through the deep narrows of Spieden Channel
 	{ "leg": 1, "kind": "orcas", "species": "biggsOrca", "at": Vector3(-8300.0, 0.0, -10700.0), "face": Vector3(1, 0, 0), "radius": 1400.0 },
+	{ "leg": 1, "kind": "otter", "species": "riverOtter", "at": Vector3(-10620.0, 0.0, -10200.0), "face": Vector3(0, 0, 1), "radius": 140.0 },  # swimming the last stretch in to Posey ahead of the boat
 	{ "leg": 1, "kind": "kelp", "species": "bullKelp", "at": Vector3(-9300.0, 0.0, -10080.0), "face": Vector3(-1, 0, 0), "radius": 200.0 },
 	{ "leg": 1, "kind": "eagle", "species": "baldEagle", "at": Vector3(-9600.0, 0.0, -9930.0), "face": Vector3(0, 0, -1), "radius": 320.0 },
 	# Day three, home: the porpoise again in the channel's narrows, seals on the islet by Yellow, the heron at the Labs.
