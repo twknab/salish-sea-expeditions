@@ -44,3 +44,36 @@ const ALL := [
 	{ "leg": 2, "kind": "buoylion", "species": "californiaSeaLion", "day": "september", "at": Vector3(760.0, 0.0, -1180.0), "face": Vector3(-1, 0, 0), "radius": 200.0 },  # on the harbour's red nun (NavBuoy.AT), autumn to spring: the September day
 	{ "leg": 2, "kind": "heron", "species": "heron", "at": Vector3(560.0, 0.0, -1300.0), "face": Vector3(-1, 0, 0), "radius": 220.0 },
 ]
+
+## Where on the water a species can be met, for the field guide: "Look for it on the water: day two,
+## on the September trip." — or empty when the water never shows it (tide-pool life is met ashore).
+static func where_to_look(species: String) -> String:
+	var days: Array = []
+	var seasons: Array = []
+	for conf in ALL:
+		if conf.species != species:
+			continue
+		if not days.has(int(conf.leg)):
+			days.append(int(conf.leg))
+		var season: String = conf.get("day", "")
+		if not seasons.has(season):
+			seasons.append(season)
+	if days.is_empty():
+		return ""
+	var trip := "" if seasons.has("") or seasons.size() > 1 else ", on the %s trip" % str(seasons[0]).capitalize()
+	return "Look for it on the water: %s%s." % [_days(days), trip]
+
+## Where ashore: the end of each day whose shore list (`shores`, one per leg) names it — the walk
+## at a camp, the look under the float at the take-out.
+static func where_ashore(species: String, shores: Array) -> String:
+	var days: Array = []
+	for i in shores.size():
+		if (shores[i] as Array).has(species):
+			days.append(i)
+	return "" if days.is_empty() else "Look for it ashore, at the end of %s." % _days(days)
+
+static func _days(days: Array) -> String:
+	days.sort()
+	const WORDS := ["one", "two", "three"]
+	var names: Array = days.map(func(d: int) -> String: return WORDS[d])
+	return ("day %s" % names[0]) if names.size() == 1 else ("days %s and %s" % [", ".join(names.slice(0, -1)), names[-1]])

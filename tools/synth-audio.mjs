@@ -239,3 +239,38 @@ for (let k = 0; k < 2; k++) {
   }
   wav('whistle', out);
 }
+// Great blue heron: a deep, hoarse "frahnk" — a rough low croak, given when the bird is put up off the shore.
+{
+  const len = Math.floor(SR * 1.0), out = new Float32Array(len); const l = lp(1800);
+  for (let i = 0; i < Math.floor(SR * 0.55); i++) {
+    const t = i / SR;
+    const f = 240 - 70 * t / 0.55;
+    const buzz = Math.max(0, Math.sin(2 * Math.PI * f * t)) ** 4;  // a rough glottal pulse train
+    out[i] = (buzz * 0.6 + l(rnd()) * 0.25 * buzz + Math.sin(2 * Math.PI * 3 * f * t) * 0.08) * Math.sin(Math.PI * Math.min(1, t / 0.55)) * 0.55;
+  }
+  wav('croak', out);
+}
+// River otter: short, bird-like chirps and a breathy huff — the family keeping in touch along the rocks.
+{
+  const len = Math.floor(SR * 1.0), out = new Float32Array(len); const l = lp(2500);
+  const chirps = [0.0, 0.16, 0.29, 0.62];
+  for (const t0 of chirps) for (let i = Math.floor(t0 * SR); i < len; i++) {
+    const t = i / SR - t0; if (t > 0.05) break;
+    const f = 2400 - 900 * t / 0.05;
+    out[i] += Math.sin(2 * Math.PI * f * t) * Math.sin(Math.PI * t / 0.05) * 0.28;
+  }
+  for (let i = Math.floor(0.42 * SR); i < Math.floor(0.56 * SR); i++) { const t = i / SR - 0.42; out[i] += l(rnd()) * Math.sin(Math.PI * t / 0.14) * 0.3; }
+  wav('chirp', out);
+}
+// Harbour seal on the haul-out: a wet nasal snort and a low growl — a seal telling its neighbour to shift.
+{
+  const len = Math.floor(SR * 1.0), out = new Float32Array(len); const l = lp(900), h = hp(600);
+  for (let i = 0; i < Math.floor(0.18 * SR); i++) { const t = i / SR; out[i] += h(rnd()) * Math.exp(-t * 18) * 0.45; }
+  for (let i = Math.floor(0.3 * SR); i < Math.floor(0.85 * SR); i++) {
+    const t = i / SR - 0.3;
+    const f = 95 + 15 * Math.sin(2 * Math.PI * 3 * t);
+    const growl = Math.max(0, Math.sin(2 * Math.PI * f * t)) ** 3 * (0.6 + 0.4 * Math.sin(2 * Math.PI * 24 * t));
+    out[i] += (growl * 0.5 + l(rnd()) * 0.2 * growl) * Math.sin(Math.PI * t / 0.55);
+  }
+  wav('snort', out);
+}

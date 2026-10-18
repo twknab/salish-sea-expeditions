@@ -789,6 +789,62 @@
 
 - [x] T014gr The pigeon guillemots off Jones Island are heard: a thin, high, wheezy whistle that rises and trills (`whistle.wav`), appended last in the synth tool like the other new calls.
 
+## Slice 182 — the partner points out the otter and the eagle
+
+- [x] T014gs The partner has a word on the river otter, bald eagle and harbour porpoise cards (an otter at its meal, the white head on the snag, the single puff), and stays quiet for the trees.
+
+## Slice 183 — the heron croaks
+
+- [x] T014gt The great blue heron is heard when its card comes up: a deep, hoarse “frahnk” croak (`croak.wav`), appended last in the synth tool so the earlier sounds keep their noise.
+
+## Slice 184 — the otters chirp
+
+- [x] T014gu The river otter is heard when its card comes up: short, bird-like chirps and a breathy huff (`chirp.wav`), appended last in the synth tool.
+
+## Slice 185 — the porpoise puffs
+
+- [x] T014gv Harbour and Dall’s porpoise cards are heard: the orca’s blow, pitched up and quiet, as the sharp “puff” the partner already tells you to listen for.
+
+## Slice 186 — the seals snort
+
+- [x] T014gw Harbour seals on their rock are heard when the card comes up: a wet nasal snort and a low growl (`snort.wav`), appended last in the synth tool.
+
+## Slice 187 — every voice is on file
+
+- [x] T014gx Which call a sighting card is heard with moves out of `sea.gd` into one table in `sound.gd` (`CALLS`, `Sound.sighted`), and the tests check every call and every effect the sea loads is a file on disk.
+
+## Slice 188 — listen in the field guide
+
+- [x] T014gy Every field-guide card for an animal the sea gives a voice gets a Listen button: the bird calls, the seals, sea lions and porpoise, and the whales’ blow (`Sound.voiced`, `Sound.listen`).
+
+## Slice 189 — where to look
+
+- [x] T014gz A field-guide card for a species not yet met says where the water shows it — which days, and which trip when it keeps to a season (`Sightings.where_to_look`); tide-pool life says nothing, because the pools are ashore.
+
+## Slice 190 — where ashore
+
+- [x] T014ha The guide’s hint for a species not yet met also names the days that end on a shore showing it — the walks at Jones and Posey, the look under the float at the take-out — and the octopus under the rock wherever a camp has pools (`Sightings.where_ashore`).
+
+## Slice 191 — the glow in the guide
+
+- [x] T014hb The field guide’s card for bioluminescent plankton, until it is met, says to look for it at the end of the days that end at a camp — the night in the cove.
+
+## Slice 192 — jump in the guide
+
+- [x] T014hc A row of small chips at the top of the field guide jumps to each group of species, the words on the water and the credits — two lines on a phone, one tap instead of a long scroll.
+
+## Slice 193 — the tally on the chips
+
+- [x] T014hd Each group chip in the field guide carries how many of its species have been met (`Birds 3/8`), and the page’s count reads “met” now that the shore and the night count too.
+
+## Slice 194 — a drink on the water
+
+- [x] T014he An hour and a half after the launch the partner calls the first drink: on cold water nobody feels thirsty, so the habit is a mouthful every half hour. With the water left on the beach the note says so — the partner’s bottle shared, or nothing to the landing (`Drink`).
+
+## Slice 195 — listening with the sound off
+
+- [x] T014hf Pressing Listen in the field guide with the sound switched off says so, and points at the Sound chip, instead of doing nothing.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
