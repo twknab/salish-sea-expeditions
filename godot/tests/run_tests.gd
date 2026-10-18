@@ -258,6 +258,7 @@ func _init() -> void:
 	check(Seamanship.kept(Seamanship.calls([{"verdict": "good", "light": "lit"}])) == 4 and lit_calls.any(func(c: Dictionary) -> bool: return str(c.label) == "Showed a white light" and not c.ok and str(c.note).contains("unseen once")), "the white light is a call when the dark or the fog came")
 	var dh_line: Array[Vector3] = [Vector3(0, 0, 0), Vector3(100, 0, 0)]
 	check(Deadhead.place(dh_line, 0.5, 10.0).is_equal_approx(Vector3(50, 0, 10)) and Deadhead.reading(30.0, 1.5) == "near" and Deadhead.reading(2.0, 1.5) == "struck" and Deadhead.reading(2.0, 0.3) == "near" and Deadhead.reading(60.0, 2.0) == "", "the deadhead floats beside the line, says so when close, and strikes only at speed")
+	check(Seamanship.kept(Seamanship.calls([{"verdict": "good", "logStruck": 0}])) == 4 and Seamanship.calls([{"verdict": "good", "logStruck": 2}]).any(func(c: Dictionary) -> bool: return str(c.label) == "Gave the deadheads room" and not c.ok and str(c.note).contains("2 times")) and Seamanship.calls([{"verdict": "good"}]).size() == 3, "the deadhead is a call once the record has one")
 	# The roll: the hip snap learned brings the boat up in all but a steep sea; without it, the swim.
 	check(Roll.comes_up(true, 0.3) and not Roll.comes_up(true, 0.6) and not Roll.comes_up(false, 0.1), "the roll is the brace's hip snap, and a steep sea beats it")
 	check(Roll.outcome(true, true).begins_with("Up") and Roll.outcome(false, false).contains("hip snap") and Roll.outcome(false, true).contains("knocks the blade"), "the roll says why it failed")

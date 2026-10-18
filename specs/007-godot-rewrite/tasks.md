@@ -664,6 +664,10 @@
 
 - [x] T014fl The water scene had reached 995 of the lint's 1000 lines. Where the whale-watch fleet holds abeam of a pod (the side that is water along the pod's whole pass, or the nearer standoff if neither is) now lives on `WhaleWatch.abeam()` beside `station_for`, and `sea.gd` drops to 983. No change on screen; the whale and fleet stations still pass.
 
+## Slice 151 — gave the deadheads room
+
+- [x] T014fm The deadhead is judged. Seamanship gains "Gave the deadheads room": kept with "saw the grey wood and went round", missed with "the bow found one once" (or how many times). The call appears once a day's record carries `logStruck`. A day that hit one adds "the bow found a deadhead" to its line. The demo's second day shows it kept.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
