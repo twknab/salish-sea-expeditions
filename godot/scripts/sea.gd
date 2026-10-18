@@ -182,7 +182,7 @@ func _ready() -> void:
 			add_child(_log)
 			_log.setup(Deadhead.place(Leg.waypoints(_route)), kayak, sea)
 			_log.said.connect(func(text: String, hit: bool) -> void:
-				note_label.text = text
+				note_label.text = _said("deadhead_hit" if hit else "deadhead") + text
 				_note_hold = NOTE_HOLD
 				if hit:
 					kayak.kick(0.9)
@@ -409,7 +409,7 @@ func _leg(delta: float) -> void:
 	var state := Clapotis.lift(open_state, clap)
 	if clap > 0.5 and state > 0.3 and not _cross.clap_said and _note_hold <= 0.0:
 		_cross.clap_said = true
-		note_label.text = "Clapotis: off the cliff the waves come back and meet the ones coming in. No rhythm to brace to. Stand off a few boat lengths."
+		note_label.text = _said("clap") + "Clapotis: off the cliff the waves come back and meet the ones coming in. No rhythm to brace to. Stand off a few boat lengths."
 		_note_hold = NOTE_HOLD
 	if open_state >= ROUGH and not _weather_asked and _card == null:  # the channel's weather, not the cliff's
 		_offer_bailouts(open_state)
