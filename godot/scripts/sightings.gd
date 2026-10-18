@@ -21,6 +21,7 @@ const ALL := [
 	{ "leg": 1, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-7600.0, 0.0, -10450.0), "face": Vector3(-1, 0, 0), "radius": 420.0 },
 	# A pod of Bigg's killer whales working Spieden Channel east on the flood, well out from the shore: the card comes up at
 	# 1.4 km, the law's thousand yards is the line, and the sighting counts as given room or not in the debrief.
+	{ "leg": 1, "kind": "lionsmane", "species": "lionsMane", "day": "july", "at": Vector3(-5100.0, 0.0, -10250.0), "face": Vector3(1, 0, 0), "radius": 90.0 },  # drifting in the channel, in summer: the July day
 	{ "leg": 1, "kind": "peregrine", "species": "peregrine", "at": Vector3(-7420.0, 0.0, -11440.0), "face": Vector3(0, 0, 1), "radius": 260.0 },  # on the lip of Spieden's south cliff, above the clapotis
 	{ "leg": 1, "kind": "cormorants", "species": "pelagicCormorant", "day": "july", "at": Vector3(-7480.0, 0.0, -11460.0), "face": Vector3(0, 0, 1), "radius": 300.0 },  # nesting on the cliff ledges, April to August: the July day
 	{ "leg": 1, "kind": "dalls", "species": "dallsPorpoise", "at": Vector3(-8600.0, 0.0, -10800.0), "face": Vector3(1, 0, 0), "radius": 380.0 },  # fast through the deep narrows of Spieden Channel
@@ -33,6 +34,7 @@ const ALL := [
 	# The pod again on the way home, working the channel west on the ebb this time, and the eagle on Jones's south point.
 	{ "leg": 2, "kind": "orcas", "species": "biggsOrca", "at": Vector3(-7400.0, 0.0, -10560.0), "face": Vector3(-1, 0, 0), "radius": 1400.0 },
 	{ "leg": 2, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-6200.0, 0.0, -10450.0), "face": Vector3(1, 0, 0), "radius": 420.0 },
+	{ "leg": 2, "kind": "friedegg", "species": "friedEggJelly", "day": "september", "at": Vector3(-4500.0, 0.0, -9700.0), "face": Vector3(1, 0, 0), "radius": 90.0 },  # out in open water, late summer and autumn: the September day
 	{ "leg": 2, "kind": "humpback", "species": "humpback", "at": Vector3(-500.0, 0.0, -5300.0), "face": Vector3(0, 0, 1), "radius": 650.0 },  # travelling north up San Juan Channel, east of the line home
 	{ "leg": 2, "kind": "eagle", "species": "baldEagle", "at": Vector3(-2300.0, 0.0, -8900.0), "face": Vector3(0, 0, 1), "radius": 320.0 },
 	{ "leg": 2, "kind": "oystercatcher", "species": "oystercatcher", "at": Vector3(-1130.0, 0.0, -6360.0), "face": Vector3(1, 0, 0), "radius": 200.0 },  # working the tide line beside the seals' rock

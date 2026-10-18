@@ -20,6 +20,7 @@ const AT := {
 	"buoy": [860.0, -1260.0, 230.0],             # coming home into Friday Harbor, the red nun 130 m ahead
 	"jellies": [520.0, -985.0, 0.0],             # the July moon jellies a few metres ahead in the harbour
 	"madrona": [-1880.0, -9370.0, 215.0],       # off Jones Island, the madrona on the bluff 200 m ahead
+	"lionsmane": [-5060.0, -10230.0, 245.0],    # the July lion's mane jelly a few metres ahead in the channel
 }
 
 ## [x, z, heading] for a start, or empty when the start is not a fixed one.

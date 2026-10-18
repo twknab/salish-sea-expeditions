@@ -733,6 +733,10 @@
 
 - [x] T014gd The field guide's Pacific madrona leans out over the water from the edge of Jones Island's sunny bluff, the one tree on these shores that is not a dark cone: a bright peeling orange-red trunk and twisting limbs under a broad rounded crown, scaled to stand as tall as the firs so the red reads from the water (`Wildlife._madrona`). Check start `?scene=trip&near=madrona`, station `trip-madrona`.
 
+## Slice 168 — the lion's mane and the fried egg
+
+- [x] T014ge The moon jelly's bell now serves the bigger jellies too (`_jellies(n, r, bell, centre)`). A pair of lion's mane jellies, red-brown with a gold heart, drift on day two's line through the channel in summer (the July day). Three fried egg jellies, pale with a yolk-yellow centre, are in the open water of day three's crossing in late summer and autumn (the September day). Check start `?scene=trip&leg=1&near=lionsmane`, station `trip-lionsmane`; the fried egg card was checked headless.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
