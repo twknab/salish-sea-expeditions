@@ -753,6 +753,10 @@
 
 - [x] T014gi On the September day (the fall salmon openings) a gillnet is set across day two's line (`Gillnet`): 350 m of corks on the surface, with an orange end buoy carrying a pole and flag at each end, the net hanging below. Within 60 m the note says what it is and to go round an end, never over. A boat that crosses the cork line between the buoys has the net take its skeg: it stops dead, and the note says to back off, go round, and that a fisher's net is a livelihood. Going round an end is fine. The geometry is pure and tested. "Gillnet" joins the glossary. Check start `?scene=trip&leg=1&day=september&near=gillnet`, station `trip-gillnet`.
 
+## Slice 173 — went round the net
+
+- [x] T014gj The net is judged. The day's record keeps `netSnagged`: -1 on days no net was set, otherwise how many times the boat went over the corks. Seamanship gains "Went round the net": kept with "round the end buoy, clear of the corks", missed with "over the corks once, and the skeg in the mesh". It appears only on a trip that met the net. A day that went over adds "caught in a gillnet" to its debrief line.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

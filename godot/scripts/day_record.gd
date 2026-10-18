@@ -21,7 +21,7 @@ static func keep(sea: Node) -> void:
 		"swims": sea._swims_today, "rolls": sea._rolls_today, "rescuesGiven": sea._partner.rescues_given if sea._partner else 0, "reachS": sea._partner.reach_s if sea._partner else -1.0, "waits": sea._waits_today, "blows": sea._blows.x, "pushes": sea._blows.y, "slackWaited": sea._cross.slack == 2, "respectful": respectful, "violations": violations,
 		"ferryHeld": sea._ferry_verdicts.count("held"), "ferryCrossed": sea._ferry_verdicts.count("crossed"),
 		"streamS": sea._cross.stream_s, "onLineS": sea._cross.on_line_s, "maxKn": snappedf(sea._cross.max_kn, 0.1), "maxAt": sea._cross.max_at, "eddy": sea._cross.eddy_said, "linesEdged": sea._cross.lines_edged, "rafts": sea._partner.rafts if sea._partner else 0, "missing": Array(sea._pack.get("missing", [])).size(), "linesTripped": sea._cross.lines_tripped,
-		"fog": sea._fogged, "fogInHour": sea._fog_in_hour, "fogOffM": sea._fog_off_m, "dark": sea._dark, "thirsty": sea._thirsty, "rain": sea._rained, "rainRafted": sea._rain_rafted, "light": sea._light_call, "logStruck": sea._log.struck if sea._log else 0,
+		"fog": sea._fogged, "fogInHour": sea._fog_in_hour, "fogOffM": sea._fog_off_m, "dark": sea._dark, "thirsty": sea._thirsty, "rain": sea._rained, "rainRafted": sea._rain_rafted, "light": sea._light_call, "logStruck": sea._log.struck if sea._log else 0, "netSnagged": sea._net.snagged if sea._net else -1,
 		"notes": sea._notes.duplicate(), "noteAt": sea._note_at.duplicate(),
 		"lateStart": float(App.save.get("lateStart", 0.0)),
 	}

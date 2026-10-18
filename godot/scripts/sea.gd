@@ -73,6 +73,7 @@ const ROUGH := 0.5              # sea state at which the bail-outs are offered
 const RIP_KICK_EVERY := 3.2    # seconds between beam waves in a rip at full strength
 var _sightings: Array = []   # [{conf, node, seen}]
 var _log: Deadhead           # the day's deadhead, near the line
+var _net: Gillnet            # the September net across day two's line, when it is set
 const GROOVE_AFTER := 6.0       # seconds of steady holding before the day starts to pass
 const GROOVE_SPEED := 28.0      # extra metres per second over the ground, in the groove
 const GROOVE_HOURS_PER_SEC := 1.0 / 50.0  # the clock in the groove: an hour in fifty seconds
@@ -182,10 +183,10 @@ func _ready() -> void:
 			add_child(_log)
 			_log.setup(Deadhead.place(Leg.waypoints(_route)), kayak, sea)
 			if Leg.index() == 1 and str(App.chosen_day().get("id", "")) == Gillnet.DAY:  # salmon season: a net across day two's line
-				var net := Gillnet.new()
-				add_child(net)
-				net.setup(kayak, sea)
-				net.said.connect(func(text: String, snag: bool) -> void:
+				_net = Gillnet.new()
+				add_child(_net)
+				_net.setup(kayak, sea)
+				_net.said.connect(func(text: String, snag: bool) -> void:
 					note_label.text = text
 					if snag:
 						kayak.linear_velocity *= 0.1)
