@@ -181,6 +181,11 @@ func _ready() -> void:
 			_log = Deadhead.new()
 			add_child(_log)
 			_log.setup(Deadhead.place(Leg.waypoints(_route)), kayak, sea)
+			if Leg.index() == 0 or Leg.is_last():  # the harbour's channel mark, out on day one and in on the last
+				var buoy := NavBuoy.new()
+				add_child(buoy)
+				buoy.setup(kayak, sea, Leg.is_last())
+				buoy.said.connect(func(text: String) -> void: note_label.text = text)
 			_log.said.connect(func(text: String, hit: bool) -> void:
 				note_label.text = _said("deadhead_hit" if hit else "deadhead") + text
 				_note_hold = NOTE_HOLD

@@ -717,6 +717,10 @@
 
 - [x] T014fz Pelagic cormorants nest on Spieden's south cliff ledges in their season (the field guide says April to August, so the July day only), beside the peregrine (`Wildlife._cormorants`). Four slim, glossy black birds stand upright on thin necks, with the breeding season's white flank patch, and one holds its wings open to dry. Their card follows the peregrine's at the cliff.
 
+## Slice 164 — red, right, returning
+
+- [x] T014ga A red nun buoy marks the channel into Friday Harbor, just to the right of the line home (`NavBuoy`), on day one going out and on the last day coming in. Within 70 m the note teaches the rule the right way round for the direction: coming in, the reds stay on your right; going out, on your left; keep to the channel's edge (both checked headless). On the September day a California sea lion is sprawled across it, as they are on every buoy that will hold them (`Wildlife._buoylion`, seasonal like the Steller sea lions). "Red, right, returning" joins the glossary. Check start `?scene=trip&leg=2&day=september&near=buoy&launch=9`, station `trip-buoy`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

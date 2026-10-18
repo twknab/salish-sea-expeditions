@@ -78,6 +78,7 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"humpback": w._humpback()
 		"sealions": w._sealions()
 		"cormorants": w._cormorants()
+		"buoylion": w._buoylion()
 		"orcas": w._orcas()
 	return w
 
@@ -238,6 +239,20 @@ func _cormorants() -> void:
 		if i == 2:  # drying: the wings held open
 			_ball(b, Vector3(0.28, 0.14, 0.02), black, Vector3(0.24, 0.3, -0.02))
 			_ball(b, Vector3(0.28, 0.14, 0.02), black, Vector3(-0.24, 0.3, -0.02))
+
+## A California sea lion sprawled across the top of the harbour's red nun, as they do on every
+## buoy that will hold them: sleek, dark brown, the crest on a male's head, flippers hanging over.
+func _buoylion() -> void:
+	var a := Node3D.new()
+	a.position = Vector3(0, 1.25, 0)
+	a.rotation.z = 0.25
+	add_child(a)
+	var brown := Color(0.22, 0.15, 0.1)
+	_ball(a, Vector3(0.32, 0.26, 0.95), brown, Vector3(0, 0.2, 0))
+	_ball(a, Vector3(0.16, 0.16, 0.22), brown.darkened(0.05), Vector3(0, 0.42, 0.85))     # the head
+	_ball(a, Vector3(0.06, 0.05, 0.08), brown.lightened(0.15), Vector3(0, 0.56, 0.82))    # the male's crest
+	_ball(a, Vector3(0.1, 0.04, 0.32), brown.darkened(0.2), Vector3(0.38, 0.0, 0.35), Vector3(0, 0, 0.8))   # a flipper over the side
+	_ball(a, Vector3(0.1, 0.04, 0.3), brown.darkened(0.2), Vector3(0, -0.05, -0.95))      # the hind flippers
 
 ## A bed of bull kelp: floats at the surface, stipes down into the dark, blades streaming.
 func _kelp() -> void:

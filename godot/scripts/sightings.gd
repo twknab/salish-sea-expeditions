@@ -35,5 +35,6 @@ const ALL := [
 	{ "leg": 2, "kind": "eagle", "species": "baldEagle", "at": Vector3(-2300.0, 0.0, -8900.0), "face": Vector3(0, 0, 1), "radius": 320.0 },
 	{ "leg": 2, "kind": "oystercatcher", "species": "oystercatcher", "at": Vector3(-1130.0, 0.0, -6360.0), "face": Vector3(1, 0, 0), "radius": 200.0 },  # working the tide line beside the seals' rock
 	{ "leg": 2, "kind": "seals", "species": "harbourSeal", "at": Vector3(-1100.0, 0.0, -6330.0), "face": Vector3(0, 0, 1), "radius": 260.0 },
+	{ "leg": 2, "kind": "buoylion", "species": "californiaSeaLion", "day": "september", "at": Vector3(760.0, 0.0, -1180.0), "face": Vector3(-1, 0, 0), "radius": 200.0 },  # on the harbour's red nun (NavBuoy.AT), autumn to spring: the September day
 	{ "leg": 2, "kind": "heron", "species": "heron", "at": Vector3(560.0, 0.0, -1300.0), "face": Vector3(-1, 0, 0), "radius": 220.0 },
 ]
