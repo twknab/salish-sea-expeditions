@@ -34,7 +34,7 @@ var _http: HTTPRequest
 var _fetching := ""
 
 func _ready() -> void:
-	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull", "blow", "eagle", "sealion", "piping", "rattle", "engine_idle", "raccoons", "rain_loop", "rip_loop"]:
+	for n in ["water_loop", "wind_loop", "splash_1", "splash_2", "splash_3", "drip_1", "drip_2", "hull_slap", "ferry_horn", "gull", "blow", "eagle", "sealion", "piping", "rattle", "kak", "engine_idle", "raccoons", "rain_loop", "rip_loop"]:
 		var s := _load("res://audio/%s.wav" % n)
 		if s:
 			_streams[n] = s
@@ -131,7 +131,8 @@ func blow(near: float) -> void:
 func eagle() -> void:
 	_play("eagle", -16.0, randf_range(0.95, 1.05))
 
-## A shorebird's call from the tide line or a piling: "piping" (oystercatcher) or "rattle" (kingfisher).
+## A bird's call from the tide line, a piling or a cliff: "piping" (oystercatcher), "rattle"
+## (kingfisher) or "kak" (peregrine).
 func bird(call: String) -> void:
 	_play(call, -17.0, randf_range(0.95, 1.05))
 

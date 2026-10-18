@@ -773,6 +773,10 @@
 
 - [x] T014gn The two birds the field guide describes by their call are now heard when they come into reach. The black oystercatcher gives a quick run of loud clear pipes near 3 kHz (`piping.wav`), and the belted kingfisher gives its dry rattle, a fast train of woody clicks (`rattle.wav`). Both recipes are appended at the end of the synth tool, so no existing sound changes.
 
+## Slice 178 — the peregrine calls from the cliff
+
+- [x] T014go The peregrine on Spieden's cliff is heard as well as seen: its harsh, repeated "kak-kak-kak", short nasal bursts near 1.8 kHz (`kak.wav`), when it comes into reach. The bird calls now come through one `Sound.bird(call)`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

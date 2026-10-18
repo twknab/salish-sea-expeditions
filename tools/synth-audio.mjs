@@ -215,3 +215,17 @@ for (let k = 0; k < 2; k++) {
   }
   wav('rattle', out);
 }
+// Peregrine falcon: the harsh, repeated "kak-kak-kak" from the cliff — short nasal bursts near 1.8 kHz.
+{
+  const len = Math.floor(SR * 1.2), out = new Float32Array(len); const l = lp(4000);
+  for (let k = 0; k < 7; k++) {
+    const t0 = k * 0.15;
+    for (let i = Math.floor(t0 * SR); i < len; i++) {
+      const t = i / SR - t0; if (t > 0.07) break;
+      const f = 1800 + 200 * Math.sin(Math.PI * t / 0.07);
+      const nasal = Math.sin(2 * Math.PI * f * t) + 0.7 * Math.sin(2 * Math.PI * 2 * f * t) + 0.4 * Math.sin(2 * Math.PI * 3 * f * t);
+      out[i] += (nasal * 0.16 + l(rnd()) * 0.12) * Math.sin(Math.PI * t / 0.07);
+    }
+  }
+  wav('kak', out);
+}
