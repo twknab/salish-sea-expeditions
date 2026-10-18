@@ -849,6 +849,10 @@
 
 - [x] T014hg Meeting a species goes through one place (`App.meet`), which also keeps the day and the trip it was met on (`save.metOn`); the field guide’s card for a met species says so — “Met on day two of the September trip.”
 
+## Slice 197 — one to know, not to find
+
+- [x] T014hh The four species this route never shows — the Southern Residents, the sea otter, the sunflower star, the western redcedar — say so in the field guide, instead of leaving a gap where the others say where to look.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

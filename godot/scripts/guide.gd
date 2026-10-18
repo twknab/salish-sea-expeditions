@@ -113,9 +113,8 @@ func _species(col: VBoxContainer) -> Dictionary:
 				if when != "":
 					text += "\n" + when
 			else:
-				for look in [Sightings.where_to_look(sp.id), Sightings.where_ashore(sp.id, shores)]:
-					if look != "":
-						text += "\n" + look
+				var looks: Array = [Sightings.where_to_look(sp.id), Sightings.where_ashore(sp.id, shores)].filter(func(l: String) -> bool: return l != "")
+				text += "\n" + ("\n".join(looks) if not looks.is_empty() else "Not on this expedition’s route: one to know, not to find.")
 			var card := UIKit.card("%s%s" % [sp.common, "  · met" if met else ""], text, "%s · %s" % [sp.get("scientific", ""), App.sources_line(sp.get("sourceIds", []))], listen, "")
 			col.add_child(card)
 	return anchors
