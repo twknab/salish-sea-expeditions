@@ -45,6 +45,7 @@ var _fog_signal_t := 0.0        # seconds to the ferry's next blast in the fog
 var _fogged := false            # launched or paddled in fog today, for the record
 var _fog_in_hour := -1.0        # when the fog closed in, for the record
 var _dark_said := false         # the night-on-the-water note goes up once
+var _drink_at := 99.0           # the trip clock's hour for the first drink (Drink), once a leg
 var _rain_said := false         # the squall's note goes up once
 var _note_hold := 0.0           # seconds a time-critical note keeps the line before the squall's or the night's may take it
 const NOTE_HOLD := 8.0
@@ -167,6 +168,7 @@ func _ready() -> void:
 			if App._url_param("hour") != "":  # `?scene=trip&hour=20`: the clock set, for checks
 				_hour = clampf(float(App._url_param("hour")), 0.0, 26.0)
 			sea.apply_hour(_hour)
+			_drink_at = _hour + Drink.AFTER_HOURS
 			_set_label = SeaHud.set_line(controls.touch())
 			_dest_label = SeaHud.dest_line()
 			hud.add_child(_set_label)
@@ -376,6 +378,9 @@ func _leg(delta: float) -> void:
 		_dark_said = true
 		_dark = true
 		note_label.text = _said("dark") + DarkWater.note(own_light, str(_partner.preset.get("name", "")) if _partner else "", controls.touch())
+	elif _hour >= _drink_at and _note_hold <= 0.0 and _card == null:
+		_drink_at = 99.0
+		note_label.text = _said("drink") + Drink.note(_pack.get("enables", []).has("hydration"), str(_partner.preset.get("name", "")) if _partner else "", controls.touch())
 	# The current carries the boat over the ground, in the groove and out of it (scaled with its hours).
 	_flow = Leg.flow_at(_route, here)
 	var factor: float = _flow.factor

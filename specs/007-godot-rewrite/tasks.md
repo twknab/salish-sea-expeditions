@@ -837,6 +837,10 @@
 
 - [x] T014hd Each group chip in the field guide carries how many of its species have been met (`Birds 3/8`), and the page’s count reads “met” now that the shore and the night count too.
 
+## Slice 194 — a drink on the water
+
+- [x] T014he An hour and a half after the launch the partner calls the first drink: on cold water nobody feels thirsty, so the habit is a mouthful every half hour. With the water left on the beach the note says so — the partner’s bottle shared, or nothing to the landing (`Drink`).
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

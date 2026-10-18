@@ -36,6 +36,7 @@ const LINES := {
 	"otter": "Shh. Otter, on the rocks — let it eat.",
 	"eagle": "Up on the snag. White head — see it?",
 	"porpoise": "Hear that puff? Porpoise. Just once, then gone.",
+	"drink": "Raft up a sec. Drink — before you want to.",
 }
 
 ## The partner's words for an event, by name, or empty when there are none.
