@@ -359,6 +359,21 @@ func _init() -> void:
 		var essentials: Array = c.gear.filter(func(g: Dictionary) -> bool: return bool(g.get("essential", false)))
 		check(essentials.all(func(g: Dictionary) -> bool: return LeftBehind.COST.has(str(g.id))), "every essential has its cost in the debrief")
 		var species_ids: Array = c.species.map(func(sp: Dictionary) -> String: return str(sp.id))
+		# Every field-guide species is met somewhere: on the water, on a shore walk, or in the cove's glow.
+		# The rare ones are named, so a new species cannot slip into the guide unmet without a decision.
+		var met_ids := {}
+		for sg in Sightings.ALL:
+			met_ids[str(sg.species)] = true
+		var legs_f := FileAccess.open("res://content/legs.json", FileAccess.READ)
+		for lg in JSON.parse_string(legs_f.get_as_text()).legs:
+			for sid in lg.get("shore", []):
+				met_ids[str(sid)] = true
+		met_ids["bioluminescence"] = true
+		var rare := ["southernResident", "seaOtter", "octopus", "sunflowerStar", "redCedar"]
+		var unmet: Array = c.species.filter(func(sp: Dictionary) -> bool: return not met_ids.has(str(sp.id)) and not rare.has(str(sp.id)))
+		for sp in unmet:
+			printerr("never met: ", sp.id)
+		check(unmet.is_empty(), "every field-guide species is met on the trip, or named as one of the rare")
 		var day_ids: Array = c.tripDays.map(func(td: Dictionary) -> String: return str(td.id))
 		check(Sightings.ALL.all(func(sg: Dictionary) -> bool: return not sg.has("day") or day_ids.has(str(sg.day))), "a seasonal sighting names a day the trip can be paddled on")
 		check(Sightings.ALL.all(func(sg: Dictionary) -> bool: return species_ids.has(str(sg.species))) and Sightings.ALL.all(func(sg: Dictionary) -> bool: return [0, 1, 2].has(int(sg.leg))), "every sighting is a field-guide species, on one of the three days")

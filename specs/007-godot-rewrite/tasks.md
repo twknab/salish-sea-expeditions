@@ -757,6 +757,10 @@
 
 - [x] T014gj The net is judged. The day's record keeps `netSnagged`: -1 on days no net was set, otherwise how many times the boat went over the corks. Seamanship gains "Went round the net": kept with "round the end buoy, clear of the corks", missed with "over the corks once, and the skeg in the mesh". It appears only on a trip that met the net. A day that went over adds "caught in a gillnet" to its debrief line.
 
+## Slice 174 — every species has a place
+
+- [x] T014gk A content test now makes sure every species in the field guide is met somewhere in the game: a sighting on the water, a shore walk at camp, or the cove's glow. The few the trip honestly would not meet (Southern Resident orcas, sea otter, giant Pacific octopus, sunflower star, western red cedar) are named in the test, so a new species cannot be added to the guide unmet without someone deciding it should be.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
