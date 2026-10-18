@@ -83,6 +83,7 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"lionsmane": w._jellies(2, 0.75, Color(0.62, 0.3, 0.15), Color(0.8, 0.5, 0.25))
 		"friedegg": w._jellies(3, 0.45, Color(0.93, 0.92, 0.86), Color(0.95, 0.75, 0.2))
 		"madrona": w._madrona()
+		"oak": w._oak()
 		"orcas": w._orcas()
 	return w
 
@@ -296,6 +297,21 @@ func _madrona() -> void:
 	for c in 4:  # the broad, rounded crown
 		var a := TAU * c / 4.0
 		_ball(self, Vector3(1.6, 1.1, 1.6), Color(0.2, 0.36, 0.14), Vector3(2.0 + cos(a) * 1.0, 5.8 + (c % 2) * 0.4, sin(a) * 1.0))
+
+## A Garry oak alone in a dry meadow: a short, thick, gnarled dark trunk, crooked limbs spreading
+## wide rather than up, and a rounded, lumpy crown of deep olive green over gold summer grass.
+func _oak() -> void:
+	scale = Vector3.ONE * 1.6
+	var bark := Color(0.28, 0.24, 0.2)
+	_ball(self, Vector3(4.0, 0.08, 3.4), Color(0.72, 0.62, 0.3), Vector3(0, 0.05, 0))   # the meadow's dry gold grass around it
+	_rod(self, 0.45, 3.0, bark, Vector3(0, 1.5, 0))
+	for k in 4:  # crooked limbs, out more than up
+		var a := TAU * k / 4.0 + 0.4
+		var limb := _rod(self, 0.18, 2.4, bark, Vector3(cos(a) * 0.9, 3.1, sin(a) * 0.9))
+		limb.rotation = Vector3(sin(a) * 0.9, 0, -cos(a) * 0.9)
+	for c in 6:  # the lumpy, rounded crown
+		var a := TAU * c / 6.0
+		_ball(self, Vector3(1.5, 1.1, 1.5), Color(0.3, 0.36, 0.16), Vector3(cos(a) * 1.7, 4.3 + (c % 2) * 0.5, sin(a) * 1.7))
 
 ## A bed of bull kelp: floats at the surface, stipes down into the dark, blades streaming.
 func _kelp() -> void:

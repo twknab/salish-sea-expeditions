@@ -12,6 +12,7 @@ const ALL := [
 	{ "leg": 0, "kind": "madrona", "species": "madrona", "at": Vector3(-1960.0, 0.0, -9310.0), "face": Vector3(1, 0, 0), "radius": 260.0 },  # leaning out from Jones Island's sunny bluff
 	{ "leg": 0, "kind": "guillemot", "species": "pigeonGuillemot", "at": Vector3(-1900.0, 0.0, -9350.0), "face": Vector3(1, 0, 0), "radius": 220.0 },  # off the rocks below Jones Island
 	{ "leg": 0, "kind": "porpoise", "species": "harbourPorpoise", "at": Vector3(-300.0, 0.0, -4200.0), "face": Vector3(0, 0, -1), "radius": 420.0 },
+	{ "leg": 0, "kind": "oak", "species": "garryOak", "at": Vector3(-1150.0, 0.0, -6420.0), "face": Vector3(0, 0, 1), "radius": 300.0 },  # alone in the dry meadow above the seals' rock
 	{ "leg": 0, "kind": "kelp", "species": "bullKelp", "at": Vector3(-900.0, 0.0, -6250.0), "face": Vector3(0, 0, -1), "radius": 200.0 },
 	{ "leg": 0, "kind": "oystercatcher", "species": "oystercatcher", "at": Vector3(-1130.0, 0.0, -6360.0), "face": Vector3(1, 0, 0), "radius": 200.0 },  # working the tide line beside the seals' rock
 	{ "leg": 0, "kind": "seals", "species": "harbourSeal", "at": Vector3(-1100.0, 0.0, -6330.0), "face": Vector3(0, 0, 1), "radius": 260.0 },

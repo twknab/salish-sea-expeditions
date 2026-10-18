@@ -737,6 +737,10 @@
 
 - [x] T014ge The moon jelly's bell now serves the bigger jellies too (`_jellies(n, r, bell, centre)`). A pair of lion's mane jellies, red-brown with a gold heart, drift on day two's line through the channel in summer (the July day). Three fried egg jellies, pale with a yolk-yellow centre, are in the open water of day three's crossing in late summer and autumn (the September day). Check start `?scene=trip&leg=1&near=lionsmane`, station `trip-lionsmane`; the fried egg card was checked headless.
 
+## Slice 169 — a Garry oak in its meadow
+
+- [x] T014gf The field guide's Garry oak stands alone in the dry meadow above the seals' rock on day one and on the way home (`Wildlife._oak`): a short, thick, gnarled trunk, crooked limbs spreading out more than up, and a lumpy rounded crown over gold grass. It reads from the water as the one rounded shape among the firs. The western red cedar is left for later: its damp north-facing slope near the route is Jones Island's north cove, where its card would land on top of the arrival.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
