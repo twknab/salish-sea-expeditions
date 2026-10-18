@@ -303,6 +303,9 @@ func _init() -> void:
 	check(Sightings.where_to_look("octopus") == "", "nothing on the water for what lives in the pools")
 	check(Drink.note(true, "Mina", false).contains("half hour") and Drink.note(false, "Mina", false).contains("Mina passes") and Drink.note(false, "", false).contains("Nothing to drink"), "the first drink: the habit with water, a shared bottle or nothing without")
 	check(Drink.note(true, "", true).length() < 60 and PartnerVoice.line("drink") != "", "the drink note is short on a phone, and the partner calls it")
+	var cruise := StrokeMath.cruise_speed(0.8, 0.984, 0.05, 0.12)  # Controls.CADENCE; Kayak's damp and drag
+	check(cruise * 1.9438 > 2.4 and cruise * 1.9438 < 3.6, "a steady cadence of good strokes holds a touring pace, 2.4–3.6 kn (was 0.8 kn under a heavy damp)")
+	check(StrokeMath.cruise_speed(0.8, 0.984, 0.45, 0.12) * 1.9438 < 2.0, "the old damp would hold it under two knots: the boat must not be damped like that again")
 	var help := HelpText.sections(["Forward stroke", "Brace"])
 	var keys: String = help.filter(func(x: Dictionary) -> bool: return x.title == "Paddling on a keyboard")[0].body
 	check(["W or ↑", "A / D", "S or ↓", "Z / C", "Shift + A / D", "J, L or Space", "Q / E", "M —", "P or Escape"].all(func(k: String) -> bool: return keys.contains(k)), "Help names every key the controls read")

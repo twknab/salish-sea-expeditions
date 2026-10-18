@@ -43,7 +43,11 @@ func debug_line() -> String:
 
 func _ready() -> void:
 	mass = 100.0
-	linear_damp = 0.35
+	# The water's drag is the hull's own (the v² term in _physics_process, the keel line sideways, the
+	# probes vertically); a big linear damp on top held a well-paddled boat to 0.8 kn where a touring
+	# kayak makes about 3. REPLACE, so the project's default damp is not added back in.
+	linear_damp_mode = RigidBody3D.DAMP_MODE_REPLACE
+	linear_damp = 0.05
 	angular_damp = 4.0
 	can_sleep = false
 	build_hull()
@@ -251,6 +255,18 @@ func _physics_process(delta: float) -> void:
 	_wobble_t = maxf(0.0, _wobble_t - delta)
 	if _paddler:
 		_paddler.advance(delta, edge)
+
+## Move the boat over the ground without the physics doing it: the groove's miles, a stream's carry,
+## a check start, dev mode's Skip. A rigid body's own state is set too — written only through the
+## node, the next physics step can put the boat back where it was, and on the web it did.
+func shift(by: Vector3) -> void:
+	place(global_position + by)
+
+func place(at: Vector3) -> void:
+	var t := global_transform
+	t.origin = at
+	PhysicsServer3D.body_set_state(get_rid(), PhysicsServer3D.BODY_STATE_TRANSFORM, t)
+	global_transform = t
 
 ## Back in the boat: upright on the same heading, the way gone out of it.
 func right() -> void:
