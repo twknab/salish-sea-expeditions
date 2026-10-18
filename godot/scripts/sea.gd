@@ -325,7 +325,7 @@ func _watch_sightings() -> void:
 			Sound.sealion(conf.kind == "sealions")
 		elif conf.kind in ["oystercatcher", "kingfisher", "peregrine"]:
 			Sound.bird({"oystercatcher": "piping", "kingfisher": "rattle", "peregrine": "kak"}[conf.kind])
-		var text: String = (_said("orcas") if conf.kind == "orcas" else "") + str(sp.get("blurb", ""))
+		var text: String = _said(conf.kind) + str(sp.get("blurb", ""))  # the partner's word, when they have one for it
 		var facts: Array = sp.get("facts", [])
 		if not facts.is_empty():
 			text += "\n\n" + str(facts[0])

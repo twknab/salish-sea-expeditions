@@ -781,6 +781,10 @@
 
 - [x] T014gp With a VHF packed, the ferry in fog is heard on the radio before its horn. The long-blast note now opens with the ferry's sécurité call giving its position; without a radio there is only the horn. The note moved into `Traffic.fog_note()` with a test, and the water scene's version of it went with it.
 
+## Slice 180 — the partner's word on a sighting
+
+- [x] T014gq The partner used to speak up only for the orcas' card. Now any sighting the partner has a word for opens with it: the humpback's blow, a quick minke, a lion's mane ("Hands out of the water — that one stings"), the sea lions on rock and buoy, the Dall's porpoise's rooster tails, and the seals and kelp they already had lines for. A tree gets no remark. One `_said(kind)` serves every card.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
