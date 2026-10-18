@@ -55,6 +55,22 @@ environment in GitHub to gate deploys by hand.
 Terraform ignores the service's image and traffic after the first apply (CI owns rollouts and
 preview tags), so a later `terraform apply` never rolls the game back or removes a preview.
 
+## The Godot build: one command from your machine
+
+After `deploy/cloud-run.sh` has run once from the same checkout (it leaves the bootstrap state the
+next script reads):
+
+```sh
+bash deploy/godot-cloud-run.sh            # current gcloud project, us-west1
+YES=1 bash deploy/godot-cloud-run.sh      # approve the Terraform plan automatically
+```
+
+It fetches Godot 4.5 and its web export templates (cached under `~/.cache/sse-godot`; set
+`GODOT=/path/to/godot` to use your own), exports `build/web` with the soundtrack beside it in
+`audio/`, builds and pushes `Dockerfile.godot` for linux/amd64, applies `infra/service` with the
+image's digest (creating the public `salish-sea-expedition` service the first time), rolls it out,
+waits for `/health` and prints the URL. Safe to re-run for each new build.
+
 ## The Godot build: a second service, framed and off
 
 The rewrite on `experiment/godot-rewrite` ships as its own Cloud Run service, `salish-sea-expedition`,
