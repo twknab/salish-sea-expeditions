@@ -316,11 +316,7 @@ func _watch_sightings() -> void:
 		var sp := _species(conf.species)
 		if sp.is_empty():
 			continue
-		var seen: Array = App.save.get("seen", [])
-		if not seen.has(conf.species):
-			seen.append(conf.species)
-			App.save.seen = seen
-			App.persist()
+		App.meet(conf.species)
 		Sound.sighted(conf.kind)
 		var text: String = _said(conf.kind) + str(sp.get("blurb", ""))  # the partner's word, when they have one for it
 		var facts: Array = sp.get("facts", [])

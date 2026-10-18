@@ -845,6 +845,10 @@
 
 - [x] T014hf Pressing Listen in the field guide with the sound switched off says so, and points at the Sound chip, instead of doing nothing.
 
+## Slice 196 — when it was met
+
+- [x] T014hg Meeting a species goes through one place (`App.meet`), which also keeps the day and the trip it was met on (`save.metOn`); the field guide’s card for a met species says so — “Met on day two of the September trip.”
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

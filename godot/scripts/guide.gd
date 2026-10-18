@@ -108,7 +108,11 @@ func _species(col: VBoxContainer) -> Dictionary:
 				text += " Keep %d m off." % approach
 			var kind: String = voice.get(sp.id, "")
 			var listen: Array = [] if kind == "" else [["Listen", func() -> void: _listen(kind), false]]
-			if not met:
+			if met:
+				var when := Sightings.met_line(App.save.get("metOn", {}).get(sp.id, {}))
+				if when != "":
+					text += "\n" + when
+			else:
 				for look in [Sightings.where_to_look(sp.id), Sightings.where_ashore(sp.id, shores)]:
 					if look != "":
 						text += "\n" + look

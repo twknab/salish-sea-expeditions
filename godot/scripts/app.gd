@@ -283,6 +283,18 @@ func next() -> void:
 	if i >= 0 and i + 1 < FLOW.size():
 		go(FLOW[i + 1])
 
+## A species met for the first time: into the field guide's list, with the day and trip it was met on.
+func meet(species: String) -> void:
+	var seen: Array = save.get("seen", [])
+	if seen.has(species):
+		return
+	seen.append(species)
+	save.seen = seen
+	var on: Dictionary = save.get("metOn", {})
+	on[species] = {"leg": Leg.index(), "day": str(save.get("dayId", "july"))}
+	save.metOn = on
+	persist()
+
 func persist() -> void:
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f:
