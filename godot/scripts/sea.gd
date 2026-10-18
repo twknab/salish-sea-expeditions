@@ -404,9 +404,15 @@ func _leg(delta: float) -> void:
 		_kelp_said = true
 		note_label.text = _said("kelp") + "In the kelp: the fronds grab the blade and the swell lies down. A kelp bed is a lee, and a slow one."
 	_rain_now = 1.0 if App._url_param("rain") == "1" else Tides.rain(_day, _hour)  # `?rain=1` for checks
-	var state := Tides.sea_state(_day, _hour, factor) * (1.0 - 0.6 * kelp) * (1.0 - 0.25 * _rain_now)  # rain lies the chop down a little
-	if state >= ROUGH and not _weather_asked and _card == null:
-		_offer_bailouts(state)
+	var clap := Clapotis.at(terrain, here)  # under a cliff the waves come back off the rock and stand the sea up
+	var open_state := Tides.sea_state(_day, _hour, factor) * (1.0 - 0.6 * kelp) * (1.0 - 0.25 * _rain_now)  # rain lies the chop down a little
+	var state := Clapotis.lift(open_state, clap)
+	if clap > 0.5 and state > 0.3 and not _cross.clap_said and _note_hold <= 0.0:
+		_cross.clap_said = true
+		note_label.text = "Clapotis: off the cliff the waves come back and meet the ones coming in. No rhythm to brace to. Stand off a few boat lengths."
+		_note_hold = NOTE_HOLD
+	if open_state >= ROUGH and not _weather_asked and _card == null:  # the channel's weather, not the cliff's
+		_offer_bailouts(open_state)
 	var w := Tides.wind(_day, _hour)
 	kayak.wind = Windage.vector(float(w.kn), float(w.fromDeg))
 	# Fog: the leg's morning may start in it. The islands go, the chart loses its fix, the compass

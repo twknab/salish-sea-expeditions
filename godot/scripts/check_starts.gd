@@ -13,6 +13,7 @@ const AT := {
 	"labs": [590.0, -1312.0, 250.0],            # the heron 30 m off in the shallows
 	"eddy": [-8000.0, -10990.0, 270.0],         # 80 m off Spieden Island's south shore, in the narrows
 	"log": [-273.0, -4925.0, 0.0],              # the day-one deadhead 45 m ahead, beside the line
+	"cliff": [-7360.0, -11440.0, 270.0],          # hard under the steep south shore of Spieden Island, clapotis
 }
 
 ## [x, z, heading] for a start, or empty when the start is not a fixed one.

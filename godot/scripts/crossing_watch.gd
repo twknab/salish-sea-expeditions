@@ -25,6 +25,7 @@ var ferry_said := false
 var slack := 0          # the slack card: 0 not yet, 1 asked, 2 waited for
 var eddy_k := 1.0      # how much of the channel's stream reaches the boat here, this frame
 var eddy_said := false
+var clap_said := false    # the clapotis note under a cliff, once a leg
 var _raw_kn := 0.0      # the stream here before the shore takes any of it, knots
 var _place := ""        # where the stream runs hard here ("in the narrows of Spieden Channel"), or ""
 var line_dir := 0       # this frame: +1 out of an eddy into the stream, -1 into an eddy, 0 not crossing

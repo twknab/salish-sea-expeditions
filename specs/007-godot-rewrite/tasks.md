@@ -672,6 +672,10 @@
 
 - [x] T014fn "Deadhead" joins the field guide's words on the water: what it is, why a chop hides it, what it does to a bow at speed, and to give it room. Cited like every entry.
 
+## Slice 153 — clapotis under the cliffs
+
+- [x] T014fo Under a steep shore the waves come back off the rock. `Clapotis` reads the steepest land within 30 and 60 m of the boat (the terrain is a 48 m grid, so nearer only sees a smoothed shore) and lifts the sea state by up to two thirds hard under a cliff. A beach adds nothing. Once a leg, in a sea worth the word, the note says what it is and to stand off a few boat lengths. The bail-out card still reads the channel's own sea, not the cliff's. A survey of the map puts the steepest water under Spieden Island's south shore: check start `?scene=trip&leg=1&near=cliff&launch=15`, station `trip-cliff`. "Clapotis" joins the glossary.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
