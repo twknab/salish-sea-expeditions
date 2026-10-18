@@ -725,6 +725,10 @@
 
 - [x] T014gb Making room again: `sea.gd` had reached 995 lines. The day's record for the debrief (the launch and its verdict, the landing, the swims, the wildlife given room, and the rest of the record's 38 fields) is now built by `DayRecord.keep(sea)`, and the water scene drops to 962 lines. No change in behaviour: an arrival checked headless still records the day with every field.
 
+## Slice 166 — moon jellies in the harbour
+
+- [x] T014gc Moon jellies drift in the calm of Friday Harbor in summer (the July day): nine pale translucent bells with the four pink horseshoes showing through, each pulsing slowly on its own beat (`Wildlife._jellies`). They sit just under the surface film, because the sea shader is opaque and lets nothing deeper read. Check start `?scene=trip&near=jellies`, station `trip-jellies`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

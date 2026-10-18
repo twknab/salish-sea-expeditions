@@ -5,6 +5,7 @@ extends RefCounted
 ## Yellow Island, the heron in the Labs' shallows, the eagle on Point Caution, the porpoise mid-channel.
 const ALL := [
 	{ "leg": 0, "kind": "kingfisher", "species": "kingfisher", "at": Vector3(380.0, 0.0, -860.0), "face": Vector3(0, 0, 1), "radius": 90.0 },  # on an old piling a few boat lengths up the harbour, met paddling out
+	{ "leg": 0, "kind": "jellies", "species": "moonJelly", "day": "july", "at": Vector3(520.0, 0.0, -1000.0), "face": Vector3(0, 0, -1), "radius": 80.0 },  # in the calm of the harbour, in summer: the July day
 	{ "leg": 0, "kind": "heron", "species": "heron", "at": Vector3(560.0, 0.0, -1300.0), "face": Vector3(-1, 0, 0), "radius": 220.0 },
 	{ "leg": 0, "kind": "eagle", "species": "baldEagle", "at": Vector3(260.0, 0.0, -2600.0), "face": Vector3(1, 0, 0), "radius": 320.0 },
 	{ "leg": 0, "kind": "auklet", "species": "rhinoAuklet", "at": Vector3(-200.0, 0.0, -3400.0), "face": Vector3(0, 0, -1), "radius": 260.0 },  # sitting out in the channel, diving as the boat comes

@@ -42,6 +42,7 @@ const STATIONS = [
   ['trip-humpback', '?scene=trip&leg=2&near=humpback&launch=9'],
   ['trip-sealions', '?scene=trip&leg=1&day=september&near=sealions'],
   ['trip-buoy', '?scene=trip&leg=2&day=september&near=buoy&launch=9'],
+  ['trip-jellies', '?scene=trip&near=jellies'],
   ['trip-fog', '?scene=trip&leg=2&launch=6&near=ferry&fog=1'],
   ['trip-fog-lifts', '?scene=trip&leg=2&launch=6&fog=lift'],
   ['trip-fog-unpacked', '?scene=trip&leg=2&launch=6&fog=1&pack=none'],

@@ -79,6 +79,7 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"sealions": w._sealions()
 		"cormorants": w._cormorants()
 		"buoylion": w._buoylion()
+		"jellies": w._jellies()
 		"orcas": w._orcas()
 	return w
 
@@ -254,6 +255,25 @@ func _buoylion() -> void:
 	_ball(a, Vector3(0.1, 0.04, 0.32), brown.darkened(0.2), Vector3(0.38, 0.0, 0.35), Vector3(0, 0, 0.8))   # a flipper over the side
 	_ball(a, Vector3(0.1, 0.04, 0.3), brown.darkened(0.2), Vector3(0, -0.05, -0.95))      # the hind flippers
 
+## Moon jellies drifting just under the harbour's surface in summer: pale translucent bells with the
+## four horseshoes showing through, pulsing slowly. The bell breaks the surface film, so they read from
+## the boat as the water itself never lets anything below it read.
+func _jellies() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	for i in 9:
+		var j := Node3D.new()
+		j.position = Vector3(rng.randf_range(-6.0, 6.0), -0.06, rng.randf_range(-6.0, 6.0))
+		add_child(j)
+		var bell := _ball(j, Vector3(0.22, 0.09, 0.22), Color(0.88, 0.92, 0.96), Vector3.ZERO)
+		var m := bell.material_override as StandardMaterial3D
+		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		m.albedo_color.a = 0.55
+		for k in 4:  # the four horseshoes
+			var a := TAU * k / 4.0
+			_ball(j, Vector3(0.05, 0.02, 0.05), Color(0.85, 0.55, 0.7), Vector3(cos(a) * 0.08, 0.05, sin(a) * 0.08))
+		_parts.append(j)
+
 ## A bed of bull kelp: floats at the surface, stipes down into the dark, blades streaming.
 func _kelp() -> void:
 	var rng := RandomNumberGenerator.new()
@@ -366,6 +386,10 @@ func _process(delta: float) -> void:
 			var f := clampf(1.0 - absf(cyc - 14.0) / 2.0, 0.0, 1.0)
 			fluke.visible = f > 0.0
 			fluke.position = Vector3(0, -1.5 + 3.2 * f, body.position.z - 5.5)
+		"jellies":
+			for i in range(_parts.size()):
+				var pulse := 1.0 + 0.12 * sin(_t * 1.6 + i * 1.3)  # a slow pulse, each bell on its own beat
+				_parts[i].scale = Vector3(pulse, 2.0 - pulse, pulse)
 		"porpoise", "dalls":
 			# A slow circuit, breaking the surface in an arc every few seconds.
 			var body := _parts[0]
