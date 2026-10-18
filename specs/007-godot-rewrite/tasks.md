@@ -765,6 +765,10 @@
 
 - [x] T014gl After dark and in fog the ferry shows its navigation lights (`FerryModel.set_lights`): white masthead lights high fore and aft, red to port, green to starboard, unshaded so they carry across the water. The ferry card after dark teaches reading them: the masthead lights high up, red on its port side and green on its starboard, and "see red and green together and it is coming straight at you". It still fits on a phone. Station `trip-ferry-night`.
 
+## Slice 176 — the sea lions are heard
+
+- [x] T014gm The field guide says sea lions are often heard before they are seen, and now they are. A synthesized run of hoarse barks (`sealion.wav`: a buzzy fundamental near 300 Hz with a rough flutter and breath) plays when the California sea lion on the harbour buoy comes into reach. The same sound slowed into a deeper roar plays for the Steller sea lions on their rocks. The recipe is the last in `tools/synth-audio.mjs`, so its draws on the shared seeded noise leave every existing sound byte-for-byte the same.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

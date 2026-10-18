@@ -174,3 +174,18 @@ for (let k = 0; k < 2; k++) {
   const x = SR * 0.5; for (let i = 0; i < x; i++) { const a = i / x; out[len - x + i] = out[len - x + i] * (1 - a) + out[i] * a; }
   wav('rip_loop', out);
 }
+// (Last, so its draws on the shared noise do not shift any sound before it.)
+// Sea lions: a run of hoarse barks from the rock or the buoy — a buzzy fundamental near 300 Hz with a
+// rough flutter and breath in it. The Steller's deeper roar is the same sound played slower.
+{
+  const len = Math.floor(SR * 1.5), out = new Float32Array(len); const l = lp(1800);
+  const barks = [0.0, 0.32, 0.62, 1.0];
+  for (const t0 of barks) for (let i = Math.floor(t0 * SR); i < len; i++) {
+    const t = i / SR - t0; if (t > 0.2) break;
+    const f = 310 - 60 * t / 0.2;
+    const buzz = Math.sin(2 * Math.PI * f * t) + 0.6 * Math.sin(2 * Math.PI * 2 * f * t) + 0.35 * Math.sin(2 * Math.PI * 3 * f * t);
+    const flutter = 0.6 + 0.4 * Math.sin(2 * Math.PI * 38 * t);
+    out[i] += (buzz * 0.22 + l(rnd()) * 0.25) * flutter * Math.sin(Math.PI * t / 0.2);
+  }
+  wav('sealion', out);
+}
