@@ -35,9 +35,17 @@ func _ready() -> void:
 	var words := _words(col)
 	anchors["Words"] = words
 	anchors["Credits"] = _credits(col)
+	var seen: Array = App.save.get("seen", [])
+	var tally := {}  # group -> [met, all], for the chip
+	for sp in App.content.get("species", []):
+		var t: Array = tally.get(sp.group, [0, 0])
+		tally[sp.group] = [t[0] + (1 if seen.has(sp.id) else 0), t[1] + 1]
 	for name in anchors:
 		var target: Control = anchors[name]
-		var b := UIKit.button(str(SHORT.get(name, name)), false)
+		var chip: String = str(SHORT.get(name, name))
+		if tally.has(name):
+			chip += " %d/%d" % tally[name]
+		var b := UIKit.button(chip, false)
 		b.custom_minimum_size = Vector2(0, 30)
 		b.add_theme_font_size_override("font_size", 12)
 		for st in ["normal", "hover", "pressed", "focus"]:  # tighter than a page button, so the row stays two lines on a phone
@@ -78,7 +86,7 @@ func _species(col: VBoxContainer) -> Dictionary:
 	for sp in species:
 		if not groups.has(sp.group):
 			groups.append(sp.group)
-	col.add_child(UIKit.label("The field guide · %d species · %d met on the water" % [species.size(), seen.size()], 12, UIKit.MIST))
+	col.add_child(UIKit.label("The field guide · %d species · %d met" % [species.size(), seen.size()], 12, UIKit.MIST))
 	var anchors := {}
 	for g in groups:
 		anchors[g] = UIKit.kicker(str(g))

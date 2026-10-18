@@ -833,6 +833,10 @@
 
 - [x] T014hc A row of small chips at the top of the field guide jumps to each group of species, the words on the water and the credits — two lines on a phone, one tap instead of a long scroll.
 
+## Slice 193 — the tally on the chips
+
+- [x] T014hd Each group chip in the field guide carries how many of its species have been met (`Birds 3/8`), and the page’s count reads “met” now that the shore and the night count too.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
