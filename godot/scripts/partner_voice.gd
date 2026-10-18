@@ -33,6 +33,9 @@ const LINES := {
 	"sealions": "Hear them? Give the rock a wide berth.",
 	"buoylion": "He’s not moving for us. Go round.",
 	"dalls": "Look at them go — rooster tails!",
+	"otter": "Shh. Otter, on the rocks — let it eat.",
+	"eagle": "Up on the snag. White head — see it?",
+	"porpoise": "Hear that puff? Porpoise. Just once, then gone.",
 }
 
 ## The partner's words for an event, by name, or empty when there are none.
