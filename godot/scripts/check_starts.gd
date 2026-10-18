@@ -14,6 +14,9 @@ const AT := {
 	"eddy": [-8000.0, -10990.0, 270.0],         # 80 m off Spieden Island's south shore, in the narrows
 	"log": [-273.0, -4925.0, 0.0],              # the day-one deadhead 45 m ahead, beside the line
 	"cliff": [-7360.0, -11440.0, 270.0],          # hard under the steep south shore of Spieden Island, clapotis
+	"auklets": [-200.0, -3345.0, 180.0],         # rhinoceros auklets on the water 55 m ahead, mid-channel
+	"humpback": [-800.0, -5250.0, 100.0],        # on the way home, the humpback 300 m off to the east
+	"sealions": [-9050.0, -9900.0, 0.0],         # the September sea lions hauled out 100 m ahead
 }
 
 ## [x, z, heading] for a start, or empty when the start is not a fixed one.

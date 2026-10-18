@@ -689,6 +689,30 @@
 
 - [x] T014fs The field guide's black oystercatcher works the tide line beside the seals' rock on day one and again on the way home: all black, the long orange-red bill, pale legs (`Wildlife._oystercatcher`). With slice 155's fix, the kelp, the oystercatcher and the seals come up as cards one after another rather than over each other (checked headless). Station `trip-oystercatcher`.
 
+## Slice 157 — the kingfisher on the piling
+
+- [x] T014ft The field guide's belted kingfisher watches the harbour from an old dock piling a few boat lengths up from the launch: blue-grey, the shaggy crest, the white collar, the dagger bill (`Wildlife._kingfisher`). Its reach is short (90 m), so the trip opens clean and the card comes up as you paddle past (checked headless).
+
+## Slice 158 — seabirds on the water
+
+- [x] T014fu Two more of the field guide's birds are met on day one, sitting low on the water a few together (`Wildlife._seabird`, one shape coloured per species): rhinoceros auklets, sooty with an orange bill, out in mid-channel; and pigeon guillemots, black with the white wing patch, off the rocks below Jones Island. Check start `?scene=trip&near=auklets`, station `trip-auklets`; the guillemots' card was checked headless.
+
+## Slice 159 — Dall's porpoise in the narrows
+
+- [x] T014fv The field guide's Dall's porpoise runs through the deep, fast narrows of Spieden Channel on day two. It is the harbour porpoise's shape made stockier and black, with the bright white flank patches (`_porpoise(true)`), rolling on the same circuit. Its card was checked headless.
+
+## Slice 160 — a river otter into Posey
+
+- [x] T014fw The field guide's river otter swims the last stretch in to Posey Island on day two, ahead of the boat: a long dark-brown back, the flat head held up, a pale muzzle, a thick tapering tail (`Wildlife._otter`). Its card comes up well before the landing (checked headless).
+
+## Slice 161 — a humpback on the way home
+
+- [x] T014fx The field guide's humpback travels north up San Juan Channel on day three, off to the east of the line home (`Wildlife._humpback`). Twelve metres of dark back rolls up three times to breathe, then the pale-undersided fluke lifts as it sounds, on a thirty-second cycle. Its blow carries like the orcas', loud alongside and faint at a kilometre. The card asks for the field guide's 91 m, and the "too close" rule applies. Check start `?scene=trip&leg=2&near=humpback&launch=9`, station `trip-humpback`.
+
+## Slice 162 — Steller sea lions, in their season
+
+- [x] T014fy A sighting can now keep to its season: an optional `day` names the only trip day it is there, and a content test checks that day exists. Steller sea lions, which the field guide says are here "mostly autumn to spring", haul out on the low rocks west of Spieden only on the September day: a big reddish bull and two tan cows, heads up on thick necks, propped on their fore-flippers (`Wildlife._sealions`). On the July day the rocks are bare (checked headless). Check start `?scene=trip&leg=1&day=september&near=sealions`, station `trip-sealions`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

@@ -354,6 +354,8 @@ func _init() -> void:
 		var essentials: Array = c.gear.filter(func(g: Dictionary) -> bool: return bool(g.get("essential", false)))
 		check(essentials.all(func(g: Dictionary) -> bool: return LeftBehind.COST.has(str(g.id))), "every essential has its cost in the debrief")
 		var species_ids: Array = c.species.map(func(sp: Dictionary) -> String: return str(sp.id))
+		var day_ids: Array = c.tripDays.map(func(td: Dictionary) -> String: return str(td.id))
+		check(Sightings.ALL.all(func(sg: Dictionary) -> bool: return not sg.has("day") or day_ids.has(str(sg.day))), "a seasonal sighting names a day the trip can be paddled on")
 		check(Sightings.ALL.all(func(sg: Dictionary) -> bool: return species_ids.has(str(sg.species))) and Sightings.ALL.all(func(sg: Dictionary) -> bool: return [0, 1, 2].has(int(sg.leg))), "every sighting is a field-guide species, on one of the three days")
 		check(c.drills.size() == 10 and c.drills[0].id == "forward" and c.drills[5].id == "compass" and c.drills[6].id == "ferry" and c.drills[7].id == "eddyline" and c.drills[8].id == "draw" and c.drills[9].id == "rescue", "ten drills, forward first, the compass, the ferry angle, the eddy line and the draw before the rescue, the rescue last")
 		var tour := SchoolTour.build(c, func(_id: String) -> Vector3: return Vector3.UP, func(sids: Array) -> String: return ",".join(sids))

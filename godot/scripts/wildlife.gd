@@ -68,8 +68,15 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"eagle": w._eagle()
 		"peregrine": w._peregrine()
 		"oystercatcher": w._oystercatcher()
+		"kingfisher": w._kingfisher()
+		"guillemot": w._seabird(Color(0.06, 0.06, 0.07), Color(0.95, 0.95, 0.95), Color(0.06, 0.06, 0.07), 2)
+		"auklet": w._seabird(Color(0.25, 0.25, 0.27), Color(0.6, 0.6, 0.6), Color(0.9, 0.6, 0.25), 3)
 		"kelp": w._kelp()
 		"porpoise": w._porpoise()
+		"dalls": w._porpoise(true)
+		"otter": w._otter()
+		"humpback": w._humpback()
+		"sealions": w._sealions()
 		"orcas": w._orcas()
 	return w
 
@@ -140,6 +147,79 @@ func _oystercatcher() -> void:
 	_rod(bird, 0.012, 0.12, Color(0.9, 0.82, 0.72), Vector3(-0.03, -0.02, 0))
 	_parts.append(bird)
 
+## A belted kingfisher on an old dock piling in the harbour: blue-grey, the shaggy crest, the white
+## collar and the heavy dagger bill, watching the water below for small fish.
+func _kingfisher() -> void:
+	_rod(self, 0.16, 3.4, Color(0.3, 0.25, 0.2), Vector3(0, 0.2, 0))  # the piling, weathered, a hand of it green below the tide line
+	var bird := Node3D.new()
+	bird.position = Vector3(0, 1.92, 0)
+	add_child(bird)
+	_ball(bird, Vector3(0.09, 0.12, 0.13), Color(0.32, 0.45, 0.6), Vector3(0, 0.1, 0), Vector3(deg_to_rad(20), 0, 0))  # the blue-grey back
+	_ball(bird, Vector3(0.07, 0.05, 0.05), Color(0.95, 0.95, 0.93), Vector3(0, 0.15, 0.06))                            # the white collar
+	_ball(bird, Vector3(0.07, 0.08, 0.08), Color(0.3, 0.42, 0.58), Vector3(0, 0.24, 0.03))                             # the big head
+	_cone(bird, 0.04, 0.1, Color(0.3, 0.42, 0.58), Vector3(0, 0.33, -0.02), Vector3(deg_to_rad(-30), 0, 0))           # the shaggy crest
+	_cone(bird, 0.022, 0.12, Color(0.12, 0.12, 0.13), Vector3(0, 0.23, 0.14), Vector3(deg_to_rad(-90), 0, 0))         # the dagger bill
+
+## Seabirds sitting on the water, a few together, riding the swell low. One shape, coloured per
+## species: the pigeon guillemot black with its white wing patch, the rhinoceros auklet sooty with an
+## orange bill. `patch` paints the wing; `n` is how many sit together.
+func _seabird(body: Color, patch: Color, bill: Color, n: int) -> void:
+	for i in n:
+		var bird := Node3D.new()
+		bird.position = Vector3(i * 0.9 - (n - 1) * 0.45, 0.02, sin(i * 2.1) * 0.6)
+		add_child(bird)
+		_ball(bird, Vector3(0.12, 0.08, 0.2), body, Vector3(0, 0.04, 0))
+		_ball(bird, Vector3(0.05, 0.03, 0.08), patch, Vector3(0.08, 0.07, 0.0))   # the wing patch
+		_ball(bird, Vector3(0.05, 0.03, 0.08), patch, Vector3(-0.08, 0.07, 0.0))
+		_ball(bird, Vector3(0.06, 0.06, 0.06), body, Vector3(0, 0.14, 0.13))
+		_cone(bird, 0.015, 0.06, bill, Vector3(0, 0.14, 0.2), Vector3(deg_to_rad(-90), 0, 0))
+		_parts.append(bird)
+
+## A river otter swimming low: a long dark-brown back, the flat head up, a thick tapering tail
+## trailing. In salt water off the islands, it is still a river otter.
+func _otter() -> void:
+	var body := Node3D.new()
+	add_child(body)
+	_ball(body, Vector3(0.14, 0.08, 0.5), Color(0.24, 0.17, 0.11), Vector3(0, 0.0, 0))                                  # the back
+	_ball(body, Vector3(0.09, 0.08, 0.11), Color(0.27, 0.2, 0.13), Vector3(0, 0.07, 0.5))                                # the head, held up
+	_ball(body, Vector3(0.04, 0.03, 0.04), Color(0.55, 0.5, 0.45), Vector3(0, 0.06, 0.6))                                # the pale muzzle
+	_cone(body, 0.05, 0.42, Color(0.22, 0.16, 0.1), Vector3(0, -0.01, -0.62), Vector3(deg_to_rad(90), 0, 0))            # the tail
+	_parts.append(body)
+
+## A humpback, travelling: twelve metres of dark back that rolls up three times to breathe, then
+## arches and lifts the fluke to sound, and is gone for a while. Parts: the body, then the fluke.
+func _humpback() -> void:
+	var body := Node3D.new()
+	add_child(body)
+	_ball(body, Vector3(1.5, 1.2, 6.0), Color(0.16, 0.18, 0.2), Vector3.ZERO)                                          # the long back
+	_cone(body, 0.35, 0.5, Color(0.15, 0.17, 0.19), Vector3(0, 1.05, -2.6))                                            # the small hump of a fin
+	_ball(body, Vector3(0.5, 0.08, 2.2), Color(0.8, 0.82, 0.82), Vector3(1.6, -0.5, 1.4), Vector3(0, deg_to_rad(-30), 0))  # the long pale flippers
+	_ball(body, Vector3(0.5, 0.08, 2.2), Color(0.8, 0.82, 0.82), Vector3(-1.6, -0.5, 1.4), Vector3(0, deg_to_rad(30), 0))
+	_parts.append(body)
+	var fluke := Node3D.new()
+	add_child(fluke)
+	_ball(fluke, Vector3(2.4, 0.12, 0.8), Color(0.15, 0.17, 0.19), Vector3(0, 0, 0), Vector3(deg_to_rad(80), 0, 0))
+	_ball(fluke, Vector3(1.6, 0.13, 0.5), Color(0.85, 0.85, 0.83), Vector3(0, 0.05, 0.08), Vector3(deg_to_rad(80), 0, 0))  # the pale underside that names the animal
+	fluke.visible = false
+	_parts.append(fluke)
+
+## Steller sea lions hauled out on a low rock: big, tan to reddish, the blunt bear's head held up
+## on a thick neck, propped on the fore-flippers as seals never are. A bull and two cows.
+func _sealions() -> void:
+	for i in 3:
+		var big := i == 0
+		var a := Node3D.new()
+		a.position = Vector3(i * 1.6 - 1.6, 0.0, sin(i * 1.7) * 0.9)
+		a.rotation.y = 0.6 * (i - 1)
+		add_child(a)
+		var tan := Color(0.55, 0.42, 0.28) if big else Color(0.66, 0.53, 0.36)
+		var sz := 1.35 if big else 1.0
+		_ball(a, Vector3(0.45, 0.4, 1.2) * sz, tan, Vector3(0, 0.35 * sz, 0))                            # the body
+		_ball(a, Vector3(0.3, 0.35, 0.3) * sz, tan.darkened(0.05), Vector3(0, 0.8 * sz, 0.75 * sz))      # the thick neck
+		_ball(a, Vector3(0.2, 0.2, 0.26) * sz, tan.darkened(0.1), Vector3(0, 1.1 * sz, 0.95 * sz))       # the blunt head
+		_ball(a, Vector3(0.12, 0.05, 0.35) * sz, tan.darkened(0.25), Vector3(0.38 * sz, 0.12, 0.6 * sz))  # the fore-flippers, propped
+		_ball(a, Vector3(0.12, 0.05, 0.35) * sz, tan.darkened(0.25), Vector3(-0.38 * sz, 0.12, 0.6 * sz))
+
 ## A bed of bull kelp: floats at the surface, stipes down into the dark, blades streaming.
 func _kelp() -> void:
 	var rng := RandomNumberGenerator.new()
@@ -156,11 +236,14 @@ func _kelp() -> void:
 			_parts.append(blade)
 
 ## A harbour porpoise: small, dark, rolling through the surface every few seconds and gone.
-func _porpoise() -> void:
+func _porpoise(dalls := false) -> void:
 	var body := Node3D.new()
 	add_child(body)
-	_ball(body, Vector3(0.22, 0.2, 0.8), Color(0.12, 0.13, 0.15), Vector3.ZERO)
-	_ball(body, Vector3(0.14, 0.1, 0.5), Color(0.75, 0.75, 0.75), Vector3(0, -0.1, 0.1))  # the pale belly
+	_ball(body, Vector3(0.22, 0.2, 0.8) * (1.15 if dalls else 1.0), Color(0.05, 0.05, 0.06) if dalls else Color(0.12, 0.13, 0.15), Vector3.ZERO)
+	if dalls:  # Dall's: stockier and black, with the bright white flank patches
+		_ball(body, Vector3(0.24, 0.14, 0.34), Color(0.96, 0.96, 0.96), Vector3(0, -0.04, 0.05))
+	else:
+		_ball(body, Vector3(0.14, 0.1, 0.5), Color(0.75, 0.75, 0.75), Vector3(0, -0.1, 0.1))  # the pale belly
 	_cone(body, 0.12, 0.22, Color(0.1, 0.11, 0.13), Vector3(0, 0.26, -0.05))              # the small triangular fin
 	_ball(body, Vector3(0.3, 0.03, 0.12), Color(0.12, 0.13, 0.15), Vector3(0, 0, -0.85))  # flukes
 	_parts.append(body)
@@ -231,7 +314,25 @@ func _process(delta: float) -> void:
 			for i in range(_parts.size()):
 				var b := _parts[i]
 				b.rotation.y = 0.2 * ((i % 3) - 1) + 0.25 * sin(_t * 0.6 + i * 0.7)
-		"porpoise":
+		"humpback":
+			# Thirty seconds a cycle: three rolls to breathe, the fluke up, then down for the rest.
+			var body := _parts[0]
+			var fluke := _parts[1]
+			var cyc := fmod(_t, 30.0)
+			body.position.z = _t * 1.2  # a slow travelling walk along its heading
+			var roll := fmod(cyc, 4.0) / 4.0 if cyc < 12.0 else 0.0
+			var up := sin(roll * PI) if cyc < 12.0 else 0.0
+			body.position.y = -1.6 + 1.9 * up
+			body.rotation.x = -0.3 * cos(roll * PI) * up
+			if up > 0.95 and not _breathed:
+				_breathed = true
+				breathed.emit()
+			if up < 0.2:
+				_breathed = false
+			var f := clampf(1.0 - absf(cyc - 14.0) / 2.0, 0.0, 1.0)
+			fluke.visible = f > 0.0
+			fluke.position = Vector3(0, -1.5 + 3.2 * f, body.position.z - 5.5)
+		"porpoise", "dalls":
 			# A slow circuit, breaking the surface in an arc every few seconds.
 			var body := _parts[0]
 			var cyc := fmod(_t, 7.0)
