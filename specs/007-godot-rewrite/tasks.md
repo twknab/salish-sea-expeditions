@@ -797,6 +797,10 @@
 
 - [x] T014gt The great blue heron is heard when its card comes up: a deep, hoarse “frahnk” croak (`croak.wav`), appended last in the synth tool so the earlier sounds keep their noise.
 
+## Slice 184 — the otters chirp
+
+- [x] T014gu The river otter is heard when its card comes up: short, bird-like chirps and a breathy huff (`chirp.wav`), appended last in the synth tool.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

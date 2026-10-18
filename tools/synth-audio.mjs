@@ -250,3 +250,15 @@ for (let k = 0; k < 2; k++) {
   }
   wav('croak', out);
 }
+// River otter: short, bird-like chirps and a breathy huff — the family keeping in touch along the rocks.
+{
+  const len = Math.floor(SR * 1.0), out = new Float32Array(len); const l = lp(2500);
+  const chirps = [0.0, 0.16, 0.29, 0.62];
+  for (const t0 of chirps) for (let i = Math.floor(t0 * SR); i < len; i++) {
+    const t = i / SR - t0; if (t > 0.05) break;
+    const f = 2400 - 900 * t / 0.05;
+    out[i] += Math.sin(2 * Math.PI * f * t) * Math.sin(Math.PI * t / 0.05) * 0.28;
+  }
+  for (let i = Math.floor(0.42 * SR); i < Math.floor(0.56 * SR); i++) { const t = i / SR - 0.42; out[i] += l(rnd()) * Math.sin(Math.PI * t / 0.14) * 0.3; }
+  wav('chirp', out);
+}
