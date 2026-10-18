@@ -721,6 +721,10 @@
 
 - [x] T014ga A red nun buoy marks the channel into Friday Harbor, just to the right of the line home (`NavBuoy`), on day one going out and on the last day coming in. Within 70 m the note teaches the rule the right way round for the direction: coming in, the reds stay on your right; going out, on your left; keep to the channel's edge (both checked headless). On the September day a California sea lion is sprawled across it, as they are on every buoy that will hold them (`Wildlife._buoylion`, seasonal like the Steller sea lions). "Red, right, returning" joins the glossary. Check start `?scene=trip&leg=2&day=september&near=buoy&launch=9`, station `trip-buoy`.
 
+## Slice 165 — the day's record leaves the water scene
+
+- [x] T014gb Making room again: `sea.gd` had reached 995 lines. The day's record for the debrief (the launch and its verdict, the landing, the swims, the wildlife given room, and the rest of the record's 38 fields) is now built by `DayRecord.keep(sea)`, and the water scene drops to 962 lines. No change in behaviour: an arrival checked headless still records the day with every field.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone
