@@ -705,6 +705,10 @@
 
 - [x] T014fw The field guide's river otter swims the last stretch in to Posey Island on day two, ahead of the boat: a long dark-brown back, the flat head held up, a pale muzzle, a thick tapering tail (`Wildlife._otter`). Its card comes up well before the landing (checked headless).
 
+## Slice 161 — a humpback on the way home
+
+- [x] T014fx The field guide's humpback travels north up San Juan Channel on day three, off to the east of the line home (`Wildlife._humpback`). Twelve metres of dark back rolls up three times to breathe, then the pale-undersided fluke lifts as it sounds, on a thirty-second cycle. Its blow carries like the orcas', loud alongside and faint at a kilometre. The card asks for the field guide's 91 m, and the "too close" rule applies. Check start `?scene=trip&leg=2&near=humpback&launch=9`, station `trip-humpback`.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

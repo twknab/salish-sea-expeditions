@@ -75,6 +75,7 @@ static func make(what: String, at: Vector3, heading := Vector3.FORWARD) -> Wildl
 		"porpoise": w._porpoise()
 		"dalls": w._porpoise(true)
 		"otter": w._otter()
+		"humpback": w._humpback()
 		"orcas": w._orcas()
 	return w
 
@@ -184,6 +185,23 @@ func _otter() -> void:
 	_cone(body, 0.05, 0.42, Color(0.22, 0.16, 0.1), Vector3(0, -0.01, -0.62), Vector3(deg_to_rad(90), 0, 0))            # the tail
 	_parts.append(body)
 
+## A humpback, travelling: twelve metres of dark back that rolls up three times to breathe, then
+## arches and lifts the fluke to sound, and is gone for a while. Parts: the body, then the fluke.
+func _humpback() -> void:
+	var body := Node3D.new()
+	add_child(body)
+	_ball(body, Vector3(1.5, 1.2, 6.0), Color(0.16, 0.18, 0.2), Vector3.ZERO)                                          # the long back
+	_cone(body, 0.35, 0.5, Color(0.15, 0.17, 0.19), Vector3(0, 1.05, -2.6))                                            # the small hump of a fin
+	_ball(body, Vector3(0.5, 0.08, 2.2), Color(0.8, 0.82, 0.82), Vector3(1.6, -0.5, 1.4), Vector3(0, deg_to_rad(-30), 0))  # the long pale flippers
+	_ball(body, Vector3(0.5, 0.08, 2.2), Color(0.8, 0.82, 0.82), Vector3(-1.6, -0.5, 1.4), Vector3(0, deg_to_rad(30), 0))
+	_parts.append(body)
+	var fluke := Node3D.new()
+	add_child(fluke)
+	_ball(fluke, Vector3(2.4, 0.12, 0.8), Color(0.15, 0.17, 0.19), Vector3(0, 0, 0), Vector3(deg_to_rad(80), 0, 0))
+	_ball(fluke, Vector3(1.6, 0.13, 0.5), Color(0.85, 0.85, 0.83), Vector3(0, 0.05, 0.08), Vector3(deg_to_rad(80), 0, 0))  # the pale underside that names the animal
+	fluke.visible = false
+	_parts.append(fluke)
+
 ## A bed of bull kelp: floats at the surface, stipes down into the dark, blades streaming.
 func _kelp() -> void:
 	var rng := RandomNumberGenerator.new()
@@ -278,6 +296,24 @@ func _process(delta: float) -> void:
 			for i in range(_parts.size()):
 				var b := _parts[i]
 				b.rotation.y = 0.2 * ((i % 3) - 1) + 0.25 * sin(_t * 0.6 + i * 0.7)
+		"humpback":
+			# Thirty seconds a cycle: three rolls to breathe, the fluke up, then down for the rest.
+			var body := _parts[0]
+			var fluke := _parts[1]
+			var cyc := fmod(_t, 30.0)
+			body.position.z = _t * 1.2  # a slow travelling walk along its heading
+			var roll := fmod(cyc, 4.0) / 4.0 if cyc < 12.0 else 0.0
+			var up := sin(roll * PI) if cyc < 12.0 else 0.0
+			body.position.y = -1.6 + 1.9 * up
+			body.rotation.x = -0.3 * cos(roll * PI) * up
+			if up > 0.95 and not _breathed:
+				_breathed = true
+				breathed.emit()
+			if up < 0.2:
+				_breathed = false
+			var f := clampf(1.0 - absf(cyc - 14.0) / 2.0, 0.0, 1.0)
+			fluke.visible = f > 0.0
+			fluke.position = Vector3(0, -1.5 + 3.2 * f, body.position.z - 5.5)
 		"porpoise", "dalls":
 			# A slow circuit, breaking the surface in an arc every few seconds.
 			var body := _parts[0]
