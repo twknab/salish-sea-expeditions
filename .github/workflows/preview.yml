@@ -2,10 +2,13 @@
 # revision that takes no public traffic, at a private tagged URL (pr-<number>---…run.app). The
 # link is posted on the pull request and updated on every push; closing the PR removes the tag.
 # Keyless like the production deploy, and a no-op until the deploy secrets exist.
+# Switched off: it started a runner on every push only to skip. Restore the trigger below when the
+# deploy secrets exist and previews are wanted:
+#   pull_request:
+#     types: [opened, synchronize, reopened, closed]
 name: Preview
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
+  workflow_dispatch: {}
 permissions:
   contents: read
   id-token: write

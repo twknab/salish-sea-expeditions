@@ -41,6 +41,12 @@ with `npx vite preview --port 4173` running, for a single screenshot.
 
 ## Godot rewrite (branch `experiment/godot-rewrite`)
 
+- **CI costs money; keep it to one run per change.** `Godot` and `Checks` run on pull requests only
+  (not again on the branch push or on main after the merge); `Checks` skips Godot-only and docs-only
+  changes; `Deploy` and `Preview` are manual (`workflow_dispatch`). Run the gate locally (lint,
+  `run_tests.gd`, `debug_scenes.gd`, export, stations) and batch many slices into each pull request
+  rather than opening one per slice.
+
 - `godot/` is a Godot 4.5 project (Compatibility renderer, web export without threads). Pure
   logic lives in `class_name` scripts with static functions (`waves.gd`, `hull.gd`,
   `stroke_math.gd`) so `tests/run_tests.gd` can run them headless; scene scripts stay thin.

@@ -1,12 +1,10 @@
 # The Godot game's gate: lint, headless unit tests, every scene instantiated headless, the web
 # export, and the export opened in headless Chromium as a bare page on a desktop window and on a
-# phone (the two profiles the constitution names), with screenshots kept as evidence. Runs on
-# pull requests and on main, so a merge is a build somebody could play.
+# phone (the two profiles the constitution names), with screenshots kept as evidence. Runs once per
+# pull request push — not again for the branch push behind it, and not on main after the merge,
+# which the pull request already proved. `workflow_dispatch` runs it by hand.
 name: Godot
 on:
-  push:
-    branches: [main, experiment/godot-rewrite]
-    paths: [godot/**, tests/smoke/godot-*.mjs, server/**, tools/**, src/content/**, .github/workflows/godot.yml]
   pull_request:
     paths: [godot/**, tests/smoke/godot-*.mjs, server/**, tools/**, src/content/**, .github/workflows/godot.yml]
   workflow_dispatch: {}

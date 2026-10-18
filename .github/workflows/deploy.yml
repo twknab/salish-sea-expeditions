@@ -1,13 +1,11 @@
-# POST-MERGE: when Checks pass on main, build the image, push it and roll out a new Cloud Run
-# revision to production (all traffic), then check /health.
+# PRODUCTION DEPLOY, by hand: build the image, push it and roll out a new Cloud Run revision to
+# production (all traffic), then check /health. It used to follow every green Checks run on main;
+# it is manual now so no merge spends Actions minutes on it (restore the `workflow_run` trigger on
+# Checks to make it automatic again, and Checks' `push: main` with it).
 # Keyless: GitHub's OIDC token is exchanged for the deployer account via Workload Identity
 # Federation (created by infra/bootstrap, locked to this repository). No-ops until the secrets exist.
 name: Deploy (post-merge)
 on:
-  workflow_run:
-    workflows: [Checks]
-    types: [completed]
-    branches: [main]
   workflow_dispatch: {}
 permissions:
   contents: read
