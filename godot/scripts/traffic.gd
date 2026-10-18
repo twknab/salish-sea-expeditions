@@ -156,6 +156,14 @@ static func card_text(heard: bool, night := false) -> String:
 	var lights := "In the dark it is its lights: white masthead lights high up, red on its port side and green on its starboard. See red and green together and it is coming straight at you. " if night else ""
 	return ("The VHF heard it first: the ferry calling its position to the other traffic. " if heard else "") + lights + "Hold your position and let it pass well ahead — it cannot stop or turn for you, and it is faster than it looks. When it has gone by, cross its wake at right angles, bow into the waves."
 
+## The note for a long blast in the fog, `where` the bearing in words. With a VHF the ferry is
+## also heard on the radio: its sécurité call gives its position before the horn does.
+static func fog_note(where: String, touch: bool, heard: bool) -> String:
+	var radio := "The VHF has it too: the ferry's sécurité call, giving its position. " if heard else ""
+	if touch:
+		return radio + "A long blast in the fog, %s: a vessel under way. Stop and listen; keep to the edge of the lane." % where
+	return radio + "A long blast in the fog, %s: a vessel under way, somewhere in the channel. Stop paddling and listen. Keep to the edge of the lane until it has passed." % where
+
 ## The ferry's navigation lights, on after dark and in fog: the model draws them, this shows them.
 func set_lights(on: bool) -> void:
 	if _model:

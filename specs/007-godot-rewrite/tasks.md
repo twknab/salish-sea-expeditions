@@ -777,6 +777,10 @@
 
 - [x] T014go The peregrine on Spieden's cliff is heard as well as seen: its harsh, repeated "kak-kak-kak", short nasal bursts near 1.8 kHz (`kak.wav`), when it comes into reach. The bird calls now come through one `Sound.bird(call)`.
 
+## Slice 179 — the sécurité call in the fog
+
+- [x] T014gp With a VHF packed, the ferry in fog is heard on the radio before its horn. The long-blast note now opens with the ferry's sécurité call giving its position; without a radio there is only the horn. The note moved into `Traffic.fog_note()` with a test, and the water scene's version of it went with it.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

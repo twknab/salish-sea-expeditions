@@ -948,7 +948,7 @@ func _watch_traffic(delta: float) -> void:
 			Sound.horn(d > Traffic.HORN_M)
 			if not _traffic.warned:
 				var where := Traffic.bearing_words(kayak.global_position, _traffic.global_position)
-				note_label.text = ("A long blast in the fog, %s: a vessel under way. Stop and listen; keep to the edge of the lane." if controls.touch() else "A long blast in the fog, %s: a vessel under way, somewhere in the channel. Stop paddling and listen. Keep to the edge of the lane until it has passed.") % where
+				note_label.text = Traffic.fog_note(where, controls.touch(), _pack.get("enables", []).has("radio"))
 	else:
 		_fog_signal_t = 0.0
 	if d < Traffic.WARN_M and not _traffic.warned:
