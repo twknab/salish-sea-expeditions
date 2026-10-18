@@ -250,7 +250,7 @@ func _spawn_sightings() -> void:
 			continue
 		var at: Vector3 = conf.at
 		var y := 0.0
-		if conf.kind in ["eagle", "seals", "peregrine"]:
+		if conf.kind in ["eagle", "seals", "peregrine", "oystercatcher"]:
 			y = maxf(terrain.height_at(at.x, at.z), 0.0) + (0.3 if conf.kind == "seals" else 0.0)
 		var node := Wildlife.make(conf.kind, Vector3(at.x, y, at.z), conf.face)
 		add_child(node)
