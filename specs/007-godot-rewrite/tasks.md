@@ -825,6 +825,10 @@
 
 - [x] T014ha The guide’s hint for a species not yet met also names the days that end on a shore showing it — the walks at Jones and Posey, the look under the float at the take-out — and the octopus under the rock wherever a camp has pools (`Sightings.where_ashore`).
 
+## Slice 191 — the glow in the guide
+
+- [x] T014hb The field guide’s card for bioluminescent plankton, until it is met, says to look for it at the end of the days that end at a camp — the night in the cove.
+
 ## Slice 2 — measure and decide
 
 - [ ] T014 Deploy the export to a second Cloud Run service and measure on an iPhone

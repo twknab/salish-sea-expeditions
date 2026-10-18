@@ -45,11 +45,14 @@ func _species(col: VBoxContainer) -> void:
 	var group_of := {}
 	for sp in species:
 		group_of[sp.id] = sp.group
-	var shores: Array = []  # what each day's end ashore shows; a camp with pools has the octopus under its rock
+	var shores: Array = []  # what each day's end ashore shows; a camp with pools has the octopus under its rock, and every camp its night glow
 	for leg in Leg.all():
 		var shore: Array = leg.get("shore", []).duplicate()
-		if TidePool.first_pool(shore.map(func(id: String) -> String: return str(group_of.get(id, "")))) >= 0 and str(leg.get("camp", {}).get("kind", "camp")) != "takeout":
+		var camp: bool = str(leg.get("camp", {}).get("kind", "camp")) != "takeout"
+		if camp and TidePool.first_pool(shore.map(func(id: String) -> String: return str(group_of.get(id, "")))) >= 0:
 			shore.append("octopus")
+		if camp:  # every camp's last card is the night in the cove, sparking when the water is touched
+			shore.append("bioluminescence")
 		shores.append(shore)
 	var groups: Array = []
 	for sp in species:
