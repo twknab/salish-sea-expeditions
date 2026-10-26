@@ -1,15 +1,15 @@
 # Host Salish Sea Expeditions on Google Cloud Run
 
-The game is a static web app: a tiny Node server (`server/server.mjs`) serves the build with gzip,
-long-lived caching for hashed assets and a `/health` check. Saves live on each player's phone, so
-there is no database and the runtime service account has **no project roles**. Defaults: Oregon
-(`us-west1`), scale to zero, at most three instances, 1 CPU and 256 MiB. Registry storage and
-Cloud Run usage can cost money; the instance limit is not a billing cap.
+The game is a static web app: a tiny Node server (`server/server.mjs`) serves the Godot web export
+with brotli and gzip, long-lived caching for hashed assets and a `/health` check. Saves live on each
+player's phone, so there is no database and the runtime service account has **no project roles**.
+Defaults: Oregon (`us-west1`), scale to zero, at most three instances, 1 CPU and 256 MiB. Registry
+storage and Cloud Run usage can cost money; the instance limit is not a billing cap.
 
 ## First deployment (from your machine)
 
-Prerequisites: Terraform ≥ 1.6, Docker running (Buildx), and the Google Cloud CLI, logged in.
-Never commit credentials:
+Prerequisites: Terraform ≥ 1.6, Docker running (Buildx), the Google Cloud CLI logged in, and
+`curl`, `unzip` and `git`. Never commit credentials:
 
 ```sh
 gcloud auth login
@@ -20,78 +20,71 @@ gcloud config set project twk-experiments
 From the repository root:
 
 ```sh
-bash deploy/cloud-run.sh            # current gcloud project, us-west1, this GitHub repo
-bash deploy/cloud-run.sh twk-experiments us-west1 twknab/salish-sea-expeditions   # explicit
-YES=1 bash deploy/cloud-run.sh      # approve the Terraform plans automatically
+bash deploy/godot-cloud-run.sh            # current gcloud project, us-west1, this GitHub repo
+bash deploy/godot-cloud-run.sh twk-experiments us-west1 twknab/salish-sea-expeditions   # explicit
+YES=1 bash deploy/godot-cloud-run.sh      # approve the Terraform plans automatically
 ```
 
 It checks your login, project, billing and Docker first, then:
 
 1. applies `infra/bootstrap` — APIs, the image registry, and keyless GitHub deploys for the repo;
-2. builds and pushes a linux/amd64 image tagged with the commit, and resolves its digest;
-3. applies `infra/service` — the public Cloud Run service — rolls out that image, waits for
+2. fetches Godot 4.5 and its web export templates (cached under `~/.cache/sse-godot`; set
+   `GODOT=/path/to/godot` to use your own);
+3. exports `build/web`, with the four soundtrack pieces beside it in `audio/`;
+4. builds and pushes a linux/amd64 image from `Dockerfile.godot` (which precompresses the export
+   with brotli and gzip, `server/precompress.mjs`) and resolves its digest;
+5. applies `infra/service` — the public Cloud Run service — rolls out that image, waits for
    `/health`, and prints the URL.
 
-If the GitHub CLI is logged in, it offers to set the three repository secrets for you. Two
-Terraform roots avoid the first-deploy trap: Cloud Run cannot start before an image exists.
+It finishes by printing the three repository secrets the deploy workflow needs. Two Terraform roots
+avoid the first-deploy trap: Cloud Run cannot start before an image exists. Safe to re-run for each
+new build.
 
-## CI/CD: pre-merge and post-merge
+## CI/CD
 
 | Stage | Workflow | When | What |
 |---|---|---|---|
-| Pre-merge | `Checks` (`ci.yml`) | every pull request, and `main` | tests, build, every scene in headless Chromium (screenshots kept 7 days), server check, audit, Terraform fmt/validate |
-| Pre-merge | `Preview` (`preview.yml`) | pull requests from this repo | builds the PR, deploys a **no-traffic** revision tagged `pr-<n>`, posts its private URL on the PR; removes the tag when the PR closes |
-| Post-merge | `Deploy (post-merge)` (`deploy.yml`) | `Checks` passed on `main` | builds, pushes, rolls out to production (all traffic), checks `/health`; skips if a newer commit is already on `main` |
-| Pre-merge | `Godot` (`godot.yml`) | pull requests and `main` touching `godot/**` | GDScript lint, content tests, headless unit tests, every scene instantiated headless, the web export, the bare page in headless Chromium on a desktop window and on a phone (screenshots kept 7 days), and a build of `Dockerfile.godot` answering `/health` |
-| Post-merge | `Deploy (post-merge)` → `expedition` job | as above, **and** the repository variable `EXPEDITION_DEPLOY` is `true` | exports the Godot build, builds `Dockerfile.godot` (which precompresses the export with brotli and gzip, `server/precompress.mjs`), pushes it to the `expedition` image and rolls it out to the `salish-sea-expedition` service, checks `/health` |
+| Pre-merge | `Godot` (`godot.yml`) | pull requests touching `godot/**`, `server/**`, `tools/**`, `src/content/**` | GDScript lint, `godot/content` freshness, headless unit tests, every scene instantiated headless, the web export, the bare page in headless Chromium on a desktop window and on a phone (screenshots kept 7 days), every station from its check URL, and a build of `Dockerfile.godot` answering `/health` |
+| Pre-merge | `Checks` (`ci.yml`) | pull requests touching the shared JavaScript, the server or the infrastructure | tests (simulation, content, server), server syntax, dependency audit, Terraform fmt and validation |
+| Deploy | `Deploy (post-merge)` (`deploy.yml`) | by hand (`workflow_dispatch`) | exports the Godot build, builds `Dockerfile.godot`, pushes it to the `expedition` image, rolls it out to the `salish-sea-expedition` service and checks `/health` |
 
-Previews and deploys need the three secrets (`GCP_PROJECT`, `GCP_DEPLOY_SA`, `GCP_WIF_PROVIDER`)
-and do nothing until they exist. No keys are stored anywhere: GitHub's OIDC token is exchanged for
-the deployer account, which is locked to this repository and can only push to this registry,
-deploy Cloud Run revisions and act as the runtime account; it cannot change IAM. Forked pull
-requests get checks, never previews. Optionally add required reviewers to the `production`
-environment in GitHub to gate deploys by hand.
+Deploys need the three secrets (`GCP_PROJECT`, `GCP_DEPLOY_SA`, `GCP_WIF_PROVIDER`) and do nothing
+until they exist. No keys are stored anywhere: GitHub's OIDC token is exchanged for the deployer
+account, which is locked to this repository and can only push to this registry, deploy Cloud Run
+revisions and act as the runtime account; it cannot change IAM. Forked pull requests get checks,
+never deploys. Optionally add required reviewers to the `production` environment in GitHub to gate
+deploys by hand.
 
-Terraform ignores the service's image and traffic after the first apply (CI owns rollouts and
-preview tags), so a later `terraform apply` never rolls the game back or removes a preview.
+Terraform ignores the service's image and traffic after the first apply (CI owns rollouts), so a
+later `terraform apply` never rolls the game back.
 
-## The Godot build: one command from your machine
+## The retired Phaser build
 
-After `deploy/cloud-run.sh` has run once from the same checkout (it leaves the bootstrap state the
-next script reads):
+The game was a Phaser 4 + three.js web app until the Godot rewrite replaced it. Its sources, its
+`Dockerfile`, its Vite build, its `Preview` workflow and its Cloud Run service are gone. The two
+services were named a letter apart while both ran — `salish-sea-expeditions` (plural) was Phaser,
+`salish-sea-expedition` (singular) is the game — which is worth knowing when reading older logs.
+
+**The first `terraform apply` after this change destroys the old service.** Read the plan before
+approving it: it should show exactly one destroy, `google_cloud_run_v2_service.game`, and nothing
+else. Its image stays in the registry until you delete it.
+
+The `phaser-final` tag is the last commit with that build intact:
 
 ```sh
-bash deploy/godot-cloud-run.sh            # current gcloud project, us-west1
-YES=1 bash deploy/godot-cloud-run.sh      # approve the Terraform plan automatically
+git show phaser-final --stat        # what it was
+git checkout phaser-final           # or recover a single file from it
 ```
 
-It fetches Godot 4.5 and its web export templates (cached under `~/.cache/sse-godot`; set
-`GODOT=/path/to/godot` to use your own), exports `build/web` with the soundtrack beside it in
-`audio/`, builds and pushes `Dockerfile.godot` for linux/amd64, applies `infra/service` with the
-image's digest (creating the public `salish-sea-expedition` service the first time), rolls it out,
-waits for `/health` and prints the URL. Safe to re-run for each new build.
-
-## The Godot build: a second service, framed and off
-
-The rewrite on `experiment/godot-rewrite` ships as its own Cloud Run service, `salish-sea-expedition`,
-beside the first game, so both can be played and compared until one replaces the other. Everything
-is in place and nothing is created until it is switched on:
-
-1. `infra/service` has the service behind `expedition_image` (empty by default, so `terraform plan`
-   shows nothing for it). Turn it on with the first image's digest:
-   `terraform apply -var="expedition_image=us-west1-docker.pkg.dev/<project>/salish-sea-expeditions/expedition@sha256:…"`.
-   The image is built with `docker build -f Dockerfile.godot .` after a web export into `build/web`
-   (the `Godot` workflow's artifact is exactly that).
-2. Set the repository variable `EXPEDITION_DEPLOY=true`. From then on every merge to `main` that
-   passes `Checks` exports, builds, pushes and rolls out the Godot build too.
-
-The deploy job needs the same three secrets as the first game and nothing else; the deployer can
-already push to the registry and deploy revisions, and the service uses the same runtime account.
+What stayed, because the Godot build needs it: `src/content/` and `src/sim/` (the content and the
+rules `tools/export-content.mjs` generates `godot/content` from — `godot.yml` fails if it is stale),
+`tools/`, `server/`, and the tests for all three.
 
 ## Custom domain (optional)
 
 Verify the domain in Google Search Console, then apply `infra/service` with
-`-var="domain=salish.timknab.dev"` and create the DNS records from the `dns_records` output.
+`-var="domain=salish.timknab.dev"` and create the DNS records from the `dns_records` output. The
+mapping points at the game's service.
 
 ## Verify
 
@@ -100,7 +93,13 @@ URL="$(terraform -chdir=infra/service output -raw public_url)"
 curl --fail "$URL/health"
 ```
 
-Then open the URL on an iPhone: play through Boat School, and use Share → Add to Home Screen.
+Then open the URL on an iPhone: play through Boat School, and use Share → Add to Home Screen. Add
+`?perf=1` for the go/no-go frame-rate numbers, `?dev=1` for a Skip chip on every screen.
+
+Note: the Godot export has `progressive_web_app/enabled=false`, so there is no web manifest or
+service worker — Add to Home Screen gives an icon and a launcher, not standalone display or offline
+play. The Phaser build carried a hand-written manifest and service worker in `public/`; they went
+with it (see `phaser-final`). Turning the export's own PWA on is the way back, not restoring those.
 
 ## State
 

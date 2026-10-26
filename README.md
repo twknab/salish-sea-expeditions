@@ -12,14 +12,14 @@ game, and it is also a way to become a stronger sea kayaker: every scene teaches
 about paddling, about the animals and plants of the Salish Sea, about the island communities, and
 about the Coast Salish peoples whose homelands these waters are.
 
-**Mobile-first** (iPhone Safari, portrait) · **Phaser 4** · every image and sound is generated in
-code · web-deployed (Cloud Run + Terraform, coming in its own feature).
+**Mobile-first** (iPhone Safari, portrait) · **Godot 4.5** · every image and sound is generated in
+code · web-deployed (Cloud Run + Terraform).
 
 > A game is not a substitute for instruction. Learn rescues with a qualified instructor, paddle
 > with others, and check real tide and current predictions. The chart here is simplified — do not
 > use it for navigation.
 
-## First Voyage (what is playable now)
+## The first voyage
 
 Friday Harbor → Jones Island, about 4½ nautical miles, one night out.
 
@@ -54,12 +54,14 @@ Friday Harbor → Jones Island, about 4½ nautical miles, one night out.
 | Brace | Hold a thumb still on the low side's blade zone… | J / L (hold) |
 | Hip snap | …and flick the hips bar back toward the centre | K |
 
-## Godot rewrite (experiment branch)
+## The game
 
-`experiment/godot-rewrite` carries a ground-up Godot 4.5 version of the game in `godot/`: a true
-3D sea the kayak floats on, the same hull lines, the same stroke rules and the same touch
-vocabulary. It is an experiment with a go/no-go in `specs/007-godot-rewrite/spec.md`; the Phaser
-game on `main` stays the shipped game until the Godot one is better on a phone.
+The game is a Godot 4.5 project in `godot/`: a true 3D sea the kayak floats on, the hull lines and
+stroke rules ported from the pure simulation, and the same touch vocabulary. It began as the
+rewrite specified in `specs/007-godot-rewrite/spec.md`, and it is now the shipped game.
+
+It replaced a Phaser 4 + three.js build, retired once this one was better on a phone. The
+`phaser-final` tag is the last commit with that build intact, if any of it is ever wanted back.
 
 ```bash
 godot --path godot                                               # open in the editor
@@ -106,37 +108,36 @@ Needs Godot 4.5 and its web export templates (`.github/workflows/godot.yml` show
 ## Run it
 
 ```bash
-npm install
-npm run dev       # http://localhost:5173 — open on your phone on the same network
-npm test          # rules and content (node:test)
-npm run build
-npm run smoke     # headless iPhone-sized pass through every scene, screenshots in tests/smoke/out
+npm install          # the content, audio and terrain tools
+npm test             # the rules and content (node:test)
+godot --path godot   # open the game in the editor
 ```
 
-Jump straight to a scene while developing: `?scene=Paddle&mode=trip`, `?scene=Planning`, …
+The Godot commands for its unit tests, every scene headless, and the web export are in the block
+above. Jump straight to a screen with `?scene=trip`, `?scene=plan`, … — `CLAUDE.md` has the list.
 
 ## Put it on a phone
 
 It deploys to Google Cloud Run the same way Plumber Wars does — see [`infra/README.md`](infra/README.md):
 
 ```bash
-bash deploy/cloud-run.sh YOUR_PROJECT_ID us-west1 twknab/salish-sea-expeditions
+bash deploy/godot-cloud-run.sh YOUR_PROJECT_ID us-west1 twknab/salish-sea-expeditions
 ```
 
 One command creates the registry and the public service and prints the URL. With the three
-secrets it prints, every green merge to `main` redeploys itself (keyless).
+secrets it prints, the `Deploy (post-merge)` workflow can ship `main` keylessly; it is run by hand
+(`workflow_dispatch`) so no merge spends Actions minutes on it.
 
 ## How it is built
 
+- `godot/` — the game itself: scenes, GDScript, the sea shader, the terrain, and the content and
+  audio generated into it.
 - `src/sim/` — tides, currents, wind, kayak physics, stability and bracing, energy, cold water,
   rescues, packing, assembly, wildlife rules, camp, score, save, the partner AI. Pure functions, no
-  Phaser, all tested.
+  engine, all tested: the reference the GDScript ports are written against.
 - `src/content/` — lessons, species, anatomy, gear, places, the acknowledgment and every source
   in `credits.js`: reviewable by an instructor, a naturalist or a cultural reviewer without reading
   game code.
-- `src/render/` — the world shader (water, islands, light, fog, kelp, rips), the cockpit-view
-  shader, procedural kayak and wildlife art.
-- `src/audio/soundscape.js` — synthesised sea, wind, strokes, orca blows, eagles, the ferry horn.
 - `specs/001-first-voyage/` — the spec, plan, research, contracts and tasks (Spec Kit).
 - `.specify/memory/constitution.md` — the principles every feature is judged against.
 

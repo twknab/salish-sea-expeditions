@@ -6,44 +6,35 @@ beauty are non-negotiable; cultural content follows Principle III). Then the act
 
 ## Layout
 
-- `src/sim/` pure rules and physics (no Phaser imports) — every change needs a `node:test` test.
+- `godot/` — **the game**: a Godot 4.5 project. This is where the work is; see "The game" below.
+- `src/sim/` pure rules and physics (no engine imports) — every change needs a `node:test` test.
+  The GDScript in `godot/scripts/` is ported from these (`waves.gd`, `hull.gd`, `stroke_math.gd`,
+  …) and the comments there name their source module; keep the two in step.
 - `src/content/` teaching data; every `sourceIds` entry must resolve in `credits.js`
-  (`tests/content.test.js` enforces it).
-- `src/render/`, `src/audio/`, `src/ui/`, `src/scenes/` — Phaser 4 presentation.
-- `src/render3d/` — three.js models (kayak, Greenland paddle, paddler + stroke, every field-guide species in
-  `species3d.js`) photographed once
-  into Phaser textures (`bake.js`); `keys.js` is three-free so scenes can use the names without
-  loading the 3D chunk. Look at models with `npx vite` → `/tools/art-preview.html`, or
-  `node tests/smoke/art.mjs out.png [only=top|side|paddler|wild]`.
+  (`tests/content.test.js` enforces it). `tools/export-content.mjs` generates `godot/content`
+  from this plus `src/sim/assembly.js`, and `godot.yml` **fails if `godot/content` is stale** —
+  so these two directories are load-bearing for the game, not leftovers.
+- The Phaser 4 + three.js build was **retired**. `specs/001`–`006` and parts of the constitution
+  still describe it, and so do older commits; the `phaser-final` tag is the last one with it
+  intact. Do not restore `src/render`, `src/ui`, `src/scenes`, `src/audio` or `src/render3d`.
 
 ## Commands
 
-`npm test` · `npm run build` · `npm run smoke` (needs a build) · `node tests/smoke/shot.mjs "<Scene>" out.png`
-with `npx vite preview --port 4173` running, for a single screenshot.
+`npm test` (the rules and the content) · `node tools/export-content.mjs` after editing
+`src/content/` · `node tools/synth-audio.mjs` / `synth-pieces.mjs` for the sounds and the music.
+The Godot commands are under "The game" below.
 
 ## Gotchas already paid for
 
-- Phaser **4**, not 3: filters replace FX, `Shader` takes a config object, textures are GL
-  orientation (y up). Bundled docs: `node_modules/phaser/docs` and `node_modules/phaser/skills`.
-- GLSL ES 1.0: `flat` is a reserved word; shader compile errors only show in the browser console.
-- Everything is laid out in points; multiply by `layout.S` (`px()`) for device pixels.
-- Headless Chromium renders at ~5 fps and Phaser caps the time step, so timers and fades barely
-  advance in smoke tests. Gestures use event timestamps for the same reason.
 - The ferry-angle sign once pointed the boat downstream: the partner test now guards it.
-- Phaser 4 multi-texture batching dropped one triangle of a quad when many canvas textures were on
-  screen (a sprite with a straight-edged bite out of it): `render.maxTextures: 1` in `main.js`.
-- three.js colours: vertex colours are linear (convert from sRGB), CanvasTextures are flipped (v = 1
-  is the top of the canvas), and transparent materials draw after opaque ones — the water plane
-  that hides what is below the surface is a separate depth-only mesh drawn first.
 - Screens never pan or clip: content fits, or it is split into zoomed sub-screens (Kayak School).
-- Smoke helper: `INIT='{"sse.save.v1":{...}}'` seeds the save before `tests/smoke/shot.mjs` loads.
 - Spec Kit: non-trivial features go specify → plan → tasks → implement; commit the artifacts.
 
-## Godot rewrite (branch `experiment/godot-rewrite`)
+## The game (Godot 4.5)
 
 - **CI costs money; keep it to one run per change.** `Godot` and `Checks` run on pull requests only
   (not again on the branch push or on main after the merge); `Checks` skips Godot-only and docs-only
-  changes; `Deploy` and `Preview` are manual (`workflow_dispatch`). Run the gate locally (lint,
+  changes; `Deploy` is manual (`workflow_dispatch`). Run the gate locally (lint,
   `run_tests.gd`, `debug_scenes.gd`, export, stations) and batch many slices into each pull request
   rather than opening one per slice.
 
