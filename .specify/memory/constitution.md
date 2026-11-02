@@ -168,9 +168,9 @@ supplied by the owner.
 
 ### IX. Simple, Testable, Deployable
 
-- The shipped game on `main` is Phaser 4 + three.js; the rewrite on `experiment/godot-rewrite`
-  is Godot 4 with the Compatibility renderer and a web export without threads. Each stays honest
-  about what it is until the go/no-go in spec 007 is decided.
+- The shipped game is Godot 4.5 with the Compatibility renderer and a web export without threads.
+  The go/no-go in spec 007 was decided in its favour: the Phaser 4 + three.js build it replaced is
+  retired, and the `phaser-final` tag is the last commit with that build intact.
 - Simulation logic (tides, currents, wind, energy, cold-water timer, skill progression, scoring)
   lives in pure functions with unit tests (`node:test` in JavaScript, headless `run_tests.gd` in
   GDScript), separate from scenes.
@@ -192,9 +192,9 @@ supplied by the owner.
 
 - Non-trivial features go through Spec Kit: specify → clarify → plan → tasks → analyze → implement.
 - Every spec MUST list which principles it serves and how its lessons are verified as accurate.
-- Before merge: `npm test` passes, `npm run build` succeeds (and the Godot tests, export and
-  bare-page screenshots on the rewrite), and the change is checked in a desktop window and a
-  phone-sized viewport — looking and listening, not only functioning (V, VII).
+- Before merge: `npm test` passes, the Godot tests, export and bare-page screenshots pass, and the
+  change is checked in a desktop window and a phone-sized viewport — looking and listening, not
+  only functioning (V, VII).
 - Any change that adds cultural content lists its sources and review status in the PR (III).
 - Small, focused commits; one branch per feature.
 
